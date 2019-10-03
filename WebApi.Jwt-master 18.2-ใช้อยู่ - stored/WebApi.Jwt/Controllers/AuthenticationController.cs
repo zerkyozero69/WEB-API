@@ -1,0 +1,144 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Formatting;
+using System.Xml;
+using System.Data.SqlClient;
+using System.Configuration;
+using DevExpress.ExpressApp;
+using DevExpress.Data.Filtering;
+using DevExpress.Persistent.BaseImpl.PermissionPolicy;
+using Microsoft.ApplicationBlocks.Data;
+using DevExpress.Persistent.BaseImpl;
+using System.Text;
+using DevExpress.Persistent.Base;
+using DevExpress.Persistent.Base.General;
+using System.Web.Http;
+using System.Web;
+using static WebApi.Jwt.helpclass.helpController;
+using static WebApi.Jwt.Models.user;
+using System.Data;
+using DevExpress.ExpressApp.Xpo;
+using DevExpress.Persistent.Base.Security;
+using DevExpress.ExpressApp.Security;
+using WebApi.Jwt.Models;
+using WebApi.Jwt.Filters;
+using WebApi.Jwt.helpclass;
+using NTi.CommonUtility;
+using System.IO;
+using nutrition.Module.EmployeeAsUserExample.Module.BusinessObjects;
+using DevExpress.Utils.Extensions;
+
+namespace WebApi.Jwt.Controllers
+{
+    public class AuthenticationController : ApiController
+    {
+        string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
+     
+    
+
+        /// <summary>
+        /// ฟังชั่น login ผ่าน xaf แล้ว เจน token ให้ไปใช้กับเซอร์วิสอื่น
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        //[JwtAuthentication] /ถ้าใช้โทเคนต้องครอบ
+        // [HttpPost] หน้าโมบาย
+        [HttpPost]
+        [Route("Login")]
+        public HttpResponseMessage LoginAuthen() // ByVal UserName As String, ByVal password As String : 
+        {
+            //  HttpResponseMessage
+            // IHttpActionResult
+            User_info user = new User_info();
+            Roles_info rolename = new Roles_info();
+            try
+            {
+                object Token_key = "";
+                Login login = new Login();
+                if (HttpContext.Current.Request.Form["UserName"].ToString() != null)
+                {
+                    login.Username = HttpContext.Current.Request.Form["UserName"].ToString();
+                }
+                if (HttpContext.Current.Request.Form["Password"].ToString() != null)
+                {
+                    login.Password = HttpContext.Current.Request.Form["Password"].ToString();
+                }
+                helpController result = new helpController();
+                //login.resultLogin = result.CheckLogin_XAF(login.Username, login.Password);
+                //if (login.resultLogin != null)
+                //{
+                //    TokenController token = new TokenController();
+                //    Token_key = token.Get(login.Username, login.Password);
+                //}
+                // XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                user = result.CheckLogin_XAF(login.Username, login.Password);
+                 SqlParameter[] prm = new SqlParameter[9]; /// parameter นับได้เท่าไร ใส่เท่านั้น c#
+                user.Description = "ระบบ login";
+                prm[0] = new SqlParameter("@Username", user.User_Name); ///แต่ array ต้องนับจาก 0
+                prm[1] = new SqlParameter("@DisplayName", user.DisplayName);
+                prm[2] = new SqlParameter("@Organization", user.Organization);
+                prm[3] = new SqlParameter("@Tel", user.Tel);
+                prm[4] = new SqlParameter("@Email", user.E_Mail);          
+                prm[5] = new SqlParameter("@LogID", "2");
+                prm[6] = new SqlParameter("@IPAddress", GetClientIp(Request));
+                prm[7] = new SqlParameter("@Description", user.Description);
+
+                if (user.Status == 1)
+                {
+                    user.Message = "เข้าสู่ระบบสำเร็จ";
+                    prm[8] = new SqlParameter("@EventName", user.Message);
+                    SqlHelper.ExecuteNonQuery(scc, CommandType.StoredProcedure, "insert_EventLog",prm);
+                    return Request.CreateResponse(HttpStatusCode.OK, user);
+                }
+                else if (user.Status == 0 || user.Status == 6)
+                {
+                    user.Message = "เข้าสู่ระบบไม่สำเร็จ";
+                    prm[8] = new SqlParameter("@EventName", user.Message);
+                    SqlHelper.ExecuteNonQuery(scc, CommandType.StoredProcedure, "insert_EventLog",prm);
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, user);
+                }
+
+            }
+
+            catch (Exception ex)
+            {
+                //Error case เกิดข้อผิดพลาด
+
+                user.Status = 6;
+                user.Message = ex.Message;
+                return Request.CreateResponse(HttpStatusCode.BadRequest, user);
+            }
+            return Request.CreateResponse(HttpStatusCode.BadRequest, user);
+
+        }
+
+        [JwtAuthentication]
+        [Route("Logout")]
+        [AcceptVerbs("POST")]
+        public HttpResponseMessage Logout()
+        {
+            try
+            {
+                UserError err = new UserError();
+                err.code = "0"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                err.message = "Logout Success";
+                // Return resual
+                return Request.CreateResponse(HttpStatusCode.OK, err);
+            }
+            catch (Exception ex)
+            {
+                // error case เกิดข้อผิดพลาด
+                UserError err = new UserError();
+                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                err.message = ex.Message;
+                // Return resual
+                return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+            }
+        }
+
+    }
+}
+
