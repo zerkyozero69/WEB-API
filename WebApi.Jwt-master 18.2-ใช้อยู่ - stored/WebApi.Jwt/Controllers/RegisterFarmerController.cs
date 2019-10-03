@@ -471,38 +471,38 @@ namespace WebApi.Jwt.Controllers
 
         }
 
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("RAW/TestPostMethod")]
-        public HttpResponseMessage TestgetMethod()
-        {
-            string requestString = Request.Content.ReadAsStringAsync().Result;
-            JObject jObject = (JObject)JsonConvert.DeserializeObject(requestString);
-            //FirstName 
-            string firstName = jObject.SelectToken("FirstName").Value<string>();
-            //Lastname
-            string lastName = jObject.SelectToken("LastName").Value<string>();
-            //Age
-            int age = jObject.SelectToken("Age").Value<int>();
-            //Title
-            object title = jObject.SelectToken("Title").Value<object>();
-             if (jObject.SelectToken("Title") != null)
-            {
-               string titleName = jObject.SelectToken("Title").SelectToken("TitleName").Value<string>();
-               int titleID = jObject.SelectToken("Title").SelectToken("ID").Value<int>();
-            }
-            DataSet ds;
-            SqlParameter[] prm = new SqlParameter[4];
+        //[AllowAnonymous]
+        //[HttpGet]
+        //[Route("RAW/TestPostMethod")]
+        //public HttpResponseMessage TestgetMethod()
+        //{
+        //    string requestString = Request.Content.ReadAsStringAsync().Result;
+        //    JObject jObject = (JObject)JsonConvert.DeserializeObject(requestString);
+        //    //FirstName 
+        //    string firstName = jObject.SelectToken("FirstName").Value<string>();
+        //    //Lastname
+        //    string lastName = jObject.SelectToken("LastName").Value<string>();
+        //    //Age
+        //    int age = jObject.SelectToken("Age").Value<int>();
+        //    //Title
+        //    object title = jObject.SelectToken("Title").Value<object>();
+        //     if (jObject.SelectToken("Title") != null)
+        //    {
+        //       string titleName = jObject.SelectToken("Title").SelectToken("TitleName").Value<string>();
+        //       int titleID = jObject.SelectToken("Title").SelectToken("ID").Value<int>();
+        //    }
+        //    DataSet ds;
+        //    SqlParameter[] prm = new SqlParameter[4];
 
-            prm[0] = new SqlParameter("@FirstName_TH", firstName);
-            prm[1] = new SqlParameter("@LastName_TH", lastName);
-            prm[2] = new SqlParameter("@age", age);
-            prm[3] = new SqlParameter("@title", title);
+        //    prm[0] = new SqlParameter("@FirstName_TH", firstName);
+        //    prm[1] = new SqlParameter("@LastName_TH", lastName);
+        //    prm[2] = new SqlParameter("@age", age);
+        //    prm[3] = new SqlParameter("@title", title);
 
-            ds = SqlHelper.ExecuteDataset(scc, CommandType.Text, "select * from testTBL where FirstName_TH='" + firstName + "' " );
+        //    ds = SqlHelper.ExecuteDataset(scc, CommandType.Text, "select * from testTBL where FirstName_TH='" + firstName + "' " );
 
-            return Request.CreateResponse(HttpStatusCode.OK, ds.Tables[0]);
-        }
+        //    return Request.CreateResponse(HttpStatusCode.OK, ds.Tables[0]);
+        //}
     }
 }
 
