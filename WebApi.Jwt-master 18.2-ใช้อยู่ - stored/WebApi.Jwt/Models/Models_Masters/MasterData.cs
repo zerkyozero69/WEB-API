@@ -33,15 +33,4 @@ namespace WebApi.Jwt.Models
         public string DistrictName_TH { get; set; }
        
     }
-    public class _CustomerType
-    {
-          public object Oid { get; set; }
-          public string TypeName { get; set; }
-           public bool IsActive { get; set; }
-           public string Remark { get; set; }
-           public string MasterCustomerType { get; set; }
-           public int Status  { get;set; }
-           public string Message { get; set; }
-
-    }
 }
