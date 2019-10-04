@@ -279,65 +279,50 @@ namespace WebApi.Jwt.Controllers
                     Updatefarmer.Longitude = float.Parse(HttpContext.Current.Request.Form["Longitude"]);
                 }
 
-
-                //SqlTransaction st = null;
-                //using (SqlConnection scc2 = new SqlConnection(scc))
-                //    st = scc2.BeginTransaction();
-                //DataSet ds = new DataSet();
-                //DataSet ds = new DataSet();
-                //ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieUpdateFarmer_info"
-                //     , new SqlParameter("@Username", Username)
-                //     , new SqlParameter("@Citizen_ID", CitizenID)
-                //     , new SqlParameter("@TitleOid", TitleOid)
-                //     , new SqlParameter("@FirstName_TH", FirstNameTH)
-                //     , new SqlParameter("@LastName_TH", LastNameTH)
-                //    , new SqlParameter("@Birthdate", BirthDay)
-                //    , new SqlParameter("@Gender", Gender)
-                //     , new SqlParameter("@Tel", Phone)
-                //     , new SqlParameter("@Email", Email)
-                //     , new SqlParameter("@Address_info", Address_info)
-                //     , new SqlParameter("@Address_buildingName", Address_buildingName)
-                //     , new SqlParameter("@Address_moo", Address_moo)
-                //     , new SqlParameter("@Address_provinces", Address_provinces)
-                //     , new SqlParameter("@Address_districts", Address_districts)
-                //     , new SqlParameter("@Address_subdistricts", Address_subdistricts)
-                //     , new SqlParameter("@Type_info", Type_info));
                 DataSet ds = new DataSet();
-                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieUpdateFarmer"
-                    , new SqlParameter("@Oid", Updatefarmer.Oid)
-                    , new SqlParameter("@OrganizationOid", Updatefarmer.OrganizationOid)
-                     , new SqlParameter("@Citizen_ID", Updatefarmer.CitizenID)
-                     , new SqlParameter("@TitleOid", Updatefarmer.TitleOid)
-                     , new SqlParameter("@FirstName_TH", Updatefarmer.FirstNameTH)
-                     , new SqlParameter("@LastName_TH", Updatefarmer.LastNameTH)
-                    , new SqlParameter("@Birthdate", Updatefarmer.BirthDay)
-                    , new SqlParameter("@Gender", Updatefarmer.Gender)
-                     , new SqlParameter("@Tel", Updatefarmer.Tel)
-                     , new SqlParameter("@Email", Updatefarmer.Email)
-                   , new SqlParameter("@Address_No", Updatefarmer.Address_No)
-                   , new SqlParameter("@Address_buildingName", Updatefarmer.Address_buildingName)
-                   , new SqlParameter("@Address_moo", Updatefarmer.Address_moo)
-                   , new SqlParameter("@Address_Soi", Updatefarmer.Address_Soi)
-                   , new SqlParameter("@Address_Road", Updatefarmer.Address_Road)
-                   , new SqlParameter("@Address_provinces", Updatefarmer.Address_provinces)
-                   , new SqlParameter("@Address_districts", Updatefarmer.Address_districts)
-                   , new SqlParameter("@Address_subdistricts", Updatefarmer.Address_subdistricts)
-                    , new SqlParameter("@ZipCode", Updatefarmer.ZipCode)
-                   , new SqlParameter("@animalSupplie", Updatefarmer.AnimalSupplie)
-                   ,new SqlParameter("@Latitude", Updatefarmer.Latitude)
-                   ,new SqlParameter("@Longitude", Updatefarmer.Longitude));
+                SqlParameter[] prm = new SqlParameter[22];
+                prm[0] = new SqlParameter("@Oid", Updatefarmer.Oid);
+                prm[1] = new SqlParameter("@OrganizationOid", Updatefarmer.OrganizationOid);
+                prm[2] = new SqlParameter("@Citizen_ID", Updatefarmer.CitizenID);
+                prm[3] = new SqlParameter("@TitleOid", Updatefarmer.TitleOid);
+                prm[4] = new SqlParameter("@FirstName_TH", Updatefarmer.FirstNameTH);
+                prm[5] = new SqlParameter("@LastName_TH", Updatefarmer.LastNameTH);
+                prm[6] = new SqlParameter("@Birthdate", Updatefarmer.BirthDay);
+                prm[7] = new SqlParameter("@Gender", Updatefarmer.Gender);
+                prm[8] = new SqlParameter("@Tel", Updatefarmer.Tel);
+                prm[9] = new SqlParameter("@Email", Updatefarmer.Email);
+                prm[10] = new SqlParameter("@Address_No", Updatefarmer.Address_No);
+                prm[11] = new SqlParameter("@Address_buildingName", Updatefarmer.Address_buildingName);
+                prm[12] = new SqlParameter("@Address_moo", Updatefarmer.Address_moo);
+                prm[13] = new SqlParameter("@Address_Soi", Updatefarmer.Address_Soi);
+                prm[14] = new SqlParameter("@Address_Road", Updatefarmer.Address_Road);
+                prm[15] = new SqlParameter("@Address_provinces", Updatefarmer.Address_provinces);
+                prm[16] = new SqlParameter("@Address_districts", Updatefarmer.Address_districts);
+                prm[17] = new SqlParameter("@Address_subdistricts", Updatefarmer.Address_subdistricts);
+                prm[18] = new SqlParameter("@ZipCode", Updatefarmer.ZipCode);
+                prm[19] = new SqlParameter("@animalSupplie", Updatefarmer.AnimalSupplie);
+                prm[20] = new SqlParameter("@Latitude", Updatefarmer.Latitude);
+                prm[21] = new SqlParameter("@Longitude", Updatefarmer.Longitude);
 
-                if (ds.Tables[0].Rows[0]["pStatus"].ToString() != "0")
+                if (prm[2] != null)
                 {
-                    return Request.CreateResponse(HttpStatusCode.OK, "[" + Updatefarmer.@FirstNameTH + " " + Updatefarmer.@LastNameTH + "] " + "แก้ไขข้อมูลสำเร็จแล้ว");
+                    if (ds.Tables[0].Rows[0]["pStatus"].ToString() != "0")
+                    {
+                        return Request.CreateResponse(HttpStatusCode.OK, "[" + Updatefarmer.@FirstNameTH + "  " + Updatefarmer.@LastNameTH + "] " + "แก้ไขข้อมูลสำเร็จแล้ว");
+                    }
+                    else if (ds.Tables[0].Rows[0]["pStatus"].ToString() == "0")
+                    {
+                        return Request.CreateResponse(HttpStatusCode.BadRequest, "กรอกข้อมูลผิด");
+                    }
+                    {
+                        return Request.CreateResponse(HttpStatusCode.BadRequest, "ไม่มีข้อมูล");
+                    }
                 }
-                else if (ds.Tables[0].Rows[0]["pStatus"].ToString() == "0")
                 {
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, "กรอกข้อมูลผิด");
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, "กรุณาใส่เลขบัตร");
                 }
-                {
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, "ไม่มีข้อมูล");
-                }
+            
+            
             }
 
 
@@ -352,7 +337,29 @@ namespace WebApi.Jwt.Controllers
                 //  Return resual
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
-
+            //ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieUpdateFarmer"
+            //        , new SqlParameter("@Oid", Updatefarmer.Oid)
+            //        , new SqlParameter("@OrganizationOid", Updatefarmer.OrganizationOid)
+            //         , new SqlParameter("@Citizen_ID", Updatefarmer.CitizenID)
+            //         , new SqlParameter("@TitleOid", Updatefarmer.TitleOid)
+            //         , new SqlParameter("@FirstName_TH", Updatefarmer.FirstNameTH)
+            //         , new SqlParameter("@LastName_TH", Updatefarmer.LastNameTH)
+            //        , new SqlParameter("@Birthdate", Updatefarmer.BirthDay)
+            //        , new SqlParameter("@Gender", Updatefarmer.Gender)
+            //         , new SqlParameter("@Tel", Updatefarmer.Tel)
+            //         , new SqlParameter("@Email", Updatefarmer.Email)
+            //       , new SqlParameter("@Address_No", Updatefarmer.Address_No)
+            //       , new SqlParameter("@Address_buildingName", Updatefarmer.Address_buildingName)
+            //       , new SqlParameter("@Address_moo", Updatefarmer.Address_moo)
+            //       , new SqlParameter("@Address_Soi", Updatefarmer.Address_Soi)
+            //       , new SqlParameter("@Address_Road", Updatefarmer.Address_Road)
+            //       , new SqlParameter("@Address_provinces", Updatefarmer.Address_provinces)
+            //       , new SqlParameter("@Address_districts", Updatefarmer.Address_districts)
+            //       , new SqlParameter("@Address_subdistricts", Updatefarmer.Address_subdistricts)
+            //        , new SqlParameter("@ZipCode", Updatefarmer.ZipCode)
+            //       , new SqlParameter("@animalSupplie", Updatefarmer.AnimalSupplie)
+            //       , new SqlParameter("@Latitude", Updatefarmer.Latitude)
+            //       , new SqlParameter("@Longitude", Updatefarmer.Longitude));
 
         }
 
