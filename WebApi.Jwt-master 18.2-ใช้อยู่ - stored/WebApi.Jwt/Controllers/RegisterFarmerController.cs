@@ -303,8 +303,8 @@ namespace WebApi.Jwt.Controllers
                 prm[19] = new SqlParameter("@animalSupplie", Updatefarmer.AnimalSupplie);
                 prm[20] = new SqlParameter("@Latitude", Updatefarmer.Latitude);
                 prm[21] = new SqlParameter("@Longitude", Updatefarmer.Longitude);
-
-                if (prm[2] != null)
+                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieUpdateFarmer", prm);
+                if (prm[2].Value != null)
                 {
                     if (ds.Tables[0].Rows[0]["pStatus"].ToString() != "0")
                     {
