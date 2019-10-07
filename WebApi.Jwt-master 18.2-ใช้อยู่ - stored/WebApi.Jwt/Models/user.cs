@@ -30,7 +30,8 @@ namespace WebApi.Jwt.Models
         public class Roles_info
         {
             public string Role_Name { get; set; }
-           
+
+            public string Role_display { get; set; }
 
         }
 

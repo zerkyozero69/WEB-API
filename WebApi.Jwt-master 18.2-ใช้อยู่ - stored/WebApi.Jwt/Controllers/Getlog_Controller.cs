@@ -111,7 +111,7 @@ namespace WebApi.Jwt.Controllers
             try
             {
                 DataSet ds = new DataSet();
-                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MobileGetCitizenID"); 
+                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MobileGetFarmer_ALL"); 
                  DataTable dt = new DataTable();
                 dt = ds.Tables[0];
 
