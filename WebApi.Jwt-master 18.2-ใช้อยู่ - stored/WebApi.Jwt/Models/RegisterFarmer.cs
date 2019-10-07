@@ -72,6 +72,14 @@ namespace WebApi.Jwt.Models
             public float Latitude { get; set; }
             public float Longitude { get; set; }
         }
+        public class _Delete_Farmer
+        {
+            public string Oid { get; set; }
+            public string CitizenID { get; set; }
+          
+            public string FirstNameTH { get; set; }
+            public string LastNameTH { get; set; }
+        }
     }
 
 }
