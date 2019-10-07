@@ -188,87 +188,87 @@ namespace WebApi.Jwt.Controllers
             _Registerfarmer Updatefarmer = new _Registerfarmer();
             try
             {
-                if (HttpContext.Current.Request.Form["UpdateFarmer.Oid"].ToString() != null)
+                if (HttpContext.Current.Request.Form["Oid"].ToString() != null)
                 {
-                    Updatefarmer.Oid = HttpContext.Current.Request.Form["UpdateFarmer.Oid"].ToString();
+                    Updatefarmer.Oid = HttpContext.Current.Request.Form["Oid"].ToString();
                 }
-                if (HttpContext.Current.Request.Form["UpdateFarmer.OrganizationOid"].ToString() != null)
+                if (HttpContext.Current.Request.Form["OrganizationOid"].ToString() != null)
                 {
-                    Updatefarmer.OrganizationOid = HttpContext.Current.Request.Form["UpdateFarmer.OrganizationOid"].ToString();
+                    Updatefarmer.OrganizationOid = HttpContext.Current.Request.Form["OrganizationOid"].ToString();
                 }
-                if (HttpContext.Current.Request.Form["UpdateFarmer.CitizenID"] != null)
+                if (HttpContext.Current.Request.Form["CitizenID"] != null)
                 {
-                    Updatefarmer.CitizenID = Convert.ToInt64(HttpContext.Current.Request.Form["UpdateFarmer.CitizenID"]);
+                    Updatefarmer.CitizenID = Convert.ToInt64(HttpContext.Current.Request.Form["CitizenID"]);
                 }
-                if (HttpContext.Current.Request.Form["UpdateFarmer.TitleOid"].ToString() != null)
+                if (HttpContext.Current.Request.Form["TitleOid"].ToString() != null)
                 {
-                    Updatefarmer.TitleOid = HttpContext.Current.Request.Form["UpdateFarmer.TitleOid"].ToString();
+                    Updatefarmer.TitleOid = HttpContext.Current.Request.Form["TitleOid"].ToString();
                 }
-                if (HttpContext.Current.Request.Form["UpdateFarmer.FirstNameTH"].ToString() != null)
+                if (HttpContext.Current.Request.Form["FirstNameTH"].ToString() != null)
                 {
-                    Updatefarmer.FirstNameTH = HttpContext.Current.Request.Form["UpdateFarmer.FirstNameTH"].ToString();
+                    Updatefarmer.FirstNameTH = HttpContext.Current.Request.Form["FirstNameTH"].ToString();
                 }
-                if (HttpContext.Current.Request.Form["UpdateFarmer.LastNameTH"].ToString() != null)
+                if (HttpContext.Current.Request.Form["LastNameTH"].ToString() != null)
                 {
-                    Updatefarmer.LastNameTH = HttpContext.Current.Request.Form["UpdateFarmer.LastNameTH"].ToString();
+                    Updatefarmer.LastNameTH = HttpContext.Current.Request.Form["LastNameTH"].ToString();
                 }
-                if (HttpContext.Current.Request.Form["UpdateFarmer.BirthDay"] != null)
+                if (HttpContext.Current.Request.Form["BirthDay"] != null)
                 {
-                    Updatefarmer.BirthDay = Convert.ToDateTime(HttpContext.Current.Request.Form["UpdateFarmer.BirthDay"]);
+                    Updatefarmer.BirthDay = Convert.ToDateTime(HttpContext.Current.Request.Form["BirthDay"]);
                 }
-                if (HttpContext.Current.Request.Form["UpdateFarmer.Gender"].ToString() != null)
+                if (HttpContext.Current.Request.Form["Gender"].ToString() != null)
                 {
-                    Updatefarmer.Gender = HttpContext.Current.Request.Form["UpdateFarmer.Gender"].ToString();
+                    Updatefarmer.Gender = HttpContext.Current.Request.Form["Gender"].ToString();
                 }
-                if (HttpContext.Current.Request.Form["UpdateFarmer.Tel"].ToString() != null)
+                if (HttpContext.Current.Request.Form["Tel"].ToString() != null)
                 {
-                    Updatefarmer.Tel = HttpContext.Current.Request.Form["UpdateFarmer.Tel"].ToString();
+                    Updatefarmer.Tel = HttpContext.Current.Request.Form["Tel"].ToString();
                 }
-                if (HttpContext.Current.Request.Form["UpdateFarmer.Email"].ToString() != null)
+                if (HttpContext.Current.Request.Form["Email"].ToString() != null)
                 {
-                    Updatefarmer.Email = HttpContext.Current.Request.Form["UpdateFarmer.Email"].ToString();
+                    Updatefarmer.Email = HttpContext.Current.Request.Form["Email"].ToString();
                 }
                 ///
-                if (HttpContext.Current.Request.Form["UpdateFarmer.Address_No"].ToString() != null)
+                if (HttpContext.Current.Request.Form["Address_No"].ToString() != null)
                 {
-                    Updatefarmer.Address_No = HttpContext.Current.Request.Form["UpdateFarmer.Address_No"].ToString();
+                    Updatefarmer.Address_No = HttpContext.Current.Request.Form["Address_No"].ToString();
                 }
-                if (HttpContext.Current.Request.Form["UpdateFarmer.Address_buildingName"].ToString() != null)
+                if (HttpContext.Current.Request.Form["Address_buildingName"].ToString() != null)
                 {
-                    Updatefarmer.Address_buildingName = HttpContext.Current.Request.Form["UpdateFarmer.Address_buildingName"].ToString();
+                    Updatefarmer.Address_buildingName = HttpContext.Current.Request.Form["Address_buildingName"].ToString();
                 }
 
-                if (HttpContext.Current.Request.Form["UpdateFarmer.Address_moo"].ToString() != null)
+                if (HttpContext.Current.Request.Form["Address_moo"].ToString() != null)
                 {
-                    Updatefarmer.Address_moo = HttpContext.Current.Request.Form["UpdateFarmer.Address_moo"].ToString();
+                    Updatefarmer.Address_moo = HttpContext.Current.Request.Form["Address_moo"].ToString();
                 }
-                if (HttpContext.Current.Request.Form["UpdateFarmer.Address_Soi"].ToString() != null)
+                if (HttpContext.Current.Request.Form["Address_Soi"].ToString() != null)
                 {
-                    Updatefarmer.Address_Soi = HttpContext.Current.Request.Form["UpdateFarmer.Address_Soi"].ToString();
+                    Updatefarmer.Address_Soi = HttpContext.Current.Request.Form["Address_Soi"].ToString();
                 }
-                if (HttpContext.Current.Request.Form["UpdateFarmer.Address_Road"].ToString() != null)
+                if (HttpContext.Current.Request.Form["Address_Road"].ToString() != null)
                 {
-                    Updatefarmer.Address_Road = HttpContext.Current.Request.Form["UpdateFarmer.Address_Road"].ToString();
+                    Updatefarmer.Address_Road = HttpContext.Current.Request.Form["Address_Road"].ToString();
                 }
-                if (HttpContext.Current.Request.Form["UpdateFarmer.Address_provinces"].ToString() != null)
+                if (HttpContext.Current.Request.Form["Address_provinces"].ToString() != null)
                 {
-                    Updatefarmer.Address_provinces = HttpContext.Current.Request.Form["UpdateFarmer.Address_provinces"].ToString();
+                    Updatefarmer.Address_provinces = HttpContext.Current.Request.Form["Address_provinces"].ToString();
                 }
-                if (HttpContext.Current.Request.Form["UpdateFarmer.Address_districts"].ToString() != null)
+                if (HttpContext.Current.Request.Form["Address_districts"].ToString() != null)
                 {
-                    Updatefarmer.Address_districts = HttpContext.Current.Request.Form["UpdateFarmer.Address_districts"].ToString();
+                    Updatefarmer.Address_districts = HttpContext.Current.Request.Form["Address_districts"].ToString();
                 }
-                if (HttpContext.Current.Request.Form["UpdateFarmer.Address_subdistricts"].ToString() != null)
+                if (HttpContext.Current.Request.Form["Address_subdistricts"].ToString() != null)
                 {
-                    Updatefarmer.Address_subdistricts = HttpContext.Current.Request.Form["UpdateFarmer.Address_subdistricts"].ToString();
+                    Updatefarmer.Address_subdistricts = HttpContext.Current.Request.Form["Address_subdistricts"].ToString();
                 }
-                if (HttpContext.Current.Request.Form["UpdateFarmer.ZipCode"].ToString() != null)
+                if (HttpContext.Current.Request.Form["ZipCode"].ToString() != null)
                 {
-                    Updatefarmer.ZipCode = HttpContext.Current.Request.Form["UpdateFarmer.ZipCode"].ToString();
+                    Updatefarmer.ZipCode = HttpContext.Current.Request.Form["ZipCode"].ToString();
                 }
-                if (HttpContext.Current.Request.Form["UpdateFarmer.AnimalSupplie"].ToString() != null)
+                if (HttpContext.Current.Request.Form["AnimalSupplie"].ToString() != null)
                 {
-                    Updatefarmer.AnimalSupplie = HttpContext.Current.Request.Form["UpdateFarmer.AnimalSupplie"].ToString();
+                    Updatefarmer.AnimalSupplie = HttpContext.Current.Request.Form["AnimalSupplie"].ToString();
                 }
                 if (HttpContext.Current.Request.Form["Latitude"] != null)
                 {
@@ -510,6 +510,49 @@ namespace WebApi.Jwt.Controllers
 
         //    return Request.CreateResponse(HttpStatusCode.OK, ds.Tables[0]);
         //}
+        /// <summary>
+        ///  CitizenID ใช้ในการลบ farmer
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpDelete]
+        [Route("Delete/FarmerOid")]
+        public HttpResponseMessage Delete_Farmer()
+        {
+            _Delete_Farmer delete_Farmer = new _Delete_Farmer();
+            try
+
+            {
+                if (HttpContext.Current.Request.Form["Oid"].ToString() != null)
+                {
+                    delete_Farmer.Oid = HttpContext.Current.Request.Form["Oid"].ToString();
+                }
+                DataSet ds = new DataSet();
+
+                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieDeleteFarmer_byOid", new SqlParameter("@Oid", delete_Farmer.Oid)
+                   );
+                if (ds.Tables[0].Rows[0]["pMessage"].ToString() == "ลบข้อมูลสำเร็จ")
+                {
+                    
+                    return Request.CreateResponse(HttpStatusCode.OK, " ลบข้อมูลแล้ว");
+                }
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, "ไม่เจอเลขบัตรประชาชนหรือไม่มีข้อมูล");
+                }
+            }
+            catch (Exception ex)
+            {
+                //Error case เกิดข้อผิดพลาด
+                UserError err = new UserError();
+                err.status = "ผิดพลาด";
+                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+
+                err.message = ex.Message;
+                //  Return resual
+                return Request.CreateResponse(HttpStatusCode.ExpectationFailed, err);
+            }
+        }
+
     }
 }
 
