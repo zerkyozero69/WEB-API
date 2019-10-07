@@ -175,7 +175,7 @@ namespace WebApi.Jwt.helpclass
                     foreach (RoleInfo row in User.UserRoles)
                     {
                         user.Roles_info Userget = new user.Roles_info();
-                        Userget.Role_Name = row.DisplayName;
+                        Userget.Role_display = row.DisplayName;
                         Userget.Role_Name = row.Name;
                         get_Role_Byusers .Add(Userget);
                     }
@@ -198,7 +198,55 @@ namespace WebApi.Jwt.helpclass
             }
             return roles;
         }
-            public static string GetClientIp(HttpRequestMessage request)
+        //public user.get_role_byuser Userget_ByRole(string DisplayName)
+        //{
+        //    user.get_role_byuser user = new user.get_role_byuser();
+        //    try
+        //    {
+        //        XpoTypesInfoHelper.GetXpoTypeInfoSource();
+        //        XafTypesInfo.Instance.RegisterEntity(typeof(UserInfo));
+        //        XafTypesInfo.Instance.RegisterEntity(typeof(RoleInfo));
+        //        XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+        //        IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+        //        RoleInfo User;
+        //        User = ObjectSpace.FindObject <RoleInfo>(new BinaryOperator("DisplayName", DisplayName))
+        //          if (User.DisplayName != null)
+        //        {
+        //            user.User_Name = User.DisplayName;
+        //            roles.Display_name = User.DisplayName;
+        //            //  roles.Role_name = User.UserRoles;
+
+        //            //{
+        //            List<user.Roles_info> get_Role_Byusers = new List<user.Roles_info>();
+
+        //            foreach (RoleInfo row in User.UserRoles)
+        //            {
+        //                user.Roles_info Userget = new user.Roles_info();
+        //                Userget.Role_display = row.DisplayName;
+        //                Userget.Role_Name = row.Name;
+        //                get_Role_Byusers.Add(Userget);
+        //            }
+        //            roles.objRoles_info = get_Role_Byusers;
+
+        //            roles.Status = 1;
+        //            roles.Message = "แสดงรายชื่อ User";
+        //        }
+        //        else
+        //        {
+        //            roles.Status = 0;
+        //            roles.Message = "ไม่แสดงรายชื่อ User";
+        //        }
+
+        //    }
+        //}
+
+
+
+
+
+
+
+        public static string GetClientIp(HttpRequestMessage request)
             {
                 string ip = string.Empty;
                 if (request.Properties.ContainsKey("MS_HttpContext"))

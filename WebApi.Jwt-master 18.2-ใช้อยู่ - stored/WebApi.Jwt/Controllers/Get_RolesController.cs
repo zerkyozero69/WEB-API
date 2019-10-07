@@ -45,15 +45,15 @@ namespace WebApi.Jwt.Controllers
         [AllowAnonymous]
         // [JwtAuthentication]
         [HttpPost]
-        [Route("Get_roles")]
-        public HttpResponseMessage Get_roles (string Username ) ///ใส่หรือไม่ใส่ username ก็ได้ ทำงานได้ 2 แบบ แสดงชื่อทั้งหมดกับตาม user ที่ใส่
-            {
-                get_role_byuser objUser_info = new get_role_byuser();
+        [Route("GetRoles_User")]
+        public HttpResponseMessage GetRoles_byUser(string Username) ///ใส่หรือไม่ใส่ username ก็ได้ ทำงานได้ 2 แบบ แสดงชื่อทั้งหมดกับตาม user ที่ใส่
+        {
+            get_role_byuser objUser_info = new get_role_byuser();
             try
 
             {
                 //DataSet ds;
-                //ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieGetRoles_ByUser", new SqlParameter("@Username", Username)); ///อย่าลืมเปลี่ยน คอนเนคชั่นสติง
+                //ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieGetRoles_ByUser", new SqlParameter("@Oid", Oid)); ///อย่าลืมเปลี่ยน คอนเนคชั่นสติง
                 //DataTable dt = new DataTable();
                 //dt = ds.Tables[0];
                 helpController result = new helpController();
@@ -89,6 +89,50 @@ namespace WebApi.Jwt.Controllers
             }
 
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="OidRole"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        // [JwtAuthentication]
+        [HttpPost]
+        [Route("GetUser_Role")]
+        
+        public HttpResponseMessage GetUser_byRole(string OidRole)
+        {
+            get_role_byuser getrole = new get_role_byuser();
+            try
+            {
 
+                DataSet ds = new DataSet();
+                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieGetUsers_ByRole", new SqlParameter("@oid", OidRole)); ///อย่าลืมเปลี่ยน คอนเนคชั่นสติง
+                DataTable dt = new DataTable();
+                dt = ds.Tables[0];
+                List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
+                Dictionary<string, object> row;
+                foreach (DataRow dr in dt.Rows)
+                {
+
+                    row = new Dictionary<string, object>();
+                    foreach (DataColumn col in dt.Columns)
+                    {
+                        row.Add(col.ColumnName, dr[col]);
+                    }
+                    rows.Add(row);
+                }
+                return Request.CreateResponse(HttpStatusCode.OK, rows);
+            }
+            catch (Exception ex)
+            { //Error case เกิดข้อผิดพลาด
+                UserError err = new UserError();
+                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+
+                err.message = ex.Message;
+                //  Return resual
+                return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+            }
+        }
     }
 }
+
