@@ -73,26 +73,26 @@ namespace WebApi.Jwt.helpclass
                     objUser_info.Moo = User.Organization.Moo;
                     objUser_info.Soi = User.Organization.Soi;
                     objUser_info.Road = User.Organization.Road;
-                    if (objUser_info.ProvinceNameTH == null) {
+                    if (objUser_info.ProvinceNameTH == "") {
                         objUser_info.ProvinceNameTH = "ไม่มีข้อมูลศูนย์";
                     }
-                    else if (objUser_info.ProvinceNameTH != null)
+                    else if (objUser_info.ProvinceNameTH != "")
                     {
                         objUser_info.ProvinceNameTH = User.Organization.ProvinceOid.ProvinceNameTH;
                     }
-                    if (objUser_info.DistrictNameTH == null)
+                    if (objUser_info.DistrictNameTH == "")
                     {
                         objUser_info.DistrictNameTH = "ไม่มีข้อมูลศูนย์";
                     }
-                    else if (objUser_info.DistrictNameTH != null)
+                    else if (objUser_info.DistrictNameTH != "")
                     {
                         objUser_info.DistrictNameTH = User.Organization.DistrictOid.DistrictNameTH;
                     }
-                    if (objUser_info.SubDistrictNameTH == null)
+                    if (objUser_info.SubDistrictNameTH == "")
                     {
                         objUser_info.SubDistrictNameTH = "ไม่มีข้อมูลศูนย์";
                     }
-                    else if (objUser_info.SubDistrictNameTH != null)
+                    else if (objUser_info.SubDistrictNameTH != "")
                     {
                         objUser_info.SubDistrictNameTH = User.Organization.SubDistrictOid.SubDistrictNameTH;
                     }

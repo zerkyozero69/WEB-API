@@ -30,7 +30,7 @@ namespace WebApi.Jwt.Filters
                 RequestMessage = Request,
                 ReasonPhrase = ReasonPhrase
             };
-
+ 
             return response;
         }
     }
