@@ -79,13 +79,8 @@ namespace WebApi.Jwt.Controllers
                                             {
                                                 Registerfarmer.Email = null;
                                             }
-                                            Registerfarmer.Address_No = jObject.SelectToken("Address_No").Value<string>();
-                                           Registerfarmer.Address_buildingName = jObject.SelectToken("Address_buildingName").Value<string>();
-                                            if (jObject.SelectToken("Address_buildingName") == null)
-                                           {
-                                                Registerfarmer.Address_buildingName = null;
-                                            }
-
+                                            Registerfarmer.Address_No = jObject.SelectToken("Address_No").Value<string>();                                     
+                                         
                                             Registerfarmer.Address_moo = jObject.SelectToken("Address_moo").Value<string>();
                                             Registerfarmer.Address_Soi = jObject.SelectToken("Address_Soi").Value<string>();
                                              if (jObject.SelectToken("Address_Soi")==null) {
@@ -99,6 +94,8 @@ namespace WebApi.Jwt.Controllers
                                             Registerfarmer.AnimalSupplie = jObject.SelectToken("AnimalSupplie").Value<string>();
                                             Registerfarmer.Latitude = jObject.SelectToken("Latitude").Value<float>();
                                             Registerfarmer.Longitude = jObject.SelectToken("Longitude").Value<float>();
+                                            Registerfarmer.Register_Type = 2;
+                        
 
                                         }
                                     }
@@ -115,17 +112,17 @@ namespace WebApi.Jwt.Controllers
                                     prm[7] = new SqlParameter("@Tel", Registerfarmer.Tel);
                                     prm[8] = new SqlParameter("@Email", Registerfarmer.Email);
                                     prm[9] = new SqlParameter("@Address_No", Registerfarmer.Address_No);
-                                    prm[10] = new SqlParameter("@Address_buildingName", Registerfarmer.Address_buildingName);
-                                    prm[11] = new SqlParameter("@Address_moo", Registerfarmer.Address_moo);
-                                    prm[12] = new SqlParameter("@Address_Soi", Registerfarmer.Address_Soi);
-                                    prm[13] = new SqlParameter("@Address_Road", Registerfarmer.Address_Road);
-                                    prm[14] = new SqlParameter("@Address_provinces", Registerfarmer.Address_provinces);
-                                    prm[15] = new SqlParameter("@Address_districts", Registerfarmer.Address_districts);
-                                    prm[16] = new SqlParameter("@Address_subdistricts", Registerfarmer.Address_subdistricts);
-                                    prm[17] = new SqlParameter("@ZipCode", Registerfarmer.ZipCode);
-                                    prm[18] = new SqlParameter("@animalSupplie", Registerfarmer.AnimalSupplie);
-                                    prm[19] = new SqlParameter("@Latitude", Registerfarmer.Latitude);
-                                    prm[20] = new SqlParameter("@Longitude", Registerfarmer.Longitude);
+                                    prm[10] = new SqlParameter("@Address_moo", Registerfarmer.Address_moo);
+                                    prm[11] = new SqlParameter("@Address_Soi", Registerfarmer.Address_Soi);
+                                    prm[12] = new SqlParameter("@Address_Road", Registerfarmer.Address_Road);
+                                    prm[13] = new SqlParameter("@Address_provinces", Registerfarmer.Address_provinces);
+                                    prm[14] = new SqlParameter("@Address_districts", Registerfarmer.Address_districts);
+                                    prm[15] = new SqlParameter("@Address_subdistricts", Registerfarmer.Address_subdistricts);
+                                    prm[16] = new SqlParameter("@ZipCode", Registerfarmer.ZipCode);
+                                    prm[17] = new SqlParameter("@animalSupplie", Registerfarmer.AnimalSupplie);
+                                    prm[18] = new SqlParameter("@Latitude", Registerfarmer.Latitude);
+                                    prm[19] = new SqlParameter("@Longitude", Registerfarmer.Longitude);
+                                     prm[20] = new SqlParameter("@Register_Type", Registerfarmer.Register_Type);
                             
                 ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_Moblieinsert_RegisterFarmer", prm);
                                     DataTable dt = new DataTable();
@@ -181,17 +178,14 @@ namespace WebApi.Jwt.Controllers
         /// </summary>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpPatch]
-        [Route("Update/Farmer")]
+        [HttpPost]
+        [Route("Farmer/Update")]
         public HttpResponseMessage UpdateRegisterFarmer()
         {
             _Registerfarmer Updatefarmer = new _Registerfarmer();
             try
             {
-                if (HttpContext.Current.Request.Form["Oid"].ToString() != null)
-                {
-                    Updatefarmer.Oid = HttpContext.Current.Request.Form["Oid"].ToString();
-                }
+              
                 if (HttpContext.Current.Request.Form["OrganizationOid"].ToString() != null)
                 {
                     Updatefarmer.OrganizationOid = HttpContext.Current.Request.Form["OrganizationOid"].ToString();
@@ -233,11 +227,7 @@ namespace WebApi.Jwt.Controllers
                 {
                     Updatefarmer.Address_No = HttpContext.Current.Request.Form["Address_No"].ToString();
                 }
-                if (HttpContext.Current.Request.Form["Address_buildingName"].ToString() != null)
-                {
-                    Updatefarmer.Address_buildingName = HttpContext.Current.Request.Form["Address_buildingName"].ToString();
-                }
-
+    
                 if (HttpContext.Current.Request.Form["Address_moo"].ToString() != null)
                 {
                     Updatefarmer.Address_moo = HttpContext.Current.Request.Form["Address_moo"].ToString();
@@ -278,33 +268,34 @@ namespace WebApi.Jwt.Controllers
                 {
                     Updatefarmer.Longitude = float.Parse(HttpContext.Current.Request.Form["Longitude"]);
                 }
+                Updatefarmer.Register_Type = 2;
+                
 
                 DataSet ds = new DataSet();
-                SqlParameter[] prm = new SqlParameter[22];
-                prm[0] = new SqlParameter("@Oid", Updatefarmer.Oid);
-                prm[1] = new SqlParameter("@OrganizationOid", Updatefarmer.OrganizationOid);
-                prm[2] = new SqlParameter("@Citizen_ID", Updatefarmer.CitizenID);
-                prm[3] = new SqlParameter("@TitleOid", Updatefarmer.TitleOid);
-                prm[4] = new SqlParameter("@FirstName_TH", Updatefarmer.FirstNameTH);
-                prm[5] = new SqlParameter("@LastName_TH", Updatefarmer.LastNameTH);
-                prm[6] = new SqlParameter("@Birthdate", Updatefarmer.BirthDay);
-                prm[7] = new SqlParameter("@Gender", Updatefarmer.Gender);
-                prm[8] = new SqlParameter("@Tel", Updatefarmer.Tel);
-                prm[9] = new SqlParameter("@Email", Updatefarmer.Email);
-                prm[10] = new SqlParameter("@Address_No", Updatefarmer.Address_No);
-                prm[11] = new SqlParameter("@Address_buildingName", Updatefarmer.Address_buildingName);
-                prm[12] = new SqlParameter("@Address_moo", Updatefarmer.Address_moo);
-                prm[13] = new SqlParameter("@Address_Soi", Updatefarmer.Address_Soi);
-                prm[14] = new SqlParameter("@Address_Road", Updatefarmer.Address_Road);
-                prm[15] = new SqlParameter("@Address_provinces", Updatefarmer.Address_provinces);
-                prm[16] = new SqlParameter("@Address_districts", Updatefarmer.Address_districts);
-                prm[17] = new SqlParameter("@Address_subdistricts", Updatefarmer.Address_subdistricts);
-                prm[18] = new SqlParameter("@ZipCode", Updatefarmer.ZipCode);
-                prm[19] = new SqlParameter("@animalSupplie", Updatefarmer.AnimalSupplie);
-                prm[20] = new SqlParameter("@Latitude", Updatefarmer.Latitude);
-                prm[21] = new SqlParameter("@Longitude", Updatefarmer.Longitude);
-                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieUpdateFarmer", prm);
-                if (prm[2].Value != null)
+                SqlParameter[] prm = new SqlParameter[21];                
+                prm[0] = new SqlParameter("@OrganizationOid", Updatefarmer.OrganizationOid);
+                prm[1] = new SqlParameter("@Citizen_ID", Updatefarmer.CitizenID);
+                prm[2] = new SqlParameter("@TitleOid", Updatefarmer.TitleOid);
+                prm[3] = new SqlParameter("@FirstName_TH", Updatefarmer.FirstNameTH);
+                prm[4] = new SqlParameter("@LastName_TH", Updatefarmer.LastNameTH);
+                prm[5] = new SqlParameter("@Birthdate", Updatefarmer.BirthDay);
+                prm[6] = new SqlParameter("@Gender", Updatefarmer.Gender);
+                prm[7] = new SqlParameter("@Tel", Updatefarmer.Tel);
+                prm[8] = new SqlParameter("@Email", Updatefarmer.Email);
+                prm[9] = new SqlParameter("@Address_No", Updatefarmer.Address_No);
+                prm[10] = new SqlParameter("@Address_moo", Updatefarmer.Address_moo);
+                prm[11] = new SqlParameter("@Address_Soi", Updatefarmer.Address_Soi);
+                prm[12] = new SqlParameter("@Address_Road", Updatefarmer.Address_Road);
+                prm[13] = new SqlParameter("@Address_provinces", Updatefarmer.Address_provinces);
+                prm[14] = new SqlParameter("@Address_districts", Updatefarmer.Address_districts);
+                prm[15] = new SqlParameter("@Address_subdistricts", Updatefarmer.Address_subdistricts);
+                prm[16] = new SqlParameter("@ZipCode", Updatefarmer.ZipCode);
+                prm[17] = new SqlParameter("@animalSupplie", Updatefarmer.AnimalSupplie);
+                prm[18] = new SqlParameter("@Latitude", Updatefarmer.Latitude);
+                prm[19] = new SqlParameter("@Longitude", Updatefarmer.Longitude);
+                prm[20] = new SqlParameter("@Register_Type", Updatefarmer.Register_Type );
+                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_Moblieinsert_RegisterFarmer", prm);
+                if (prm[1].Value != null)
                 {
                     if (ds.Tables[0].Rows[0]["pStatus"].ToString() != "0")
                     {
@@ -562,22 +553,6 @@ namespace WebApi.Jwt.Controllers
 //  DataSet ds = new DataSet();
 //    SqlDataReader dr; //ถ้าใช้ datareader จะอ่าน  role เดียว
 
-//var  Ret = SqlHelper.ExecuteReader(scc, CommandType.StoredProcedure, "spt_Moblieinsert_RegisterFarmer", new SqlParameter("@Username", Username)
-//         , new SqlParameter("@Citizen_ID", CitizenID)
-//     , new SqlParameter("@TitleOid", TitleOid)
-//       , new SqlParameter("@FirstName_TH", FirstNameTH)
-//        , new SqlParameter("@LastName_TH", LastNameTH)
-//        , new SqlParameter("@Birthdate", BirthDay)
-//        , new SqlParameter("@Gender", Gender)
-//       , new SqlParameter("@Tel", Phone)
-//        , new SqlParameter("@Email", Email)
-//        , new SqlParameter("@Address_info", Address_info)
-//       , new SqlParameter("@Address_buildingName", Address_buildingName)
-//       , new SqlParameter("@Address_moo", Address_moo)
-//       , new SqlParameter("@Address_provinces", Address_provinces)
-//        , new SqlParameter("@Address_districts", Address_districts)
-//        , new SqlParameter("@Address_subdistricts", Address_subdistricts)
-//        , new SqlParameter("@Type_info", Type_info));
 
 
 //ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_Moblieinsert_RegisterFarmer"            

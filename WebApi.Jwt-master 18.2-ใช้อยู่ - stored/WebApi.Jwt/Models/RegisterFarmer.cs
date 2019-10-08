@@ -71,6 +71,7 @@ namespace WebApi.Jwt.Models
             public object AnimalSupplie { get; set; }
             public float Latitude { get; set; }
             public float Longitude { get; set; }
+            public int Register_Type { get; set; }
         }
         public class _Delete_Farmer
         {
