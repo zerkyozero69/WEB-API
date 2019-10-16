@@ -42,12 +42,14 @@ namespace WebApi.Jwt.Models
             // public string User_Password { get; set; }
             public List<Roles_info> objRoles_info;
             public string DisplayName { get; set; }
-            public string Organization { get; set; }
+            public object OrganizationOid { get; set; }
+            public string OrganizationNameTH { get; set; }
             public string SubOrganizeName { get; set; }
 
             public string Address { get; set; }
             // Public Property Created_date As DateTime
 
+            public string FullAddress { get; set; }
             public string Address_No { get; set; }
             public string Moo { get; set; }
             public string Soi { get; set; }
@@ -65,6 +67,54 @@ namespace WebApi.Jwt.Models
             public string Message { get; set; }
             public int Status { get; set; }
             public string Token_key { get; set; }
+        }
+        public class rigisterFarmer_XAF
+        {
+
+            public string Username { get; set; }
+            public object OrganizationOid { get; set; }
+            public Int64 CitizenID { get; set; }
+            public object TitleOid { get; set; }
+            public string FirstNameTH { get; set; }
+            public string LastNameTH { get; set; }
+            public DateTime BirthDay { get; set; }
+            public object Gender { get; set; }
+            public string Tel { get; set; }
+            public string Email { get; set; }
+            public string Address_No { get; set; }
+            public string Address_buildingName { get; set; }
+            public string Address_moo { get; set; }
+            public string Address_Soi { get; set; }
+            public string Address_Road { get; set; }
+            // string Address_FullAddress = "";
+            public object Address_provinces { get; set; }
+            public object Address_districts { get; set; }
+            public object Address_subdistricts { get; set; }
+            public string ZipCode { get; set; }
+            public object AnimalSupplie { get; set; }
+            public float Latitude { get; set; }
+            public float Longitude { get; set; }
+            public int Register_Type { get; set; }
+
+        }
+        public class FarmerProductionModel
+        {
+            public object Oid { get; set; }
+            public string Production { get; set; }
+        }
+        public class _farmerinfo
+        {
+            
+            public object OrganizationOid { get; set; }
+            public Int64 CitizenID { get; set; }
+          
+            public string FirstNameTH { get; set; }
+      
+        }
+        public class OrganizationInfo
+            {
+              public object OrganizationOid { get; set; }
+            public string OrganizationName { get; set; }
         }
 
         public class get_role_byuser

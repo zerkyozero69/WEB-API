@@ -300,5 +300,44 @@ namespace WebApi.Jwt.Controllers.MasterData
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
         }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("ForageType")]
+        /// ชื่อพันธุ์พืชอาหารสัตว์
+        public HttpResponseMessage AnimalForageType()
+        {
+            try
+            {
+                DataSet ds = new DataSet();
+
+                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieLoadForageType ");
+                DataTable dt = new DataTable();
+                dt = ds.Tables[0];
+                List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
+                Dictionary<string, object> row;
+                foreach (DataRow dr in dt.Rows)
+                {
+                    row = new Dictionary<string, object>();
+                    foreach (DataColumn col in dt.Columns)
+                    {
+                        row.Add(col.ColumnName, dr[col]);
+                    }
+                    rows.Add(row);
+                }
+                return Request.CreateResponse(HttpStatusCode.OK, rows);
+
+            }
+            catch (Exception ex)
+            { //Error case เกิดข้อผิดพลาด
+                UserError err = new UserError();
+                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+
+                err.message = ex.Message;
+                //  Return resual
+                return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+            }
+        }
+        
     }
 }

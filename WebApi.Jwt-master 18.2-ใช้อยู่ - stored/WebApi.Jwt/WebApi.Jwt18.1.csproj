@@ -194,6 +194,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\Approve_Controller.cs" />
     <Compile Include="Controllers\AuthenticationController.cs" />
     <Compile Include="Controllers\Getlog_Controller.cs" />
     <Compile Include="Controllers\Get_RolesController.cs" />
@@ -202,6 +203,7 @@
     <Compile Include="Controllers\MasterData\CustomerTypeController.cs" />
     <Compile Include="Controllers\MasterData\Delivery_StatusController.cs" />
     <Compile Include="Controllers\MasterData\EmployeeTypeController.cs" />
+    <Compile Include="Controllers\MasterData\FarmerInfo_Controller.cs" />
     <Compile Include="Controllers\MasterData\GenderController.cs" />
     <Compile Include="Controllers\MasterData\Objective_UsedController.cs" />
     <Compile Include="Controllers\MasterData\OrganizationController.cs" />
@@ -223,10 +225,12 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="helpclass\fuction_XAFController.cs" />
     <Compile Include="helpclass\helpController.cs" />
     <Compile Include="helpclass\XAF.cs" />
     <Compile Include="JwtManager.cs" />
     <Compile Include="Models\AddSubscriber_User.cs" />
+    <Compile Include="Models\Approve_Model.cs" />
     <Compile Include="Models\Disaster assistance.cs" />
     <Compile Include="Models\Models_Masters\FinanceYear.cs" />
     <Compile Include="Models\Login.cs" />
