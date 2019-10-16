@@ -5,7 +5,7 @@ using System.Web;
 
 namespace WebApi.Jwt.Models
 {
-    public class Farmer
+    public class Farmerinfo
     {
 
         public class Farmer_Status
@@ -44,6 +44,7 @@ namespace WebApi.Jwt.Models
             public string IsActive { get; set; }
 
         }
+
         public class _Registerfarmer
 
         {
@@ -54,24 +55,30 @@ namespace WebApi.Jwt.Models
             public object TitleOid { get; set; }
             public string FirstNameTH { get; set; }
             public string LastNameTH { get; set; }
-            public DateTime BirthDay { get; set; }
-            public object Gender { get; set; }
+            public DateTime BirthDate { get; set; }
+            public object GenderOid { get; set; }
             public string Tel { get; set; }
             public string Email { get; set; }
-            public string Address_No { get; set; }
-            public string Address_buildingName { get; set; }
-            public string Address_moo { get; set; }
-            public string Address_Soi { get; set; }
-            public string Address_Road { get; set; }
+            public string Address { get; set; }
+            public string Moo { get; set; }
+            public string Soi { get; set; }
+            public string Road { get; set; }
             // string Address_FullAddress = "";
-            public object Address_provinces { get; set; }
-            public object Address_districts { get; set; }
-            public object Address_subdistricts { get; set; }
+            public object ProvinceOid { get; set; }
+            public object DistrictOid { get; set; }
+            public object SubDistrictOid { get; set; }
             public string ZipCode { get; set; }
-            public object AnimalSupplie { get; set; }
+          
             public float Latitude { get; set; }
             public float Longitude { get; set; }
             public int Register_Type { get; set; }
+            public List<ForageTypeModel> ForageTypeOid { get; set; }
+
+        }
+        public class ForageTypeModel
+        {
+            public string Oid { get; set; }
+            public string ForageTypeName { get; set; }
         }
         public class _Delete_Farmer
         {

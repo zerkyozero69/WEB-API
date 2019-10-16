@@ -65,7 +65,8 @@ namespace WebApi.Jwt.helpclass
                 {
                     objUser_info.User_Name = User.UserName;
                     objUser_info.DisplayName = User.DisplayName;
-                    objUser_info.Organization = User.Organization.OrganizeNameTH;
+                    objUser_info.OrganizationOid = User.Organization.Oid;
+                    objUser_info.OrganizationNameTH = User.Organization.OrganizeNameTH;
                     objUser_info.SubOrganizeName = User.Organization.SubOrganizeName;
                     objUser_info.Tel = User.Organization.Tel;
                     objUser_info.E_Mail = User.Organization.Email;
@@ -96,7 +97,20 @@ namespace WebApi.Jwt.helpclass
                     {
                         objUser_info.SubDistrictNameTH = User.Organization.SubDistrictOid.SubDistrictNameTH;
                     }
-                   
+
+                    string TempSubDistrict, TempDistrict;
+                    if (User.Organization.ProvinceOid.ProvinceNameTH.Contains("กรุงเทพ"))
+                    { TempSubDistrict = "แขวง"; }
+                    else
+                    { TempSubDistrict = "ตำบล"; };
+
+                    if (User.Organization.ProvinceOid.ProvinceNameTH.Contains("กรุงเทพ"))
+                    { TempDistrict = "เขต"; }
+                    else { TempDistrict = "อำเภอ"; };
+
+                    objUser_info.FullAddress = User.Organization.Address + " หมู่ที่" + checknull(User.Organization.Moo) + " ถนน" + checknull(User.Organization.Road) + " " +
+                    TempSubDistrict + User.Organization.SubDistrictOid.SubDistrictNameTH + " " + TempDistrict + User.Organization.DistrictOid.DistrictNameTH + " " +
+                    "จังหวัด" + User.Organization.ProvinceOid.ProvinceNameTH + " " + User.Organization.DistrictOid.PostCode;
 
                     DLD = ObjectSpace.FindObject<nutrition.Module.Organization>(new BinaryOperator("Oid", User.Organization.MasterOrganization));
                   
@@ -131,7 +145,7 @@ namespace WebApi.Jwt.helpclass
                 {
                     objUser_info.User_Name = User.UserName;
                     objUser_info.DisplayName = User.DisplayName;
-                    objUser_info.Organization = User.Organization.OrganizeNameTH;
+                    objUser_info.OrganizationNameTH = User.Organization.OrganizeNameTH;
                     objUser_info.Tel = User.Organization.Tel;
                     objUser_info.Status = 0;
                     objUser_info.Message = "เข้าสู่ระบบไม่สำเร็จ";
@@ -147,6 +161,23 @@ namespace WebApi.Jwt.helpclass
             return objUser_info;
         }
 
+
+        public string checknull(object val)
+        {
+            string ret = "-";
+            try
+            {
+                if (val != null || val.ToString() != string.Empty)
+                {
+                    ret = val.ToString();
+                };
+            }
+            catch (Exception ex)
+            {
+                ret = "-";
+            }
+            return ret; ;
+        }
 
         public WebApi.Jwt.Models.user.get_role_byuser get_Roles(string Username)
         {
@@ -198,52 +229,46 @@ namespace WebApi.Jwt.helpclass
             }
             return roles;
         }
-        //public user.get_role_byuser Userget_ByRole(string DisplayName)
-        //{
-        //    user.get_role_byuser user = new user.get_role_byuser();
-        //    try
-        //    {
-        //        XpoTypesInfoHelper.GetXpoTypeInfoSource();
-        //        XafTypesInfo.Instance.RegisterEntity(typeof(UserInfo));
-        //        XafTypesInfo.Instance.RegisterEntity(typeof(RoleInfo));
-        //        XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
-        //        IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-        //        RoleInfo User;
-        //        User = ObjectSpace.FindObject <RoleInfo>(new BinaryOperator("DisplayName", DisplayName))
-        //          if (User.DisplayName != null)
-        //        {
-        //            user.User_Name = User.DisplayName;
-        //            roles.Display_name = User.DisplayName;
-        //            //  roles.Role_name = User.UserRoles;
-
-        //            //{
-        //            List<user.Roles_info> get_Role_Byusers = new List<user.Roles_info>();
-
-        //            foreach (RoleInfo row in User.UserRoles)
-        //            {
-        //                user.Roles_info Userget = new user.Roles_info();
-        //                Userget.Role_display = row.DisplayName;
-        //                Userget.Role_Name = row.Name;
-        //                get_Role_Byusers.Add(Userget);
-        //            }
-        //            roles.objRoles_info = get_Role_Byusers;
-
-        //            roles.Status = 1;
-        //            roles.Message = "แสดงรายชื่อ User";
-        //        }
-        //        else
-        //        {
-        //            roles.Status = 0;
-        //            roles.Message = "ไม่แสดงรายชื่อ User";
-        //        }
-
-        //    }
-        //}
-
-
-
-
-
+        public HttpResponseMessage  FarmerProduction_XAF()
+        {
+           
+            try
+            {
+                   XpoTypesInfoHelper.GetTypesInfo();
+                   XafTypesInfo.Instance.RegisterEntity(typeof(FarmerProduction));
+            
+                  XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+                IList<FarmerProduction> collection = ObjectSpace.GetObjects<FarmerProduction>(CriteriaOperator.Parse(" GCRecord is null and IsActive = 1", null));
+                if (collection.Count > 0)
+                {
+                    List<user.FarmerProductionModel> list = new List<user.FarmerProductionModel>();
+                    foreach (FarmerProduction row in collection)
+                    {
+                        user.FarmerProductionModel productionModel = new user.FarmerProductionModel();
+                        productionModel.Oid = row.Oid;
+                        productionModel.Production = row.AnimalSeedOid.SeedName;
+                        list.Add(productionModel);
+                    }
+                    return Request.CreateResponse(HttpStatusCode.OK, list);
+                }
+                {
+                    UserError err = new UserError();
+                    err.code = ""; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                    err.message = "No data";
+                    //  Return resual
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+                }
+            }
+            catch (Exception ex)
+            { //Error case เกิดข้อผิดพลาด
+                UserError err = new UserError();
+                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                err.message = ex.Message;
+                //  Return resual
+                return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+            }
+        }
 
 
         public static string GetClientIp(HttpRequestMessage request)
@@ -276,6 +301,49 @@ namespace WebApi.Jwt.helpclass
 
 
 ///เก็บไว้
+///
+//public user.get_role_byuser Userget_ByRole(string DisplayName)
+//{
+//    user.get_role_byuser user = new user.get_role_byuser();
+//    try
+//    {
+//        XpoTypesInfoHelper.GetXpoTypeInfoSource();
+//        XafTypesInfo.Instance.RegisterEntity(typeof(UserInfo));
+//        XafTypesInfo.Instance.RegisterEntity(typeof(RoleInfo));
+//        XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+//        IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+//        RoleInfo User;
+//        User = ObjectSpace.FindObject <RoleInfo>(new BinaryOperator("DisplayName", DisplayName))
+//          if (User.DisplayName != null)
+//        {
+//            user.User_Name = User.DisplayName;
+//            roles.Display_name = User.DisplayName;
+//            //  roles.Role_name = User.UserRoles;
+
+//            //{
+//            List<user.Roles_info> get_Role_Byusers = new List<user.Roles_info>();
+
+//            foreach (RoleInfo row in User.UserRoles)
+//            {
+//                user.Roles_info Userget = new user.Roles_info();
+//                Userget.Role_display = row.DisplayName;
+//                Userget.Role_Name = row.Name;
+//                get_Role_Byusers.Add(Userget);
+//            }
+//            roles.objRoles_info = get_Role_Byusers;
+
+//            roles.Status = 1;
+//            roles.Message = "แสดงรายชื่อ User";
+//        }
+//        else
+//        {
+//            roles.Status = 0;
+//            roles.Message = "ไม่แสดงรายชื่อ User";
+//        }
+
+//    }
+//}
+
 
 //    public class CustomAuthentication : 
 //    {
