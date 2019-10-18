@@ -194,6 +194,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\Subscriber_UserController.cs" />
     <Compile Include="Controllers\UserService_Controller.cs" />
     <Compile Include="Controllers\AuthenticationController.cs" />
     <Compile Include="Controllers\Getlog_Controller.cs" />
@@ -203,7 +204,7 @@
     <Compile Include="Controllers\MasterData\CustomerTypeController.cs" />
     <Compile Include="Controllers\MasterData\Delivery_StatusController.cs" />
     <Compile Include="Controllers\MasterData\EmployeeTypeController.cs" />
-    <Compile Include="Controllers\MasterData\registerFamerXAF.cs" />
+    <Compile Include="Controllers\registerFamerXAF.cs" />
     <Compile Include="Controllers\MasterData\GenderController.cs" />
     <Compile Include="Controllers\MasterData\Objective_UsedController.cs" />
     <Compile Include="Controllers\MasterData\OrganizationController.cs" />
@@ -212,7 +213,6 @@
     <Compile Include="Controllers\MasterData\ProvinceController.cs" />
     <Compile Include="Controllers\MasterData\ServiceTypeController.cs" />
     <Compile Include="Controllers\Send_SeedController.cs" />
-    <Compile Include="Controllers\Subscriber_UserController.cs" />
     <Compile Include="Controllers\MasterData\TitleController.cs" />
     <Compile Include="Controllers\MasterData\SeedProductController.cs" />
     <Compile Include="Controllers\RegisterFarmerController.cs" />

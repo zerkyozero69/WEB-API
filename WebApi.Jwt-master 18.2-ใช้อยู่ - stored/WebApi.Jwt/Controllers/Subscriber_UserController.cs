@@ -32,222 +32,188 @@ using System.Runtime.Serialization.Json;
 using Newtonsoft.Json;
 using WebApi.Jwt.Models;
 using Newtonsoft.Json.Linq;
+using static WebApi.Jwt.Models.Farmerinfo;
 
-//namespace WebApi.Jwt.Controllers.MasterData
-//{
-//    public class Subscriber_UserController : ApiController
-//    {
-//        string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
-//        /// <summary>
-//        /// พักไว้ก่อน
-//        /// </summary>
-//        /// <returns></returns>
-//        [AllowAnonymous]
-//        [HttpPost]
-//        [Route("Register/Subscriber")]
-//        //    public HttpResponseMessage Register_Subscriber()
-//        //{
-//        //    Subscriber_User subscriber = new Subscriber_User();
+namespace WebApi.Jwt.Controllers.MasterData
+{
+    public class Subscriber_UserController : ApiController
+    {
+        string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
+        /// <summary>
+       // / พักไว้ก่อน
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("Register_Subscriber")]
+        public HttpResponseMessage Register_Subscriber()
+        {
+            RegisterSubscriber_User subscriber = new RegisterSubscriber_User();
 
-//        //    try
-//        //    {
-//        //        string requestString = Request.Content.ReadAsStringAsync().Result;
-//        //        JObject jObject = (JObject)JsonConvert.DeserializeObject(requestString);
-//        //        if (jObject != null)
-//        //        {
-//        //            subscriber.DateTime = jObject.SelectToken("DateTime").Value<DateTime>();
-//        //            subscriber.Service_info = jObject.SelectToken("Service_info").Value<Int64>();
-//        //            if (jObject.SelectToken("CitizenID") != null)
-//        //            {
-//        //                int intCitizenID;
-//        //                if (int.TryParse(jObject.SelectToken("CitizenID").ToString(), out intCitizenID))
-//        //                {
-//        //                    farmerinfo.CitizenID = intCitizenID;
-//        //                }
-//        //                farmerinfo.TitleOid = jObject.SelectToken("TitleOid").Value<string>();
-//        //                farmerinfo.FirstNameTH = jObject.SelectToken("FirstNameTH").Value<string>();
-//        //                farmerinfo.LastNameTH = jObject.SelectToken("LastNameTH").Value<string>();
-//        //                farmerinfo.BirthDate = jObject.SelectToken("BirthDate").Value<DateTime>();
+            try
+            {
+                string requestString = Request.Content.ReadAsStringAsync().Result;
+                JObject jObject = (JObject)JsonConvert.DeserializeObject(requestString);
+                if (jObject != null)
+                {
+                    subscriber.OrgeServiceID = jObject.SelectToken("OrgeServiceID").Value<string>();
+                    subscriber.OrgeServiceName = jObject.SelectToken("OrgeServiceName").Value<string>();
+                    subscriber.Tel = jObject.SelectToken("Tel").Value<string>();
+                    subscriber.E_Mail = jObject.SelectToken("Email").Value<string>();
+                    subscriber.Address_No = jObject.SelectToken("Address").Value<string>();
+                    if (jObject.SelectToken("Moo") == null)
+                    {
+                        subscriber.Moo = string.Empty;
+                    }
+                    else
+                    {
+                        subscriber.Moo = jObject.SelectToken("Moo").Value<string>();
+                    }
 
-//        //                farmerinfo.GenderOid = jObject.SelectToken("GenderOid").Value<string>();
-//        //                farmerinfo.Tel = jObject.SelectToken("Tel").Value<string>();
+                    if (jObject.SelectToken("Soi") == null)
+                    {
+                        subscriber.Soi = string.Empty;
+                    }
+                    else
+                    {
+                        subscriber.Soi = jObject.SelectToken("Soi").Value<string>();
+                    }
 
-//        //                if (jObject.SelectToken("Email") == null)
-//        //                {
-//        //                    farmerinfo.Email = string.Empty;
-//        //                }
-//        //                else
-//        //                {
-//        //                    farmerinfo.Email = jObject.SelectToken("Email").Value<string>();
-//        //                }
+                    if (jObject.SelectToken("Road") == null)
+                    {
+                        subscriber.Road = string.Empty;
+                    }
+                    else
+                    {
+                        subscriber.Road = jObject.SelectToken("Road").Value<string>();
+                    }
 
-//        //                farmerinfo.Address = jObject.SelectToken("Address").Value<string>();
+                    subscriber.ProvinceNameTH = jObject.SelectToken("ProvinceOid").Value<string>();
+                    subscriber.DistrictNameTH = jObject.SelectToken("DistrictOid").Value<string>();
+                    subscriber.SubDistrictNameTH = jObject.SelectToken("SubDistrictOid").Value<string>();
+                    subscriber.ZipCode = jObject.SelectToken("ZipCode").Value<string>();
+                
 
-//        //                if (jObject.SelectToken("Moo") == null)
-//        //                {
-//        //                    farmerinfo.Moo = string.Empty;
-//        //                }
-//        //                else
-//        //                {
-//        //                    farmerinfo.Moo = jObject.SelectToken("Moo").Value<string>();
-//        //                }
+                }
+                DataSet ds = new DataSet();
+                SqlParameter[] prm = new SqlParameter[12]; /// parameter นับได้เท่าไร ใส่เท่านั้น c#
+                prm[0] = new SqlParameter("@OrgeServiceID", subscriber.OrgeServiceID); ///แต่ array ต้องนับจาก 0
+                prm[1] = new SqlParameter("@Tel", subscriber.OrgeServiceName);
+                prm[2] = new SqlParameter("@Email", subscriber.E_Mail);
+                prm[3] = new SqlParameter("@Address_No", subscriber.Address_No);
+                prm[4] = new SqlParameter("@Address_moo", subscriber.Moo);
+                prm[5] = new SqlParameter("@Address_Soi", subscriber.Soi);
+                prm[6] = new SqlParameter("@Address_Road", subscriber.Road);
+                prm[7] = new SqlParameter("@Address_provinces", subscriber.ProvinceNameTH);
+                prm[8] = new SqlParameter("@Address_districts", subscriber.SubDistrictNameTH);
+                prm[9] = new SqlParameter("@Address_subdistricts", subscriber.SubDistrictNameTH);
+                prm[10] = new SqlParameter("@ZipCode", subscriber.ZipCode);
+                prm[11] = new SqlParameter("@OrgeServiceName", subscriber.OrgeServiceName);
+                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieRigisterUser_Service", prm);
+                            if (ds.Tables[0].Rows[0]["pStatus"].ToString() != "0" || ds.Tables[0].Rows[0]["pStatus"].ToString() == "2")
+                            {
 
-//        //                if (jObject.SelectToken("Soi") == null)
-//        //                {
-//        //                    farmerinfo.Soi = string.Empty;
-//        //                }
-//        //                else
-//        //                {
-//        //                    farmerinfo.Soi = jObject.SelectToken("Soi").Value<string>();
-//        //                }
+                             var     subscriber_User = new Farmer_Status();
+                    subscriber.Status = 1;
+                    subscriber_User.Message = "บันทึกข้อมูลผู้รับบริการ เรียบร้อยแล้ว";
 
-//        //                if (jObject.SelectToken("Road") == null)
-//        //                {
-//        //                    farmerinfo.Road = string.Empty;
-//        //                }
-//        //                else
-//        //                {
-//        //                    farmerinfo.Road = jObject.SelectToken("Road").Value<string>();
-//        //                }
+              
+                             }
+                            {
 
-//        //                farmerinfo.ProvinceOid = jObject.SelectToken("ProvinceOid").Value<string>();
-//        //                farmerinfo.DistrictOid = jObject.SelectToken("DistrictOid").Value<string>();
-//        //                farmerinfo.SubDistrictOid = jObject.SelectToken("SubDistrictOid").Value<string>();
-//        //                farmerinfo.ZipCode = jObject.SelectToken("ZipCode").Value<string>();
-//        //                //Registerfarmer.ForageTypeOid = TempForageType;
+                                UserError err = new UserError();
+                    
+                    err.code = "2";
+                                err.message = "ผิดพลาด กรอกข้อมูลไม่ครบ";
+                                return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+                                // return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "naughty");
+                            }
+                               }               
+             catch (Exception ex)
+            {
+                //Error case เกิดข้อผิดพลาด
+                UserError err = new UserError();
+                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
 
-//        //                JObject jObject_Forage = JObject.Parse(jObject.ToString());
-//        //                JArray Arr_Forage = (JArray)jObject_Forage["ForageTypes"];
+                err.message = ex.Message;
+                //  Return resual
+                return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+            }
+        }
+        //        //    [AllowAnonymous]
+        //        //    [HttpPost]
+        //        //    [Route("Update/Subscriber")]
+        //        //    public HttpResponseMessage Update_Subscriber()
+        //        //    {
+        //        //        try
+        //        //        {
+        //        //            string Username = "";
+        //        //            string Datetime = "";
+        //        //            string Subscriber_Type = "";
+        //        //            string Subscriber_User = "";
+        //        //            string Subscriber_Government = "";
+        //        //            string Address = "";
+        //        //            string Note = "";
 
-//        //                IList<ForageTypeModel> ForageT = Arr_Forage.ToObject<IList<ForageTypeModel>>();
-//        //                foreach (ForageTypeModel row in ForageT)
-//        //                {
-//        //                    if (TempForageType == string.Empty)
-//        //                    {
-//        //                        TempForageType = row.Oid;
-//        //                    }
-//        //                    else
-//        //                    {
-//        //                        TempForageType = TempForageType + ',' + row.Oid;
-//        //                    }
-//        //                }
+        //        //            if (HttpContext.Current.Request.Form["Username"].ToString() != null)
+        //        //            {
+        //        //                Username = HttpContext.Current.Request.Form["Username"].ToString();
+        //        //            }
+        //        //            if (HttpContext.Current.Request.Form["Datetime"].ToString() != null)
+        //        //            {
+        //        //                Datetime = HttpContext.Current.Request.Form["Datetime"].ToString();
+        //        //            }
+        //        //            if (HttpContext.Current.Request.Form["Subscriber_Type"].ToString() != null)
+        //        //            {
+        //        //                Subscriber_Type = HttpContext.Current.Request.Form["Subscriber_Type"].ToString();
+        //        //            }
+        //        //            if (HttpContext.Current.Request.Form["Subscriber_User"].ToString() != null)
+        //        //            {
+        //        //                Subscriber_User = HttpContext.Current.Request.Form["Subscriber_User"].ToString();
+        //        //            }
+        //        //            if (HttpContext.Current.Request.Form["Subscriber_Government"].ToString() != null)
+        //        //            {
+        //        //                Subscriber_Government = HttpContext.Current.Request.Form["Subscriber_Government"].ToString();
+        //        //            }
+        //        //            if (HttpContext.Current.Request.Form["Address"].ToString() != null)
+        //        //            {
+        //        //                Address = HttpContext.Current.Request.Form["Address"].ToString();
+        //        //            }
+        //        //            if (HttpContext.Current.Request.Form["Note"].ToString() != null)
+        //        //            {
+        //        //                Note = HttpContext.Current.Request.Form["Note"].ToString();
+        //        //            }
+        //        //            DataSet ds = new DataSet();
+        //        //            ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MobileUpdateSubscribe",
+        //        //                new SqlParameter("@Datetime", Datetime)
+        //        //                , new SqlParameter("@Subscriber_Type", Subscriber_Type)
+        //        //                , new SqlParameter("@Subscriber_User", Subscriber_User)
+        //        //                , new SqlParameter("@Subscriber_Government", Subscriber_Government)
+        //        //                , new SqlParameter("@Address", Address)
+        //        //                , new SqlParameter("@Note", Note)
+        //        //                ,new SqlParameter ("@Username", Username));
+        //        //            if (ds.Tables.Count ==0)
+        //        //            {
+        //        //                return Request.CreateResponse(HttpStatusCode.OK,"แก้ไขข้อมูลสำเร็จแล้ว");
+        //        //            }
+        //        //            return Request.CreateResponse(HttpStatusCode.BadRequest, "แก้ไขไม่สำเร็จ");
+        //        //        }
+        //        //        catch (Exception ex)
+        //        //        {
+        //        //            //Error case เกิดข้อผิดพลาด
+        //        //            UserError err = new UserError();
+        //        //            err.status = "ผิดพลาด";
+        //        //            err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
 
-//        //                ds = SqlHelper.ExecuteNonQuery(scc, CommandType.StoredProcedure, "spt_MoblieRegisterSubscribe", new SqlParameter("@Username ", Username)
-//        //             , new SqlParameter("@Datetime", Datetime)
-//        //             , new SqlParameter("@Subscriber_Type", Subscriber_Type)
-//        //             , new SqlParameter("@Subscriber_User", Subscriber_User)
-//        //             , new SqlParameter("@Subscriber_Government", Subscriber_Government)
-//        //             , new SqlParameter("@Address", Address)
-//        //             , new SqlParameter("@Note", Note));
+        //        //            err.message = ex.Message;
+        //        //            //  Return resual
+        //        //            return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+        //        //        }
 
-//        //                {
-//        //                    if (ds.ToString() == "1")
-//        //                    {
-//        //                        AddSubscriber_User userRet = new AddSubscriber_User();
+        //        //    }
+        //        //}
+        //        //}
 
-//        //                        userRet.code = "1";
-//        //                        userRet.Message = "ลงทะเบียนของรับบริการสำเร็จ";
-//        //                        return Request.CreateResponse(HttpStatusCode.OK, userRet);
-
-//        //                    }
-
-
-//        //                    {
-
-//        //                        UserError err = new UserError();
-//        //                        err.code = "2";
-//        //                        err.message = "กรอกข้อมูลไม่ครบ";
-//        //                        return Request.CreateResponse(HttpStatusCode.BadRequest, err);
-//        //                        // return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "naughty");
-//        //                    }
-//        //                }
-//        //            }
-//        //        }
-//        //    }
-
-//        //    catch (Exception ex)
-//        //    {
-//        //        //Error case เกิดข้อผิดพลาด
-//        //        UserError err = new UserError();
-//        //        err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-
-//        //        err.message = ex.Message;
-//        //        //  Return resual
-//        //        return Request.CreateResponse(HttpStatusCode.BadRequest, err);
-//        //    }
-//        //}
-//        //    [AllowAnonymous]
-//        //    [HttpPost]
-//        //    [Route("Update/Subscriber")]
-//        //    public HttpResponseMessage Update_Subscriber()
-//        //    {
-//        //        try
-//        //        {
-//        //            string Username = "";
-//        //            string Datetime = "";
-//        //            string Subscriber_Type = "";
-//        //            string Subscriber_User = "";
-//        //            string Subscriber_Government = "";
-//        //            string Address = "";
-//        //            string Note = "";
-
-//        //            if (HttpContext.Current.Request.Form["Username"].ToString() != null)
-//        //            {
-//        //                Username = HttpContext.Current.Request.Form["Username"].ToString();
-//        //            }
-//        //            if (HttpContext.Current.Request.Form["Datetime"].ToString() != null)
-//        //            {
-//        //                Datetime = HttpContext.Current.Request.Form["Datetime"].ToString();
-//        //            }
-//        //            if (HttpContext.Current.Request.Form["Subscriber_Type"].ToString() != null)
-//        //            {
-//        //                Subscriber_Type = HttpContext.Current.Request.Form["Subscriber_Type"].ToString();
-//        //            }
-//        //            if (HttpContext.Current.Request.Form["Subscriber_User"].ToString() != null)
-//        //            {
-//        //                Subscriber_User = HttpContext.Current.Request.Form["Subscriber_User"].ToString();
-//        //            }
-//        //            if (HttpContext.Current.Request.Form["Subscriber_Government"].ToString() != null)
-//        //            {
-//        //                Subscriber_Government = HttpContext.Current.Request.Form["Subscriber_Government"].ToString();
-//        //            }
-//        //            if (HttpContext.Current.Request.Form["Address"].ToString() != null)
-//        //            {
-//        //                Address = HttpContext.Current.Request.Form["Address"].ToString();
-//        //            }
-//        //            if (HttpContext.Current.Request.Form["Note"].ToString() != null)
-//        //            {
-//        //                Note = HttpContext.Current.Request.Form["Note"].ToString();
-//        //            }
-//        //            DataSet ds = new DataSet();
-//        //            ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MobileUpdateSubscribe",
-//        //                new SqlParameter("@Datetime", Datetime)
-//        //                , new SqlParameter("@Subscriber_Type", Subscriber_Type)
-//        //                , new SqlParameter("@Subscriber_User", Subscriber_User)
-//        //                , new SqlParameter("@Subscriber_Government", Subscriber_Government)
-//        //                , new SqlParameter("@Address", Address)
-//        //                , new SqlParameter("@Note", Note)
-//        //                ,new SqlParameter ("@Username", Username));
-//        //            if (ds.Tables.Count ==0)
-//        //            {
-//        //                return Request.CreateResponse(HttpStatusCode.OK,"แก้ไขข้อมูลสำเร็จแล้ว");
-//        //            }
-//        //            return Request.CreateResponse(HttpStatusCode.BadRequest, "แก้ไขไม่สำเร็จ");
-//        //        }
-//        //        catch (Exception ex)
-//        //        {
-//        //            //Error case เกิดข้อผิดพลาด
-//        //            UserError err = new UserError();
-//        //            err.status = "ผิดพลาด";
-//        //            err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-
-//        //            err.message = ex.Message;
-//        //            //  Return resual
-//        //            return Request.CreateResponse(HttpStatusCode.BadRequest, err);
-//        //        }
-
-//        //    }
-//        //}
-//        //}
-    
-//}
+        //}
+    }
+}

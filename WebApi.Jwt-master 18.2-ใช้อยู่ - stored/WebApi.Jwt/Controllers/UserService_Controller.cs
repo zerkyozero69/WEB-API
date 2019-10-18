@@ -39,41 +39,7 @@ namespace WebApi.Jwt.Controllers
     public class UserService_Controller : ApiController
     {
         string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
-        //public HttpResponseMessage Approve_sendID()
-        //{
-        //    Approve_Model approve_Success = new Approve_Model();
-        //    try
-        //    {
-        //        if (HttpContext.Current.Request.Form["Send_Code"].ToString() != null)
-        //        {
-        //            approve_Success.Send_Code = HttpContext.Current.Request.Form["Send_Code"].ToString();
-        //        }
-
-        //        if (HttpContext.Current.Request.Form["Send_No"].ToString() != null)
-        //        {
-        //            approve_Success.Send_No = HttpContext.Current.Request.Form["Send_No"].ToString();
-        //        }
-        //        if (HttpContext.Current.Request.Form["Send_Messengr"].ToString() != null)
-        //        {
-        //            approve_Success.Send_Messengr = HttpContext.Current.Request.Form["Send_Messengr"].ToString();
-        //        }
-
-        //        DataSet ds = new DataSet();
-        //        ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieApproval_SendSeed", new SqlParameter("@SendNo", approve_Success.Send_No));
-        //        if (ds.Tables[0].Rows.Count > 0)
-        //        {
-        //            approve_Success.Send_No = 1;
-        //            approve_Success.Send_Messengr = "อนุมัติ";
-
-        //        }
-
-        //    }
-        //    catch (Exception)
-        //    {
-        //    }
-
-
-        //}
+    
         
         public Customer_Service Register_UserService(string Type_Name)
         {
@@ -104,6 +70,19 @@ namespace WebApi.Jwt.Controllers
                     Customer_Info.SubDistrictOid = OrgeServiceinfo.SubDistrictOid;
                     Customer_Info.SubDistrictNameTH = OrgeServiceinfo.SubDistrictOid.SubDistrictNameTH;
                     Customer_Info.ZipCode = OrgeServiceinfo.ZipCode;
+                    //string TempSubDistrict, TempDistrict;
+                    //if (Customer_Info.Organization.ProvinceOid.ProvinceNameTH.Contains("กรุงเทพ"))
+                    //{ TempSubDistrict = "แขวง"; }
+                    //else
+                    //{ TempSubDistrict = "ตำบล"; };
+
+                    //if (Customer_Info.Organization.ProvinceOid.ProvinceNameTH.Contains("กรุงเทพ"))
+                    //{ TempDistrict = "เขต"; }
+                    //else { TempDistrict = "อำเภอ"; };
+
+                    //Customer_Info.FullAddress = Customer_Info.Organization.Address + " หมู่ที่" + checknull(Customer_Info.Organization.Moo) + " ถนน" + checknull(Customer_Info.Organization.Road) + " " +
+                    //TempSubDistrict + Customer_Info.Organization.SubDistrictOid.SubDistrictNameTH + " " + TempDistrict + Customer_Info.Organization.DistrictOid.DistrictNameTH + " " +
+                    //"จังหวัด" + Customer_Info.Organization.ProvinceOid.ProvinceNameTH + " " + Customer_Info.Organization.DistrictOid.PostCode;
                     Customer_Info.Tel = OrgeServiceinfo.Tel;
                     Customer_Info.Status = 1;
                     
@@ -167,24 +146,59 @@ namespace WebApi.Jwt.Controllers
             return Request.CreateResponse(HttpStatusCode.BadRequest, Customer);
         }
     }
-//        public  HttpResponseMessage  Approve_sendID2()
-//        {
-//            try
-//            {
+    //        public  HttpResponseMessage  Approve_sendID2()
+    //        {
+    //            try
+    //            {
 
 
-//                SelectedData data =   session.ExecuteSproc("TestProc", new OperandValue(123), new OperandValue("abc"));
+    //                SelectedData data =   session.ExecuteSproc("TestProc", new OperandValue(123), new OperandValue("abc"));
 
-//                XpoTypesInfoHelper.GetXpoTypeInfoSource();
-//                XafTypesInfo.Instance.RegisterEntity(typeof(SupplierSend));
+    //                XpoTypesInfoHelper.GetXpoTypeInfoSource();
+    //                XafTypesInfo.Instance.RegisterEntity(typeof(SupplierSend));
 
-//                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
-//                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-//                IList<SupplierSend> collection = ObjectSpace.GetObjects<SupplierSend>(CriteriaOperator.Parse(" GCRecord is null and IsActive = 1", null));
-//                if (collection.Count > 0)
-//            }
-//            catch
-//        }
-          
+    //                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+    //                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+    //                IList<SupplierSend> collection = ObjectSpace.GetObjects<SupplierSend>(CriteriaOperator.Parse(" GCRecord is null and IsActive = 1", null));
+    //                if (collection.Count > 0)
+    //            }
+    //            catch
+    //        }
+    //public HttpResponseMessage Approve_sendID()
+    //{
+    //    Approve_Model approve_Success = new Approve_Model();
+    //    try
+    //    {
+    //        if (HttpContext.Current.Request.Form["Send_Code"].ToString() != null)
+    //        {
+    //            approve_Success.Send_Code = HttpContext.Current.Request.Form["Send_Code"].ToString();
+    //        }
+
+    //        if (HttpContext.Current.Request.Form["Send_No"].ToString() != null)
+    //        {
+    //            approve_Success.Send_No = HttpContext.Current.Request.Form["Send_No"].ToString();
+    //        }
+    //        if (HttpContext.Current.Request.Form["Send_Messengr"].ToString() != null)
+    //        {
+    //            approve_Success.Send_Messengr = HttpContext.Current.Request.Form["Send_Messengr"].ToString();
+    //        }
+
+    //        DataSet ds = new DataSet();
+    //        ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieApproval_SendSeed", new SqlParameter("@SendNo", approve_Success.Send_No));
+    //        if (ds.Tables[0].Rows.Count > 0)
+    //        {
+    //            approve_Success.Send_No = 1;
+    //            approve_Success.Send_Messengr = "อนุมัติ";
+
+    //        }
+
+    //    }
+    //    catch (Exception)
+    //    {
+    //    }
+
+
+    //}
+
 
 }

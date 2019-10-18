@@ -13,6 +13,7 @@ namespace WebApi.Jwt.Models
         {
           
             public string Message { get; set; }
+            public string Status { get; set; }
             public string Fullname { get; set; }
             //public string LastNameTH { get; set; }
             public string CitizenID { get; set; }
