@@ -81,7 +81,7 @@ namespace WebApi.Jwt.Controllers
 
                         if (jObject.SelectToken("Email") == null)
                         {
-                            Registerfarmer.Email = null;
+                            Registerfarmer.Email = string.Empty;
                         }
                         else {
                             Registerfarmer.Email = jObject.SelectToken("Email").Value<string>();
@@ -91,7 +91,7 @@ namespace WebApi.Jwt.Controllers
 
                         if (jObject.SelectToken("Moo") == null)
                         {
-                            Registerfarmer.Moo = null;
+                            Registerfarmer.Moo = string.Empty;
                         }
                         else
                         {
@@ -100,7 +100,7 @@ namespace WebApi.Jwt.Controllers
                       
                         if (jObject.SelectToken("Soi") == null)
                         {
-                            Registerfarmer.Soi = null;
+                            Registerfarmer.Soi = string.Empty;
                         }
                         else {
                             Registerfarmer.Soi = jObject.SelectToken("Soi").Value<string>();
@@ -108,7 +108,7 @@ namespace WebApi.Jwt.Controllers
 
                         if (jObject.SelectToken("Road") == null)
                         {
-                            Registerfarmer.Road = null;
+                            Registerfarmer.Road = string.Empty;
                         }
                         else
                         {

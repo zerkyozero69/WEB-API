@@ -194,7 +194,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="Controllers\Approve_Controller.cs" />
+    <Compile Include="Controllers\UserService_Controller.cs" />
     <Compile Include="Controllers\AuthenticationController.cs" />
     <Compile Include="Controllers\Getlog_Controller.cs" />
     <Compile Include="Controllers\Get_RolesController.cs" />
@@ -203,7 +203,7 @@
     <Compile Include="Controllers\MasterData\CustomerTypeController.cs" />
     <Compile Include="Controllers\MasterData\Delivery_StatusController.cs" />
     <Compile Include="Controllers\MasterData\EmployeeTypeController.cs" />
-    <Compile Include="Controllers\MasterData\FarmerInfo_Controller.cs" />
+    <Compile Include="Controllers\MasterData\registerFamerXAF.cs" />
     <Compile Include="Controllers\MasterData\GenderController.cs" />
     <Compile Include="Controllers\MasterData\Objective_UsedController.cs" />
     <Compile Include="Controllers\MasterData\OrganizationController.cs" />
@@ -214,7 +214,7 @@
     <Compile Include="Controllers\Send_SeedController.cs" />
     <Compile Include="Controllers\Subscriber_UserController.cs" />
     <Compile Include="Controllers\MasterData\TitleController.cs" />
-    <Compile Include="Controllers\MasterData\TypeProductController.cs" />
+    <Compile Include="Controllers\MasterData\SeedProductController.cs" />
     <Compile Include="Controllers\RegisterFarmerController.cs" />
     <Compile Include="Controllers\TokenController.cs" />
     <Compile Include="Controllers\ValueController.cs" />
@@ -231,15 +231,18 @@
     <Compile Include="JwtManager.cs" />
     <Compile Include="Models\AddSubscriber_User.cs" />
     <Compile Include="Models\Approve_Model.cs" />
+    <Compile Include="Models\Customer_Service.cs" />
     <Compile Include="Models\Disaster assistance.cs" />
     <Compile Include="Models\Models_Masters\FinanceYear.cs" />
     <Compile Include="Models\Login.cs" />
     <Compile Include="Models\Models_Masters\MasterData.cs" />
+    <Compile Include="Models\Models_Masters\Plant.cs" />
     <Compile Include="Models\Models_Masters\SendStatus.cs" />
     <Compile Include="Models\Models_Masters\Unit.cs" />
     <Compile Include="Models\refresh_Token.cs" />
     <Compile Include="Models\RegisterFarmer.cs" />
     <Compile Include="Models\Reports_values.cs" />
+    <Compile Include="Models\Subscriber_User.cs" />
     <Compile Include="Models\user.cs" />
     <Compile Include="Models\UserError.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

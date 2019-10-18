@@ -28,10 +28,12 @@ using WebApi.Jwt.Filters;
 using WebApi.Jwt.helpclass;
 using NTi.CommonUtility;
 using System.IO;
+using nutrition.Module;
+using WebApi.Jwt.Models.Models_Masters;
 
 namespace WebApi.Jwt.Controllers.MasterData
 {
-    public class TypeProductController : ApiController
+    public class SeedProductController : ApiController
     {/// <summary>
      /// เรียกข้อมูล การผลิตของเกษตรกร
      /// </summary>
@@ -152,7 +154,7 @@ namespace WebApi.Jwt.Controllers.MasterData
         [HttpGet]
         [Route("Harvesting")]
         /// วิธีเก็บเกี่ยว
-        public HttpResponseMessage loadHarvesting() // เมล็ดพัรธุ์ | เสบียงสัตว์ | ค่าว่าง
+        public HttpResponseMessage loadHarvesting(string ForageTypeOid) // เมล็ดพัรธุ์ | เสบียงสัตว์ | ค่าว่าง
         {
             try
             {
@@ -181,10 +183,50 @@ namespace WebApi.Jwt.Controllers.MasterData
                 err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
 
                 err.message = ex.Message;
-                //  Return resual
+                //Return resual
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
         }
+        //{
+
+        //    try
+        //    {
+        //        XpoTypesInfoHelper.GetXpoTypeInfoSource();
+        //        XafTypesInfo.Instance.RegisterEntity(typeof(Harvest));
+        //        XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+        //        Harvest harvest;
+        //        IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+        //        IList<Harvest> collection = ObjectSpace.GetObjects<Harvest>(CriteriaOperator.Parse(" GCRecord is null and IsActive = 1", null));
+        //        if (collection.Count > 0)
+        //        {
+        //            List<PlantModel> list = new List<PlantModel>();
+        //            foreach (Harvest row in collection)
+        //            {
+        //                PlantModel plant = new PlantModel();
+        //                plant.Oid = row.Oid;
+        //                plant.ForageTypeOid = row.HarvestName;
+        //                list.Add(plant);
+        //            }
+        //            return Request.CreateResponse(HttpStatusCode.OK, list);
+        //        }
+        //        else
+        //        {
+        //            UserError err = new UserError();
+        //            err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+        //            err.message = "No data";
+        //            //  Return resual
+        //            return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    { //Error case เกิดข้อผิดพลาด
+        //        UserError err = new UserError();
+        //        err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+        //        err.message = ex.Message;
+        //        //  Return resual
+        //        return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+        //    }
+        //}
         [AllowAnonymous]
         [HttpGet]
         [Route("Animalsupplies")]
