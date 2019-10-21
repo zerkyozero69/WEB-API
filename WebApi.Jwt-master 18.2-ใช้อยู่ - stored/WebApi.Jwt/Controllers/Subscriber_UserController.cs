@@ -40,7 +40,7 @@ namespace WebApi.Jwt.Controllers.MasterData
     {
         string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
         /// <summary>
-       // / พักไว้ก่อน
+       // /
         /// </summary>
         /// <returns></returns>
         [AllowAnonymous]
@@ -115,10 +115,11 @@ namespace WebApi.Jwt.Controllers.MasterData
 
                              var     subscriber_User = new Farmer_Status();
                     subscriber.Status = 1;
-                    subscriber_User.Message = "บันทึกข้อมูลผู้รับบริการ เรียบร้อยแล้ว";
+                    subscriber_User.Message = "บันทึกข้อมูลผู้ขอรับบริการ เรียบร้อยแล้ว";
+                    return Request.CreateResponse(HttpStatusCode.OK, subscriber);
 
-              
-                             }
+
+                }
                             {
 
                                 UserError err = new UserError();
@@ -140,80 +141,68 @@ namespace WebApi.Jwt.Controllers.MasterData
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
         }
-        //        //    [AllowAnonymous]
-        //        //    [HttpPost]
-        //        //    [Route("Update/Subscriber")]
-        //        //    public HttpResponseMessage Update_Subscriber()
-        //        //    {
-        //        //        try
-        //        //        {
-        //        //            string Username = "";
-        //        //            string Datetime = "";
-        //        //            string Subscriber_Type = "";
-        //        //            string Subscriber_User = "";
-        //        //            string Subscriber_Government = "";
-        //        //            string Address = "";
-        //        //            string Note = "";
+        /// <summary>
+        /// ลงทะเบียนขอรับบริการ
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("Register_Customer")]
+        public HttpResponseMessage RegisterCustomer()
+        {
+            RegisterCustomer customer = new RegisterCustomer();
+            try
+            {
+                string requestString = Request.Content.ReadAsStringAsync().Result;
+                JObject jObject = (JObject)JsonConvert.DeserializeObject(requestString);
+                if (jObject != null)
+                {
+                    customer.DateTime = jObject.SelectToken("DateTime").Value<DateTime>();
+                    customer.Service_info = jObject.SelectToken("Service_info").Value<string>();
+                    customer.Get_ServiceUser_Name = jObject.SelectToken("Name").Value<string>();
+                    customer.Organization_ServiceName = jObject.SelectToken("Organization_Service").Value<string>();
+                    customer.Address = jObject.SelectToken("Address").Value<string>();
+                    if (jObject.SelectToken("Remark") == null)
+                    {
+                        customer.Remark = string.Empty;
+                    }
+                    else
+                    {
+                        customer.Remark = jObject.SelectToken("Remark").Value<string>();
+                    }
 
-        //        //            if (HttpContext.Current.Request.Form["Username"].ToString() != null)
-        //        //            {
-        //        //                Username = HttpContext.Current.Request.Form["Username"].ToString();
-        //        //            }
-        //        //            if (HttpContext.Current.Request.Form["Datetime"].ToString() != null)
-        //        //            {
-        //        //                Datetime = HttpContext.Current.Request.Form["Datetime"].ToString();
-        //        //            }
-        //        //            if (HttpContext.Current.Request.Form["Subscriber_Type"].ToString() != null)
-        //        //            {
-        //        //                Subscriber_Type = HttpContext.Current.Request.Form["Subscriber_Type"].ToString();
-        //        //            }
-        //        //            if (HttpContext.Current.Request.Form["Subscriber_User"].ToString() != null)
-        //        //            {
-        //        //                Subscriber_User = HttpContext.Current.Request.Form["Subscriber_User"].ToString();
-        //        //            }
-        //        //            if (HttpContext.Current.Request.Form["Subscriber_Government"].ToString() != null)
-        //        //            {
-        //        //                Subscriber_Government = HttpContext.Current.Request.Form["Subscriber_Government"].ToString();
-        //        //            }
-        //        //            if (HttpContext.Current.Request.Form["Address"].ToString() != null)
-        //        //            {
-        //        //                Address = HttpContext.Current.Request.Form["Address"].ToString();
-        //        //            }
-        //        //            if (HttpContext.Current.Request.Form["Note"].ToString() != null)
-        //        //            {
-        //        //                Note = HttpContext.Current.Request.Form["Note"].ToString();
-        //        //            }
-        //        //            DataSet ds = new DataSet();
-        //        //            ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MobileUpdateSubscribe",
-        //        //                new SqlParameter("@Datetime", Datetime)
-        //        //                , new SqlParameter("@Subscriber_Type", Subscriber_Type)
-        //        //                , new SqlParameter("@Subscriber_User", Subscriber_User)
-        //        //                , new SqlParameter("@Subscriber_Government", Subscriber_Government)
-        //        //                , new SqlParameter("@Address", Address)
-        //        //                , new SqlParameter("@Note", Note)
-        //        //                ,new SqlParameter ("@Username", Username));
-        //        //            if (ds.Tables.Count ==0)
-        //        //            {
-        //        //                return Request.CreateResponse(HttpStatusCode.OK,"แก้ไขข้อมูลสำเร็จแล้ว");
-        //        //            }
-        //        //            return Request.CreateResponse(HttpStatusCode.BadRequest, "แก้ไขไม่สำเร็จ");
-        //        //        }
-        //        //        catch (Exception ex)
-        //        //        {
-        //        //            //Error case เกิดข้อผิดพลาด
-        //        //            UserError err = new UserError();
-        //        //            err.status = "ผิดพลาด";
-        //        //            err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
 
-        //        //            err.message = ex.Message;
-        //        //            //  Return resual
-        //        //            return Request.CreateResponse(HttpStatusCode.BadRequest, err);
-        //        //        }
+                    DataSet ds = new DataSet();
+                    ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieRegisterCustomer",
+                        new SqlParameter("@datetime", customer.DateTime)
+                        , new SqlParameter("@CustomerTypeOid,", customer.Service_info)
+                        , new SqlParameter("@CustomerOid", customer.Get_ServiceUser_Name)                      
+                        , new SqlParameter("@OrgeServiceID", customer.Organization_ServiceName)
+                        , new SqlParameter("@Address", customer.Address)
+                        , new SqlParameter("@Remark", customer.Remark));
 
-        //        //    }
-        //        //}
-        //        //}
+                    if (ds.Tables.Count == 0)
+                    {
+                        return Request.CreateResponse(HttpStatusCode.OK, "ลงทะเบียนสำเร็จ");
+                    }
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, "ไม่สามารถลงทะเบียนได้");
+                }
+               
+            }
+            catch (Exception ex)
+            {
+                //Error case เกิดข้อผิดพลาด
+                UserError err = new UserError();
+                err.status = "ผิดพลาด";
+                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
 
-        //}
+                err.message = ex.Message;
+                //  Return resual
+                return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+            }
+            return Request.CreateResponse(HttpStatusCode.BadRequest, "NoData");
+
+        }
     }
 }
+

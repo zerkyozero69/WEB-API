@@ -23,4 +23,7 @@ namespace WebApi.Jwt.Models
         public int Status { get; set; }
         public string Message { get; set; }
     }
+    public class Get_RegisterCustomer
+        {
+    }
 }

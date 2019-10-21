@@ -176,7 +176,7 @@ namespace WebApi.Jwt.helpclass
             {
                 ret = "-";
             }
-            return ret; ;
+            return ret; 
         }
 
         public WebApi.Jwt.Models.user.get_role_byuser get_Roles(string Username)

@@ -5,12 +5,15 @@ using System.Web;
 
 namespace WebApi.Jwt.Models
 {
-    public class Subscriber_User
+    /// <summary>
+    /// ลงทะเบียนผู้รับบริการ
+    /// </summary>
+    public class RegisterCustomer
     {
         public DateTime DateTime { get; set; }
         public object Service_info { get; set; }
-        public object ServiceUser_Name { get; set; }
-        public object Organization_Service { get; set; }
+        public object Get_ServiceUser_Name { get; set; }
+        public object Organization_ServiceName { get; set; }
         public string Address { get; set; }
         public string Remark { get; set; }
     }
