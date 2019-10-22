@@ -194,6 +194,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\Approval_SendSeedController.cs" />
+    <Compile Include="Controllers\OrderSeedDetailController.cs" />
     <Compile Include="Controllers\Subscriber_UserController.cs" />
     <Compile Include="Controllers\UserService_Controller.cs" />
     <Compile Include="Controllers\AuthenticationController.cs" />
