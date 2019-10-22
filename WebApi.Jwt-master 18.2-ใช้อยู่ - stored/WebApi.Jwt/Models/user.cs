@@ -61,8 +61,8 @@ namespace WebApi.Jwt.Models
             public string E_Mail { get; set; }
             public string Tel { get; set; }
             public string Website { get; set; }
-            public double Mapcoordinates_Latitude { get; set; }
-            public double Mapcoordinates_Longitude { get; set; }
+            public double Latitude { get; set; }
+            public double Longitude { get; set; }
             public object Description { get; set; }
             public string Message { get; set; }
             public int Status { get; set; }

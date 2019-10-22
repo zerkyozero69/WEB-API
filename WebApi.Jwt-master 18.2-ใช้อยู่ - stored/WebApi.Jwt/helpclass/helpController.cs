@@ -120,8 +120,8 @@ namespace WebApi.Jwt.helpclass
                     else if(DLD != null) {
                         objUser_info.DLD = DLD.OrganizeNameTH;
                     }
-                    objUser_info.Mapcoordinates_Latitude = User.Organization.Latitude;
-                    objUser_info.Mapcoordinates_Longitude = User.Organization.Longitude;
+                    objUser_info.Latitude = User.Organization.Latitude;
+                    objUser_info.Longitude = User.Organization.Longitude;
                     TokenController token = new TokenController();
                     objUser_info.Description = "ระบบ Login";
                     objUser_info.Token_key = token.Get(Username, Password);
@@ -176,7 +176,7 @@ namespace WebApi.Jwt.helpclass
             {
                 ret = "-";
             }
-            return ret; ;
+            return ret; 
         }
 
         public WebApi.Jwt.Models.user.get_role_byuser get_Roles(string Username)

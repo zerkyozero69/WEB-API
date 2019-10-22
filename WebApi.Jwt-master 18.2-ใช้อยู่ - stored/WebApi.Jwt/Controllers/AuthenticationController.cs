@@ -79,7 +79,7 @@ namespace WebApi.Jwt.Controllers
                 user.Description = "ระบบ login";
                 prm[0] = new SqlParameter("@Username", user.User_Name); ///แต่ array ต้องนับจาก 0
                 prm[1] = new SqlParameter("@DisplayName", user.DisplayName);
-                prm[2] = new SqlParameter("@Organization", user.Organization);
+                prm[2] = new SqlParameter("@Organization", user.OrganizationNameTH);
                 prm[3] = new SqlParameter("@Tel", user.Tel);
                 prm[4] = new SqlParameter("@Email", user.E_Mail);          
                 prm[5] = new SqlParameter("@LogID", "2");
