@@ -11,11 +11,16 @@ namespace WebApi.Jwt.Models
     public class RegisterCustomer
     {
         public DateTime DateTime { get; set; }
-        public object Service_info { get; set; }
+        public  object Service_info { get; set; }
         public object Get_ServiceUser_Name { get; set; }
         public object Organization_ServiceName { get; set; }
         public string Address { get; set; }
         public string Remark { get; set; }
+    }
+    public class _CustomerTypeOid
+    {
+        public dynamic Oid { get; set; }
+        public dynamic Name { get; set; }
     }
     public class RegisterSubscriber_User
     {

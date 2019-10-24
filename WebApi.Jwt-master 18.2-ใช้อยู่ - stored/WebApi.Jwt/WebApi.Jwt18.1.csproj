@@ -197,6 +197,7 @@
     <Compile Include="Controllers\Approval_SendSeedController.cs" />
     <Compile Include="Controllers\OrderSeedDetailController.cs" />
     <Compile Include="Controllers\Subscriber_UserController.cs" />
+    <Compile Include="Controllers\testinsert_APIController.cs" />
     <Compile Include="Controllers\UserService_Controller.cs" />
     <Compile Include="Controllers\AuthenticationController.cs" />
     <Compile Include="Controllers\Getlog_Controller.cs" />

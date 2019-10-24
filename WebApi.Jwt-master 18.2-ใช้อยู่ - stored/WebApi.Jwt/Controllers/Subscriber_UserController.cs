@@ -32,6 +32,7 @@ using System.Runtime.Serialization.Json;
 using Newtonsoft.Json;
 using WebApi.Jwt.Models;
 using Newtonsoft.Json.Linq;
+using nutrition.Module.EmployeeAsUserExample.Module.BusinessObjects;
 using static WebApi.Jwt.Models.Farmerinfo;
 
 namespace WebApi.Jwt.Controllers.MasterData
@@ -92,9 +93,12 @@ namespace WebApi.Jwt.Controllers.MasterData
                     subscriber.DistrictNameTH = jObject.SelectToken("DistrictOid").Value<string>();
                     subscriber.SubDistrictNameTH = jObject.SelectToken("SubDistrictOid").Value<string>();
                     subscriber.ZipCode = jObject.SelectToken("ZipCode").Value<string>();
-                
+
 
                 }
+
+                XPObjectSpaceProvider osProvider = new XPObjectSpaceProvider(scc, null);
+                IObjectSpace objectSpace = osProvider.CreateObjectSpace();
                 DataSet ds = new DataSet();
                 SqlParameter[] prm = new SqlParameter[12]; /// parameter นับได้เท่าไร ใส่เท่านั้น c#
                 prm[0] = new SqlParameter("@OrgeServiceID", subscriber.OrgeServiceID); ///แต่ array ต้องนับจาก 0
@@ -110,27 +114,27 @@ namespace WebApi.Jwt.Controllers.MasterData
                 prm[10] = new SqlParameter("@ZipCode", subscriber.ZipCode);
                 prm[11] = new SqlParameter("@OrgeServiceName", subscriber.OrgeServiceName);
                 ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieRigisterUser_Service", prm);
-                            if (ds.Tables[0].Rows[0]["pStatus"].ToString() != "0" || ds.Tables[0].Rows[0]["pStatus"].ToString() == "2")
-                            {
+                if (ds.Tables[0].Rows[0]["pStatus"].ToString() != "0" || ds.Tables[0].Rows[0]["pStatus"].ToString() == "2")
+                {
 
-                             var     subscriber_User = new Farmer_Status();
+                    var subscriber_User = new Farmer_Status();
                     subscriber.Status = 1;
                     subscriber_User.Message = "บันทึกข้อมูลผู้ขอรับบริการ เรียบร้อยแล้ว";
                     return Request.CreateResponse(HttpStatusCode.OK, subscriber);
 
 
                 }
-                            {
+                {
 
-                                UserError err = new UserError();
-                    
+                    UserError err = new UserError();
+
                     err.code = "2";
-                                err.message = "ผิดพลาด กรอกข้อมูลไม่ครบ";
-                                return Request.CreateResponse(HttpStatusCode.BadRequest, err);
-                                // return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "naughty");
-                            }
-                               }               
-             catch (Exception ex)
+                    err.message = "ผิดพลาด กรอกข้อมูลไม่ครบ";
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+                    // return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "naughty");
+                }
+            }
+            catch (Exception ex)
             {
                 //Error case เกิดข้อผิดพลาด
                 UserError err = new UserError();
@@ -141,6 +145,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
         }
+       
         /// <summary>
         /// ลงทะเบียนขอรับบริการ
         /// </summary>
@@ -176,7 +181,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                     ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieRegisterCustomer",
                         new SqlParameter("@datetime", customer.DateTime)
                         , new SqlParameter("@CustomerTypeOid,", customer.Service_info)
-                        , new SqlParameter("@CustomerOid", customer.Get_ServiceUser_Name)                      
+                        , new SqlParameter("@CustomerOid", customer.Get_ServiceUser_Name)
                         , new SqlParameter("@OrgeServiceID", customer.Organization_ServiceName)
                         , new SqlParameter("@Address", customer.Address)
                         , new SqlParameter("@Remark", customer.Remark));
@@ -187,8 +192,73 @@ namespace WebApi.Jwt.Controllers.MasterData
                     }
                     return Request.CreateResponse(HttpStatusCode.BadRequest, "ไม่สามารถลงทะเบียนได้");
                 }
-               
+
             }
+            catch (Exception ex)
+            {
+               // Error case เกิดข้อผิดพลาด
+                UserError err = new UserError();
+                err.status = "ผิดพลาด";
+                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+
+                err.message = ex.Message;
+           //     Return resual
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+            }
+            return Request.CreateResponse(HttpStatusCode.BadRequest, "NoData");
+
+        }
+        #region รอปรับแก้
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("Register_Customer")]
+        public IHttpActionResult RegisterCustomerXAF()
+        {
+            string TempService_ = string.Empty;
+            RegisterCustomer customer = new RegisterCustomer();
+            try
+            {
+                string requestString = Request.Content.ReadAsStringAsync().Result;
+                JObject jObject = (JObject)JsonConvert.DeserializeObject(requestString);
+                if (jObject != null)
+                {
+                    customer.DateTime = jObject.SelectToken("DateTime").Value<DateTime>();
+                    // customer.Service_info = jObject.SelectToken("Service_info").Value<object>();
+
+                    JObject jObject_Service_info = JObject.Parse(jObject.ToString());
+                    //JArray Service_info = (JArray)jObject_Service_info["Service_info"];
+              
+                    customer.Get_ServiceUser_Name = jObject.SelectToken("Name").Value<string>();
+                    customer.Organization_ServiceName = jObject.SelectToken("Organization_Service").Value<string>();
+                    customer.Address = jObject.SelectToken("Address").Value<string>();
+                    customer.Service_info = jObject.SelectToken("Service_info").Value<object>();
+                    if (jObject.SelectToken("Remark") == null)
+                    {
+                        customer.Remark = string.Empty;
+                    }
+                    else
+                    {
+                        customer.Remark = jObject.SelectToken("Remark").Value<string>();
+                    }
+                }
+
+                XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.RegisterCustomer));
+                XPObjectSpaceProvider osProvider = new XPObjectSpaceProvider(scc, null);
+                IObjectSpace objectSpace = osProvider.CreateObjectSpace();
+                nutrition.Module.RegisterCustomer _Customer;
+                _Customer = objectSpace.CreateObject<nutrition.Module.RegisterCustomer>();
+                _Customer.RegisterDate = customer.DateTime;
+
+                
+                _Customer.CustomerTypeOid = objectSpace.FindObject<nutrition.Module.CustomerType>
+                                                                (new BinaryOperator("Oid",customer.Service_info));
+
+
+
+                objectSpace.CommitChanges();
+
+            }
+
             catch (Exception ex)
             {
                 //Error case เกิดข้อผิดพลาด
@@ -197,12 +267,14 @@ namespace WebApi.Jwt.Controllers.MasterData
                 err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
 
                 err.message = ex.Message;
-                //  Return resual
-                return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+                //   Return resual
+                return BadRequest();
             }
-            return Request.CreateResponse(HttpStatusCode.BadRequest, "NoData");
 
         }
+        #endregion
     }
+
 }
+
 
