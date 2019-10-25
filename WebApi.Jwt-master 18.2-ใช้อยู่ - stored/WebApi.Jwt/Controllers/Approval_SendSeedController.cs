@@ -33,6 +33,7 @@ using Newtonsoft.Json;
 using WebApi.Jwt.Models;
 using Newtonsoft.Json.Linq;
 using nutrition.Module.EmployeeAsUserExample.Module.BusinessObjects;
+using nutrition.Module;
 
 namespace WebApi.Jwt.Controllers
 {
@@ -48,7 +49,7 @@ namespace WebApi.Jwt.Controllers
         [AllowAnonymous]
         [HttpGet]
         [Route("LoadSendSeed")]
-        public HttpResponseMessage Approval_SendSeed()
+        public HttpResponseMessage LoadSendSeed()
         {
             try
             {
@@ -172,6 +173,161 @@ namespace WebApi.Jwt.Controllers
             }
             #endregion การส่งเมล็ด อนุมัติ ไม่อนุมัติ
         }
+
+        #region แบบใช้ฟังค์ชั่นของ xaf 
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("LoadSendSeedXAF")]
+        public IHttpActionResult LoadSendSeedXAF()
+        {
+            try
+            { XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                XafTypesInfo.Instance.RegisterEntity(typeof(SendOrderSeed));
+                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+                IList<SendOrderSeed> collection = ObjectSpace.GetObjects<SendOrderSeed>(CriteriaOperator.Parse(" GCRecord is null", null));
+
+                if (collection.Count > 0)
+                {
+                    List<Approve_Model> list = new List<Approve_Model>();
+                    foreach (SendOrderSeed row in collection)
+                    {
+                        Approve_Model Approve = new Approve_Model();
+                        Approve.Send_No = row.SendNo;
+                        Approve.SendDate = row.SendDate.ToString();
+                        Approve.FinanceYearOid = row.FinanceYearOid.YearName;
+                        Approve.SendOrgOid = row.SendOrgOid.OrganizeNameTH;
+                        Approve.ReceiveOrgOid = row.ReceiveOrgOid.OrganizeNameTH;
+                        Approve.Remark = row.Remark;
+                        Approve.SendStatus = row.SendStatus.ToString();
+                        list.Add(Approve);
+                    }
+                    return Ok(list);
+                }
+                else
+                {
+                    UserError err = new UserError();
+                    err.code = "5"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                    err.message = "No data";
+                    //  Return resual
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            { //Error case เกิดข้อผิดพลาด
+                UserError err = new UserError();
+                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                err.message = ex.Message;
+                //  Return resual
+                return BadRequest();
+            }
+
+        }
+        /// <summary>
+        /// เรียกรายละเอียดการส่ง
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("SendOrderSeedDetailXAF")]
+        public IHttpActionResult SendOrderSeedDetail()
+        {
+            try
+            {
+                XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                XafTypesInfo.Instance.RegisterEntity(typeof(SendOrderSeedDetail));
+                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+
+                IList<SendOrderSeedDetail> collection = ObjectSpace.GetObjects<SendOrderSeedDetail>(CriteriaOperator.Parse(" GCRecord is null", null));
+                if (collection.Count > 0)
+                {
+                    List<SendOrderSeed_Model> list = new List<SendOrderSeed_Model>();
+                    foreach (SendOrderSeedDetail row in collection)
+                    {
+                        SendOrderSeed_Model Model = new SendOrderSeed_Model();
+                        //       Model.SendOrderSeed = ObjectSpace.FindObject<nutrition.Module.SendOrderSeed>(new BinaryOperator("Oid", row.SendOrderSeed));
+                        //     Model.LotNumber =row.LotNumber.LotNumber;
+                        //   Model.WeightUnitOid = ObjectSpace.FindObject<nutrition.Module.Unit>(new BinaryOperator("Oid", row.WeightUnitOid));
+
+                        //  Model.AnimalSeedCode = row.AnimalSeedCode;
+                        Model.AnimalSeeName = row.AnimalSeeName;
+                        Model.BudgetSourceOid = row.BudgetSourceOid.BudgetName;
+                        Model.Weight = row.Weight;
+                        //  Model.Used = row.Used.ToString();
+                        //Model.SendOrderSeed = row.SendOrderSeed.Oid;
+                        list.Add(Model);
+                    }
+
+                }
+                return Ok(collection);
+
+
+            }
+            catch (Exception ex)
+            { //Error case เกิดข้อผิดพลาด
+                UserError err = new UserError();
+                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                err.message = ex.Message;
+                //  Return resual
+                return BadRequest(ex.Message);
+            }
+        }
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("ReceiveOrderSeedXAF")]
+        public IHttpActionResult ReceiveOrderSeed()
+        {
+
+            try
+            {
+                XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                XafTypesInfo.Instance.RegisterEntity(typeof(ReceiveOrderSeed));
+                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+                nutrition.Module.FinanceYear FinanceYear;
+                IList<ReceiveOrderSeed> collection = ObjectSpace.GetObjects<ReceiveOrderSeed>(CriteriaOperator.Parse(" GCRecord is null", null));
+                if (collection.Count > 0)
+                {
+                    List<ReceiveOrderSeed_Model> list = new List<ReceiveOrderSeed_Model>();
+                    foreach (ReceiveOrderSeed row in collection)
+                    {
+                        
+                        ReceiveOrderSeed_Model Model = new ReceiveOrderSeed_Model();
+                      
+                        Model.ReceiveNo = row.ReceiveNo;
+                        Model.SendDate = row.SendDate;
+                        FinanceYear = ObjectSpace.GetObject<nutrition.Module.FinanceYear>(CriteriaOperator.Parse("Oid=",row.FinanceYearOid.Oid));
+                        Model.FinanceYearOid = FinanceYear.YearName;
+                        Model.SendOrgOid = row.SendOrgOid.OrganizeNameTH;
+                        Model.ReceiveOrgOid = row.ReceiveOrgOid.OrganizeNameTH;
+                        Model.Remark = row.Remark;
+                        Model.SendStatus = (int)row.SendStatus;
+                        list.Add(Model);
+                    }
+                }
+
+                return Ok(collection);
+                {
+                    return BadRequest();
+                }
+
+
+            }
+
+            catch (Exception ex)
+            { //Error case เกิดข้อผิดพลาด
+                UserError err = new UserError();
+                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                err.message = ex.Message;
+                //  Return resual
+                return BadRequest(ex.Message);
+            }
+            #endregion
+        }
     }
 }
+
+   
+
 

@@ -146,8 +146,7 @@ namespace WebApi.Jwt.Controllers
                 XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
                 nutrition.Module.Province DLD;
-                IList<CustomerType> collection = ObjectSpace.GetObjects<CustomerType>(CriteriaOperator.Parse("GCRecord is null and IsActive=1 and TypeName='" + Type_Name + "' "
-                    , Type_Name));
+                IList<CustomerType> collection = ObjectSpace.GetObjects<CustomerType>(CriteriaOperator.Parse("GCRecord is null and IsActive=1 and TypeName='" + Type_Name + "' ", Type_Name));
                 if (collection.Count > 0)
                 {
                     List<Customer_Service> list = new List<Customer_Service>();
