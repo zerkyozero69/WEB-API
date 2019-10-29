@@ -15,7 +15,7 @@ namespace WebApi.Jwt.Models
         public string Remark { get; set; }
         public string SendStatus { get; set; }
       
-        public string Send_Messengr { get; set; }
+        public string Send_Messengr { get; set; } 
     }
     public class SendOrderSeed_Model
     {
@@ -40,6 +40,20 @@ namespace WebApi.Jwt.Models
         public string Remark { get; set; }
         public int SendStatus { get; set; }
     
+    }
+    public class ReceiveOrderSeedDetail_Model
+    {
+        public object Oid { get; set; }
+        public object LotNumber { get; set; }
+        public string AnimalSeedCode { get; set; }
+        public string AnimalSeeName { get; set; }
+        public string AnimalSeedLevel { get; set; }
+        public object BudgetSourceOid { get; set; }
+        public double Weight { get; set; }
+        public string Used { get; set; }
+        public string SendNo { get; set; }
+        public object ReceiveOrderSeed { get; set; }
+   
     }
 
 

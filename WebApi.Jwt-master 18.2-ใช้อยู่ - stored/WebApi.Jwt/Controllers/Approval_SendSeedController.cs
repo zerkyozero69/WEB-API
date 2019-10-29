@@ -42,48 +42,7 @@ namespace WebApi.Jwt.Controllers
         string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
 
         #region การส่งเมล็ด อนุมัติ ไม่อนุมัติ
-        /// <summary>
-        /// แสดงหน้ารอการอนุมัติการส่งเมล็ดพันธุ์
-        /// </summary>
-        /// <returns></returns>
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("LoadSendSeed")]
-        public HttpResponseMessage LoadSendSeed()
-        {
-            try
-            {
-
-                DataSet ds = new DataSet();
-
-                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieGet_DefaultSendSeed3");
-                DataTable dt = new DataTable();
-                dt = ds.Tables[0];
-                List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
-                Dictionary<string, object> row;
-                foreach (DataRow dr in dt.Rows)
-                {
-
-                    row = new Dictionary<string, object>();
-                    foreach (DataColumn col in dt.Columns)
-                    {
-                        row.Add(col.ColumnName, dr[col]);
-                    }
-                    rows.Add(row);
-                }
-                return Request.CreateResponse(HttpStatusCode.OK, rows);
-            }
-            catch (Exception ex)
-            { //Error case เกิดข้อผิดพลาด
-                UserError err = new UserError();
-                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-
-                err.message = ex.Message;
-                //  Return resual
-                return Request.CreateResponse(HttpStatusCode.BadRequest, err);
-
-            }
-        }
+       
         /// <summary>
         /// อนุมัติการส่ง =1
         /// </summary>
@@ -177,8 +136,8 @@ namespace WebApi.Jwt.Controllers
         #region แบบใช้ฟังค์ชั่นของ xaf 
         [AllowAnonymous]
         [HttpGet]
-        [Route("LoadSendSeedXAF")]
-        public IHttpActionResult LoadSendSeedXAF()
+        [Route("LoadSendSeed")]
+        public IHttpActionResult LoadSendSeed()
         {
             try
             { XpoTypesInfoHelper.GetXpoTypeInfoSource();
@@ -229,31 +188,31 @@ namespace WebApi.Jwt.Controllers
         /// <returns></returns>
         [AllowAnonymous]
         [HttpGet]
-        [Route("SendOrderSeedDetailXAF")]
+        [Route("SendOrderSeedDetail")]
         public IHttpActionResult SendOrderSeedDetail(string Oid)
         {
             SendOrderSeed_Model Model = new SendOrderSeed_Model();
             try
             {
-                XpoTypesInfoHelper.GetXpoTypeInfoSource();
-                XafTypesInfo.Instance.RegisterEntity(typeof(SendOrderSeedDetail));
-                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
-                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-                SendOrderSeedDetail SendOrderSeedDetail;
-           SendOrderSeedDetail = ObjectSpace.FindObject<SendOrderSeedDetail>(new BinaryOperator("Oid", Oid));
-            //    IList<SendOrderSeedDetail> collection = ObjectSpace.GetObject<SendOrderSeedDetail>(CriteriaOperator.Parse(" GCRecord is null and WeightUnitOid='"+Oid+'" ", null));        
-                if (Oid != null)
-                {
-                    Model.LotNumber = SendOrderSeedDetail.LotNumber.LotNumber;
-                    Model.WeightUnitOid = SendOrderSeedDetail.WeightUnitOid.UnitName;
-                    Model.AnimalSeedCode = SendOrderSeedDetail.AnimalSeedCode;
-                    Model.AnimalSeeName = SendOrderSeedDetail.AnimalSeeName;
-                    Model.BudgetSourceOid = SendOrderSeedDetail.BudgetSourceOid.BudgetName;
-                    Model.Weight = SendOrderSeedDetail.Weight;
-                    Model.Used = SendOrderSeedDetail.Used.ToString();
-                    Model.SendOrderSeed = SendOrderSeedDetail.SendOrderSeed.SendNo;
-                }
-                return Ok(Model);
+         //       XpoTypesInfoHelper.GetXpoTypeInfoSource();
+         //       XafTypesInfo.Instance.RegisterEntity(typeof(SendOrderSeedDetail));
+         //       XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+         //       IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+         //       SendOrderSeedDetail SendOrderSeedDetail;
+         ////  SendOrderSeedDetail = ObjectSpace.FindObject<SendOrderSeedDetail>(new BinaryOperator("Oid", Oid));
+         //      IList<SendOrderSeedDetail> collection = ObjectSpace.GetObject<SendOrderSeedDetail>(CriteriaOperator.Parse(" GCRecord is null and WeightUnitOid=+Oid+", null));        
+         //       if (Oid != null)
+         //       {
+         //           Model.LotNumber = SendOrderSeedDetail.LotNumber.LotNumber;
+         //           Model.WeightUnitOid = SendOrderSeedDetail.WeightUnitOid.UnitName;
+         //           Model.AnimalSeedCode = SendOrderSeedDetail.AnimalSeedCode;
+         //           Model.AnimalSeeName = SendOrderSeedDetail.AnimalSeeName;
+         //           Model.BudgetSourceOid = SendOrderSeedDetail.BudgetSourceOid.BudgetName;
+         //           Model.Weight = SendOrderSeedDetail.Weight;
+         //           Model.Used = SendOrderSeedDetail.Used.ToString();
+         //           Model.SendOrderSeed = SendOrderSeedDetail.SendOrderSeed.SendNo;
+         //       }
+              return Ok(Model);
                
 
             }
@@ -266,60 +225,7 @@ namespace WebApi.Jwt.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        /// <summary>
-        /// แสดงรายละเอียดช้อมูลการรับเมล็ด
-        /// </summary>
-        /// <returns></returns>
-        //[AllowAnonymous]
-        //[HttpGet]
-        //[Route("ReceiveOrderSeedXAF")]
-        //public IHttpActionResult ReceiveOrderSeed()
-        //{
-
-        //    try
-        //    {
-        //        XpoTypesInfoHelper.GetXpoTypeInfoSource();
-        //        XafTypesInfo.Instance.RegisterEntity(typeof(ReceiveOrderSeed));
-        //        XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
-        //        IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-        //        nutrition.Module.FinanceYear FinanceYear;
-        //        IList<ReceiveOrderSeed> collection = ObjectSpace.GetObject<ReceiveOrderSeed>(CriteriaOperator.Parse(" GCRecord is null", null));
-        //        if (collection.Count > 0)
-        //        {
-        //            List<ReceiveOrderSeed_Model> list = new List<ReceiveOrderSeed_Model>();
-        //            foreach (ReceiveOrderSeed row in collection)
-        //            {
-                        
-        //                ReceiveOrderSeed_Model Model = new ReceiveOrderSeed_Model();                      
-        //                Model.ReceiveNo = row.ReceiveNo;
-        //                Model.SendDate = row.SendDate;
-        //                FinanceYear = ObjectSpace.GetObject<nutrition.Module.FinanceYear>(CriteriaOperator.Parse(nameof"Oid = @FinanceYearOid ", null));
-        //                Model.FinanceYearOid = FinanceYear.YearName;
-        //                Model.SendOrgOid = row.SendOrgOid.OrganizeNameTH;
-        //                Model.ReceiveOrgOid = row.ReceiveOrgOid.OrganizeNameTH;
-        //                Model.Remark = row.Remark;
-        //                Model.SendStatus = (int)row.SendStatus;
-        //                list.Add(Model);
-        //            }
-        //            return Ok(collection);
-        //        }
-          
-        //        {
-        //            return BadRequest();
-        //        }
-
-
-        //    }
-
-        //    catch (Exception ex)
-        //    { //Error case เกิดข้อผิดพลาด
-        //        UserError err = new UserError();
-        //        err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-        //        err.message = ex.Message;
-        //        //  Return resual
-        //        return BadRequest(ex.Message);
-        //    }
-            #endregion
+        #endregion
         //}
     }
 }
