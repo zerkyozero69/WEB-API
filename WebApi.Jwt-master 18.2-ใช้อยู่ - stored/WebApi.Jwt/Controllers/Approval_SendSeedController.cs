@@ -230,38 +230,31 @@ namespace WebApi.Jwt.Controllers
         [AllowAnonymous]
         [HttpGet]
         [Route("SendOrderSeedDetailXAF")]
-        public IHttpActionResult SendOrderSeedDetail()
+        public IHttpActionResult SendOrderSeedDetail(string Oid)
         {
+            SendOrderSeed_Model Model = new SendOrderSeed_Model();
             try
             {
                 XpoTypesInfoHelper.GetXpoTypeInfoSource();
                 XafTypesInfo.Instance.RegisterEntity(typeof(SendOrderSeedDetail));
                 XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-
-                IList<SendOrderSeedDetail> collection = ObjectSpace.GetObjects<SendOrderSeedDetail>(CriteriaOperator.Parse(" GCRecord is null", null));
-                if (collection.Count > 0)
+                SendOrderSeedDetail SendOrderSeedDetail;
+           SendOrderSeedDetail = ObjectSpace.FindObject<SendOrderSeedDetail>(new BinaryOperator("Oid", Oid));
+            //    IList<SendOrderSeedDetail> collection = ObjectSpace.GetObject<SendOrderSeedDetail>(CriteriaOperator.Parse(" GCRecord is null and WeightUnitOid='"+Oid+'" ", null));        
+                if (Oid != null)
                 {
-                    List<SendOrderSeed_Model> list = new List<SendOrderSeed_Model>();
-                    foreach (SendOrderSeedDetail row in collection)
-                    {
-                        SendOrderSeed_Model Model = new SendOrderSeed_Model();
-                        //       Model.SendOrderSeed = ObjectSpace.FindObject<nutrition.Module.SendOrderSeed>(new BinaryOperator("Oid", row.SendOrderSeed));
-                        //     Model.LotNumber =row.LotNumber.LotNumber;
-                        //   Model.WeightUnitOid = ObjectSpace.FindObject<nutrition.Module.Unit>(new BinaryOperator("Oid", row.WeightUnitOid));
-
-                        //  Model.AnimalSeedCode = row.AnimalSeedCode;
-                        Model.AnimalSeeName = row.AnimalSeeName;
-                        Model.BudgetSourceOid = row.BudgetSourceOid.BudgetName;
-                        Model.Weight = row.Weight;
-                        //  Model.Used = row.Used.ToString();
-                        //Model.SendOrderSeed = row.SendOrderSeed.Oid;
-                        list.Add(Model);
-                    }
-
+                    Model.LotNumber = SendOrderSeedDetail.LotNumber.LotNumber;
+                    Model.WeightUnitOid = SendOrderSeedDetail.WeightUnitOid.UnitName;
+                    Model.AnimalSeedCode = SendOrderSeedDetail.AnimalSeedCode;
+                    Model.AnimalSeeName = SendOrderSeedDetail.AnimalSeeName;
+                    Model.BudgetSourceOid = SendOrderSeedDetail.BudgetSourceOid.BudgetName;
+                    Model.Weight = SendOrderSeedDetail.Weight;
+                    Model.Used = SendOrderSeedDetail.Used.ToString();
+                    Model.SendOrderSeed = SendOrderSeedDetail.SendOrderSeed.SendNo;
                 }
-                return Ok(collection);
-
+                return Ok(Model);
+               
 
             }
             catch (Exception ex)
@@ -273,58 +266,61 @@ namespace WebApi.Jwt.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("ReceiveOrderSeedXAF")]
-        public IHttpActionResult ReceiveOrderSeed()
-        {
+        /// <summary>
+        /// แสดงรายละเอียดช้อมูลการรับเมล็ด
+        /// </summary>
+        /// <returns></returns>
+        //[AllowAnonymous]
+        //[HttpGet]
+        //[Route("ReceiveOrderSeedXAF")]
+        //public IHttpActionResult ReceiveOrderSeed()
+        //{
 
-            try
-            {
-                XpoTypesInfoHelper.GetXpoTypeInfoSource();
-                XafTypesInfo.Instance.RegisterEntity(typeof(ReceiveOrderSeed));
-                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
-                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-                nutrition.Module.FinanceYear FinanceYear;
-                IList<ReceiveOrderSeed> collection = ObjectSpace.GetObjects<ReceiveOrderSeed>(CriteriaOperator.Parse(" GCRecord is null", null));
-                if (collection.Count > 0)
-                {
-                    List<ReceiveOrderSeed_Model> list = new List<ReceiveOrderSeed_Model>();
-                    foreach (ReceiveOrderSeed row in collection)
-                    {
+        //    try
+        //    {
+        //        XpoTypesInfoHelper.GetXpoTypeInfoSource();
+        //        XafTypesInfo.Instance.RegisterEntity(typeof(ReceiveOrderSeed));
+        //        XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+        //        IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+        //        nutrition.Module.FinanceYear FinanceYear;
+        //        IList<ReceiveOrderSeed> collection = ObjectSpace.GetObject<ReceiveOrderSeed>(CriteriaOperator.Parse(" GCRecord is null", null));
+        //        if (collection.Count > 0)
+        //        {
+        //            List<ReceiveOrderSeed_Model> list = new List<ReceiveOrderSeed_Model>();
+        //            foreach (ReceiveOrderSeed row in collection)
+        //            {
                         
-                        ReceiveOrderSeed_Model Model = new ReceiveOrderSeed_Model();
-                      
-                        Model.ReceiveNo = row.ReceiveNo;
-                        Model.SendDate = row.SendDate;
-                        FinanceYear = ObjectSpace.GetObject<nutrition.Module.FinanceYear>(CriteriaOperator.Parse("Oid=",row.FinanceYearOid.Oid));
-                        Model.FinanceYearOid = FinanceYear.YearName;
-                        Model.SendOrgOid = row.SendOrgOid.OrganizeNameTH;
-                        Model.ReceiveOrgOid = row.ReceiveOrgOid.OrganizeNameTH;
-                        Model.Remark = row.Remark;
-                        Model.SendStatus = (int)row.SendStatus;
-                        list.Add(Model);
-                    }
-                }
+        //                ReceiveOrderSeed_Model Model = new ReceiveOrderSeed_Model();                      
+        //                Model.ReceiveNo = row.ReceiveNo;
+        //                Model.SendDate = row.SendDate;
+        //                FinanceYear = ObjectSpace.GetObject<nutrition.Module.FinanceYear>(CriteriaOperator.Parse(nameof"Oid = @FinanceYearOid ", null));
+        //                Model.FinanceYearOid = FinanceYear.YearName;
+        //                Model.SendOrgOid = row.SendOrgOid.OrganizeNameTH;
+        //                Model.ReceiveOrgOid = row.ReceiveOrgOid.OrganizeNameTH;
+        //                Model.Remark = row.Remark;
+        //                Model.SendStatus = (int)row.SendStatus;
+        //                list.Add(Model);
+        //            }
+        //            return Ok(collection);
+        //        }
+          
+        //        {
+        //            return BadRequest();
+        //        }
 
-                return Ok(collection);
-                {
-                    return BadRequest();
-                }
 
+        //    }
 
-            }
-
-            catch (Exception ex)
-            { //Error case เกิดข้อผิดพลาด
-                UserError err = new UserError();
-                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-                err.message = ex.Message;
-                //  Return resual
-                return BadRequest(ex.Message);
-            }
+        //    catch (Exception ex)
+        //    { //Error case เกิดข้อผิดพลาด
+        //        UserError err = new UserError();
+        //        err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+        //        err.message = ex.Message;
+        //        //  Return resual
+        //        return BadRequest(ex.Message);
+        //    }
             #endregion
-        }
+        //}
     }
 }
 

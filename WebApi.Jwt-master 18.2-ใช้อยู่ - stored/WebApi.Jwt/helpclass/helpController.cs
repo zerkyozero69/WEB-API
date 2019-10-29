@@ -69,7 +69,7 @@ namespace WebApi.Jwt.helpclass
                     objUser_info.OrganizationNameTH = User.Organization.OrganizeNameTH;
                     objUser_info.SubOrganizeName = User.Organization.SubOrganizeName;
                     objUser_info.Tel = User.Organization.Tel;
-                    objUser_info.E_Mail = User.Organization.Email;
+                    objUser_info.Email = User.Organization.Email;
                     objUser_info.Address = User.Organization.Address;
                     objUser_info.Moo = User.Organization.Moo;
                     objUser_info.Soi = User.Organization.Soi;
