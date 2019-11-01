@@ -124,6 +124,7 @@ namespace WebApi.Jwt.Controllers.MasterData
 
 
                 }
+                else
                 {
 
                     UserError err = new UserError();
@@ -155,6 +156,7 @@ namespace WebApi.Jwt.Controllers.MasterData
         [Route("Register_Customer")]
         public HttpResponseMessage RegisterCustomer()
         {
+            democlass democlass = new democlass();
             RegisterCustomer customer = new RegisterCustomer();
             try
             {
@@ -175,7 +177,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                     {
                         customer.Remark = jObject.SelectToken("Remark").Value<string>();
                     }
-
+                }
 
                     DataSet ds = new DataSet();
                     ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieRegisterCustomer",
@@ -188,12 +190,13 @@ namespace WebApi.Jwt.Controllers.MasterData
 
                     if (ds.Tables.Count == 0)
                     {
+                 
                         return Request.CreateResponse(HttpStatusCode.OK, "ลงทะเบียนสำเร็จ");
                     }
                     return Request.CreateResponse(HttpStatusCode.BadRequest, "ไม่สามารถลงทะเบียนได้");
                 }
 
-            }
+            
             catch (Exception ex)
             {
                // Error case เกิดข้อผิดพลาด
@@ -205,7 +208,7 @@ namespace WebApi.Jwt.Controllers.MasterData
            //     Return resual
                     return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
-            return Request.CreateResponse(HttpStatusCode.BadRequest, "NoData");
+  
 
         }
         #region รอปรับแก้

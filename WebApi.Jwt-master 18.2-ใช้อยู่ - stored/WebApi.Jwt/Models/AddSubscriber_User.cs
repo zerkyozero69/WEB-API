@@ -12,4 +12,11 @@ namespace WebApi.Jwt.Models
         //public string LastNameTH { get; set; }
        // public string CitizenID { get; set; }
     }
+    class democlass
+    {
+        public string oid;
+     
+     public   string namedemo { get; set; }
+    }
+
 }
