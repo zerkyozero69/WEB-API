@@ -11,7 +11,7 @@ namespace WebApi.Jwt.Models
     public class RegisterCustomer
     {
         public DateTime DateTime { get; set; }
-        public  object Service_info { get; set; }
+        public  object CustomerTypeOid { get; set; }
         public object Get_ServiceUser_Name { get; set; }
         public object Organization_ServiceName { get; set; }
         public string Address { get; set; }

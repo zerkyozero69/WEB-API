@@ -33,6 +33,7 @@ using Newtonsoft.Json;
 using WebApi.Jwt.Models;
 using Newtonsoft.Json.Linq;
 using nutrition.Module.EmployeeAsUserExample.Module.BusinessObjects;
+using nutrition.Module;
 
 namespace WebApi.Jwt.Controllers
 {
@@ -41,48 +42,7 @@ namespace WebApi.Jwt.Controllers
         string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
 
         #region การส่งเมล็ด อนุมัติ ไม่อนุมัติ
-        /// <summary>
-        /// แสดงหน้ารอการอนุมัติการส่งเมล็ดพันธุ์
-        /// </summary>
-        /// <returns></returns>
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("LoadSendSeed")]
-        public HttpResponseMessage Approval_SendSeed()
-        {
-            try
-            {
-
-                DataSet ds = new DataSet();
-
-                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieGet_DefaultSendSeed3");
-                DataTable dt = new DataTable();
-                dt = ds.Tables[0];
-                List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
-                Dictionary<string, object> row;
-                foreach (DataRow dr in dt.Rows)
-                {
-
-                    row = new Dictionary<string, object>();
-                    foreach (DataColumn col in dt.Columns)
-                    {
-                        row.Add(col.ColumnName, dr[col]);
-                    }
-                    rows.Add(row);
-                }
-                return Request.CreateResponse(HttpStatusCode.OK, rows);
-            }
-            catch (Exception ex)
-            { //Error case เกิดข้อผิดพลาด
-                UserError err = new UserError();
-                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-
-                err.message = ex.Message;
-                //  Return resual
-                return Request.CreateResponse(HttpStatusCode.BadRequest, err);
-
-            }
-        }
+       
         /// <summary>
         /// อนุมัติการส่ง =1
         /// </summary>
@@ -172,6 +132,104 @@ namespace WebApi.Jwt.Controllers
             }
             #endregion การส่งเมล็ด อนุมัติ ไม่อนุมัติ
         }
+
+        #region แบบใช้ฟังค์ชั่นของ xaf 
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("LoadSendSeed")]
+        public IHttpActionResult LoadSendSeed()
+        {
+            try
+            { XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                XafTypesInfo.Instance.RegisterEntity(typeof(SendOrderSeed));
+                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+                IList<SendOrderSeed> collection = ObjectSpace.GetObjects<SendOrderSeed>(CriteriaOperator.Parse(" GCRecord is null", null));
+
+                if (collection.Count > 0)
+                {
+                    List<Approve_Model> list = new List<Approve_Model>();
+                    foreach (SendOrderSeed row in collection)
+                    {
+                        Approve_Model Approve = new Approve_Model();
+                        Approve.Send_No = row.SendNo;
+                        Approve.SendDate = row.SendDate.ToString();
+                        Approve.FinanceYearOid = row.FinanceYearOid.YearName;
+                        Approve.SendOrgOid = row.SendOrgOid.OrganizeNameTH;
+                        Approve.ReceiveOrgOid = row.ReceiveOrgOid.OrganizeNameTH;
+                        Approve.Remark = row.Remark;
+                        Approve.SendStatus = row.SendStatus.ToString();
+                        list.Add(Approve);
+                    }
+                    return Ok(list);
+                }
+                else
+                {
+                    UserError err = new UserError();
+                    err.code = "5"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                    err.message = "No data";
+                    //  Return resual
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            { //Error case เกิดข้อผิดพลาด
+                UserError err = new UserError();
+                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                err.message = ex.Message;
+                //  Return resual
+                return BadRequest();
+            }
+
+        }
+        /// <summary>
+        /// เรียกรายละเอียดการส่ง
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("SendOrderSeedDetail")]
+        public IHttpActionResult SendOrderSeedDetail(string Oid)
+        {
+            SendOrderSeed_Model Model = new SendOrderSeed_Model();
+            try
+            {
+         //       XpoTypesInfoHelper.GetXpoTypeInfoSource();
+         //       XafTypesInfo.Instance.RegisterEntity(typeof(SendOrderSeedDetail));
+         //       XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+         //       IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+         //       SendOrderSeedDetail SendOrderSeedDetail;
+         ////  SendOrderSeedDetail = ObjectSpace.FindObject<SendOrderSeedDetail>(new BinaryOperator("Oid", Oid));
+         //      IList<SendOrderSeedDetail> collection = ObjectSpace.GetObject<SendOrderSeedDetail>(CriteriaOperator.Parse(" GCRecord is null and WeightUnitOid=+Oid+", null));        
+         //       if (Oid != null)
+         //       {
+         //           Model.LotNumber = SendOrderSeedDetail.LotNumber.LotNumber;
+         //           Model.WeightUnitOid = SendOrderSeedDetail.WeightUnitOid.UnitName;
+         //           Model.AnimalSeedCode = SendOrderSeedDetail.AnimalSeedCode;
+         //           Model.AnimalSeeName = SendOrderSeedDetail.AnimalSeeName;
+         //           Model.BudgetSourceOid = SendOrderSeedDetail.BudgetSourceOid.BudgetName;
+         //           Model.Weight = SendOrderSeedDetail.Weight;
+         //           Model.Used = SendOrderSeedDetail.Used.ToString();
+         //           Model.SendOrderSeed = SendOrderSeedDetail.SendOrderSeed.SendNo;
+         //       }
+              return Ok(Model);
+               
+
+            }
+            catch (Exception ex)
+            { //Error case เกิดข้อผิดพลาด
+                UserError err = new UserError();
+                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                err.message = ex.Message;
+                //  Return resual
+                return BadRequest(ex.Message);
+            }
+        }
+        #endregion
+        //}
     }
 }
+
+   
+
 

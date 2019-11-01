@@ -58,7 +58,7 @@ namespace WebApi.Jwt.Models
             public string DistrictNameTH { get; set; }
             public string SubDistrictNameTH { get; set; }
             public string DLD { get; set; }
-            public string E_Mail { get; set; }
+            public string Email { get; set; }
             public string Tel { get; set; }
             public string Website { get; set; }
             public double Latitude { get; set; }

@@ -81,7 +81,7 @@ namespace WebApi.Jwt.Controllers
                 prm[1] = new SqlParameter("@DisplayName", user.DisplayName);
                 prm[2] = new SqlParameter("@Organization", user.OrganizationNameTH);
                 prm[3] = new SqlParameter("@Tel", user.Tel);
-                prm[4] = new SqlParameter("@Email", user.E_Mail);          
+                prm[4] = new SqlParameter("@Email", user.Email);          
                 prm[5] = new SqlParameter("@LogID", "2");
                 prm[6] = new SqlParameter("@IPAddress", GetClientIp(Request));
                 prm[7] = new SqlParameter("@Description", user.Description);

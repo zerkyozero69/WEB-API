@@ -163,7 +163,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                 if (jObject != null)
                 {
                     customer.DateTime = jObject.SelectToken("DateTime").Value<DateTime>();
-                    customer.Service_info = jObject.SelectToken("Service_info").Value<string>();
+                    customer.CustomerTypeOid = jObject.SelectToken("Service_info").Value<string>();
                     customer.Get_ServiceUser_Name = jObject.SelectToken("Name").Value<string>();
                     customer.Organization_ServiceName = jObject.SelectToken("Organization_Service").Value<string>();
                     customer.Address = jObject.SelectToken("Address").Value<string>();
@@ -180,7 +180,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                     DataSet ds = new DataSet();
                     ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieRegisterCustomer",
                         new SqlParameter("@datetime", customer.DateTime)
-                        , new SqlParameter("@CustomerTypeOid,", customer.Service_info)
+                        , new SqlParameter("@CustomerTypeOid,", customer.CustomerTypeOid)
                         , new SqlParameter("@CustomerOid", customer.Get_ServiceUser_Name)
                         , new SqlParameter("@OrgeServiceID", customer.Organization_ServiceName)
                         , new SqlParameter("@Address", customer.Address)
@@ -209,69 +209,86 @@ namespace WebApi.Jwt.Controllers.MasterData
 
         }
         #region รอปรับแก้
-        [AllowAnonymous]
-        [HttpPost]
-        [Route("Register_Customer")]
-        public IHttpActionResult RegisterCustomerXAF()
-        {
-            string TempService_ = string.Empty;
-            RegisterCustomer customer = new RegisterCustomer();
-            try
-            {
-                string requestString = Request.Content.ReadAsStringAsync().Result;
-                JObject jObject = (JObject)JsonConvert.DeserializeObject(requestString);
-                if (jObject != null)
-                {
-                    customer.DateTime = jObject.SelectToken("DateTime").Value<DateTime>();
-                    // customer.Service_info = jObject.SelectToken("Service_info").Value<object>();
 
-                    JObject jObject_Service_info = JObject.Parse(jObject.ToString());
-                    //JArray Service_info = (JArray)jObject_Service_info["Service_info"];
-              
-                    customer.Get_ServiceUser_Name = jObject.SelectToken("Name").Value<string>();
-                    customer.Organization_ServiceName = jObject.SelectToken("Organization_Service").Value<string>();
-                    customer.Address = jObject.SelectToken("Address").Value<string>();
-                    customer.Service_info = jObject.SelectToken("Service_info").Value<object>();
-                    if (jObject.SelectToken("Remark") == null)
-                    {
-                        customer.Remark = string.Empty;
-                    }
-                    else
-                    {
-                        customer.Remark = jObject.SelectToken("Remark").Value<string>();
-                    }
-                }
+        //[AllowAnonymous]
+        //[HttpPost]
+        //[Route("Register_CustomerXAF")]
+        //public IHttpActionResult RegisterCustomerXAF()
+        //{
+        //    string TempService_ = string.Empty;
+        //    RegisterCustomer customer = new RegisterCustomer();
 
-                XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.RegisterCustomer));
-                XPObjectSpaceProvider osProvider = new XPObjectSpaceProvider(scc, null);
-                IObjectSpace objectSpace = osProvider.CreateObjectSpace();
-                nutrition.Module.RegisterCustomer _Customer;
-                _Customer = objectSpace.CreateObject<nutrition.Module.RegisterCustomer>();
-                _Customer.RegisterDate = customer.DateTime;
+        //    try
+        //    {
 
-                
-                _Customer.CustomerTypeOid = objectSpace.FindObject<nutrition.Module.CustomerType>
-                                                                (new BinaryOperator("Oid",customer.Service_info));
+        //        string requestString = Request.Content.ReadAsStringAsync().Result;
+        //        JObject jObject = (JObject)JsonConvert.DeserializeObject(requestString);
+        //        if (jObject != null)
+        //        {
+        //            customer.DateTime = jObject.SelectToken("DateTime").Value<DateTime>();
+        //            customer.Service_info = jObject.SelectToken("Service_info").Value<object>();
+
+        //            JArray Service_info = (JArray)jObject_Service_info["Service_info"];
+
+        //            customer.Get_ServiceUser_Name = jObject.SelectToken("User_Name").Value<string>();
+        //            customer.Organization_ServiceName = jObject.SelectToken("Organization_Service").Value<string>();
+        //            customer.Address = jObject.SelectToken("Address").Value<string>();
+        //            customer.CustomerTypeOid = jObject.SelectToken("CustomerType").Value<object>();
+        //            if (jObject.SelectToken("Remark") == null)
+        //            {
+        //                customer.Remark = string.Empty;
+        //            }
+        //            else
+        //            {
+        //                customer.Remark = jObject.SelectToken("Remark").Value<string>();
+        //            }
+        //        }
 
 
 
-                objectSpace.CommitChanges();
+        //        XpoTypesInfoHelper.GetXpoTypeInfoSource();
+        //        XPObjectSpaceProvider osProvider = new XPObjectSpaceProvider(scc, null);
+        //        IObjectSpace objectSpace = osProvider.CreateObjectSpace();
+        //        nutrition.Module.RegisterCustomer _Customer;
 
-            }
+        //        XafTypesInfo.Instance.RegisterEntity(typeof(RegisterCustomer));
+        //        _Customer = objectSpace.CreateObject<nutrition.Module.RegisterCustomer>();
+        //        _Customer.RegisterDate = Convert.ToDateTime(10 - 25 - 2000);
+        //        _Customer.CustomerTypeOid = objectSpace.FindObject<nutrition.Module.CustomerType>
+        //                                                        (new BinaryOperator("Oid", "F3A44910-5FE9-496A-9B66-368432ED16AD"));
 
-            catch (Exception ex)
-            {
-                //Error case เกิดข้อผิดพลาด
-                UserError err = new UserError();
-                err.status = "ผิดพลาด";
-                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+        //        _Customer.CustomerTypeOid = objectSpace.FindObject<nutrition.Module.CustomerType>
+        //                                                        (new BinaryOperator("Oid", customer.CustomerTypeOid));
+        //        _Customer.OrgeServiceOid = objectSpace.FindObject<nutrition.Module.OrgeService>
+        //                                                         (new BinaryOperator("Oid", customer.Organization_ServiceName));
 
-                err.message = ex.Message;
-                //   Return resual
-                return BadRequest();
-            }
+        //        _Customer.CustomerOid = objectSpace.FindObject<nutrition.Module.Farmer>
+        //                                                                  (new BinaryOperator("Oid", customer.Get_ServiceUser_Name));
 
-        }
+        //        _Customer.Address = customer.Address;
+        //        _Customer.Remark = customer.Remark;
+
+        //        objectSpace.CommitChanges();
+
+        //        return Ok(_Customer);
+        //        {
+        //            return BadRequest();
+        //        }
+        //    }
+
+        //    catch (Exception ex)
+        //    {
+        //        //Error case เกิดข้อผิดพลาด
+        //        UserError err = new UserError();
+        //        err.status = "ผิดพลาด";
+        //        err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+
+        //        err.message = ex.Message;
+        //        //   Return resual
+        //        return BadRequest(ex.Message);
+        //    }
+
+        //}
         #endregion
     }
 

@@ -242,6 +242,7 @@
     <Compile Include="Models\Models_Masters\Plant.cs" />
     <Compile Include="Models\Models_Masters\SendStatus.cs" />
     <Compile Include="Models\Models_Masters\Unit.cs" />
+    <Compile Include="Models\Organization.cs" />
     <Compile Include="Models\refresh_Token.cs" />
     <Compile Include="Models\RegisterFarmer.cs" />
     <Compile Include="Models\Reports_values.cs" />
