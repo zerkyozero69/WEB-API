@@ -144,12 +144,13 @@ namespace WebApi.Jwt.Controllers
                 XafTypesInfo.Instance.RegisterEntity(typeof(SendOrderSeed));
                 XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+                List<Approve_Model> list = new List<Approve_Model>();
                 IList<SendOrderSeed> collection = ObjectSpace.GetObjects<SendOrderSeed>(CriteriaOperator.Parse(" GCRecord is null", null));
 
                 if (collection.Count > 0)
                 {
-                    List<Approve_Model> list = new List<Approve_Model>();
-                    foreach (SendOrderSeed row in collection)
+            
+                    foreach (SendOrderSeed  row in collection)
                     {
                         Approve_Model Approve = new Approve_Model();
                         Approve.Send_No = row.SendNo;
@@ -161,8 +162,8 @@ namespace WebApi.Jwt.Controllers
                         Approve.SendStatus = row.SendStatus.ToString();
                         list.Add(Approve);
                     }
-                    return Ok(list);
                 }
+             
                 else
                 {
                     UserError err = new UserError();
@@ -171,6 +172,7 @@ namespace WebApi.Jwt.Controllers
                     //  Return resual
                     return BadRequest();
                 }
+                return Ok(list);
             }
             catch (Exception ex)
             { //Error case เกิดข้อผิดพลาด
@@ -186,45 +188,8 @@ namespace WebApi.Jwt.Controllers
         /// เรียกรายละเอียดการส่ง
         /// </summary>
         /// <returns></returns>
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("SendOrderSeedDetail")]
-        public IHttpActionResult SendOrderSeedDetail(string Oid)
-        {
-            SendOrderSeed_Model Model = new SendOrderSeed_Model();
-            try
-            {
-         //       XpoTypesInfoHelper.GetXpoTypeInfoSource();
-         //       XafTypesInfo.Instance.RegisterEntity(typeof(SendOrderSeedDetail));
-         //       XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
-         //       IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-         //       SendOrderSeedDetail SendOrderSeedDetail;
-         ////  SendOrderSeedDetail = ObjectSpace.FindObject<SendOrderSeedDetail>(new BinaryOperator("Oid", Oid));
-         //      IList<SendOrderSeedDetail> collection = ObjectSpace.GetObject<SendOrderSeedDetail>(CriteriaOperator.Parse(" GCRecord is null and WeightUnitOid=+Oid+", null));        
-         //       if (Oid != null)
-         //       {
-         //           Model.LotNumber = SendOrderSeedDetail.LotNumber.LotNumber;
-         //           Model.WeightUnitOid = SendOrderSeedDetail.WeightUnitOid.UnitName;
-         //           Model.AnimalSeedCode = SendOrderSeedDetail.AnimalSeedCode;
-         //           Model.AnimalSeeName = SendOrderSeedDetail.AnimalSeeName;
-         //           Model.BudgetSourceOid = SendOrderSeedDetail.BudgetSourceOid.BudgetName;
-         //           Model.Weight = SendOrderSeedDetail.Weight;
-         //           Model.Used = SendOrderSeedDetail.Used.ToString();
-         //           Model.SendOrderSeed = SendOrderSeedDetail.SendOrderSeed.SendNo;
-         //       }
-              return Ok(Model);
-               
-
-            }
-            catch (Exception ex)
-            { //Error case เกิดข้อผิดพลาด
-                UserError err = new UserError();
-                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-                err.message = ex.Message;
-                //  Return resual
-                return BadRequest(ex.Message);
-            }
-        }
+       
+ 
         #endregion
         //}
     }

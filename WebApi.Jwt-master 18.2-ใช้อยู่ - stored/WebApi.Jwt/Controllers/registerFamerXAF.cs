@@ -207,5 +207,53 @@ namespace WebApi.Jwt.Controllers.MasterData
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
         }
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("farmerGET")]
+        public IHttpActionResult xafclass()
+        {
+          //  Farmerinfo.Profile_Farmer farmerinfo = new Farmerinfo.Profile_Farmer();
+            try
+            {
+                XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                XafTypesInfo.Instance.RegisterEntity(typeof(Farmer));
+                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+          
+                List<Farmerinfo.Profile_Farmer> ilist = new List<Farmerinfo.Profile_Farmer>();
+                IList<Farmer> collection = ObjectSpace.GetObjects<Farmer>(CriteriaOperator.Parse(" GCRecord is null and IsActive = 1", null));
+                if (collection != null)
+                {
+                   
+                    foreach (Farmer row in collection)
+                    {
+                        Farmerinfo.Profile_Farmer _farmerinfo = new Farmerinfo.Profile_Farmer();
+                        _farmerinfo.Oid = row.Oid;
+                        _farmerinfo.CitizenID = row.CitizenID.ToString();
+                        _farmerinfo.Title = row.TitleOid.TitleName;
+                        _farmerinfo.FirstNameTH = row.FirstNameTH;
+                        _farmerinfo.LastNameTH = row.LastNameTH;
+                        ilist.Add(_farmerinfo);
+                    
+                    }
+                 
+                }
+                else
+                {
+                    return BadRequest( "Any object");
+                }
+                return Ok(ilist);
+            }
+
+            catch (Exception ex)
+            { //Error case เกิดข้อผิดพลาด
+                UserError err = new UserError();
+                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                err.message = ex.Message;
+                //  Return resual
+                //   return BadRequest(ex.Message);
+                return null;
+            }
+        }
     }
 }

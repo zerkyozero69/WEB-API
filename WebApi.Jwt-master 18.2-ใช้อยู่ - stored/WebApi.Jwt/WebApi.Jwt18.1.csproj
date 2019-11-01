@@ -197,6 +197,7 @@
     <Compile Include="Controllers\Approval_SendSeedController.cs" />
     <Compile Include="Controllers\OrderSeedDetailController.cs" />
     <Compile Include="Controllers\Subscriber_UserController.cs" />
+    <Compile Include="Controllers\SupplierController.cs" />
     <Compile Include="Controllers\testinsert_APIController.cs" />
     <Compile Include="Controllers\UserService_Controller.cs" />
     <Compile Include="Controllers\AuthenticationController.cs" />
@@ -247,6 +248,7 @@
     <Compile Include="Models\RegisterFarmer.cs" />
     <Compile Include="Models\Reports_values.cs" />
     <Compile Include="Models\Subscriber_User.cs" />
+    <Compile Include="Models\Supplier.cs" />
     <Compile Include="Models\user.cs" />
     <Compile Include="Models\UserError.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

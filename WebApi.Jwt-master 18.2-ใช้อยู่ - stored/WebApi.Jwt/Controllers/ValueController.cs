@@ -18,7 +18,8 @@ namespace WebApi.Jwt.Controllers
         }
 
         [AllowAnonymous]
-      //  [JwtAuthentication]
+        //  [JwtAuthentication]
+        [Route("api/test1")]
         public  string Type(int size)
         {
             // Characters except I, l, O, 1, and 0 to decrease confusion when hand typing tokens

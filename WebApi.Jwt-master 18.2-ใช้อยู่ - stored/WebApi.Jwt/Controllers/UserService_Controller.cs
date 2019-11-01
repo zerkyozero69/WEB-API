@@ -145,7 +145,7 @@ namespace WebApi.Jwt.Controllers
                 XafTypesInfo.Instance.RegisterEntity(typeof(RoleInfo));
                 XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-                nutrition.Module.Province DLD;
+             
                 IList<CustomerType> collection = ObjectSpace.GetObjects<CustomerType>(CriteriaOperator.Parse("GCRecord is null and IsActive=1 and TypeName='" + Type_Name + "' ", Type_Name));
                 if (collection.Count > 0)
                 {

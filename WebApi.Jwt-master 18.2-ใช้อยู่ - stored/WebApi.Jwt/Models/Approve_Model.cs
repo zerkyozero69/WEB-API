@@ -55,7 +55,14 @@ namespace WebApi.Jwt.Models
         public object ReceiveOrderSeed { get; set; }
    
     }
+    public enum APPROVE
+        {
+        Draft = 1,
+        Approve = 2,
+        Not_Approve =3
 
+
+    }
 
 
 }

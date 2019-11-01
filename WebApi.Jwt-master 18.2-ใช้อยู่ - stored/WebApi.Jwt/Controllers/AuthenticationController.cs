@@ -100,7 +100,7 @@ namespace WebApi.Jwt.Controllers
                     SqlHelper.ExecuteNonQuery(scc, CommandType.StoredProcedure, "insert_EventLog",prm);
                     return Request.CreateResponse(HttpStatusCode.BadRequest, user);
                 }
-
+                 
             }
 
             catch (Exception ex)
