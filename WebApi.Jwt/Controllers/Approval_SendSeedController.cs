@@ -1,0 +1,349 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Formatting;
+using System.Xml;
+using System.Data.SqlClient;
+using System.Configuration;
+using DevExpress.ExpressApp;
+using DevExpress.Data.Filtering;
+using DevExpress.Persistent.BaseImpl.PermissionPolicy;
+using Microsoft.ApplicationBlocks.Data;
+using DevExpress.Persistent.BaseImpl;
+using System.Text;
+using DevExpress.Persistent.Base;
+using DevExpress.Persistent.Base.General;
+using System.Web.Http;
+using System.Web;
+using static WebApi.Jwt.helpclass.helpController;
+using static WebApi.Jwt.Models.user;
+using static WebApi.Jwt.Models.AddSubscriber_User;
+using System.Data;
+using DevExpress.ExpressApp.Xpo;
+using DevExpress.Persistent.Base.Security;
+using DevExpress.ExpressApp.Security;
+using WebApi.Jwt.Filters;
+using WebApi.Jwt.helpclass;
+using NTi.CommonUtility;
+using System.IO;
+using System.Runtime.Serialization.Json;
+using Newtonsoft.Json;
+using WebApi.Jwt.Models;
+using Newtonsoft.Json.Linq;
+using nutrition.Module.EmployeeAsUserExample.Module.BusinessObjects;
+using nutrition.Module;
+
+namespace WebApi.Jwt.Controllers
+{
+    public class Approval_SendSeedController : ApiController
+    {
+        string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
+
+        #region การส่งเมล็ด อนุมัติ ไม่อนุมัติ
+       
+        /// <summary>
+        /// อนุมัติการส่ง =3
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("SendSeed/ApprovalSend")]
+        public HttpResponseMessage ApprovalSend()
+        {
+            Approve_Model approve_Success = new Approve_Model();
+            try
+            {
+                if (HttpContext.Current.Request.Form["Send_No"].ToString() != null)
+                {
+                    approve_Success.Send_No = HttpContext.Current.Request.Form["Send_No"].ToString();
+                }
+
+                approve_Success.Remark = HttpContext.Current.Request.Form["Remark"].ToString();
+                approve_Success.SendStatus = HttpContext.Current.Request.Form["Sendstatus"].ToString();
+
+                DataSet ds = new DataSet();
+          ds=  SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_Moblie_Approval_SendSeed", new SqlParameter("@SendNo", approve_Success.Send_No.ToString())
+                    , new SqlParameter("@Remark", approve_Success.Remark)
+                    ,new SqlParameter("@SendStatus", approve_Success.SendStatus));
+
+                if (ds.Tables[1].Rows[0]["pStatus"].ToString() == "3")
+                {
+                    approve_Success.SendStatus = "3";
+                    approve_Success.Send_Messengr = "อนุมัติการส่งเมล็ด";
+                    
+                }
+                else if (ds.Tables[1].Rows[0]["pStatus"].ToString() == "4"|| ds.Tables[1].Rows[0]["pMessage"].ToString() == "ไม่อนุมัติข้อมูลการส่ง")
+                {
+                    approve_Success.SendStatus = "4";
+                    approve_Success.Send_Messengr = "ไม่อนุมัติการส่งเมล็ด";
+                    return Request.CreateResponse(HttpStatusCode.OK, approve_Success);
+                }
+                return Request.CreateResponse(HttpStatusCode.OK, approve_Success);
+            }
+            catch (Exception ex)
+            { //Error case เกิดข้อผิดพลาด
+                UserError err = new UserError();
+                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+
+                err.message = ex.Message;
+                //  Return resual
+                return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+
+            }
+
+        }
+        /// <summary>
+        /// ไม่อนุมัติการส่ง +เหตุผล=2
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpPatch]
+        [Route("SendSeed/Not_ApprovalSend")]
+        public HttpResponseMessage Not_ApprovalSend()
+        {
+            Approve_Model Not_approve = new Approve_Model();
+            try
+            {
+                if (HttpContext.Current.Request.Form["Send_No"].ToString() != null)
+                {
+                    Not_approve.Send_No = HttpContext.Current.Request.Form["Send_No"].ToString();
+                }
+                if (HttpContext.Current.Request.Form["Remark"].ToString() != null)
+                {
+                    Not_approve.Remark = HttpContext.Current.Request.Form["Remark"].ToString();
+                }
+
+                DataSet ds = new DataSet();
+                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_Moblie_NotApproval_SendSeed", new SqlParameter("@SendNo", Not_approve.Send_No)
+                    , new SqlParameter("@Remark", Not_approve.Remark));
+
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    Not_approve.SendStatus = "1";
+                    Not_approve.Send_Messengr = "ไม่อนุมัติการส่งเมล็ด โปรดตรวจสอบใหม่";
+                }
+
+                return Request.CreateResponse(HttpStatusCode.OK, Not_approve);
+            }
+            catch (Exception ex)
+            { //Error case เกิดข้อผิดพลาด
+                UserError err = new UserError();
+                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+
+                err.message = ex.Message;
+                //  Return resual
+                return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+
+            }
+            #endregion การส่งเมล็ด อนุมัติ ไม่อนุมัติ
+        }
+
+        #region แบบใช้ฟังค์ชั่นของ xaf 
+        /// <summary>
+        /// โหลดหน้าสถานะ ทุกสถานนะ
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("LoadSendSeed")]
+        public IHttpActionResult LoadSendSeed()
+        {
+            try
+            {
+                XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                XafTypesInfo.Instance.RegisterEntity(typeof(SendOrderSeed));
+                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+                List<Approve_Model> list = new List<Approve_Model>();
+                IList<SendOrderSeed> collection = ObjectSpace.GetObjects<SendOrderSeed>(CriteriaOperator.Parse(" GCRecord is null", null));
+
+                if (collection.Count > 0)
+                {
+
+                    foreach (SendOrderSeed row in collection)
+                    {
+                        Approve_Model Approve = new Approve_Model();
+                        Approve.Send_No = row.SendNo;
+                        Approve.SendDate = row.SendDate.ToString();
+                        Approve.FinanceYearOid = row.FinanceYearOid.YearName;
+                        Approve.SendOrgOid = row.SendOrgOid.OrganizeNameTH;
+                        Approve.ReceiveOrgOid = row.ReceiveOrgOid.OrganizeNameTH;
+                        Approve.Remark = row.Remark;
+                        Approve.CancelMsg = row.CancelMsg;
+                        Approve.SendStatus = row.SendStatus.ToString();
+                        list.Add(Approve);
+                    }
+                }
+
+                else
+                {
+                    UserError err = new UserError();
+                    err.code = "5"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                    err.message = "No data";
+                    //  Return resual
+                    return BadRequest();
+                }
+                return Ok(list);
+            }
+            catch (Exception ex)
+            { //Error case เกิดข้อผิดพลาด
+                UserError err = new UserError();
+                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                err.message = ex.Message;
+                //  Return resual
+                return BadRequest();
+            }
+        }
+        /// <summary>
+        /// หน้าส่งเมล็ดพันธุ์ ระหว่างรอดำเนินการ ***ใช้ตัวนี้ในหน้าอนุมัติ
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("LoadSendSeed/accept")]
+        public IHttpActionResult LoadSendSeed_accept()
+        {
+            object ReceiveOrgOid;
+            try
+            {
+        
+                    ReceiveOrgOid = HttpContext.Current.Request.Form["ReceiveOrgOid"].ToString();
+                
+
+                XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                XafTypesInfo.Instance.RegisterEntity(typeof(SendOrderSeed));
+                XafTypesInfo.Instance.RegisterEntity(typeof(SupplierSendDetail));
+                List<Approve_Model> list = new List<Approve_Model>();
+                SendOrderSeed sendOrderSeed   ;
+                List<SendOrderSeed_Model> list_detail = new List<SendOrderSeed_Model>();
+                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+                IList<SendOrderSeed> collection = ObjectSpace.GetObjects<SendOrderSeed>(CriteriaOperator.Parse(" GCRecord is null and SendStatus = 2 and ReceiveOrgOid=?", ReceiveOrgOid));
+                if (collection.Count > 0)
+                {
+                    foreach (SendOrderSeed row in collection)
+                    {
+                        Approve_Model Approve = new Approve_Model();
+                        Approve.Send_No = row.SendNo;
+                        Approve.SendDate = row.SendDate.ToString();
+                        Approve.FinanceYearOid = row.FinanceYearOid.YearName;
+                        Approve.SendOrgOid = row.SendOrgOid.OrganizeNameTH;
+                        Approve.ReceiveOrgOid = row.ReceiveOrgOid.OrganizeNameTH;
+                        Approve.Remark = row.Remark;
+                        Approve.CancelMsg = row.CancelMsg;
+                        Approve.SendStatus = row.SendStatus.ToString();
+                        //foreach (SendOrderSeedDetail row in sendOrderSeed.SendOrderSeedDetails)
+                        //{
+                        //    SendOrderSeed_Model send_Detail = new SendOrderSeed_Model();
+                        //    send_Detail.LotNumber = row2.LotNumber.LotNumber;
+                        //    send_Detail.WeightUnitOid = row2.WeightUnitOid.UnitName;
+                        //    send_Detail.AnimalSeedCode = row2.AnimalSeedCode;
+                        //    send_Detail.AnimalSeedLevel = row2.AnimalSeedLevel;
+                        //    send_Detail.AnimalSeeName = row2.AnimalSeeName;
+                        //    send_Detail.BudgetSourceOid = row2.BudgetSourceOid.BudgetName;
+                        //    send_Detail.Weight = row2.Weight;
+                        //    send_Detail.Used = row2.Used.ToString();
+                        //    send_Detail.SendOrderSeed = row2.SendOrderSeed.SendNo;
+                        //    send_Detail.AnimalSeedOid = row2.AnimalSeedOid.SeedName;
+                        //    send_Detail.AnimalSeedLevelOid = row2.AnimalSeedLevelOid.SeedLevelName;
+                        //    send_Detail.SeedTypeOid = row2.SeedTypeOid.SeedTypeName;
+                        //    send_Detail.Amount = row2.Amount;
+                        //    list_detail.Add(send_Detail);
+                        //}
+                        Approve.objSeed = list_detail;
+                        list.Add(Approve);
+                    }
+  
+                }
+
+                else
+                {
+                    UserError err = new UserError();
+                    err.code = "5"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                    err.message = "No data";
+                    //  Return resual
+                    return BadRequest();
+                }
+                return Ok(list);
+            }
+            catch (Exception ex)
+            { //Error case เกิดข้อผิดพลาด
+                UserError err = new UserError();
+                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                err.message = ex.Message;
+                //  Return resual
+                return BadRequest();
+            }
+        }
+
+        /// <summary>
+        /// หน้าเมล็ดพันธุ์ ยกเลิก
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("LoadSendSeed/cancel")]
+        public IHttpActionResult LoadSendSeed_cancel()
+        {
+            try
+            {
+                XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                XafTypesInfo.Instance.RegisterEntity(typeof(SendOrderSeed));
+                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+                List<Approve_Model> list = new List<Approve_Model>();
+                IList<SendOrderSeed> collection = ObjectSpace.GetObjects<SendOrderSeed>(CriteriaOperator.Parse(" GCRecord is null and SendStatus = 4 ", null));
+
+                if (collection.Count > 0)
+                {
+
+                    foreach (SendOrderSeed row in collection)
+                    {
+                        Approve_Model Approve = new Approve_Model();
+                        Approve.Send_No = row.SendNo;
+                        Approve.SendDate = row.SendDate.ToString();
+                        Approve.FinanceYearOid = row.FinanceYearOid.YearName;
+                        Approve.SendOrgOid = row.SendOrgOid.OrganizeNameTH;
+                        Approve.ReceiveOrgOid = row.ReceiveOrgOid.OrganizeNameTH;
+                        Approve.Remark = row.Remark;
+                        Approve.CancelMsg = row.CancelMsg;
+                        Approve.SendStatus = row.SendStatus.ToString();
+                        list.Add(Approve);
+                    }
+                }
+
+                else
+                {
+                    UserError err = new UserError();
+                    err.code = "5"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                    err.message = "No data";
+                    //  Return resual
+                    return BadRequest();
+                }
+                return Ok(list);
+            }
+            catch (Exception ex)
+            { //Error case เกิดข้อผิดพลาด
+                UserError err = new UserError();
+                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                err.message = ex.Message;
+                //  Return resual
+                return BadRequest();
+            }
+        }
+        /// <summary>
+        /// เรียกรายละเอียดการส่ง
+        /// </summary>
+        /// <returns></returns>
+       
+ 
+        #endregion
+        //}
+    }
+}
+
+   
+
+
