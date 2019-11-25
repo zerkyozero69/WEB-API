@@ -383,7 +383,7 @@ namespace WebApi.Jwt.Controllers
                         Supplier.UseNo = row.UseNo;
                         Supplier.FinanceYearOid = row.FinanceYearOid.YearName;
                         Supplier.OrganizationOid = row.OrganizationOid.OrganizeNameTH;
-                        Supplier.EmployeeOid = row.EmployeeOid.EmployeeFirstName;
+                        Supplier.EmployeeOid = row.EmployeeOid.EmployeeFirstName+" "+row.EmployeeOid.EmployeeLastName;
                         Supplier.Remark = row.Remark;
                         Supplier.Stauts = row.Stauts.ToString();
                         Supplier.ApproveDate = row.ApproveDate.ToString();
