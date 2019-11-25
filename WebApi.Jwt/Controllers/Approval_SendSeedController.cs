@@ -254,11 +254,57 @@ namespace WebApi.Jwt.Controllers
             }
         }
         /// <summary>
-        /// เรียกรายละเอียดการส่ง
+        /// เรียกรายละเอียดการส่ง เบิกจำหน่ายเมล็ดพันธุ์ในหน่วยงาน
         /// </summary>
         /// <returns></returns>
-       
- 
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("ApprovalSend/SupplierUseProduct")]
+        public HttpResponseMessage ApprovalSend_SupplierUseProduct()
+        {
+            Approve_Model approve_Success = new Approve_Model();
+            try
+            {
+                if (HttpContext.Current.Request.Form["UseNo"].ToString() != null)
+                {
+                    approve_Success.Send_No = HttpContext.Current.Request.Form["UseNo"].ToString();
+                }
+
+                approve_Success.Remark = HttpContext.Current.Request.Form["Remark"].ToString();
+                approve_Success.SendStatus = HttpContext.Current.Request.Form["Sendstatus"].ToString();
+
+                DataSet ds = new DataSet();
+                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_Mobile_Approval_SupplierUseProduct", new SqlParameter("@UseNo", approve_Success.Send_No.ToString())
+                          , new SqlParameter("@Remark", approve_Success.Remark)
+                          , new SqlParameter("@SendStatus", approve_Success.SendStatus));
+
+                if (ds.Tables[1].Rows[0]["pStatus"].ToString() == "3")
+                {
+                    approve_Success.SendStatus = "3";
+                    approve_Success.Send_Messengr = "อนุมัติการเบิกเมล็ด";
+
+                }
+                else if (ds.Tables[1].Rows[0]["pStatus"].ToString() == "4" || ds.Tables[1].Rows[0]["pMessage"].ToString() == "ไม่อนุมัติข้อมูลการส่ง")
+                {
+                    approve_Success.SendStatus = "4";
+                    approve_Success.Send_Messengr = "ไม่อนุมัติ";
+                    return Request.CreateResponse(HttpStatusCode.OK, approve_Success);
+                }
+                return Request.CreateResponse(HttpStatusCode.OK, approve_Success);
+            }
+            catch (Exception ex)
+            { //Error case เกิดข้อผิดพลาด
+                UserError err = new UserError();
+                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+
+                err.message = ex.Message;
+                //  Return resual
+                return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+
+            }
+
+        }
+
         #endregion
         //}
     }

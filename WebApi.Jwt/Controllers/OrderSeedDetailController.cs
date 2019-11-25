@@ -469,7 +469,7 @@ namespace WebApi.Jwt.Controllers
                 List<SupplierUseProductDetail_Model> list_detail = new List<SupplierUseProductDetail_Model>();
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
                 SupplierUseProduct supplierUseProduct;
-                supplierUseProduct = ObjectSpace.FindObject<SupplierUseProduct>(CriteriaOperator.Parse("GCRecord is null and Stauts = 2 and UseNo=? and OrganizationOid=? ", UseNo, OrganizationOid));
+                supplierUseProduct = ObjectSpace.FindObject<SupplierUseProduct>(CriteriaOperator.Parse("GCRecord is null and Stauts = 1 and UseNo=? and OrganizationOid=? ", UseNo, OrganizationOid));
                 //sendOrderSeed = ObjectSpace.GetObject<SendOrderSeed>(CriteriaOperator.Parse("GCRecord is null and SendStatus = 2 and ReceiveOrgOid=? ", null));
                 if (UseNo != null)
                 {

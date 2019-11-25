@@ -156,6 +156,8 @@ namespace WebApi.Jwt.Controllers
         [Route("FarmerCitizenID")]
         public HttpResponseMessage get_CitizenID()
         {
+            FarmerCitizen farmer_info = new FarmerCitizen();
+            
             try
             {
                 string CitizenID=string.Empty ;
@@ -215,9 +217,29 @@ namespace WebApi.Jwt.Controllers
                     request.Headers.Add("Authorization", "Bearer " + access_token);
                     response = (HttpWebResponse)request.GetResponse();
                     var xreader = new StreamReader(response.GetResponseStream()).ReadToEnd();
+                    var farmerResul = JsonConvert.DeserializeObject<Dictionary<string, object>>(xreader);
+                    farmer_info.CitizenID = farmerResul["pid"];
+                    farmer_info.titleName = farmerResul["prefixNameTh"];
+                    farmer_info.FirstNameTH = farmerResul["firstName"];
+                    farmer_info.LastNameTH = farmerResul["lastName"];
+                    farmer_info.genderName = farmerResul["genderName"];
+                    farmer_info.birthDate = farmerResul["birthDay"];
+                    farmer_info.tel = farmerResul["phone"];
+                    farmer_info.email = farmerResul["email"];
+                    farmer_info.address = farmerResul["homeNo"];
+                    farmer_info.moo = farmerResul["moo"];
+                    farmer_info.soi = farmerResul["soi"];
+                    farmer_info.road = farmerResul["road"];
+                    farmer_info.provinceNameTH = farmerResul["provinceName"];
+                    farmer_info.districtNameTH = farmerResul["amphurName"];
+                    farmer_info.subDistrictNameTH = farmerResul["tambolName"];
+                    farmer_info.zipCode = farmerResul["postCode"];
+                    farmer_info.latitude = farmerResul["latitude"];
+                    farmer_info.longitude = farmerResul["longitude"];
+       
 
-                  
-                    return Request.CreateResponse(HttpStatusCode.OK, xreader);
+
+                    return Request.CreateResponse(HttpStatusCode.OK, farmer_info);
 
                 }
                 else {
