@@ -295,14 +295,14 @@ namespace WebApi.Jwt.Controllers
                     foreach (SupplierUseProduct row in collection)
                     {
                         SupplierUseProductDetail_Model Supplier = new SupplierUseProductDetail_Model();
-                        Approve.Send_No = row.UseDate;
-                        Approve.SendDate = row.SendDate.ToString();
-                        Approve.FinanceYearOid = row.FinanceYearOid.YearName;
-                        Approve.SendOrgOid = row.SendOrgOid.OrganizeNameTH;
-                        Approve.ReceiveOrgOid = row.ReceiveOrgOid.OrganizeNameTH;
-                        Approve.Remark = row.Remark;
-                        Approve.CancelMsg = row.CancelMsg;
-                        Approve.SendStatus = row.SendStatus.ToString();
+                        Supplier.Send_No = row.UseDate;
+                        Supplier.SendDate = row.SendDate.ToString();
+                        Supplier.FinanceYearOid = row.FinanceYearOid.YearName;
+                        Supplier.SendOrgOid = row.SendOrgOid.OrganizeNameTH;
+                        Supplier.ReceiveOrgOid = row.ReceiveOrgOid.OrganizeNameTH;
+                        Supplier.Remark = row.Remark;
+                        Supplier.CancelMsg = row.CancelMsg;
+                        Supplier.SendStatus = row.SendStatus.ToString();
                         //foreach (SendOrderSeedDetail row in sendOrderSeed.SendOrderSeedDetails)
                         //{
                         //    SendOrderSeed_Model send_Detail = new SendOrderSeed_Model();
