@@ -44,7 +44,7 @@ namespace WebApi.Jwt.Controllers
         #region การส่งเมล็ด อนุมัติ ไม่อนุมัติ
        
         /// <summary>
-        /// อนุมัติการส่ง =3
+        /// อนุมัติการส่ง =3 เมล็ดพันธุ์
         /// </summary>
         /// <returns></returns>
         [AllowAnonymous]

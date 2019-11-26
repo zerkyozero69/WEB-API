@@ -161,7 +161,7 @@ namespace WebApi.Jwt.Controllers.MasterData
 
                 DataSet ds = new DataSet();
 
-                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MobileGetHarvesting_Process");
+                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MobileGetHarvesting_Process",new SqlParameter ("@forageTypeOid", ForageTypeOid));
                 DataTable dt = new DataTable();
                 dt = ds.Tables[0];
                 List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
