@@ -62,7 +62,7 @@ namespace WebApi.Jwt.Controllers
                 XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();            
                 nutrition.Module.Province DLD;
-                IList<OrgeService> collection = ObjectSpace.GetObjects <OrgeService> (CriteriaOperator.Parse("GCRecord is null and IsActive=1 and OrgeServiceName='"+ Type_Name + "' "
+                IList<OrgeService> collection = ObjectSpace.GetObjects <OrgeService> (CriteriaOperator.Parse("GCRecord is null and IsActive=1  "
                     , Type_Name));
                 if (collection.Count > 0)
                 {
@@ -70,7 +70,6 @@ namespace WebApi.Jwt.Controllers
                     foreach (OrgeService row in collection)
                     {
                         Customer_Service Customer_Info = new Customer_Service();
-                        Customer_Info.OrgeOid = row.Oid;
                         Customer_Info.Name_Group = row.OrgeServiceName;
                         Customer_Info.Address = row.FullAddress;
                         Customer_Info.ProvinceOid = row.ProvinceOid.Oid;

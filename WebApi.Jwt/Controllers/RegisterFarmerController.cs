@@ -562,6 +562,7 @@ namespace WebApi.Jwt.Controllers
         [Route("FarmerCitizenID")]
         public HttpResponseMessage get_CitizenID()
         {
+            List<FarmerCitizen> farmerCitizenList = new List<FarmerCitizen>();
             FarmerCitizen farmer_info = new FarmerCitizen();
 
             try
@@ -628,7 +629,15 @@ namespace WebApi.Jwt.Controllers
                     farmer_info.titleName = farmerResul["prefixNameTh"];
                     farmer_info.FirstNameTH = farmerResul["firstName"];
                     farmer_info.LastNameTH = farmerResul["lastName"];
-                    farmer_info.genderName = farmerResul["genderName"];
+                    if (farmerResul["genderName"] == null)
+                    {
+                        farmer_info.genderName = "";
+                    }
+                    else
+                    {
+                        farmer_info.genderName = farmerResul["genderName"];
+                    }
+
                     farmer_info.birthDate = farmerResul["birthDay"];
                     farmer_info.tel = farmerResul["phone"];
                     farmer_info.email = farmerResul["email"];
@@ -643,14 +652,13 @@ namespace WebApi.Jwt.Controllers
                     farmer_info.latitude = farmerResul["latitude"];
                     farmer_info.longitude = farmerResul["longitude"];
 
-
-
-                    return Request.CreateResponse(HttpStatusCode.OK, farmer_info);
-
+                    farmerCitizenList.Add(farmer_info);
+                    return Request.CreateResponse(HttpStatusCode.OK, farmerCitizenList);
                 }
                 else
                 {
                     return Request.CreateResponse(HttpStatusCode.BadRequest, "ไม่มีเลขบัตรประชาชน");
+
                 }
             }
             catch (Exception ex)
@@ -661,7 +669,7 @@ namespace WebApi.Jwt.Controllers
 
                 err.message = ex.Message;
                 //  Return resual
-                return Request.CreateResponse(HttpStatusCode.BadRequest, err + " " + "ไม่มีเลขบัตรประชาชน โปรดลงทะเบียน");
+                return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
 
         }

@@ -24,18 +24,30 @@ namespace WebApi.Jwt.Models
     }
     public class RegisterSubscriber_User
     {
-        public string OrgeServiceID { get; set; }
-        public string OrgeServiceName { get; set; }
-        public string E_Mail { get; set; }
+        public string OrganizationOid { get; set; }
+        public string RegisterDate { get; set; }
+        public string CitizenID { get; set; }
+        public string TitleOid { get; set; }
+        public string FirstNameTH { get; set; }
+        public string LastNameTH { get; set; }
+        public string Gender { get; set; }
+        public string BirthDate { get; set; }
         public string Tel { get; set; }
-        public string Address_No { get; set; }
+        public string Email { get; set; }
+        public string DisPlayName { get; set; }
+        public string Address { get; set; }
         public string Moo { get; set; }
         public string Soi { get; set; }
         public string Road { get; set; }
-        public string ProvinceNameTH { get; set; }
-        public string DistrictNameTH { get; set; }
-        public string SubDistrictNameTH { get; set; }
+        public string ProvinceOid { get; set; }
+        public string DistrictOid { get; set; }
+        public string SubDistrictOid { get; set; }
         public string ZipCode { get; set; }
-        public int Status { get; set; }
+        public string FullAddress { get; set; }
+        public string Remark { get; set; }
+        public string IsActive { get; set; }
+        public string CusTomerName { get; set; }
+ 
+   
     }
 }

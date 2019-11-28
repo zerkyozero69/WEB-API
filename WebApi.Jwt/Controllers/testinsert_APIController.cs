@@ -58,7 +58,7 @@ namespace WebApi.Jwt.Controllers
 
             ObjInUser = objectSpace.CreateObject<UserInfo>();
             ObjInUser.UserName = UserName;
-       
+           
             objectSpace.CommitChanges();
             return Ok(ObjInUser);
 

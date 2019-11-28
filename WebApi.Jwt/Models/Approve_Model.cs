@@ -5,7 +5,7 @@ using System.Web;
 
 namespace WebApi.Jwt.Models
 {
-    public class Approve_Model
+    public  class Approve_Model
     {
         public string Send_No {get;set;}
         public string SendDate { get; set; }
@@ -14,9 +14,12 @@ namespace WebApi.Jwt.Models
         public string ReceiveOrgOid { get; set; }
         public string Remark { get; set; }
         public string SendStatus { get; set; }
-
+        public double Weight { get; set; }
          public string CancelMsg { get; set; }
-        public string Send_Messengr { get; set; }
+    
+        public  string Send_Messengr { get; set; }
+        
+
         public List<SendOrderSeed_Model> objSeed;
     }
     
@@ -97,6 +100,19 @@ namespace WebApi.Jwt.Models
         public double Price { get; set; }
       
 }
+    public class sendSeed_info
+        {
+        public string Send_No { get; set; }
+        public string SendDate { get; set; }
+        public string FinanceYearOid { get; set; }
+        public string SendOrgOid { get; set; }
+        public string ReceiveOrgOid { get; set; }
+        public Double Weight { get; set; }
+    }
+    public class  data_info
+    {
+      public  List<sendSeed_info> sendSS { get; set;}
+    }
     public enum APPROVE
         {
         Draft = 1,

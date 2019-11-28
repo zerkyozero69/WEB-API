@@ -34,6 +34,7 @@ using WebApi.Jwt.Models;
 using Newtonsoft.Json.Linq;
 using nutrition.Module.EmployeeAsUserExample.Module.BusinessObjects;
 using static WebApi.Jwt.Models.Farmerinfo;
+using nutrition.Module;
 
 namespace WebApi.Jwt.Controllers.MasterData
 {
@@ -49,7 +50,7 @@ namespace WebApi.Jwt.Controllers.MasterData
         [Route("Register_Subscriber")]
         public HttpResponseMessage Register_Subscriber()
         {
-            RegisterSubscriber_User subscriber = new RegisterSubscriber_User();
+            RegisterSubscriber_User Regi_subscriber = new RegisterSubscriber_User();
 
             try
             {
@@ -57,42 +58,59 @@ namespace WebApi.Jwt.Controllers.MasterData
                 JObject jObject = (JObject)JsonConvert.DeserializeObject(requestString);
                 if (jObject != null)
                 {
-                    subscriber.OrgeServiceID = jObject.SelectToken("OrgeServiceID").Value<string>();
-                    subscriber.OrgeServiceName = jObject.SelectToken("OrgeServiceName").Value<string>();
-                    subscriber.Tel = jObject.SelectToken("Tel").Value<string>();
-                    subscriber.E_Mail = jObject.SelectToken("Email").Value<string>();
-                    subscriber.Address_No = jObject.SelectToken("Address").Value<string>();
-                    if (jObject.SelectToken("Moo") == null)
+                    if (jObject.SelectToken("Organization") == null)
                     {
-                        subscriber.Moo = string.Empty;
+                        Regi_subscriber.OrganizationOid = "ไม่มีข้อมูลศูนย์";
                     }
                     else
                     {
-                        subscriber.Moo = jObject.SelectToken("Moo").Value<string>();
+                        Regi_subscriber.OrganizationOid = jObject.SelectToken("Organization").Value<string>();
+                    }
+                  
+                    Regi_subscriber.RegisterDate = jObject.SelectToken("RegisterDate").Value<string>();
+                    Regi_subscriber.CitizenID = jObject.SelectToken("CitizenID").Value<string>();
+                    Regi_subscriber.TitleOid = jObject.SelectToken("TitleOid").Value<string>();
+                    Regi_subscriber.FirstNameTH = jObject.SelectToken("FirstNameTH").Value<string>();
+                    Regi_subscriber.LastNameTH = jObject.SelectToken("LastNameTH").Value<string>();
+                    Regi_subscriber.Gender = jObject.SelectToken("Gender").Value<string>();
+                    Regi_subscriber.BirthDate = jObject.SelectToken("BirthDate").Value<string>();
+                    Regi_subscriber.Tel = jObject.SelectToken("Tel").Value<string>();
+                    Regi_subscriber.Email = jObject.SelectToken("Email").Value<string>();
+                    Regi_subscriber.DisPlayName = jObject.SelectToken("DisPlayName").Value<string>();
+                    if (jObject.SelectToken("Moo") == null)
+                    {
+                        Regi_subscriber.Moo = string.Empty;
+                    }
+                    else
+                    {
+                        Regi_subscriber.Moo = jObject.SelectToken("Moo").Value<string>();
                     }
 
                     if (jObject.SelectToken("Soi") == null)
                     {
-                        subscriber.Soi = string.Empty;
+                        Regi_subscriber.Soi = string.Empty;
                     }
                     else
                     {
-                        subscriber.Soi = jObject.SelectToken("Soi").Value<string>();
+                        Regi_subscriber.Soi = jObject.SelectToken("Soi").Value<string>();
                     }
 
                     if (jObject.SelectToken("Road") == null)
                     {
-                        subscriber.Road = string.Empty;
+                        Regi_subscriber.Road = string.Empty;
                     }
                     else
                     {
-                        subscriber.Road = jObject.SelectToken("Road").Value<string>();
+                        Regi_subscriber.Road = jObject.SelectToken("Road").Value<string>();
                     }
 
-                    subscriber.ProvinceNameTH = jObject.SelectToken("ProvinceOid").Value<string>();
-                    subscriber.DistrictNameTH = jObject.SelectToken("DistrictOid").Value<string>();
-                    subscriber.SubDistrictNameTH = jObject.SelectToken("SubDistrictOid").Value<string>();
-                    subscriber.ZipCode = jObject.SelectToken("ZipCode").Value<string>();
+                    Regi_subscriber.ProvinceOid = jObject.SelectToken("ProvinceOid").Value<string>();
+                    Regi_subscriber.DistrictOid = jObject.SelectToken("DistrictOid").Value<string>();
+                    Regi_subscriber.SubDistrictOid = jObject.SelectToken("SubDistrictOid").Value<string>();
+                    Regi_subscriber.ZipCode = jObject.SelectToken("ZipCode").Value<string>();
+                    Regi_subscriber.FullAddress = jObject.SelectToken("FullAddress").Value<string>();
+     
+
 
 
                 }
@@ -101,26 +119,33 @@ namespace WebApi.Jwt.Controllers.MasterData
                 IObjectSpace objectSpace = osProvider.CreateObjectSpace();
                 DataSet ds = new DataSet();
                 SqlParameter[] prm = new SqlParameter[12]; /// parameter นับได้เท่าไร ใส่เท่านั้น c#
-                prm[0] = new SqlParameter("@OrgeServiceID", subscriber.OrgeServiceID); ///แต่ array ต้องนับจาก 0
-                prm[1] = new SqlParameter("@Tel", subscriber.OrgeServiceName);
-                prm[2] = new SqlParameter("@Email", subscriber.E_Mail);
-                prm[3] = new SqlParameter("@Address_No", subscriber.Address_No);
-                prm[4] = new SqlParameter("@Address_moo", subscriber.Moo);
-                prm[5] = new SqlParameter("@Address_Soi", subscriber.Soi);
-                prm[6] = new SqlParameter("@Address_Road", subscriber.Road);
-                prm[7] = new SqlParameter("@Address_provinces", subscriber.ProvinceNameTH);
-                prm[8] = new SqlParameter("@Address_districts", subscriber.SubDistrictNameTH);
-                prm[9] = new SqlParameter("@Address_subdistricts", subscriber.SubDistrictNameTH);
-                prm[10] = new SqlParameter("@ZipCode", subscriber.ZipCode);
-                prm[11] = new SqlParameter("@OrgeServiceName", subscriber.OrgeServiceName);
+                prm[0] = new SqlParameter("@Organization", Regi_subscriber.OrganizationOid); ///แต่ array ต้องนับจาก 0
+                prm[1] = new SqlParameter("@Tel", Regi_subscriber.RegisterDate);
+                prm[2] = new SqlParameter("@Email", Regi_subscriber.CitizenID);
+                prm[3] = new SqlParameter("@Address_No", Regi_subscriber.TitleOid);
+                prm[4] = new SqlParameter("@Address_moo", Regi_subscriber.FirstNameTH);
+                prm[5] = new SqlParameter("@Address_Soi", Regi_subscriber.LastNameTH);
+                prm[6] = new SqlParameter("@Address_Road", Regi_subscriber.Gender);
+                prm[7] = new SqlParameter("@Address_provinces", Regi_subscriber.BirthDate);
+                prm[8] = new SqlParameter("@Address_districts", Regi_subscriber.Tel);
+                prm[9] = new SqlParameter("@Address_subdistricts", Regi_subscriber.Email);      
+                prm[10] = new SqlParameter("@OrgeServiceName", Regi_subscriber.Moo);
+                prm[11] = new SqlParameter("@OrgeServiceName", Regi_subscriber.Soi);
+                prm[12] = new SqlParameter("@OrgeServiceName", Regi_subscriber.Road);
+                prm[13] = new SqlParameter("@OrgeServiceName", Regi_subscriber.ProvinceOid);
+                prm[14] = new SqlParameter("@OrgeServiceName", Regi_subscriber.DistrictOid);
+                prm[15] = new SqlParameter("@OrgeServiceName", Regi_subscriber.SubDistrictOid);
+                prm[16] = new SqlParameter("@ZipCode", Regi_subscriber.ZipCode);
+                prm[17] = new SqlParameter("@OrgeServiceName", Regi_subscriber.FullAddress);
+                prm[18] = new SqlParameter("@OrgeServiceName", Regi_subscriber.CusTomerName);
                 ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieRigisterUser_Service", prm);
                 if (ds.Tables[0].Rows[0]["pStatus"].ToString() != "0" || ds.Tables[0].Rows[0]["pStatus"].ToString() == "2")
                 {
 
                     var subscriber_User = new Farmer_Status();
-                    subscriber.Status = 1;
+                    subscriber_User.Status = "1";
                     subscriber_User.Message = "บันทึกข้อมูลผู้ขอรับบริการ เรียบร้อยแล้ว";
-                    return Request.CreateResponse(HttpStatusCode.OK, subscriber);
+                    return Request.CreateResponse(HttpStatusCode.OK, subscriber_User);
 
 
                 }
@@ -146,7 +171,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
         }
-       
+
         /// <summary>
         /// ลงทะเบียนขอรับบริการ
         /// </summary>
@@ -215,83 +240,109 @@ namespace WebApi.Jwt.Controllers.MasterData
 
         //[AllowAnonymous]
         //[HttpPost]
-        //[Route("Register_CustomerXAF")]
-        //public IHttpActionResult RegisterCustomerXAF()
-        //{
-        //    string TempService_ = string.Empty;
-        //    RegisterCustomer customer = new RegisterCustomer();
+        [Route("Register_CustomerXAF")]
+        public IHttpActionResult RegisterCustomerXAF()
+        {
+            string TempService_ = string.Empty;
+            RegisterSubscriber_User Regi_subscriber = new RegisterSubscriber_User();
 
-        //    try
-        //    {
+            try
+            {
 
-        //        string requestString = Request.Content.ReadAsStringAsync().Result;
-        //        JObject jObject = (JObject)JsonConvert.DeserializeObject(requestString);
-        //        if (jObject != null)
-        //        {
-        //            customer.DateTime = jObject.SelectToken("DateTime").Value<DateTime>();
-        //            customer.Service_info = jObject.SelectToken("Service_info").Value<object>();
+                string requestString = Request.Content.ReadAsStringAsync().Result;
+                JObject jObject = (JObject)JsonConvert.DeserializeObject(requestString);
+                if (jObject != null)
+                {
+                    if (jObject.SelectToken("Organization") == null)
+                    {
+                        Regi_subscriber.OrganizationOid = "ไม่มีข้อมูลศูนย์";
+                    }
+                    else
+                    {
+                        Regi_subscriber.OrganizationOid = jObject.SelectToken("Organization").Value<string>();
+                    }
 
-        //            JArray Service_info = (JArray)jObject_Service_info["Service_info"];
+                    Regi_subscriber.RegisterDate = jObject.SelectToken("RegisterDate").Value<string>();
+                    Regi_subscriber.CitizenID = jObject.SelectToken("CitizenID").Value<string>();
+                    Regi_subscriber.TitleOid = jObject.SelectToken("TitleOid").Value<string>();
+                    Regi_subscriber.FirstNameTH = jObject.SelectToken("FirstNameTH").Value<string>();
+                    Regi_subscriber.LastNameTH = jObject.SelectToken("LastNameTH").Value<string>();
+                    Regi_subscriber.Gender = jObject.SelectToken("Gender").Value<string>();
+                    Regi_subscriber.BirthDate = jObject.SelectToken("BirthDate").Value<string>();
+                    //Regi_subscriber.Tel = jObject.SelectToken("Tel").Value<string>();
+                    //Regi_subscriber.Email = jObject.SelectToken("Email").Value<string>();
+                    //Regi_subscriber.DisPlayName = jObject.SelectToken("DisPlayName").Value<string>();
+                    //if (jObject.SelectToken("Moo") == null)
+                    //{
+                    //    Regi_subscriber.Moo = string.Empty;
+                    //}
+                    //else
+                    //{
+                    //    Regi_subscriber.Moo = jObject.SelectToken("Moo").Value<string>();
+                    //}
 
-        //            customer.Get_ServiceUser_Name = jObject.SelectToken("User_Name").Value<string>();
-        //            customer.Organization_ServiceName = jObject.SelectToken("Organization_Service").Value<string>();
-        //            customer.Address = jObject.SelectToken("Address").Value<string>();
-        //            customer.CustomerTypeOid = jObject.SelectToken("CustomerType").Value<object>();
-        //            if (jObject.SelectToken("Remark") == null)
-        //            {
-        //                customer.Remark = string.Empty;
-        //            }
-        //            else
-        //            {
-        //                customer.Remark = jObject.SelectToken("Remark").Value<string>();
-        //            }
-        //        }
+                    //if (jObject.SelectToken("Soi") == null)
+                    //{
+                    //    Regi_subscriber.Soi = string.Empty;
+                    //}
+                    //else
+                    //{
+                    //    Regi_subscriber.Soi = jObject.SelectToken("Soi").Value<string>();
+                    //}
+
+                    //if (jObject.SelectToken("Road") == null)
+                    //{
+                    //    Regi_subscriber.Road = string.Empty;
+                    //}
+                    //else
+                    //{
+                    //    Regi_subscriber.Road = jObject.SelectToken("Road").Value<string>();
+                    //}
+
+                    Regi_subscriber.ProvinceOid = jObject.SelectToken("ProvinceOid").Value<string>();
+                    Regi_subscriber.DistrictOid = jObject.SelectToken("DistrictOid").Value<string>();
+                    Regi_subscriber.SubDistrictOid = jObject.SelectToken("SubDistrictOid").Value<string>();
+                    Regi_subscriber.ZipCode = jObject.SelectToken("ZipCode").Value<string>();
+                    //Regi_subscriber.FullAddress = jObject.SelectToken("FullAddress").Value<string>();
 
 
 
-        //        XpoTypesInfoHelper.GetXpoTypeInfoSource();
-        //        XPObjectSpaceProvider osProvider = new XPObjectSpaceProvider(scc, null);
-        //        IObjectSpace objectSpace = osProvider.CreateObjectSpace();
-        //        nutrition.Module.RegisterCustomer _Customer;
 
-        //        XafTypesInfo.Instance.RegisterEntity(typeof(RegisterCustomer));
-        //        _Customer = objectSpace.CreateObject<nutrition.Module.RegisterCustomer>();
-        //        _Customer.RegisterDate = Convert.ToDateTime(10 - 25 - 2000);
-        //        _Customer.CustomerTypeOid = objectSpace.FindObject<nutrition.Module.CustomerType>
-        //                                                        (new BinaryOperator("Oid", "F3A44910-5FE9-496A-9B66-368432ED16AD"));
+                }
 
-        //        _Customer.CustomerTypeOid = objectSpace.FindObject<nutrition.Module.CustomerType>
-        //                                                        (new BinaryOperator("Oid", customer.CustomerTypeOid));
-        //        _Customer.OrgeServiceOid = objectSpace.FindObject<nutrition.Module.OrgeService>
-        //                                                         (new BinaryOperator("Oid", customer.Organization_ServiceName));
+                
+                XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                XPObjectSpaceProvider osProvider = new XPObjectSpaceProvider(scc, null);
+                IObjectSpace objectSpace = osProvider.CreateObjectSpace();
+                nutrition.Module.RegisterCusService Regi_subscriber_;
 
-        //        _Customer.CustomerOid = objectSpace.FindObject<nutrition.Module.Farmer>
-        //                                                                  (new BinaryOperator("Oid", customer.Get_ServiceUser_Name));
+                XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.RegisterCusService));
+                Regi_subscriber_ = objectSpace.CreateObject<RegisterCusService>();
+                Regi_subscriber.OrganizationOid = "F97EF626-FDB7-4361-A9F3-1C9D14FAC27E";
 
-        //        _Customer.Address = customer.Address;
-        //        _Customer.Remark = customer.Remark;
 
-        //        objectSpace.CommitChanges();
 
-        //        return Ok(_Customer);
-        //        {
-        //            return BadRequest();
-        //        }
-        //    }
+                objectSpace.CommitChanges();
 
-        //    catch (Exception ex)
-        //    {
-        //        //Error case เกิดข้อผิดพลาด
-        //        UserError err = new UserError();
-        //        err.status = "ผิดพลาด";
-        //        err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                return Ok(Regi_subscriber);
+                {
+                    return BadRequest();
+                }
+            }
 
-        //        err.message = ex.Message;
-        //        //   Return resual
-        //        return BadRequest(ex.Message);
-        //    }
+            catch (Exception ex)
+            {
+                //Error case เกิดข้อผิดพลาด
+                UserError err = new UserError();
+                err.status = "ผิดพลาด";
+                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
 
-        //}
+                err.message = ex.Message;
+                //   Return resual
+                return BadRequest(ex.Message);
+            }
+
+        }
         #endregion
     }
 
