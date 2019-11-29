@@ -43,13 +43,14 @@ namespace WebApi.Jwt.Models
     public class ReceiveOrderSeed_Model
     {
        public string ReceiveNo { get; set; }
-        public DateTime SendDate { get; set; }
-        public object FinanceYearOid { get; set; }
+        public DateTime ReceiveDate { get; set; }
+        public string FinanceYear { get; set; }
+        public object ReceiveOrgoid { get; set; }
+        public string ReceiveOrgName { get; set; }
         public object SendOrgOid { get; set; }
-        public object ReceiveOrgOid { get; set; }
-        public string Remark { get; set; }
-        public int SendStatus { get; set; }
-    
+        public string SendOrgName { get; set; }
+       
+        public string Weight { get; set; }
     }
     public class ReceiveOrderSeedDetail_Model
     {
@@ -104,10 +105,13 @@ namespace WebApi.Jwt.Models
         {
         public string Send_No { get; set; }
         public string SendDate { get; set; }
-        public string FinanceYearOid { get; set; }
-        public string SendOrgOid { get; set; }
-        public string ReceiveOrgOid { get; set; }
-        public Double Weight { get; set; }
+        public string FinanceYear { get; set; }
+        public object SendOrgOid { get; set; }
+
+        public string SendOrgName { get; set; }
+        public  object ReceiveOrgoid { get; set;}
+        public string ReceiveOrgName { get; set; }
+        public string Weight { get; set; }
     }
     public class  data_info
     {

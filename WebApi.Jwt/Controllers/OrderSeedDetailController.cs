@@ -31,6 +31,7 @@ using System.IO;
 using nutrition.Module.EmployeeAsUserExample.Module.BusinessObjects;
 using nutrition.Module;
 using DevExpress.Xpo;
+using System.Globalization;
 
 namespace WebApi.Jwt.Controllers
 {
@@ -42,6 +43,7 @@ namespace WebApi.Jwt.Controllers
         /// </summary>
         /// <param name="SendOrderSeed"></param>
         /// <returns></returns>
+        #region เมล็ดพันธุ์
         [AllowAnonymous]
         [HttpGet]
         [Route("SendSeed/Order")]
@@ -59,8 +61,6 @@ namespace WebApi.Jwt.Controllers
                 OrderSeed = ObjectSpace.FindObject<SendOrderSeedDetail>(new BinaryOperator("SendOrderSeed", SendOrderSeed));
                 if (SendOrderSeed != null)
                 {
-
-
                     OrderSeedDetail.LotNumber = OrderSeed.LotNumber.LotNumber;
                     OrderSeedDetail.WeightUnitOid = OrderSeed.WeightUnitOid.UnitName;
                     OrderSeedDetail.AnimalSeedCode = OrderSeed.AnimalSeedCode;
@@ -84,111 +84,135 @@ namespace WebApi.Jwt.Controllers
             }
         }
         /// <summary>
-        /// หน้ารายละเอียดการส่งเมล็ด
+        /// โหลดหน้าสถานะ  2 
         /// </summary>
         /// <returns></returns>
         [AllowAnonymous]
         [HttpGet]
-        [Route("SendSeed/Detail_List")]
-        public IHttpActionResult OrderseedDetail_List()
+        [Route("LoadSendSeed")]
+        public HttpResponseMessage LoadSendSeed()
         {
+
             try
             {
+
                 XpoTypesInfoHelper.GetXpoTypeInfoSource();
-                XafTypesInfo.Instance.RegisterEntity(typeof(SendOrderSeedDetail));
+                XafTypesInfo.Instance.RegisterEntity(typeof(SendOrderSeed));
                 XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-                List<OrderSeedDetail> list = new List<OrderSeedDetail>();
-                IList<SendOrderSeedDetail> collection = ObjectSpace.GetObjects<SendOrderSeedDetail>(CriteriaOperator.Parse("GCRecord is null  "));
-                if (collection != null)
+                List<SendOrderSeed_Model> list_detail = new List<SendOrderSeed_Model>();
+                List<sendSeed_info> list = new List<sendSeed_info>();
+                data_info Temp_data = new data_info();
+                IList<SendOrderSeed> collection = ObjectSpace.GetObjects<SendOrderSeed>(CriteriaOperator.Parse(" GCRecord is null and SendStatus = 2", null));
+
+                double Amount = 0;
+                if (collection.Count > 0)
                 {
 
-                    foreach (SendOrderSeedDetail row in collection)
+                    foreach (SendOrderSeed row in collection)
                     {
-                        OrderSeedDetail OrderSeedDetail = new OrderSeedDetail();
-                        OrderSeedDetail.LotNumber = row.LotNumber.LotNumber;
-                        OrderSeedDetail.WeightUnitOid = row.WeightUnitOid.UnitName;
-                        OrderSeedDetail.AnimalSeedCode = row.AnimalSeedCode;
-                        OrderSeedDetail.AnimalSeeName = row.AnimalSeeName;
-                        OrderSeedDetail.AnimalSeedLevel = row.AnimalSeedLevel;
-                        OrderSeedDetail.AnimalSeedOid = row.AnimalSeedOid.SeedName;
-                        OrderSeedDetail.AnimalSeedLevelOid = row.AnimalSeedLevelOid.SeedLevelName;
-                        OrderSeedDetail.SeedTypeOid = row.SeedTypeOid.SeedTypeName;
-                        OrderSeedDetail.BudgetSourceOid = row.BudgetSourceOid.BudgetName;
-                        OrderSeedDetail.Weight = row.Weight;
-                        OrderSeedDetail.Amount = row.Amount;
-                        OrderSeedDetail.Used = row.Used;
-                        OrderSeedDetail.SendOrderSeed = row.SendOrderSeed.SendNo;
-                        list.Add(OrderSeedDetail);
+                        sendSeed_info Approve = new sendSeed_info();
+                        Approve.Send_No = row.SendNo;
+                        Approve.SendDate = row.SendDate.ToString("dd-MM-yyyy", new CultureInfo("us-US")); /* convet เวลา*/
+                        Approve.FinanceYear = row.FinanceYearOid.YearName;
+                        Approve.SendOrgOid = row.SendOrgOid.Oid;
+                        Approve.SendOrgName = row.SendOrgOid.OrganizeNameTH;
+                        Approve.ReceiveOrgoid = row.ReceiveOrgOid.Oid;
+                        Approve.ReceiveOrgName = row.ReceiveOrgOid.OrganizeNameTH;
+
+                        foreach (SendOrderSeedDetail row2 in row.SendOrderSeedDetails)
+                        {
+                            Amount = Amount + row2.Weight;
+                        }
+                        Approve.Weight = Amount.ToString();
+
+
+                        list.Add(Approve);
                     }
+                    Temp_data.sendSS = list;
+                    return Request.CreateResponse(HttpStatusCode.OK, list);
                 }
+
                 else
                 {
-
-                    return BadRequest("NoData");
-
+                    UserError err = new UserError();
+                    err.code = "5"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                    err.message = "No data";
+                    ////    Return resual
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, err);
                 }
-                return Ok(list);
+
             }
             catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
+            { //Error case เกิดข้อผิดพลาด
+                UserError err = new UserError();
+                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                err.message = ex.Message;
+                ////  Return resual
+                return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
         }
-        #region เมล็ดพันธุ์
+
         /// <summary>
         /// แสดงรายละเอียดข้อมูลการรับเมล็ด
         /// </summary>
         /// <returns></returns>
-        //[AllowAnonymous]
-        //[HttpGet]
-        //[Route("ReceiveOrderSeed")]
-        //public IHttpActionResult ReceiveOrderSeed()
-        //{
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("ReceiveOrderSeed")]
+        public IHttpActionResult ReceiveOrderSeed()
+        {
 
-        //    try
-        //    {
-        //        XpoTypesInfoHelper.GetXpoTypeInfoSource();
-        //        XafTypesInfo.Instance.RegisterEntity(typeof(ReceiveOrderSeed));
-        //        XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
-        //        IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+            try
+            {
+                XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                XafTypesInfo.Instance.RegisterEntity(typeof(SendOrderSeed));
+                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+                List<SendOrderSeed_Model> list_detail = new List<SendOrderSeed_Model>();
+                List<ReceiveOrderSeed_Model> list = new List<ReceiveOrderSeed_Model>();
+                IList<SendOrderSeed> collection = ObjectSpace.GetObjects<SendOrderSeed>(CriteriaOperator.Parse("GCRecord is null and SendStatus = 2 "));
+                double Amount = 0;
+                if (collection.Count > 0)
+                {
+                    foreach (SendOrderSeed row in collection)
+                    {
+                        ReceiveOrderSeed_Model Model = new ReceiveOrderSeed_Model();
+                        
+                        Model.ReceiveNo = row.SendNo;
+                        Model.ReceiveDate = row.SendDate;
+                        //    FinanceYear = ObjectSpace.GetObject<nutrition.Module.FinanceYear>(CriteriaOperator.Parse(nameof"Oid = @FinanceYearOid ", null));
+                        Model.FinanceYear = row.FinanceYearOid.YearName;
+                        Model.ReceiveOrgoid = row.ReceiveOrgOid.Oid;
+                        Model.ReceiveOrgName = row.ReceiveOrgOid.OrganizeNameTH;
+                        Model.SendOrgOid = row.SendOrgOid.Oid;
+                        Model.SendOrgName = row.SendOrgOid.OrganizeNameTH;
+                        foreach (SendOrderSeedDetail row2 in row.SendOrderSeedDetails)
+                        {
+                            Amount = Amount + row2.Weight;
+                        }
+                        Model.Weight = Model.ToString();
+                        list.Add(Model);
+                        
+                    }
+                    return Ok(list);
+                }
 
-        //        List<ReceiveOrderSeed_Model> list = new List<ReceiveOrderSeed_Model>();
-        //        IList<ReceiveOrderSeed> collection = ObjectSpace.GetObjects<ReceiveOrderSeed>(CriteriaOperator.Parse("GCRecord is null  "));
-        //        if (collection.Count > 0)
-        //        {
-        //            foreach (ReceiveOrderSeed row in collection)
-        //            {
-        //                ReceiveOrderSeed_Model Model = new ReceiveOrderSeed_Model();
-        //                Model.ReceiveNo = row.ReceiveNo;
-        //                Model.SendDate = row.SendDate;
-        //                //    FinanceYear = ObjectSpace.GetObject<nutrition.Module.FinanceYear>(CriteriaOperator.Parse(nameof"Oid = @FinanceYearOid ", null));
-        //                Model.FinanceYearOid = row.FinanceYearOid.YearName;
-        //                Model.SendOrgOid = row.SendOrgOid.OrganizeNameTH;
-        //                Model.ReceiveOrgOid = row.ReceiveOrgOid.OrganizeNameTH;
-        //                Model.Remark = row.Remark;
-        //                Model.SendStatus = (int)row.SendStatus;
-        //                list.Add(Model);
-        //            }
-        //        }
+                else
+                {
+                    return BadRequest("NoData");
+                }    
+            }
 
-        //        else
-        //        {
-        //            return BadRequest("NoData");
-        //        }
-        //        return Ok(list);
-
-        //    }
-
-        //    catch (Exception ex)
-        //    { //Error case เกิดข้อผิดพลาด
-        //        UserError err = new UserError();
-        //        err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-        //        err.message = ex.Message;
-        //        //  Return resual
-        //        return BadRequest(ex.Message);
-        //    }
-        //}
+            catch (Exception ex)
+            { //Error case เกิดข้อผิดพลาด
+                UserError err = new UserError();
+                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                err.message = ex.Message;
+                //  Return resual
+                return BadRequest(ex.Message);
+            }
+        }
         /// <summary>
         /// หน้าส่งเมล็ดพันธุ์ ระหว่างรอดำเนินการ ***ใช้ตัวนี้ในหน้าอนุมัติ
         /// </summary>
@@ -227,7 +251,7 @@ namespace WebApi.Jwt.Controllers
         //                Approve.SendOrgOid = row.SendOrgOid.OrganizeNameTH;
         //                Approve.ReceiveOrgOid = row.ReceiveOrgOid.OrganizeNameTH;
         //                Approve.Remark = row.Remark;
-            
+
         //                Approve.CancelMsg = row.CancelMsg = "";
         //                Approve.SendStatus = row.SendStatus.ToString();
 
@@ -263,7 +287,7 @@ namespace WebApi.Jwt.Controllers
         //           // Return resual
         //                 return BadRequest();
         //        }
-             
+
         //    }
         //    catch (Exception ex)
         //    { //Error case เกิดข้อผิดพลาด
@@ -371,93 +395,6 @@ namespace WebApi.Jwt.Controllers
 
         //}
 
-        /// <summary>
-        /// หารายละเอียดการส่งด้วย sendOID
-        /// </summary>
-        /// <returns></returns>
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("SendOrder/{SendNo}")] // ใส่ OIDSendOrderSeed ใบนำส่ง
-        public IHttpActionResult SendOrderSeedDetail_ByOrderSeedID()
-        {
-            object SendNo = string.Empty;
-            object ReceiveOrgOid = string.Empty;
-            Approve_Model sendDetail = new Approve_Model();
-
-            SendOrderSeed_Model Model = new SendOrderSeed_Model();
-            try
-            {
-                if (HttpContext.Current.Request.Form["SendNo"].ToString() != null)
-                {
-                    SendNo = HttpContext.Current.Request.Form["SendNo"].ToString();
-                }
-                if (HttpContext.Current.Request.Form["ReceiveOrgOid"].ToString() != null)
-                {
-                    ReceiveOrgOid = HttpContext.Current.Request.Form["ReceiveOrgOid"].ToString();
-                }
-                XpoTypesInfoHelper.GetXpoTypeInfoSource();
-                XafTypesInfo.Instance.RegisterEntity(typeof(SendOrderSeed));
-                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc);
-                List<Approve_Model> list = new List<Approve_Model>();
-                List<SendOrderSeed_Model> list_detail = new List<SendOrderSeed_Model>();
-                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-                SendOrderSeed sendOrderSeed;
-                sendOrderSeed = ObjectSpace.FindObject<SendOrderSeed>(CriteriaOperator.Parse("GCRecord is null and SendStatus = 2 and SendNo=? and ReceiveOrgOid=? ", SendNo, ReceiveOrgOid));
-               //sendOrderSeed = ObjectSpace.GetObject<SendOrderSeed>(CriteriaOperator.Parse("GCRecord is null and SendStatus = 2 and ReceiveOrgOid=? ", null));
-                if (SendNo != null)
-                {   
-                    sendDetail.Send_No = sendOrderSeed.SendNo;
-                    sendDetail.SendDate = Convert.ToDateTime(sendOrderSeed.SendDate).ToString();
-                    sendDetail.SendOrgOid = sendOrderSeed.SendOrgOid.OrganizeNameTH;
-                    sendDetail.ReceiveOrgOid = sendOrderSeed.ReceiveOrgOid.OrganizeNameTH;
-                    sendDetail.Remark = sendOrderSeed.Remark;
-                    sendDetail.SendStatus = sendOrderSeed.SendStatus.ToString();
-                    if (sendOrderSeed.CancelMsg == null)
-                    {
-                        sendDetail.CancelMsg = "";
-                    }
-                    else
-                    {
-                        sendDetail.CancelMsg = sendOrderSeed.CancelMsg;
-                    }
-
-                    foreach (SendOrderSeedDetail row in sendOrderSeed.SendOrderSeedDetails)
-                    {
-                        SendOrderSeed_Model send_Detail = new SendOrderSeed_Model();
-                        send_Detail.LotNumber = row.LotNumber.LotNumber;
-                        send_Detail.WeightUnitOid = row.WeightUnitOid.UnitName;
-                        send_Detail.AnimalSeedCode = row.AnimalSeedCode;
-                        send_Detail.AnimalSeedLevel = row.AnimalSeedLevel;
-                        send_Detail.AnimalSeeName = row.AnimalSeeName;
-                        send_Detail.BudgetSourceOid = row.BudgetSourceOid.BudgetName;
-                        send_Detail.Weight = row.Weight;
-                        send_Detail.Used = row.Used.ToString();
-                        send_Detail.SendOrderSeed = row.SendOrderSeed.SendNo;
-                        send_Detail.AnimalSeedOid = row.AnimalSeedOid.SeedName;
-                        send_Detail.AnimalSeedLevelOid = row.AnimalSeedLevelOid.SeedLevelName;
-                        send_Detail.SeedTypeOid = row.SeedTypeOid.SeedTypeName;
-                        send_Detail.Amount = row.Amount;
-                        list_detail.Add(send_Detail);
-                    }
-                    sendDetail.objSeed = list_detail;
-                    return Ok(sendDetail);
-                }
-                else
-                {
-                    return BadRequest("NoData");
-                }
-            }
-
-            catch (Exception ex)
-            { //Error case เกิดข้อผิดพลาด
-                UserError err = new UserError();
-                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-                err.message = ex.Message;
-                //  Return resual
-                return BadRequest(ex.Message);
-            }
-
-        }
         //[AllowAnonymous]
         //[HttpGet]
         //[Route("LoadSendSeed/accept")]

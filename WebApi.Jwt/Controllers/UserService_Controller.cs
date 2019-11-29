@@ -39,90 +39,6 @@ namespace WebApi.Jwt.Controllers
     public class UserService_Controller : ApiController
     {
         string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
-
-        /// <summary>
-        /// ใช้ในการเรียกหน่วยงานที่ขอรับบริการ
-        /// </summary>
-        /// <param name="Type_Name"></param>
-        /// <returns></returns>
-        [AllowAnonymous]
-        //[JwtAuthentication] /ถ้าใช้โทเคนต้องครอบ
-        // [HttpPost] หน้าโมบาย
-        [HttpPost]
-        [Route("OrgeService")]
-        public HttpResponseMessage OrgeService(string Type_Name )
-        {
-        
-            try
-
-            {
-                XpoTypesInfoHelper.GetXpoTypeInfoSource();
-                XafTypesInfo.Instance.RegisterEntity(typeof(OrgeService));
-                XafTypesInfo.Instance.RegisterEntity(typeof(RoleInfo));
-                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
-                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();            
-                nutrition.Module.Province DLD;
-                IList<OrgeService> collection = ObjectSpace.GetObjects <OrgeService> (CriteriaOperator.Parse("GCRecord is null and IsActive=1  "
-                    , Type_Name));
-                if (collection.Count > 0)
-                {
-                    List<Customer_Service> list = new List<Customer_Service>();
-                    foreach (OrgeService row in collection)
-                    {
-                        Customer_Service Customer_Info = new Customer_Service();
-                        Customer_Info.Name_Group = row.OrgeServiceName;
-                        Customer_Info.Address = row.FullAddress;
-                        Customer_Info.ProvinceOid = row.ProvinceOid.Oid;
-                        Customer_Info.ProvinceNameTH = row.ProvinceOid.ProvinceNameTH;
-                        Customer_Info.OrgeID = row.OrgeServiceID;
-                        DLD = ObjectSpace.FindObject<nutrition.Module.Province>(new BinaryOperator("Oid", row.ProvinceOid.DLDZone));
-                        Customer_Info.DLD = row.ProvinceOid.DLDZone.DLDAreaName;
-                        Customer_Info.DistrictOid = row.DistrictOid.Oid;
-                        Customer_Info.DistrictNameTH = row.DistrictOid.DistrictNameTH;
-                        Customer_Info.SubDistrictOid = row.SubDistrictOid.Oid;
-                        Customer_Info.SubDistrictNameTH = row.SubDistrictOid.SubDistrictNameTH;
-                        Customer_Info.ZipCode = row.ZipCode;
-                        Customer_Info.Tel = row.Tel;
-                        Customer_Info.Status = 1;
-
-                        list.Add(Customer_Info);
-                    }
-
-                    return Request.CreateResponse(HttpStatusCode.OK, list);
-                    //string TempSubDistrict, TempDistrict;
-                    //if (Customer_Info.Organization.ProvinceOid.ProvinceNameTH.Contains("กรุงเทพ"))
-                    //{ TempSubDistrict = "แขวง"; }
-                    //else
-                    //{ TempSubDistrict = "ตำบล"; };
-
-                    //if (Customer_Info.Organization.ProvinceOid.ProvinceNameTH.Contains("กรุงเทพ"))
-                    //{ TempDistrict = "เขต"; }
-                    //else { TempDistrict = "อำเภอ"; };
-
-                    //Customer_Info.FullAddress = Customer_Info.Organization.Address + " หมู่ที่" + checknull(Customer_Info.Organization.Moo) + " ถนน" + checknull(Customer_Info.Organization.Road) + " " +
-                    //TempSubDistrict + Customer_Info.Organization.SubDistrictOid.SubDistrictNameTH + " " + TempDistrict + Customer_Info.Organization.DistrictOid.DistrictNameTH + " " +
-                    //"จังหวัด" + Customer_Info.Organization.ProvinceOid.ProvinceNameTH + " " + Customer_Info.Organization.DistrictOid.PostCode;
-
-                }
-                else
-                {
-
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, "NoData");
-
-                }
-
-
-            }
-            catch (Exception ex)
-            {
-                UserError err = new UserError();
-                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-                err.message = ex.Message;
-                //  Return resual
-                return Request.CreateResponse(HttpStatusCode.BadRequest, err);
-            }
-        }
-
         /// <summary>
         /// ใช้ในการเรียกหน่วยงานที่ขอรับบริการ
         /// </summary>
@@ -133,42 +49,40 @@ namespace WebApi.Jwt.Controllers
         // [HttpPost] หน้าโมบาย
         [HttpPost]
         [Route("Customer/info")]
-        public HttpResponseMessage RegisterCustomer(string Type_Name)
+        public HttpResponseMessage RegisterCustomer()
         {
 
             try
 
             {
                 XpoTypesInfoHelper.GetXpoTypeInfoSource();
-                XafTypesInfo.Instance.RegisterEntity(typeof(CustomerType));
-                XafTypesInfo.Instance.RegisterEntity(typeof(RoleInfo));
+                XafTypesInfo.Instance.RegisterEntity(typeof(OrgeService));
                 XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-             
-                IList<CustomerType> collection = ObjectSpace.GetObjects<CustomerType>(CriteriaOperator.Parse("GCRecord is null and IsActive=1 and TypeName='" + Type_Name + "' ", Type_Name));
+                List<OrgeService_info> list = new List<OrgeService_info>();
+                IList<OrgeService> collection = ObjectSpace.GetObjects<OrgeService>(CriteriaOperator.Parse("GCRecord is null and IsActive=1 ", null));
                 if (collection.Count > 0)
                 {
-                    List<Customer_Service> list = new List<Customer_Service>();
-                    foreach (CustomerType row in collection)
+                    foreach (OrgeService row in collection)
                     {
-                        //Customer_Service Customer_Info = new Customer_Service();
-                        //Customer_Info.OrgeOid = row.Oid;
-                        //Customer_Info.Name_Group = row.OrgeServiceName;
-                        //Customer_Info.Address = row.FullAddress;
-                        //Customer_Info.ProvinceOid = row.ProvinceOid.Oid;
-                        //Customer_Info.ProvinceNameTH = row.ProvinceOid.ProvinceNameTH;
-                        //Customer_Info.OrgeID = row.OrgeServiceID;
-                        //DLD = ObjectSpace.FindObject<nutrition.Module.Province>(new BinaryOperator("Oid", row.ProvinceOid.DLDZone));
-                        //Customer_Info.DLD = row.ProvinceOid.DLDZone.DLDAreaName;
-                        //Customer_Info.DistrictOid = row.DistrictOid.Oid;
-                        //Customer_Info.DistrictNameTH = row.DistrictOid.DistrictNameTH;
-                        //Customer_Info.SubDistrictOid = row.SubDistrictOid.Oid;
-                        //Customer_Info.SubDistrictNameTH = row.SubDistrictOid.SubDistrictNameTH;
-                        //Customer_Info.ZipCode = row.ZipCode;
-                        //Customer_Info.Tel = row.Tel;
-                        //Customer_Info.Status = 1;
-
-                       // list.Add(Customer_Info);
+                        OrgeService_info Customer_Info = new OrgeService_info();
+                        Customer_Info.OrgeOid = row.Oid;
+                        //Customer_Info.OrganizationOid = row.OrganizationOid.OrganizeNameTH;
+                        Customer_Info.OrgeServiceID = row.OrgeServiceID;
+                        Customer_Info.OrgeServiceName = row.OrgeServiceName;
+                        Customer_Info.Tel = row.Tel;
+                        Customer_Info.Email = row.Email;
+                        Customer_Info.Address = row.Address;
+                        Customer_Info.Moo = row.Moo;
+                        Customer_Info.Soi = row.Soi;
+                        Customer_Info.Road = row.Road;
+                        Customer_Info.ProvinceOid = row.ProvinceOid.ProvinceNameTH;
+                        Customer_Info.DistrictOid = row.DistrictOid.DistrictNameTH;
+                        Customer_Info.SubDistrictOid = row.SubDistrictOid.SubDistrictNameTH;
+                        Customer_Info.ZipCode = row.ZipCode;
+                        Customer_Info.FullAddress = row.FullAddress;
+                        Customer_Info.IsActive = row.Tel;
+                        list.Add(Customer_Info);
                     }
 
                     return Request.CreateResponse(HttpStatusCode.OK, list);

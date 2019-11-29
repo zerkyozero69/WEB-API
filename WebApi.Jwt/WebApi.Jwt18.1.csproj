@@ -222,7 +222,7 @@
   <ItemGroup>
     <Content Include="Global.asax" />
     <Content Include="helpclass\JavaScript.js" />
-    <Content Include="HtmlPage.html" />
+    <Content Include="index.html" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -312,6 +312,12 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\packages\ConstructorNullAnalyzer.0.4.1\analyzers\dotnet\cs\ConstructorNullAnalyzer.dll" />
+    <Analyzer Include="..\packages\ExceptionsAnalyzer.0.1.5\analyzers\dotnet\cs\ExceptionsAnalyzer.dll" />
+    <Analyzer Include="..\packages\NamedParametersAnalyzer.0.3.1\analyzers\dotnet\cs\NamedParametersAnalyzer.dll" />
+    <Analyzer Include="..\packages\SwitchAnalyzer.0.6.9\analyzers\dotnet\cs\SwitchAnalyzer.dll" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
