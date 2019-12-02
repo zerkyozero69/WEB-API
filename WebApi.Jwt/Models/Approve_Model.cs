@@ -43,7 +43,7 @@ namespace WebApi.Jwt.Models
     public class ReceiveOrderSeed_Model
     {
        public string ReceiveNo { get; set; }
-        public DateTime ReceiveDate { get; set; }
+        public string ReceiveDate { get; set; }
         public string FinanceYear { get; set; }
         public object ReceiveOrgoid { get; set; }
         public string ReceiveOrgName { get; set; }
@@ -69,34 +69,36 @@ namespace WebApi.Jwt.Models
     public class SupplierProductUser
     {
         public List<SupplierUseProductDetail_Model> objProduct;
-        public DateTime UseDate { get; set; }
+        public string UseDate { get; set; }
         public string UseNo { get; set; }
-        public string FinanceYearOid { get; set; }
-        public string OrganizationOid { get; set; }
-        public string EmployeeOid { get; set; }
+        public string FinanceYear { get; set; }
+        public string OrganizationName { get; set; }
+        public string EmployeeName { get; set; }
         public string Remark { get; set; }
         public string Stauts { get; set; }
         public string ApproveDate { get; set; }
-        public string ActivityOid { get; set; }
-        public string SubActivityOid { get; set; }
+        public string ActivityName { get; set; }
+        public string SubActivityName { get; set; }
         public string ReceiptNo { get; set; }
         public string RegisCusService { get; set; }
         public string OrgeService { get; set; }
-        public string RegisCusServiceOid { get; set; }
-        public string OrgeServiceOid { get; set; }
-  
+        public string RegisCusServiceName { get; set; }
+        public string OrgeServiceName { get; set; }
+        public string Weight { get; set; }
+
+
     }
     public class SupplierUseProductDetail_Model
         {
-        public string AnimalSeedOid { get; set; }
-        public string AnimalSeedLevelOid { get; set; }
+        public string AnimalSeedName { get; set; }
+        public string AnimalSeedLevelName { get; set; }
         public double StockLimit { get; set; }
         public double Weight { get; set; }
-        public string WeightUnitOid { get; set; }
-        public string BudgetSourceOid { get; set; }
+        public string WeightUnit { get; set; }
+        public string BudgetSourceName { get; set; }
         public string SupplierUseProduct { get; set; }
         public string LotNumber { get; set; }
-        public string SeedTypeOid { get; set; }
+        public string SeedType { get; set; }
         public double PerPrice { get; set; }
         public double Price { get; set; }
       

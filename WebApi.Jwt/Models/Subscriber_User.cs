@@ -17,6 +17,23 @@ namespace WebApi.Jwt.Models
         public string Address { get; set; }
         public string Remark { get; set; }
     }
+    public class RigisteOrgeService
+    {
+        public string OrganizationOid     { get; set; }
+        public string OrgeServiceID { get; set; }
+        public string OrgeServiceName { get; set; }
+        public string Tel { get; set; }
+        public string Email { get; set; }
+        public string Address { get; set; }
+        public string Moo { get; set; }
+        public string Soi { get; set; }
+        public string Road { get; set; }
+        public string Province { get; set; }
+        public string District { get; set; }
+        public string SubDistrict { get; set; }
+        public string Zipcode { get; set; }
+
+    }
     public class _CustomerTypeOid
     {
         public dynamic Oid { get; set; }

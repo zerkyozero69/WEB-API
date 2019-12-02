@@ -65,7 +65,7 @@ namespace WebApi.Jwt.Controllers
                 approve_Success.SendStatus = HttpContext.Current.Request.Form["Sendstatus"].ToString();
 
                 DataSet ds = new DataSet();
-          ds=  SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_Moblie_Approval_SendSeed", new SqlParameter("@SendNo", approve_Success.Send_No.ToString())
+          ds=  SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_Moblie_Approval_SendSeed", new SqlParameter("@Send_No", approve_Success.Send_No.ToString())
                     , new SqlParameter("@Remark", approve_Success.Remark)
                     ,new SqlParameter("@SendStatus", approve_Success.SendStatus));
 
@@ -149,19 +149,19 @@ namespace WebApi.Jwt.Controllers
         /// <returns></returns>
         [AllowAnonymous]
         [HttpGet]
-        [Route("SendOrder/{SendNo}")] // ใส่ OIDSendOrderSeed ใบนำส่ง
+        [Route("SendOrder/{Send_No}")] // ใส่ OIDSendOrderSeed ใบนำส่ง
         public IHttpActionResult SendOrderSeedDetail_ByOrderSeedID()
         {
-            object SendNo = string.Empty;
+            object Send_No = string.Empty;
             object ReceiveOrgOid = string.Empty;
             Approve_Model sendDetail = new Approve_Model();
 
             SendOrderSeed_Model Model = new SendOrderSeed_Model();
             try
             {
-                if (HttpContext.Current.Request.Form["SendNo"].ToString() != null)
+                if (HttpContext.Current.Request.Form["Send_No"].ToString() != null)
                 {
-                    SendNo = HttpContext.Current.Request.Form["SendNo"].ToString();
+                    Send_No = HttpContext.Current.Request.Form["Send_No"].ToString();
                 }
                 if (HttpContext.Current.Request.Form["ReceiveOrgOid"].ToString() != null)
                 {
@@ -174,14 +174,14 @@ namespace WebApi.Jwt.Controllers
                 List<SendOrderSeed_Model> list_detail = new List<SendOrderSeed_Model>();
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
                 SendOrderSeed sendOrderSeed;
-                sendOrderSeed = ObjectSpace.FindObject<SendOrderSeed>(CriteriaOperator.Parse("GCRecord is null and SendStatus = 2 and SendNo=? and ReceiveOrgOid=? ", SendNo, ReceiveOrgOid));
+                sendOrderSeed = ObjectSpace.FindObject<SendOrderSeed>(CriteriaOperator.Parse("GCRecord is null and SendStatus = 2 and SendNo=? and ReceiveOrgOid=? ", Send_No, ReceiveOrgOid));
                 //sendOrderSeed = ObjectSpace.GetObject<SendOrderSeed>(CriteriaOperator.Parse("GCRecord is null and SendStatus = 2 and ReceiveOrgOid=? ", null));
-                if (SendNo != null)
+                if (Send_No != null)
                 {
                     sendDetail.Send_No = sendOrderSeed.SendNo;
                     sendDetail.SendDate = Convert.ToDateTime(sendOrderSeed.SendDate).ToString();
-                    sendDetail.SendOrgOid = sendOrderSeed.SendOrgOid.OrganizeNameTH;
-                    sendDetail.ReceiveOrgOid = sendOrderSeed.ReceiveOrgOid.OrganizeNameTH;
+                    sendDetail.SendOrgOid = sendOrderSeed.SendOrgOid.SubOrganizeName;
+                    sendDetail.ReceiveOrgOid = sendOrderSeed.ReceiveOrgOid.SubOrganizeName;
                     sendDetail.Remark = sendOrderSeed.Remark;
                     sendDetail.SendStatus = sendOrderSeed.SendStatus.ToString();
                     if (sendOrderSeed.CancelMsg == null)
@@ -264,8 +264,6 @@ namespace WebApi.Jwt.Controllers
                 }
                 else if (ds.Tables[1].Rows[0]["pStatus"].ToString() == "4" || ds.Tables[1].Rows[0]["pMessage"].ToString() == "ไม่อนุมัติข้อมูลการส่ง")
                 {
-                    approve_Success.SendStatus = "4";
-                    approve_Success.Send_Messengr = "ไม่อนุมัติ";
                     return Request.CreateResponse(HttpStatusCode.OK, approve_Success);
                 }
                 return Request.CreateResponse(HttpStatusCode.OK, approve_Success);
