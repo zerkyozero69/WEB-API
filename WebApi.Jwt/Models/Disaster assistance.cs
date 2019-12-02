@@ -9,14 +9,14 @@ namespace WebApi.Jwt.Models
     {
         public object Oid { get; set; }
         public object LotNumber { get; set; }
-        public object WeightUnitOid { get; set; }
+        public object WeightUnit { get; set; }
         public string AnimalSeedCode { get; set; }
         public string AnimalSeeName { get; set; }
         public string AnimalSeedLevel { get; set; }
         public object AnimalSeedOid { get; set; }
         public string AnimalSeedLevelOid { get; set; }
-        public string SeedTypeOid { get; set; }
-        public object BudgetSourceOid { get; set; }
+        public string SeedType { get; set; }
+        public object BudgetSource { get; set; }
         public object Weight { get; set; }
         public object Amount { get; set; }
         public object Used { get; set; }

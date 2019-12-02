@@ -41,5 +41,21 @@ namespace WebApi.Jwt.Models
         
 
         }
+        public class SupplierAnimalProduct_info
+        {
+            public string SupplierAnimalNumber { get; set; }
+            public string FinanceYear { get; set; }
+            public string BudgetSource { get; set; }
+            public string OrganizationName { get; set; }
+            public string AnimalSupplie { get; set; }
+            public string AnimalSeed { get; set; }
+            public string PlotInfoOid{ get; set; }
+            public string Weight { get; set; }
+            public string Unit { get; set; }
+            public string AnimalSupplieType { get; set; }
+            public string Area { get; set; }
+            public string ManufactureDate { get; set; }
+    
+        }
     }
 }

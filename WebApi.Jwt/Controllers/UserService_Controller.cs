@@ -68,7 +68,7 @@ namespace WebApi.Jwt.Controllers
                         OrgeService_info Customer_Info = new OrgeService_info();
                         Customer_Info.OrgeOid = row.Oid;
                         //Customer_Info.OrganizationOid = row.OrganizationOid.OrganizeNameTH;
-                        Customer_Info.OrgeServiceID = row.OrgeServiceID;
+                        Customer_Info.OrgeServiceID = row.OrganizationOid.SubOrganizeName;
                         Customer_Info.OrgeServiceName = row.OrgeServiceName;
                         Customer_Info.Tel = row.Tel;
                         Customer_Info.Email = row.Email;

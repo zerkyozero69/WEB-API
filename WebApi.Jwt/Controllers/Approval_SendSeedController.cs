@@ -149,7 +149,7 @@ namespace WebApi.Jwt.Controllers
         /// <returns></returns>
         [AllowAnonymous]
         [HttpGet]
-        [Route("SendOrder/{Send_No}")] // ใส่ OIDSendOrderSeed ใบนำส่ง
+        [Route("SendOrder/{Send_No}")] // ใส่ OIDSendOrderSeed ใบนำส่ง /SendOrder/226-0011
         public IHttpActionResult SendOrderSeedDetail_ByOrderSeedID()
         {
             object Send_No = string.Empty;
@@ -180,8 +180,8 @@ namespace WebApi.Jwt.Controllers
                 {
                     sendDetail.Send_No = sendOrderSeed.SendNo;
                     sendDetail.SendDate = Convert.ToDateTime(sendOrderSeed.SendDate).ToString();
-                    sendDetail.SendOrgOid = sendOrderSeed.SendOrgOid.SubOrganizeName;
-                    sendDetail.ReceiveOrgOid = sendOrderSeed.ReceiveOrgOid.SubOrganizeName;
+                    sendDetail.SendOrgName= sendOrderSeed.SendOrgOid.SubOrganizeName;
+                    sendDetail.ReceiveOrgName = sendOrderSeed.ReceiveOrgOid.SubOrganizeName;
                     sendDetail.Remark = sendOrderSeed.Remark;
                     sendDetail.SendStatus = sendOrderSeed.SendStatus.ToString();
                     if (sendOrderSeed.CancelMsg == null)
@@ -280,8 +280,95 @@ namespace WebApi.Jwt.Controllers
             }
 
         }
-       
-        #endregion
+
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("SupplierUseProduct/{UseNo}")] // ใส่ OIDSendOrderSeed ใบนำส่ง
+        public IHttpActionResult SupplierUseProduct_ByOrderSeedID()
+        {
+            string UseNo = string.Empty;
+            string OrganizationOid = string.Empty;
+
+            SupplierProductUser supplierproduct = new SupplierProductUser();
+
+            SupplierUseProductDetail_Model Model = new SupplierUseProductDetail_Model();
+            try
+            {
+                if (HttpContext.Current.Request.Form["UseNo"].ToString() != null)
+                {
+                    UseNo = HttpContext.Current.Request.Form["UseNo"].ToString();
+                }
+                if (HttpContext.Current.Request.Form["OrganizationOid"].ToString() != null)
+                {
+                    OrganizationOid = HttpContext.Current.Request.Form["OrganizationOid"].ToString();
+                }
+
+
+                XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                XafTypesInfo.Instance.RegisterEntity(typeof(SupplierUseProduct));
+                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc);
+                List<SupplierUseProductDetail_Model> list_detail = new List<SupplierUseProductDetail_Model>();
+                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+                SupplierUseProduct supplierUseProduct;
+                supplierUseProduct = ObjectSpace.FindObject<SupplierUseProduct>(CriteriaOperator.Parse("GCRecord is null and Stauts = 1 and UseNo=? and OrganizationOid=? ", UseNo, OrganizationOid));
+                //sendOrderSeed = ObjectSpace.GetObject<SendOrderSeed>(CriteriaOperator.Parse("GCRecord is null and SendStatus = 2 and ReceiveOrgOid=? ", null));
+                if (UseNo != null)
+                {
+                    supplierproduct.UseDate = supplierUseProduct.UseDate.ToString("dd-MM-yyyy", new CultureInfo("us-US")); ;
+                    supplierproduct.UseNo = supplierUseProduct.UseNo;
+                    supplierproduct.FinanceYear = supplierUseProduct.FinanceYearOid.YearName;
+                    supplierproduct.OrganizationName = supplierUseProduct.OrganizationOid.SubOrganizeName;
+                    supplierproduct.Addrres = supplierUseProduct.OrganizationOid.FullAddress;
+                    supplierproduct.EmployeeName = supplierUseProduct.EmployeeOid.FullName;
+                    supplierproduct.Remark = supplierUseProduct.Remark;
+                    supplierproduct.Stauts = supplierUseProduct.Stauts.ToString();
+                    supplierproduct.ApproveDate = supplierUseProduct.ApproveDate.ToShortDateString();
+                    supplierproduct.ActivityName = supplierUseProduct.ActivityOid.ActivityName;
+                    supplierproduct.SubActivityName = supplierUseProduct.SubActivityOid.ActivityName;
+
+                    // supplierproduct.ReceiptNo = supplierUseProduct.ReceiptNo;        
+
+                    //    supplierproduct.OrgeServiceOid = supplierUseProduct.OrgeServiceOid.OrgeServiceName;
+
+                    foreach (SupplierUseProductDetail row in supplierUseProduct.SupplierUseProductDetails)
+                    {
+                        SupplierUseProductDetail_Model send_Detail = new SupplierUseProductDetail_Model();
+                        send_Detail.AnimalSeedName = row.AnimalSeedOid.SeedName;
+                        send_Detail.AnimalSeedLevelName = row.AnimalSeedLevelOid.SeedLevelName;
+                        send_Detail.StockLimit = row.StockLimit;
+                        send_Detail.Weight = row.Weight;
+                        send_Detail.WeightUnit = row.WeightUnitOid.UnitName;
+                        send_Detail.BudgetSourceName = row.BudgetSourceOid.BudgetName;
+                        send_Detail.SupplierUseProduct = row.SupplierUseProduct.Oid.ToString();
+                        send_Detail.LotNumber = row.LotNumber.LotNumber;
+                        send_Detail.SeedType = row.SeedTypeOid.SeedTypeName;
+                        send_Detail.PerPrice = row.PerPrice;
+                        send_Detail.Price = row.Price;
+                        list_detail.Add(send_Detail);
+                    }
+                    supplierproduct.objProduct = list_detail;
+
+                    return Ok(supplierproduct);
+                }
+                else
+                {
+                    return BadRequest("NoData");
+                }
+            }
+
+            catch (Exception ex)
+            { //Error case เกิดข้อผิดพลาด
+                UserError err = new UserError();
+                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                err.message = ex.Message;
+                //  Return resual
+                return BadRequest(ex.Message);
+            }
+
+        }
+
+        #endregion การอนุมัติเบิกใช้เมล็ดพันธุ์
         //}
     }
 }

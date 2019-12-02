@@ -32,6 +32,7 @@ using nutrition.Module.EmployeeAsUserExample.Module.BusinessObjects;
 using nutrition.Module;
 using DevExpress.Xpo;
 using System.Globalization;
+using static WebApi.Jwt.Models.Supplier;
 
 namespace WebApi.Jwt.Controllers
 {
@@ -62,11 +63,11 @@ namespace WebApi.Jwt.Controllers
                 if (SendOrderSeed != null)
                 {
                     OrderSeedDetail.LotNumber = OrderSeed.LotNumber.LotNumber;
-                    OrderSeedDetail.WeightUnitOid = OrderSeed.WeightUnitOid.UnitName;
+                    OrderSeedDetail.WeightUnit = OrderSeed.WeightUnitOid.UnitName;
                     OrderSeedDetail.AnimalSeedCode = OrderSeed.AnimalSeedCode;
                     OrderSeedDetail.AnimalSeeName = OrderSeed.AnimalSeeName;
                     OrderSeedDetail.AnimalSeedLevel = OrderSeed.AnimalSeedLevel;
-                    OrderSeedDetail.BudgetSourceOid = OrderSeed.BudgetSourceOid.BudgetName;
+                    OrderSeedDetail.BudgetSource = OrderSeed.BudgetSourceOid.BudgetName;
                     OrderSeedDetail.Weight = OrderSeed.Weight;
                     OrderSeedDetail.Used = OrderSeed.Used;
                     OrderSeedDetail.SendOrderSeed = OrderSeed.SendOrderSeed.SendNo;
@@ -184,7 +185,7 @@ namespace WebApi.Jwt.Controllers
                         Model.ReceiveDate = row.SendDate.ToString("dd-MM-yyyy", new CultureInfo("us-US")); ;
                         //    FinanceYear = ObjectSpace.GetObject<nutrition.Module.FinanceYear>(CriteriaOperator.Parse(nameof"Oid = @FinanceYearOid ", null));
                         Model.FinanceYear = row.FinanceYearOid.YearName;
-                        Model.ReceiveOrgoid = row.ReceiveOrgOid.Oid;
+                        Model.ReceiveOrgOid = row.ReceiveOrgOid.Oid;
                         Model.ReceiveOrgName = row.ReceiveOrgOid.SubOrganizeName;
                         Model.SendOrgOid = row.SendOrgOid.Oid;
                         Model.SendOrgName = row.SendOrgOid.SubOrganizeName;
@@ -309,7 +310,7 @@ namespace WebApi.Jwt.Controllers
         #endregion
         #region เสบียงสัตว์
         /// <summary>
-        /// เรียกหน้าเมล็ด
+        /// เรียกหน้าแจกจ่ายเมล็ด
         /// </summary>
         /// <returns></returns>
         [AllowAnonymous]
@@ -338,11 +339,11 @@ namespace WebApi.Jwt.Controllers
                     foreach (SupplierUseProduct row in collection)
                     {
 
-                        SupplierProductUser Supplier = new SupplierProductUser();
+                        SupplierProductUser Supplier = new SupplierProductUser();                                           
                         Supplier.UseDate = row.UseDate.ToString("dd-MM-yyyy", new CultureInfo("us-US")); ;
                         Supplier.UseNo = row.UseNo;
                         Supplier.FinanceYear = row.FinanceYearOid.YearName;
-                        Supplier.OrganizationName = row.OrganizationOid.OrganizeNameTH;
+                        Supplier.OrganizationName = row.OrganizationOid.SubOrganizeName;
                         Supplier.EmployeeName= row.EmployeeOid.EmployeeFirstName + " " + row.EmployeeOid.EmployeeLastName;
                         Supplier.Remark = row.Remark;
                         Supplier.Stauts = row.Stauts.ToString();
@@ -407,94 +408,12 @@ namespace WebApi.Jwt.Controllers
                 err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
                 err.message = ex.Message;
                 //  Return resual
-                return BadRequest("0");
-            }
-        }
-
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("SupplierUseProduct/{UseNo}")] // ใส่ OIDSendOrderSeed ใบนำส่ง
-        public IHttpActionResult SupplierUseProduct_ByOrderSeedID()
-        {
-           string UseNo = string.Empty;
-            string OrganizationOid = string.Empty;
-
-            SupplierProductUser supplierproduct = new SupplierProductUser();
-
-            SupplierUseProductDetail_Model Model = new SupplierUseProductDetail_Model();
-            try
-            {
-                if (HttpContext.Current.Request.Form["UseNo"].ToString() != null)
-                {
-                    UseNo = HttpContext.Current.Request.Form["UseNo"].ToString();
-                }
-                if (HttpContext.Current.Request.Form["OrganizationOid"].ToString() != null)
-                {
-                    OrganizationOid = HttpContext.Current.Request.Form["OrganizationOid"].ToString();
-                }
-
-                
-                XpoTypesInfoHelper.GetXpoTypeInfoSource();
-                XafTypesInfo.Instance.RegisterEntity(typeof(SupplierUseProduct));
-                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc);              
-                List<SupplierUseProductDetail_Model> list_detail = new List<SupplierUseProductDetail_Model>();
-                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-                SupplierUseProduct supplierUseProduct;
-                supplierUseProduct = ObjectSpace.FindObject<SupplierUseProduct>(CriteriaOperator.Parse("GCRecord is null and Stauts = 1 and UseNo=? and OrganizationOid=? ", UseNo, OrganizationOid));
-                //sendOrderSeed = ObjectSpace.GetObject<SendOrderSeed>(CriteriaOperator.Parse("GCRecord is null and SendStatus = 2 and ReceiveOrgOid=? ", null));
-                if (UseNo != null)
-                {
-                    supplierproduct.UseDate = supplierUseProduct.UseDate.ToString("dd-MM-yyyy", new CultureInfo("us-US")); ;
-                    supplierproduct.UseNo = supplierUseProduct.UseNo;
-                    supplierproduct.FinanceYear = supplierUseProduct.FinanceYearOid.YearName;
-                    supplierproduct.OrganizationName = supplierUseProduct.OrganizationOid.OrganizeNameTH;
-                    supplierproduct.EmployeeName = supplierUseProduct.EmployeeOid.FullName;
-                    supplierproduct.Remark = supplierUseProduct.Remark;
-                    supplierproduct.Stauts = supplierUseProduct.Stauts.ToString();
-                    supplierproduct.ApproveDate = supplierUseProduct.ApproveDate.ToShortDateString();
-                    supplierproduct.ActivityName = supplierUseProduct.ActivityOid.ActivityName;
-                    supplierproduct.SubActivityName = supplierUseProduct.SubActivityOid.ActivityName;
-                   // supplierproduct.ReceiptNo = supplierUseProduct.ReceiptNo;        
-                   
-                //    supplierproduct.OrgeServiceOid = supplierUseProduct.OrgeServiceOid.OrgeServiceName;
-
-                    foreach (SupplierUseProductDetail row in supplierUseProduct.SupplierUseProductDetails)
-                    {
-                        SupplierUseProductDetail_Model send_Detail = new SupplierUseProductDetail_Model();
-                        send_Detail.AnimalSeedOid = row.AnimalSeedOid.SeedName;
-                        send_Detail.AnimalSeedLevelOid = row.AnimalSeedLevelOid.SeedLevelName;
-                        send_Detail.StockLimit = row.StockLimit;
-                        send_Detail.Weight = row.Weight;
-                        send_Detail.WeightUnitOid = row.WeightUnitOid.UnitName;
-                        send_Detail.BudgetSourceOid = row.BudgetSourceOid.BudgetName;
-                        send_Detail.SupplierUseProduct = row.SupplierUseProduct.Oid.ToString();
-                        send_Detail.LotNumber = row.LotNumber.LotNumber;
-                        send_Detail.SeedTypeOid = row.SeedTypeOid.SeedTypeName;
-                        send_Detail.PerPrice = row.PerPrice;
-                        send_Detail.Price = row.Price;
-                        list_detail.Add(send_Detail);
-                    }
-                    supplierproduct.objProduct = list_detail;
-               
-                    return Ok(supplierproduct);
-                }
-                else
-                {
-                    return BadRequest("NoData");
-                }
-            }
-
-            catch (Exception ex)
-            { //Error case เกิดข้อผิดพลาด
-                UserError err = new UserError();
-                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-                err.message = ex.Message;
-                //  Return resual
                 return BadRequest(ex.Message);
             }
-
         }
-        #endregion 
+     
+
+        #endregion
     }
 }
 
