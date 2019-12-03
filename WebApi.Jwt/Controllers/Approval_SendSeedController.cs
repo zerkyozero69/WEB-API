@@ -179,7 +179,7 @@ namespace WebApi.Jwt.Controllers
                 if (Send_No != null)
                 {
                     sendDetail.Send_No = sendOrderSeed.SendNo;
-                    sendDetail.SendDate = Convert.ToDateTime(sendOrderSeed.SendDate).ToString();
+                    sendDetail.SendDate = Convert.ToDateTime(sendOrderSeed.SendDate).ToString("dd-MM-yyyy", new CultureInfo("us-US"));
                     sendDetail.SendOrgName= sendOrderSeed.SendOrgOid.SubOrganizeName;
                     sendDetail.ReceiveOrgName = sendOrderSeed.ReceiveOrgOid.SubOrganizeName;
                     sendDetail.Remark = sendOrderSeed.Remark;
@@ -197,11 +197,11 @@ namespace WebApi.Jwt.Controllers
                     {
                         SendOrderSeed_Model send_Detail = new SendOrderSeed_Model();
                         send_Detail.LotNumber = row.LotNumber.LotNumber;
-                        send_Detail.WeightUnitOid = row.WeightUnitOid.UnitName;
+                        send_Detail.WeightUnit = row.WeightUnitOid.UnitName;
                         send_Detail.AnimalSeedCode = row.AnimalSeedCode;
                         send_Detail.AnimalSeedLevel = row.AnimalSeedLevel;
                         send_Detail.AnimalSeeName = row.AnimalSeeName;
-                        send_Detail.BudgetSourceOid = row.BudgetSourceOid.BudgetName;
+                        send_Detail.BudgetSource = row.BudgetSourceOid.BudgetName;
                         send_Detail.Weight = row.Weight;
                         send_Detail.Used = row.Used.ToString();
                         send_Detail.SendOrderSeed = row.SendOrderSeed.SendNo;
@@ -250,7 +250,7 @@ namespace WebApi.Jwt.Controllers
 
                 approve_Success.Remark = HttpContext.Current.Request.Form["Remark"].ToString();
                 approve_Success.SendStatus = HttpContext.Current.Request.Form["Sendstatus"].ToString();
-
+                
                 DataSet ds = new DataSet();
                 ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_Mobile_Approval_SupplierUseProduct", new SqlParameter("@UseNo", approve_Success.Send_No.ToString())
                           , new SqlParameter("@Remark", approve_Success.Remark)
@@ -337,7 +337,7 @@ namespace WebApi.Jwt.Controllers
                         send_Detail.AnimalSeedName = row.AnimalSeedOid.SeedName;
                         send_Detail.AnimalSeedLevelName = row.AnimalSeedLevelOid.SeedLevelName;
                         send_Detail.StockLimit = row.StockLimit;
-                        send_Detail.Weight = row.Weight;
+                        send_Detail.Weights = row.Weight;
                         send_Detail.WeightUnit = row.WeightUnitOid.UnitName;
                         send_Detail.BudgetSourceName = row.BudgetSourceOid.BudgetName;
                         send_Detail.SupplierUseProduct = row.SupplierUseProduct.Oid.ToString();

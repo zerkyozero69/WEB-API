@@ -167,7 +167,7 @@ namespace WebApi.Jwt.Controllers.MasterData
         }
         [AllowAnonymous]
         [HttpGet]
-        [Route("LoadSupplierAnimalProduct/accept")]
+        [Route("SupplierAnimalProduct/accept")]
         public IHttpActionResult LoadSupplierAnimalProduct()
         {
             object OrganizationOid;
@@ -180,7 +180,6 @@ namespace WebApi.Jwt.Controllers.MasterData
                 XpoTypesInfoHelper.GetXpoTypeInfoSource();
                 XafTypesInfo.Instance.RegisterEntity(typeof(SupplierAnimalProduct));
                 XafTypesInfo.Instance.RegisterEntity(typeof(SupplierSendDetail));
-                SupplierUseProduct supplier_UseProduct;
                 List<SupplierAnimalProduct_info> list_detail = new List<SupplierAnimalProduct_info>();
                 XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();

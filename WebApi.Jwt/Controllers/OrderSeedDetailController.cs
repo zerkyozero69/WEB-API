@@ -93,9 +93,11 @@ namespace WebApi.Jwt.Controllers
         [Route("LoadSendSeed")]
         public HttpResponseMessage LoadSendSeed()
         {
-
+            object ReceiveOrgOid;
             try
             {
+
+                ReceiveOrgOid = HttpContext.Current.Request.Form["ReceiveOrgOid"].ToString();
 
                 XpoTypesInfoHelper.GetXpoTypeInfoSource();
                 XafTypesInfo.Instance.RegisterEntity(typeof(SendOrderSeed));
@@ -104,7 +106,7 @@ namespace WebApi.Jwt.Controllers
                 List<SendOrderSeed_Model> list_detail = new List<SendOrderSeed_Model>();
                 List<sendSeed_info> list = new List<sendSeed_info>();
                 data_info Temp_data = new data_info();
-                IList<SendOrderSeed> collection = ObjectSpace.GetObjects<SendOrderSeed>(CriteriaOperator.Parse(" GCRecord is null and SendStatus = 2", null));
+                IList<SendOrderSeed> collection = ObjectSpace.GetObjects<SendOrderSeed>(CriteriaOperator.Parse(" GCRecord is null and SendStatus = 2 and ReceiveOrgOid=?", ReceiveOrgOid));
 
                 double Amount = 0;
                 if (collection.Count > 0)
@@ -163,16 +165,18 @@ namespace WebApi.Jwt.Controllers
         [Route("ReceiveOrderSeed")]
         public IHttpActionResult ReceiveOrderSeed()
         {
+            object SendOrgOid;
+                try
+               {
 
-            try
-            {
-                XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                SendOrgOid = HttpContext.Current.Request.Form["SendOrgOid"].ToString();
+            XpoTypesInfoHelper.GetXpoTypeInfoSource();
                 XafTypesInfo.Instance.RegisterEntity(typeof(SendOrderSeed));
                 XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
                 List<SendOrderSeed_Model> list_detail = new List<SendOrderSeed_Model>();
                 List<ReceiveOrderSeed_Model> list = new List<ReceiveOrderSeed_Model>();
-                IList<SendOrderSeed> collection = ObjectSpace.GetObjects<SendOrderSeed>(CriteriaOperator.Parse("GCRecord is null and SendStatus = 2 "));
+                IList<SendOrderSeed> collection = ObjectSpace.GetObjects<SendOrderSeed>(CriteriaOperator.Parse("GCRecord is null and SendStatus = 2 and SendOrgOid=? ", SendOrgOid));
                 double Amount = 0;
                 string WeightUnitOid;
                 if (collection.Count > 0)
@@ -315,7 +319,7 @@ namespace WebApi.Jwt.Controllers
         /// <returns></returns>
         [AllowAnonymous]
         [HttpGet]
-        [Route("LoadSupplierUseProduct/accept")]
+        [Route("LoadSupplierUseProduct")]
         public IHttpActionResult LoadSupplierUse_accept()
         {
             object OrganizationOid;
@@ -326,30 +330,33 @@ namespace WebApi.Jwt.Controllers
 
 
                 XpoTypesInfoHelper.GetXpoTypeInfoSource();
-                XafTypesInfo.Instance.RegisterEntity(typeof(SupplierUseProduct));
-                XafTypesInfo.Instance.RegisterEntity(typeof(SupplierSendDetail));
+                XafTypesInfo.Instance.RegisterEntity(typeof(SupplierUseProduct));               
                 SupplierUseProduct supplier_UseProduct;
                 List<SupplierProductUser> list_detail = new List<SupplierProductUser>();
                 XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-                IList<SupplierUseProduct> collection = ObjectSpace.GetObjects<SupplierUseProduct>(CriteriaOperator.Parse(" GCRecord is null and Stauts = 2 and OrganizationOid=?", OrganizationOid));
+                IList<SupplierUseProduct> collection = ObjectSpace.GetObjects<SupplierUseProduct>(CriteriaOperator.Parse(" GCRecord is null and Stauts = 1 and OrganizationOid=?", OrganizationOid));
                 double Weight = 0;
                 if (OrganizationOid != null)
                 {
                     foreach (SupplierUseProduct row in collection)
                     {
-
-                        SupplierProductUser Supplier = new SupplierProductUser();                                           
+                        
+                        SupplierProductUser Supplier = new SupplierProductUser();
+                        Supplier.OrgeService = row.OrgeServiceOid.ServicesNumber.ToString();
+                        Supplier.OrgeServiceName = row.OrgeServiceOid.OrgeServiceName;
+                        Supplier.ReceiptNo = row.ReceiptNo;
                         Supplier.UseDate = row.UseDate.ToString("dd-MM-yyyy", new CultureInfo("us-US")); ;
                         Supplier.UseNo = row.UseNo;
                         Supplier.FinanceYear = row.FinanceYearOid.YearName;
                         Supplier.OrganizationName = row.OrganizationOid.SubOrganizeName;
                         Supplier.EmployeeName= row.EmployeeOid.EmployeeFirstName + " " + row.EmployeeOid.EmployeeLastName;
                         Supplier.Remark = row.Remark;
-                        Supplier.Stauts = row.Stauts.ToString();
+                        //Supplier.Stauts = row.Stauts;
                         Supplier.ApproveDate = row.ApproveDate.ToString();
                         Supplier.ActivityName = row.ActivityOid.ActivityName;
-                        if (row.SubActivityOid.ActivityName == "")
+
+                        if (row.SubActivityOid.ActivityName == null)
                         {
                             Supplier.SubActivityName = "ไม่มีข้อมูล";
                         }

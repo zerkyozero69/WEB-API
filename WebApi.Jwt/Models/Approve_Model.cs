@@ -26,11 +26,11 @@ namespace WebApi.Jwt.Models
     public class SendOrderSeed_Model
     {
         public dynamic LotNumber { get; set; }
-        public object WeightUnitOid { get; set; }
+        public object WeightUnit { get; set; }
         public string AnimalSeedCode { get; set; }
         public string AnimalSeeName { get; set; }
         public string AnimalSeedLevel { get; set; }
-        public object BudgetSourceOid { get; set; }
+        public object BudgetSource { get; set; }
         public Double Weight { get; set; }
         public string Used { get; set; }
        public object SendOrderSeed { get; set; }
@@ -61,7 +61,7 @@ namespace WebApi.Jwt.Models
         public string AnimalSeeName { get; set; }
         public string AnimalSeedLevel { get; set; }
         public object BudgetSource { get; set; }
-        public double Weight { get; set; }
+        public double Weights { get; set; }
         public string Used { get; set; }
         public string SendNo { get; set; }
         public  object ReceiveOrderSeed { get; set; }
@@ -69,7 +69,8 @@ namespace WebApi.Jwt.Models
     }
     public class SupplierProductUser
     {
-    
+        public string OrgeService { get; set; }
+        public string RegisCusService{ get; set; }
         public string UseDate { get; set; }
         public string UseNo { get; set; }
         public string FinanceYear { get; set; }
@@ -82,12 +83,13 @@ namespace WebApi.Jwt.Models
         public string ActivityName { get; set; }
         public string SubActivityName { get; set; }
         public string ReceiptNo { get; set; }
-        public string RegisCusService { get; set; }
-        public string OrgeService { get; set; }
+        
+   
         public string RegisCusServiceName { get; set; }
         public string OrgeServiceName { get; set; }
         public string Weight { get; set; }
- 
+        public int ServiceCount { get; set; }
+
         public List<SupplierUseProductDetail_Model> objProduct;
 
     }
@@ -126,7 +128,7 @@ namespace WebApi.Jwt.Models
         public string AnimalSeedName { get; set; }
         public string AnimalSeedLevelName { get; set; }
         public double StockLimit { get; set; }
-        public double Weight { get; set; }
+        public double Weights { get; set; }
         public string WeightUnit { get; set; }
         public string BudgetSourceName { get; set; }
         public string SupplierUseProduct { get; set; }
