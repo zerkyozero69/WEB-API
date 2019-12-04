@@ -100,7 +100,7 @@ namespace WebApi.Jwt.Controllers
         /// </summary>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpPatch]
+        [HttpPost]
         [Route("SendSeed/Not_ApprovalSend")]
         public HttpResponseMessage Not_ApprovalSend()
         {
@@ -148,7 +148,7 @@ namespace WebApi.Jwt.Controllers
         /// </summary>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpGet]
+        [HttpPost]
         [Route("SendOrder/{Send_No}")] // ใส่ OIDSendOrderSeed ใบนำส่ง /SendOrder/226-0011
         public IHttpActionResult SendOrderSeedDetail_ByOrderSeedID()
         {
@@ -178,39 +178,47 @@ namespace WebApi.Jwt.Controllers
                 //sendOrderSeed = ObjectSpace.GetObject<SendOrderSeed>(CriteriaOperator.Parse("GCRecord is null and SendStatus = 2 and ReceiveOrgOid=? ", null));
                 if (Send_No != null)
                 {
+                    double sum = 0;
                     sendDetail.Send_No = sendOrderSeed.SendNo;
                     sendDetail.SendDate = Convert.ToDateTime(sendOrderSeed.SendDate).ToString("dd-MM-yyyy", new CultureInfo("us-US"));
                     sendDetail.SendOrgName= sendOrderSeed.SendOrgOid.SubOrganizeName;
                     sendDetail.ReceiveOrgName = sendOrderSeed.ReceiveOrgOid.SubOrganizeName;
                     sendDetail.Remark = sendOrderSeed.Remark;
                     sendDetail.SendStatus = sendOrderSeed.SendStatus.ToString();
-                    if (sendOrderSeed.CancelMsg == null)
-                    {
-                        sendDetail.CancelMsg = "";
-                    }
-                    else
-                    {
-                        sendDetail.CancelMsg = sendOrderSeed.CancelMsg;
-                    }
+                    sendDetail.FinanceYear = sendOrderSeed.FinanceYearOid.YearName;
+                   
+                    //if (sendOrderSeed.CancelMsg == null)
+                    //{
+                    //    sendDetail.CancelMsg = "ไม่";
+                    //}
+                    //else
+                    //{
+                    //    sendDetail.CancelMsg = sendOrderSeed.CancelMsg;
+                    //}
 
                     foreach (SendOrderSeedDetail row in sendOrderSeed.SendOrderSeedDetails)
                     {
+                 
                         SendOrderSeed_Model send_Detail = new SendOrderSeed_Model();
                         send_Detail.LotNumber = row.LotNumber.LotNumber;
                         send_Detail.WeightUnit = row.WeightUnitOid.UnitName;
                         send_Detail.AnimalSeedCode = row.AnimalSeedCode;
                         send_Detail.AnimalSeedLevel = row.AnimalSeedLevel;
                         send_Detail.AnimalSeeName = row.AnimalSeeName;
-                        send_Detail.BudgetSource = row.BudgetSourceOid.BudgetName;
-                        send_Detail.Weight = row.Weight;
+                        send_Detail.BudgetSource = row.BudgetSourceOid.BudgetName;                  
+                        send_Detail.Weight = row.Weight.ToString();
                         send_Detail.Used = row.Used.ToString();
                         send_Detail.SendOrderSeed = row.SendOrderSeed.SendNo;
                         send_Detail.AnimalSeedOid = row.AnimalSeedOid.SeedName;
                         send_Detail.AnimalSeedLevelOid = row.AnimalSeedLevelOid.SeedLevelName;
                         send_Detail.SeedTypeOid = row.SeedTypeOid.SeedTypeName;
                         send_Detail.Amount = row.Amount;
+                        sum = sum + row.Weight;
+                            
+
                         list_detail.Add(send_Detail);
                     }
+                    sendDetail.Weight_All = sum.ToString() + " "+"กิโลกรัม";
                     sendDetail.objSeed = list_detail;
                     return Ok(sendDetail);
                 }
@@ -283,7 +291,7 @@ namespace WebApi.Jwt.Controllers
 
 
         [AllowAnonymous]
-        [HttpGet]
+        [HttpPost]
         [Route("SupplierUseProduct/{UseNo}")] // ใส่ OIDSendOrderSeed ใบนำส่ง
         public IHttpActionResult SupplierUseProduct_ByOrderSeedID()
         {
@@ -315,6 +323,7 @@ namespace WebApi.Jwt.Controllers
                 //sendOrderSeed = ObjectSpace.GetObject<SendOrderSeed>(CriteriaOperator.Parse("GCRecord is null and SendStatus = 2 and ReceiveOrgOid=? ", null));
                 if (UseNo != null)
                 {
+                    double sum = 0;
                     supplierproduct.UseDate = supplierUseProduct.UseDate.ToString("dd-MM-yyyy", new CultureInfo("us-US")); ;
                     supplierproduct.UseNo = supplierUseProduct.UseNo;
                     supplierproduct.FinanceYear = supplierUseProduct.FinanceYearOid.YearName;
@@ -326,6 +335,7 @@ namespace WebApi.Jwt.Controllers
                     supplierproduct.ApproveDate = supplierUseProduct.ApproveDate.ToShortDateString();
                     supplierproduct.ActivityName = supplierUseProduct.ActivityOid.ActivityName;
                     supplierproduct.SubActivityName = supplierUseProduct.SubActivityOid.ActivityName;
+                    supplierproduct.Weight_All = sum.ToString() + " " + "กิโลกรัม";
 
                     // supplierproduct.ReceiptNo = supplierUseProduct.ReceiptNo;        
 
@@ -345,6 +355,7 @@ namespace WebApi.Jwt.Controllers
                         send_Detail.SeedType = row.SeedTypeOid.SeedTypeName;
                         send_Detail.PerPrice = row.PerPrice;
                         send_Detail.Price = row.Price;
+                        sum = sum + row.Weight;
                         list_detail.Add(send_Detail);
                     }
                     supplierproduct.objProduct = list_detail;

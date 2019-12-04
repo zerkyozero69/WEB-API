@@ -89,7 +89,7 @@ namespace WebApi.Jwt.Controllers
         /// </summary>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpGet]
+        [HttpPost]
         [Route("LoadSendSeed")]
         public HttpResponseMessage LoadSendSeed()
         {
@@ -127,7 +127,7 @@ namespace WebApi.Jwt.Controllers
                         {
                             Amount = Amount + row2.Weight;
                         }
-                        Approve.Weight = Amount.ToString()+" "+"กิโลกรัม";
+                        Approve.Weights = Amount.ToString()+" "+"กิโลกรัม";
 
 
                         list.Add(Approve);
@@ -161,7 +161,7 @@ namespace WebApi.Jwt.Controllers
         /// </summary>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpGet]
+        [HttpPost]
         [Route("ReceiveOrderSeed")]
         public IHttpActionResult ReceiveOrderSeed()
         {
@@ -177,8 +177,8 @@ namespace WebApi.Jwt.Controllers
                 List<SendOrderSeed_Model> list_detail = new List<SendOrderSeed_Model>();
                 List<ReceiveOrderSeed_Model> list = new List<ReceiveOrderSeed_Model>();
                 IList<SendOrderSeed> collection = ObjectSpace.GetObjects<SendOrderSeed>(CriteriaOperator.Parse("GCRecord is null and SendStatus = 2 and SendOrgOid=? ", SendOrgOid));
-                double Amount = 0;
-                string WeightUnitOid;
+                double sum = 0;
+                string WeightUnit;
                 if (collection.Count > 0)
                 {
                     foreach (SendOrderSeed row in collection)
@@ -195,10 +195,10 @@ namespace WebApi.Jwt.Controllers
                         Model.SendOrgName = row.SendOrgOid.SubOrganizeName;
                         foreach (SendOrderSeedDetail row2 in row.SendOrderSeedDetails)
                         {
-                            Amount = Amount + row2.Weight;
-                            WeightUnitOid = row2.WeightUnitOid.ToString();
+                            sum = sum + row2.Weight;
+                            WeightUnit = row2.WeightUnitOid.ToString();
                         }
-                        Model.Weight = Amount.ToString() + " " + "กิโลกรัม";
+                        Model.Weight_All = sum.ToString() + " " + "กิโลกรัม";
                         list.Add(Model);
                         
                     }
@@ -318,7 +318,7 @@ namespace WebApi.Jwt.Controllers
         /// </summary>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpGet]
+        [HttpPost]
         [Route("LoadSupplierUseProduct")]
         public IHttpActionResult LoadSupplierUse_accept()
         {

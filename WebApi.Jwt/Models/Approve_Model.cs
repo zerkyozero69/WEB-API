@@ -16,7 +16,7 @@ namespace WebApi.Jwt.Models
         public string SendStatus { get; set; }
         public double Weight { get; set; }
          public string CancelMsg { get; set; }
-    
+        public string Weight_All { get; set; }
         public  string Send_Messengr { get; set; }
         
 
@@ -31,14 +31,15 @@ namespace WebApi.Jwt.Models
         public string AnimalSeeName { get; set; }
         public string AnimalSeedLevel { get; set; }
         public object BudgetSource { get; set; }
-        public Double Weight { get; set; }
+        public string Weight { get; set; }
         public string Used { get; set; }
        public object SendOrderSeed { get; set; }
         public string AnimalSeedOid { get; set; }
         public string AnimalSeedLevelOid { get; set; }
         public string SeedTypeOid { get; set; }
         public double Amount { get; set; }
-   
+       
+
     }
     
     public class ReceiveOrderSeed_Model
@@ -51,7 +52,7 @@ namespace WebApi.Jwt.Models
         public object SendOrgOid { get; set; }
         public string SendOrgName { get; set; }
        
-        public string Weight { get; set; }
+        public string Weight_All { get; set; }
     }
     public class ReceiveOrderSeedDetail_Model
     {
@@ -83,6 +84,7 @@ namespace WebApi.Jwt.Models
         public string ActivityName { get; set; }
         public string SubActivityName { get; set; }
         public string ReceiptNo { get; set; }
+        public string Weight_All { get; set; }
         
    
         public string RegisCusServiceName { get; set; }
@@ -148,7 +150,7 @@ namespace WebApi.Jwt.Models
         public string SendOrgName { get; set; }
         public  object ReceiveOrgoid { get; set;}
         public string ReceiveOrgName { get; set; }
-        public string Weight { get; set; }
+        public string Weights { get; set; }
     }
     public class  data_info
     {
