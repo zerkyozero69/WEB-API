@@ -46,9 +46,9 @@ namespace WebApi.Jwt.Controllers
         /// <returns></returns>
         [AllowAnonymous]
         //[JwtAuthentication] /ถ้าใช้โทเคนต้องครอบ
-        // [HttpPost] หน้าโมบาย
+        // [HttpPost] 
         [HttpPost]
-        [Route("Customer/info")]
+        [Route("SeachCustomer/info")]
         public HttpResponseMessage RegisterCustomer()
         {
 
@@ -60,15 +60,16 @@ namespace WebApi.Jwt.Controllers
                 XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
                 List<OrgeService_info> list = new List<OrgeService_info>();
+                List<OrgeServiceDetail_Model> list_detail = new List<OrgeServiceDetail_Model>();
                 IList<OrgeService> collection = ObjectSpace.GetObjects<OrgeService>(CriteriaOperator.Parse("GCRecord is null and IsActive=1 ", null));
                 if (collection.Count > 0)
                 {
                     foreach (OrgeService row in collection)
                     {
                         OrgeService_info Customer_Info = new OrgeService_info();
-                        Customer_Info.OrgeOid = row.Oid;
+
                         //Customer_Info.OrganizationOid = row.OrganizationOid.OrganizeNameTH;
-                        Customer_Info.OrgeServiceID = row.OrganizationOid.SubOrganizeName;
+                        Customer_Info.OrgeServiceID = row.ServicesNumber.ToString();
                         Customer_Info.OrgeServiceName = row.OrgeServiceName;
                         Customer_Info.Tel = row.Tel;
                         Customer_Info.Email = row.Email;
@@ -82,6 +83,15 @@ namespace WebApi.Jwt.Controllers
                         Customer_Info.ZipCode = row.ZipCode;
                         Customer_Info.FullAddress = row.FullAddress;
                         Customer_Info.IsActive = row.Tel;
+                        //foreach (OrgeServiceDetail row2 in Customer_Info.OrgeServiceDetails)
+                        //{
+                        //    OrgeServiceDetail_Model model = new OrgeServiceDetail_Model();
+                        //    model.OrgeServiceOid =row.;
+                        //    model.ServiceTypeOid =row.ServiceTypeName;
+                        //    model.SubServiceTypeOid =row.SubServiceTypeOid.ServiceTypeName;
+                        //    list_detail.Add(model);
+                        //}
+                     
                         list.Add(Customer_Info);
                     }
 

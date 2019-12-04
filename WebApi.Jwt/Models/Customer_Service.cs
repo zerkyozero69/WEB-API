@@ -6,8 +6,7 @@ using System.Web;
 namespace WebApi.Jwt.Models
 {
     public class OrgeService_info
-    {
-        public object OrgeOid { get; set; }
+    { 
         public string OrganizationOid { get; set; }
         public string OrgeServiceID { get; set; }
         public string OrgeServiceName { get; set; }
@@ -23,7 +22,14 @@ namespace WebApi.Jwt.Models
         public string IsActive { get; set; }
         public string ZipCode { get; set; }
         public string FullAddress { get; set; }
-        
+        public List<OrgeServiceDetail_Model> OrgeServiceDetails { get; set; }
+    }
+    public class OrgeServiceDetail_Model
+    {
+        public string ServiceTypeOid { get; set; }
+        public string SubServiceTypeOid { get; set; }
+        public string OrgeServiceOid { get; set; }
+
     }
     public class OrgeService_Data
         {

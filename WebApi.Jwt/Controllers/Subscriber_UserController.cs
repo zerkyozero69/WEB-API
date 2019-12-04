@@ -502,6 +502,10 @@ namespace WebApi.Jwt.Controllers.MasterData
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
         }
+        /// <summary>
+        /// เรียกข้อมูลกลุ่มผู้รับบริการ
+        /// </summary>
+        /// <returns></returns>
         [AllowAnonymous]
         // [JwtAuthentication]
         [HttpPost]

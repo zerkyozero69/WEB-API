@@ -144,7 +144,7 @@ namespace WebApi.Jwt.Controllers
         #region แบบใช้ฟังค์ชั่นของ xaf 
 
         /// <summary>
-        /// หารายละเอียดการส่งด้วย sendOID
+        /// หารายละเอียดการส่งเมล็ดด้วย sendOID
         /// </summary>
         /// <returns></returns>
         [AllowAnonymous]
@@ -289,7 +289,10 @@ namespace WebApi.Jwt.Controllers
 
         }
 
-
+        /// <summary>
+        /// หน้าเรียกการขอใช้เมล็ด
+        /// </summary>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
         [Route("SupplierUseProduct/{UseNo}")] // ใส่ OIDSendOrderSeed ใบนำส่ง
@@ -321,6 +324,7 @@ namespace WebApi.Jwt.Controllers
                 SupplierUseProduct supplierUseProduct;
                 supplierUseProduct = ObjectSpace.FindObject<SupplierUseProduct>(CriteriaOperator.Parse("GCRecord is null and Stauts = 1 and UseNo=? and OrganizationOid=? ", UseNo, OrganizationOid));
                 //sendOrderSeed = ObjectSpace.GetObject<SendOrderSeed>(CriteriaOperator.Parse("GCRecord is null and SendStatus = 2 and ReceiveOrgOid=? ", null));
+                /*ใส่พารามิเตอร์ 2 ตัว */
                 if (UseNo != null)
                 {
                     double sum = 0;

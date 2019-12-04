@@ -44,7 +44,7 @@ namespace WebApi.Jwt.Controllers.MasterData
         /// </summary>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpGet]
+        [HttpPost ]
         [Route("SendOrderAnimal/accept")]
         public IHttpActionResult LoadSendAnimal_accept()
         {

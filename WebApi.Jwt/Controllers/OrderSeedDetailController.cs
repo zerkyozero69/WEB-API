@@ -157,7 +157,7 @@ namespace WebApi.Jwt.Controllers
         }
 
         /// <summary>
-        /// แสดงรายละเอียดข้อมูลการรับเมล็ด
+        /// แสดงรายละเอียดข้อมูลการรับเมล็ด ใช็ศูนย์ส่ง where หา
         /// </summary>
         /// <returns></returns>
         [AllowAnonymous]
@@ -314,7 +314,7 @@ namespace WebApi.Jwt.Controllers
         #endregion
         #region เสบียงสัตว์
         /// <summary>
-        /// เรียกหน้าแจกจ่ายเมล็ด
+        /// เรียกหน้าใช้เสบียงสัตว์
         /// </summary>
         /// <returns></returns>
         [AllowAnonymous]
