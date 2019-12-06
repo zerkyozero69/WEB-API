@@ -147,11 +147,15 @@ namespace WebApi.Jwt.Controllers
         /// หารายละเอียดการส่งเมล็ดด้วย sendOID
         /// </summary>
         /// <returns></returns>
-        [AllowAnonymous]
+   
+        //[AllowAnonymous]
         [HttpPost]
         [Route("SendOrder/{Send_No}")] // ใส่ OIDSendOrderSeed ใบนำส่ง /SendOrder/226-0011
+        [JwtAuthentication]
         public IHttpActionResult SendOrderSeedDetail_ByOrderSeedID()
+
         {
+
             object Send_No = string.Empty;
             object ReceiveOrgOid = string.Empty;
             Approve_Model sendDetail = new Approve_Model();

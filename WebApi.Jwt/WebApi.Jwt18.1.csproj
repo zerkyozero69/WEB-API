@@ -230,6 +230,7 @@
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\Approval_SendSeedController.cs" />
+    <Compile Include="Controllers\JWT_ReportController.cs" />
     <Compile Include="Controllers\SendorderSuppilerAnimal_Controller.cs" />
     <Compile Include="Controllers\OrderSeedDetailController.cs" />
     <Compile Include="Controllers\Subscriber_UserController.cs" />

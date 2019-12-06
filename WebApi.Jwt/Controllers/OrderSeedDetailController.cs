@@ -88,7 +88,8 @@ namespace WebApi.Jwt.Controllers
         /// โหลดหน้าสถานะ  2 
         /// </summary>
         /// <returns></returns>
-        [AllowAnonymous]
+       // [AllowAnonymous]
+       [JwtAuthentication]
         [HttpPost]
         [Route("SendOrderSeed/accept")]
         public HttpResponseMessage LoadSendSeed()

@@ -11,6 +11,8 @@ namespace WebApi.Jwt.Controllers
     public class ValueController : ApiController
     {
         [JwtAuthentication]
+        [HttpGet]
+        [Route ("testGET")]
         public string Getvalues(string Username)
         {
 
