@@ -48,11 +48,11 @@ namespace WebApi.Jwt.Controllers.MasterData
         [Route("SendOrderAnimal/accept")]
         public IHttpActionResult LoadSendAnimal_accept()
         {
-            object ReceiveOrgOid;
+            object SendOrgOid;
             try
             {
 
-                ReceiveOrgOid = HttpContext.Current.Request.Form["ReceiveOrgOid"].ToString();
+                SendOrgOid = HttpContext.Current.Request.Form["SendOrgOid"].ToString();
 
 
                 XpoTypesInfoHelper.GetXpoTypeInfoSource();
@@ -62,7 +62,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                 List<SendOrderSeed_Model> list_detail = new List<SendOrderSeed_Model>();
                 XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-                IList<SendOrderSupplierAnimal> collection = ObjectSpace.GetObjects<SendOrderSupplierAnimal>(CriteriaOperator.Parse(" GCRecord is null and SendStatus = 2 and ReceiveOrgOid=?", ReceiveOrgOid));
+                IList<SendOrderSupplierAnimal> collection = ObjectSpace.GetObjects<SendOrderSupplierAnimal>(CriteriaOperator.Parse(" GCRecord is null and SendStatus = 2 and SendOrgOid=?", SendOrgOid));
                 if (collection.Count > 0)
                 {
                     foreach (SendOrderSupplierAnimal row in collection)
@@ -107,7 +107,7 @@ namespace WebApi.Jwt.Controllers.MasterData
         /// </summary>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpGet]
+        [HttpPost]
         [Route("ReceiveOrderAnimal/accept")]
         public IHttpActionResult LoadReceiveAnimal_accept()
         {
@@ -152,7 +152,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                     err.code = "5"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
                     err.message = "No data";
                     //  Return resual
-                    return BadRequest("NoData");
+                    return BadRequest(err.message);
                 }
 
             }
@@ -166,7 +166,7 @@ namespace WebApi.Jwt.Controllers.MasterData
             }
         }
         [AllowAnonymous]
-        [HttpGet]
+        [HttpPost  ]
         [Route("SupplierAnimalProduct/accept")]
         public IHttpActionResult LoadSupplierAnimalProduct()
         {
@@ -243,7 +243,7 @@ namespace WebApi.Jwt.Controllers.MasterData
             }
         }
         [AllowAnonymous]
-        [HttpGet]
+        [HttpPost]
         [Route("LoadSupplierUseProduct/{No}")] // ใส่ OIDSendOrderSeed ใบนำส่ง /SendOrder/226-0011
         public IHttpActionResult SendOrderSeedDetail_ByOrderSeedID()
         {

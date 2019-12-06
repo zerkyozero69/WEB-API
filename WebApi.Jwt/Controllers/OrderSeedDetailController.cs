@@ -46,7 +46,7 @@ namespace WebApi.Jwt.Controllers
         /// <returns></returns>
         #region เมล็ดพันธุ์
         [AllowAnonymous]
-        [HttpGet]
+        [HttpPost]
         [Route("SendSeed/Order")]
         public IHttpActionResult OrderseedDetail(string SendOrderSeed)
         {
@@ -90,23 +90,27 @@ namespace WebApi.Jwt.Controllers
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
-        [Route("LoadSendSeed")]
+        [Route("SendOrderSeed/accept")]
         public HttpResponseMessage LoadSendSeed()
         {
-            object ReceiveOrgOid;
+            object SendOrgOid;
+          
             try
             {
+                
+                SendOrgOid = HttpContext.Current.Request.Form["SendOrgOid"].ToString();
 
-                ReceiveOrgOid = HttpContext.Current.Request.Form["ReceiveOrgOid"].ToString();
 
                 XpoTypesInfoHelper.GetXpoTypeInfoSource();
                 XafTypesInfo.Instance.RegisterEntity(typeof(SendOrderSeed));
+               
                 XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
                 List<SendOrderSeed_Model> list_detail = new List<SendOrderSeed_Model>();
+             
                 List<sendSeed_info> list = new List<sendSeed_info>();
                 data_info Temp_data = new data_info();
-                IList<SendOrderSeed> collection = ObjectSpace.GetObjects<SendOrderSeed>(CriteriaOperator.Parse(" GCRecord is null and SendStatus = 2 and ReceiveOrgOid=?", ReceiveOrgOid));
+                IList<SendOrderSeed> collection = ObjectSpace.GetObjects<SendOrderSeed>(CriteriaOperator.Parse(" GCRecord is null and SendStatus = 2 and SendOrgOid=?   ", SendOrgOid));
 
                 double Amount = 0;
                 if (collection.Count > 0)
@@ -114,6 +118,8 @@ namespace WebApi.Jwt.Controllers
 
                     foreach (SendOrderSeed row in collection)
                     {
+                        double sum = 0;
+                        string WeightUnit;
                         sendSeed_info Approve = new sendSeed_info();
                         Approve.Send_No = row.SendNo;
                         Approve.SendDate = row.SendDate.ToString("dd-MM-yyyy", new CultureInfo("us-US")); /* convet เวลา*/
@@ -125,9 +131,10 @@ namespace WebApi.Jwt.Controllers
 
                         foreach (SendOrderSeedDetail row2 in row.SendOrderSeedDetails)
                         {
-                            Amount = Amount + row2.Weight;
+                            sum = sum + row2.Weight;
+                            WeightUnit = row2.WeightUnitOid.ToString();
                         }
-                        Approve.Weights = Amount.ToString()+" "+"กิโลกรัม";
+                        Approve.Weight_All = sum.ToString() + " " + "กิโลกรัม";
 
 
                         list.Add(Approve);
@@ -162,21 +169,21 @@ namespace WebApi.Jwt.Controllers
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
-        [Route("ReceiveOrderSeed")]
+        [Route("ReceiveOrderSeed/accept")]
         public IHttpActionResult ReceiveOrderSeed()
         {
-            object SendOrgOid;
+            object ReceiveOrgOid;
                 try
                {
 
-                SendOrgOid = HttpContext.Current.Request.Form["SendOrgOid"].ToString();
+                ReceiveOrgOid = HttpContext.Current.Request.Form["ReceiveOrgOid"].ToString();
             XpoTypesInfoHelper.GetXpoTypeInfoSource();
                 XafTypesInfo.Instance.RegisterEntity(typeof(SendOrderSeed));
                 XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
                 List<SendOrderSeed_Model> list_detail = new List<SendOrderSeed_Model>();
                 List<ReceiveOrderSeed_Model> list = new List<ReceiveOrderSeed_Model>();
-                IList<SendOrderSeed> collection = ObjectSpace.GetObjects<SendOrderSeed>(CriteriaOperator.Parse("GCRecord is null and SendStatus = 2 and SendOrgOid=? ", SendOrgOid));
+                IList<SendOrderSeed> collection = ObjectSpace.GetObjects<SendOrderSeed>(CriteriaOperator.Parse("GCRecord is null and SendStatus = 2 and ReceiveOrgOid=? ", ReceiveOrgOid));
                 double sum = 0;
                 string WeightUnit;
                 if (collection.Count > 0)
@@ -222,18 +229,6 @@ namespace WebApi.Jwt.Controllers
         }
       
         
-
-        //    catch (Exception ex)
-        //    { //Error case เกิดข้อผิดพลาด
-        //        UserError err = new UserError();
-        //        err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-        //        err.message = ex.Message;
-        //        //  Return resual
-        //        return BadRequest(ex.Message);
-        //    }
-
-        //}
-
         //[AllowAnonymous]
         //[HttpGet]
         //[Route("LoadSendSeed/accept")]

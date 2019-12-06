@@ -150,7 +150,7 @@ namespace WebApi.Jwt.Models
         public string SendOrgName { get; set; }
         public  object ReceiveOrgoid { get; set;}
         public string ReceiveOrgName { get; set; }
-        public string Weights { get; set; }
+        public string Weight_All { get; set; }
     }
     public class  data_info
     {
