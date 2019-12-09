@@ -30,10 +30,11 @@ namespace WebApi.Jwt.Filters
                 if (response.Headers.WwwAuthenticate.All(h => h.Scheme != Challenge.Scheme))
                 {
                     response.Headers.WwwAuthenticate.Add(Challenge);
+                    response.RequestMessage.ToString();
                 }
             }
 
             return response;
         }
-    }
+    } 
 }
