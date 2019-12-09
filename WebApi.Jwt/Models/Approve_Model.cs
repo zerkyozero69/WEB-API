@@ -121,7 +121,7 @@ namespace WebApi.Jwt.Models
         public string SendOrgName { get; set; }
         public double Weight { get; set; }
         public string CancelMsg { get; set; }
-
+        public string Package { get; set; }
         public string Send_Messengr { get; set; }
     }
 

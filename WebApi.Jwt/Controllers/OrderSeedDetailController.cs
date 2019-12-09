@@ -88,8 +88,8 @@ namespace WebApi.Jwt.Controllers
         /// โหลดหน้าสถานะ  2 
         /// </summary>
         /// <returns></returns>
-       // [AllowAnonymous]
-       [JwtAuthentication]
+        [AllowAnonymous]
+       //[JwtAuthentication]
         [HttpPost]
         [Route("SendOrderSeed/accept")]
         public HttpResponseMessage LoadSendSeed()
@@ -111,7 +111,7 @@ namespace WebApi.Jwt.Controllers
              
                 List<sendSeed_info> list = new List<sendSeed_info>();
                 data_info Temp_data = new data_info();
-                IList<SendOrderSeed> collection = ObjectSpace.GetObjects<SendOrderSeed>(CriteriaOperator.Parse(" GCRecord is null and SendStatus = 2 and SendOrgOid=?   ", SendOrgOid));
+                IList<SendOrderSeed> collection = ObjectSpace.GetObjects<SendOrderSeed>(CriteriaOperator.Parse(" GCRecord is null and SendStatus = 2 and SendOrgOid=? ", SendOrgOid));
 
                 double Amount = 0;
                 if (collection.Count > 0)
@@ -165,7 +165,7 @@ namespace WebApi.Jwt.Controllers
         }
 
         /// <summary>
-        /// แสดงรายละเอียดข้อมูลการรับเมล็ด ใช็ศูนย์ส่ง where หา
+        /// แสดงรายละเอียดข้อมูลการรับเมล็ด ใช้ศูนย์ส่ง where หา
         /// </summary>
         /// <returns></returns>
         [AllowAnonymous]
@@ -230,85 +230,9 @@ namespace WebApi.Jwt.Controllers
         }
       
         
-        //[AllowAnonymous]
-        //[HttpGet]
-        //[Route("LoadSendSeed/accept")]
-        //public IHttpActionResult LoadSendSeed_accept()
-        //{
-        //    object ReceiveOrgOid;
-        //    try
-        //    {
-
-        //        ReceiveOrgOid = HttpContext.Current.Request.Form["ReceiveOrgOid"].ToString();
-
-
-        //        XpoTypesInfoHelper.GetXpoTypeInfoSource();
-        //        XafTypesInfo.Instance.RegisterEntity(typeof(SendOrderSeed));
-        //        XafTypesInfo.Instance.RegisterEntity(typeof(SupplierSendDetail));
-        //        List<Approve_Model> list = new List<Approve_Model>();
-        //        SendOrderSeed sendOrderSeed;
-        //        List<SendOrderSeed_Model> list_detail = new List<SendOrderSeed_Model>();
-        //        XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
-        //        IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-        //        IList<SendOrderSeed> collection = ObjectSpace.GetObjects<SendOrderSeed>(CriteriaOperator.Parse(" GCRecord is null and SendStatus = 2 and ReceiveOrgOid=?", ReceiveOrgOid));
-        //        if (collection.Count > 0)
-        //        {
-        //            foreach (SendOrderSeed row in collection)
-        //            {
-        //                Approve_Model Approve = new Approve_Model();
-        //                Approve.Send_No = row.SendNo;
-        //                Approve.SendDate = row.SendDate.ToString();
-        //                Approve.FinanceYearOid = row.FinanceYearOid.YearName;
-        //                Approve.SendOrgOid = row.SendOrgOid.OrganizeNameTH;
-        //                Approve.ReceiveOrgOid = row.ReceiveOrgOid.OrganizeNameTH;
-        //                Approve.Remark = row.Remark;
-        //                Approve.CancelMsg = row.CancelMsg;
-        //                Approve.SendStatus = row.SendStatus.ToString();
-        //                //foreach (SendOrderSeedDetail row in sendOrderSeed.SendOrderSeedDetails)
-        //                //{
-        //                //    SendOrderSeed_Model send_Detail = new SendOrderSeed_Model();
-        //                //    send_Detail.LotNumber = row2.LotNumber.LotNumber;
-        //                //    send_Detail.WeightUnitOid = row2.WeightUnitOid.UnitName;
-        //                //    send_Detail.AnimalSeedCode = row2.AnimalSeedCode;
-        //                //    send_Detail.AnimalSeedLevel = row2.AnimalSeedLevel;
-        //                //    send_Detail.AnimalSeeName = row2.AnimalSeeName;
-        //                //    send_Detail.BudgetSourceOid = row2.BudgetSourceOid.BudgetName;
-        //                //    send_Detail.Weight = row2.Weight;
-        //                //    send_Detail.Used = row2.Used.ToString();
-        //                //    send_Detail.SendOrderSeed = row2.SendOrderSeed.SendNo;
-        //                //    send_Detail.AnimalSeedOid = row2.AnimalSeedOid.SeedName;
-        //                //    send_Detail.AnimalSeedLevelOid = row2.AnimalSeedLevelOid.SeedLevelName;
-        //                //    send_Detail.SeedTypeOid = row2.SeedTypeOid.SeedTypeName;
-        //                //    send_Detail.Amount = row2.Amount;
-        //                //    list_detail.Add(send_Detail);
-        //                //}
-        //                Approve.objSeed = list_detail;
-        //                list.Add(Approve);
-        //            }
-
-        //        }
-
-        //        else
-        //        {
-        //            UserError err = new UserError();
-        //            err.code = "5"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-        //            err.message = "No data";
-        //            //  Return resual
-        //            return BadRequest();
-        //        }
-        //        return Ok(list);
-        //    }
-        //    catch (Exception ex)
-        //    { //Error case เกิดข้อผิดพลาด
-        //        UserError err = new UserError();
-        //        err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-        //        err.message = ex.Message;
-        //        //  Return resual
-        //        return BadRequest();
-        //    }
-        //}
+      
         #endregion
-        #region เสบียงสัตว์
+        #region ใช้เมล็ดพันธุ์
         /// <summary>
         /// เรียกหน้าใช้เสบียงสัตว์
         /// </summary>
@@ -333,28 +257,33 @@ namespace WebApi.Jwt.Controllers
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
                 IList<SupplierUseProduct> collection = ObjectSpace.GetObjects<SupplierUseProduct>(CriteriaOperator.Parse(" GCRecord is null and Stauts = 1 and OrganizationOid=?", OrganizationOid));
                 double Weight = 0;
-                if (OrganizationOid != null)
+                if (collection != null)
                 {
                     foreach (SupplierUseProduct row in collection)
                     {
                         
                         SupplierProductUser Supplier = new SupplierProductUser();
-                        Supplier.OrgeService = row.OrgeServiceOid.ServicesNumber.ToString();
-                        Supplier.OrgeServiceName = row.OrgeServiceOid.OrgeServiceName;
-                        Supplier.ReceiptNo = row.ReceiptNo;
-                        Supplier.UseDate = row.UseDate.ToString("dd-MM-yyyy", new CultureInfo("us-US")); ;
-                        Supplier.UseNo = row.UseNo;
+                        Supplier.OrgeService = row.UseDate.ToString("dd-MM-yyyy", new CultureInfo("us-US"));
+                        Supplier.OrgeServiceName = row.UseNo.ToString();
                         Supplier.FinanceYear = row.FinanceYearOid.YearName;
                         Supplier.OrganizationName = row.OrganizationOid.SubOrganizeName;
-                        Supplier.EmployeeName= row.EmployeeOid.EmployeeFirstName + " " + row.EmployeeOid.EmployeeLastName;
+                        if (row.EmployeeOid == null)
+                        {
+                            Supplier.EmployeeName = "ไม่มีรายชื่อผู้ขอรับบริการ";
+                        }
+                        else
+                        {
+                            Supplier.EmployeeName = row.EmployeeOid.EmployeeFirstName + " " + row.EmployeeOid.EmployeeLastName;
+                        }
+                        
                         Supplier.Remark = row.Remark;
                         //Supplier.Stauts = row.Stauts;
-                        Supplier.ApproveDate = row.ApproveDate.ToString();
+                        Supplier.ApproveDate = row.ApproveDate.ToString("dd-MM-yyyy", new CultureInfo("us-US"));
                         Supplier.ActivityName = row.ActivityOid.ActivityName;
 
                         if (row.SubActivityOid.ActivityName == null)
                         {
-                            Supplier.SubActivityName = "ไม่มีข้อมูล";
+                            Supplier.SubActivityName = "ไม่มีข้อมูลกิจกรรม";
                         }
                         else
                         {
@@ -365,6 +294,7 @@ namespace WebApi.Jwt.Controllers
                             Weight = row2.Weight;
                         }
                         Supplier.Weight = Weight + " " + "กิโลกรัม";
+                        Supplier.ServiceCount = row.ServiceCount;
 
                         //if (row.RegisCusServiceOid.DisPlayName == "")
                         //{
@@ -394,7 +324,7 @@ namespace WebApi.Jwt.Controllers
                     err.code = "3"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
                     err.message = "No data";
                     //  Return resual
-                    return BadRequest("รายการอนุมัติไม่สมบูรณ์");
+                    return BadRequest(err.message);
                 }
                 else
                 {
@@ -416,7 +346,7 @@ namespace WebApi.Jwt.Controllers
         }
      
 
-        #endregion
+        #endregion ใช้เมล็ดพันธุ์
     }
 }
 

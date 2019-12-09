@@ -30,7 +30,6 @@ using NTi.CommonUtility;
 using System.IO;
 using nutrition.Module.EmployeeAsUserExample.Module.BusinessObjects;
 using nutrition.Module;
-using DevExpress.Xpo;
 using System.Globalization;
 using static WebApi.Jwt.Models.Supplier;
 
@@ -65,21 +64,21 @@ namespace WebApi.Jwt.Controllers.MasterData
                 IList<SendOrderSupplierAnimal> collection = ObjectSpace.GetObjects<SendOrderSupplierAnimal>(CriteriaOperator.Parse(" GCRecord is null and SendStatus = 2 and SendOrgOid=?", SendOrgOid));
                 if (collection.Count > 0)
                 {
-                    foreach (SendOrderSupplierAnimal row in collection)
-                    {
-                        SendOrderSupplierAnimal_info SupplierAnimal = new SendOrderSupplierAnimal_info();
-                        SupplierAnimal.SendNo = row.SendNo;
-                        SupplierAnimal.SendDate = row.SendDate.ToString("dd-MM-yyyy", new CultureInfo("us-US")); ;
-                        SupplierAnimal.FinanceYear = row.FinanceYearOid.YearName;
-                        SupplierAnimal.SendOrgOid = row.SendOrgOid.Oid;
-                        SupplierAnimal.SendOrgName = row.SendOrgOid.SubOrganizeName;
-                        SupplierAnimal.ReceiveOrgOid = row.ReceiveOrgOid.Oid;
-                        SupplierAnimal.ReceiveOrgName = row.ReceiveOrgOid.SubOrganizeName;                      
-                        SupplierAnimal.Remark = row.Remark;
-                        SupplierAnimal.Send_Messengr = row.SendStatus.ToString();
-                        SupplierAnimal.Weight = row.QTY;
-                        list.Add(SupplierAnimal);
-                    }
+                                foreach (SendOrderSupplierAnimal row in collection)
+                                {
+                                    SendOrderSupplierAnimal_info SupplierAnimal = new SendOrderSupplierAnimal_info();
+                                    SupplierAnimal.SendNo = row.SendNo;
+                                    SupplierAnimal.SendDate = row.SendDate.ToString("dd-MM-yyyy", new CultureInfo("us-US")); 
+                                    SupplierAnimal.FinanceYear = row.FinanceYearOid.YearName;
+                                    SupplierAnimal.SendOrgOid = row.SendOrgOid.Oid;
+                                    SupplierAnimal.SendOrgName = row.SendOrgOid.SubOrganizeName;
+                                    SupplierAnimal.ReceiveOrgOid = row.ReceiveOrgOid.Oid;
+                                    SupplierAnimal.ReceiveOrgName = row.ReceiveOrgOid.SubOrganizeName;                      
+                                    SupplierAnimal.Remark = row.Remark;
+                                    SupplierAnimal.Send_Messengr = row.SendStatus.ToString();
+                                    SupplierAnimal.Weight = row.QTY;
+                                    list.Add(SupplierAnimal);
+                                }
                     return Ok(list);
                 }
 
@@ -132,14 +131,15 @@ namespace WebApi.Jwt.Controllers.MasterData
                     {
                         ReceiveOrderAnimal_info SupplierAnimal = new ReceiveOrderAnimal_info();
                         SupplierAnimal.SendNo = row.SendNo;
-                        SupplierAnimal.SendDate = row.SendDate.ToString("dd-MM-yyyy", new CultureInfo("us-US")); ;
-                        SupplierAnimal.FinanceYear = row.FinanceYearOid.YearName;
-                        SupplierAnimal.SendOrgOid = row.SendOrgOid.Oid;
-                        SupplierAnimal.SendOrgName = row.SendOrgOid.SubOrganizeName;
+                        SupplierAnimal.SendDate = row.SendDate.ToString("dd-MM-yyyy", new CultureInfo("us-US")); 
+                        SupplierAnimal.FinanceYear = row.FinanceYearOid.YearName;                     
                         SupplierAnimal.ReceiveOrgOid = row.ReceiveOrgOid.Oid;
                         SupplierAnimal.ReceiveOrgName = row.ReceiveOrgOid.SubOrganizeName;
+                        SupplierAnimal.SendOrgOid = row.SendOrgOid.Oid;
+                        SupplierAnimal.SendOrgName = row.SendOrgOid.SubOrganizeName;
                         SupplierAnimal.CancelMsg = row.CancelMsg;
                         SupplierAnimal.Send_Messengr = row.SendStatus.ToString();
+                        SupplierAnimal.Package =row.PackageOid.PackageName;
                         SupplierAnimal.Weight = row.QTY;
                         list.Add(SupplierAnimal);
                     }
@@ -166,7 +166,7 @@ namespace WebApi.Jwt.Controllers.MasterData
             }
         }
         [AllowAnonymous]
-        [HttpPost  ]
+        [HttpPost ]
         [Route("SupplierAnimalProduct/accept")]
         public IHttpActionResult LoadSupplierAnimalProduct()
         {
