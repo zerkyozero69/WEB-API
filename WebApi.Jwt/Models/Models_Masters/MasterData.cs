@@ -14,11 +14,14 @@ namespace WebApi.Jwt.Models
             public string Titlen_Name { get; set; }
             public Boolean IsActive { get; set; }
         }
-        public class TitleNames
+        public class TitleName_Model
         {
-            public bool status { get; set; }
-            public int total_count { get; set; }
-            public List<TitleName> results { get; set; }
+            public string Oid { get; set; }
+          public   string SubTitleName { get; set; }
+    
+            public string TitleName { get; set; }
+         
+            public bool IsActive { get; set; }
         }
         public class Gender_Model
         {

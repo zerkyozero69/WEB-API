@@ -40,30 +40,28 @@ namespace WebApi.Jwt.Controllers.MasterData
         string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
        
         [AllowAnonymous]
-        [HttpGet]
+        [HttpPost]
         [Route("AnimalSupplie_Info")]
         ///พันธุ์พืช อาหารสัตว์
         public HttpResponseMessage loadAnimalSupplie()
         {
             try
             {
-                DataSet ds = new DataSet();
-
-                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MobileGetAnimalSupplie");
-                DataTable dt = new DataTable();
-                dt = ds.Tables[0];
-                List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
-                Dictionary<string, object> row;
-                foreach (DataRow dr in dt.Rows)
+                XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                XafTypesInfo.Instance.RegisterEntity(typeof(AnimalSupplie));
+                List<AnimalSupplie_Model> list = new List<AnimalSupplie_Model>();
+                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+                IList<AnimalSupplie> collection = ObjectSpace.GetObjects<AnimalSupplie>(CriteriaOperator.Parse(" GCRecord is null and IsActive = 1 ", null));
+                foreach (AnimalSupplie row in collection)
                 {
-                    row = new Dictionary<string, object>();
-                    foreach (DataColumn col in dt.Columns)
-                    {
-                        row.Add(col.ColumnName, dr[col]);
-                    }
-                    rows.Add(row);
+                    AnimalSupplie_Model model = new AnimalSupplie_Model();
+                    model.Oid = row.Oid.ToString();
+                    model.AnimalSupplieName = row.AnimalSupplieName;
+                    model.IsActive = row.IsActive;    
+                    list.Add(model);
                 }
-                return Request.CreateResponse(HttpStatusCode.OK, rows);
+                return Request.CreateResponse(HttpStatusCode.OK, list);
             }
             catch (Exception ex)
             { //Error case เกิดข้อผิดพลาด
@@ -77,31 +75,30 @@ namespace WebApi.Jwt.Controllers.MasterData
 
         }
         [AllowAnonymous]
-        [HttpGet]
+        [HttpPost]
         [Route("Seedlevel")]
         /// ระดับชั้นพันธุ์
         public HttpResponseMessage loadSeedlevel()
         {
             try
             {
-                DataSet ds = new DataSet();
-
-                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_mobileLoadAnimalSeedLevel");
-                DataTable dt = new DataTable();
-                dt = ds.Tables[0];
-                List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
-                Dictionary<string, object> row;
-                foreach (DataRow dr in dt.Rows)
+                XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                XafTypesInfo.Instance.RegisterEntity(typeof(AnimalSeedLevel));
+                List<AnimalSeedLevel_Model> list = new List<AnimalSeedLevel_Model>();
+                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+                IList<AnimalSeedLevel> collection = ObjectSpace.GetObjects<AnimalSeedLevel>(CriteriaOperator.Parse(" GCRecord is null and IsActive = 1 ", null));
+                foreach (AnimalSeedLevel row in collection)
                 {
-                    row = new Dictionary<string, object>();
-                    foreach (DataColumn col in dt.Columns)
-                    {
-                        row.Add(col.ColumnName, dr[col]);
-                    }
-                    rows.Add(row);
+                    AnimalSeedLevel_Model model = new AnimalSeedLevel_Model();
+                    model.Oid = row.Oid.ToString();
+                    model.SeedLevelCode = row.SeedLevelCode;
+                    model.SeedLevelName = row.SeedLevelName;
+                    model.SortID = row.SortID;
+                    model.IsActive = row.IsActive;
+                    list.Add(model);
                 }
-                return Request.CreateResponse(HttpStatusCode.OK, rows);
-            
+                return Request.CreateResponse(HttpStatusCode.OK, list);
             }
             catch (Exception ex)
             { //Error case เกิดข้อผิดพลาด
@@ -114,31 +111,28 @@ namespace WebApi.Jwt.Controllers.MasterData
             }
         }
         [AllowAnonymous]
-        [HttpGet]
-        [Route("GrainType")]
+        [HttpPost]
+        [Route("SeedType")]
         /// ประเภทเมล็ด
-        public HttpResponseMessage loadGrainType()
+        public HttpResponseMessage loadSeedType()
         {
             try
             {
-                DataSet ds = new DataSet();
-
-                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MobileGetGrainType");
-                DataTable dt = new DataTable();
-                dt = ds.Tables[0];
-                List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
-                Dictionary<string, object> row;
-                foreach (DataRow dr in dt.Rows)
+                XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                XafTypesInfo.Instance.RegisterEntity(typeof(SeedType));
+                List<SeedType_Model> list = new List<SeedType_Model>();
+                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+                IList<SeedType> collection = ObjectSpace.GetObjects<SeedType>(CriteriaOperator.Parse(" GCRecord is null and IsActive = 1 ", null));
+                foreach (SeedType row in collection)
                 {
-                    row = new Dictionary<string, object>();
-                    foreach (DataColumn col in dt.Columns)
-                    {
-                        row.Add(col.ColumnName, dr[col]);
-                    }
-                    rows.Add(row);
+                    SeedType_Model model = new SeedType_Model();
+                    model.Oid = row.Oid.ToString();
+                    model.SeedTypeName = row.SeedTypeName;
+                    model.IsActive = row.IsActive;
+                    list.Add(model);
                 }
-                return Request.CreateResponse(HttpStatusCode.OK, rows);
-           
+                return Request.CreateResponse(HttpStatusCode.OK, list);
             }
             catch (Exception ex)
             { //Error case เกิดข้อผิดพลาด
@@ -151,111 +145,64 @@ namespace WebApi.Jwt.Controllers.MasterData
             }
         }
         [AllowAnonymous]
-        [HttpGet]
+        [HttpPost]
         [Route("Harvesting")]
         /// วิธีเก็บเกี่ยว
         public HttpResponseMessage loadHarvesting(string ForageTypeOid) // เมล็ดพัรธุ์ | เสบียงสัตว์ | ค่าว่าง
         {
             try
+
             {
+                    XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                    XafTypesInfo.Instance.RegisterEntity(typeof(Harvest));
+                    XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                    IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+                    IList<Harvest> collection = ObjectSpace.GetObjects<Harvest>(CriteriaOperator.Parse(" GCRecord is null and IsActive = 1", null));
 
-                DataSet ds = new DataSet();
-
-                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MobileGetHarvesting_Process",new SqlParameter ("@forageTypeOid", ForageTypeOid));
-                DataTable dt = new DataTable();
-                dt = ds.Tables[0];
-                List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
-                Dictionary<string, object> row;
-                foreach (DataRow dr in dt.Rows)
-                {
-                    row = new Dictionary<string, object>();
-                    foreach (DataColumn col in dt.Columns)
-                    {
-                        row.Add(col.ColumnName, dr[col]);
-                    }
-                    rows.Add(row);
+                        List<PlantModel> list = new List<PlantModel>();
+                        foreach (Harvest row in collection)
+                        {
+                            PlantModel plant = new PlantModel();
+                            plant.Oid = row.Oid;
+                            plant.ForageTypeOid = row.HarvestName;
+                            list.Add(plant);
+                        }
+                        return Request.CreateResponse(HttpStatusCode.OK, list);
+    
                 }
-                return Request.CreateResponse(HttpStatusCode.OK, rows);
+                catch (Exception ex)
+                { //Error case เกิดข้อผิดพลาด
+                    UserError err = new UserError();
+                    err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                    err.message = ex.Message;
+                    //  Return resual
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+                }
             }
-            catch (Exception ex)
-            { //Error case เกิดข้อผิดพลาด
-                UserError err = new UserError();
-                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-
-                err.message = ex.Message;
-                //Return resual
-                return Request.CreateResponse(HttpStatusCode.BadRequest, err);
-            }
-        }
-        //{
-
-        //    try
-        //    {
-        //        XpoTypesInfoHelper.GetXpoTypeInfoSource();
-        //        XafTypesInfo.Instance.RegisterEntity(typeof(Harvest));
-        //        XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
-        //        Harvest harvest;
-        //        IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-        //        IList<Harvest> collection = ObjectSpace.GetObjects<Harvest>(CriteriaOperator.Parse(" GCRecord is null and IsActive = 1", null));
-        //        if (collection.Count > 0)
-        //        {
-        //            List<PlantModel> list = new List<PlantModel>();
-        //            foreach (Harvest row in collection)
-        //            {
-        //                PlantModel plant = new PlantModel();
-        //                plant.Oid = row.Oid;
-        //                plant.ForageTypeOid = row.HarvestName;
-        //                list.Add(plant);
-        //            }
-        //            return Request.CreateResponse(HttpStatusCode.OK, list);
-        //        }
-        //        else
-        //        {
-        //            UserError err = new UserError();
-        //            err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-        //            err.message = "No data";
-        //            //  Return resual
-        //            return Request.CreateResponse(HttpStatusCode.BadRequest, err);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    { //Error case เกิดข้อผิดพลาด
-        //        UserError err = new UserError();
-        //        err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-        //        err.message = ex.Message;
-        //        //  Return resual
-        //        return Request.CreateResponse(HttpStatusCode.BadRequest, err);
-        //    }
-        //}
         [AllowAnonymous]
-        [HttpGet]
-        [Route("Animalsupplies")]
+        [HttpPost]
+        [Route("AnimalSupplieType")]
         /// ประเภทอาหารสัตว์
         public HttpResponseMessage loadAnimalsupplies()
         {
             try
             {
-
-                DataSet ds = new DataSet();
-
-                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MobileGetAnimal_supplies");
-                DataTable dt = new DataTable();
-                dt = ds.Tables[0];
-                List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
-                Dictionary<string, object> row;
-                foreach (DataRow dr in dt.Rows)
+                XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                XafTypesInfo.Instance.RegisterEntity(typeof(AnimalSupplieType));
+                List<AnimalSupplieType_Model> list = new List<AnimalSupplieType_Model>();
+                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+                IList<AnimalSupplieType> collection = ObjectSpace.GetObjects<AnimalSupplieType>(CriteriaOperator.Parse(" GCRecord is null and IsActive = 1 ", null));
+                foreach (AnimalSupplieType row in collection)
                 {
-                    {
-                        row = new Dictionary<string, object>();
-                        foreach (DataColumn col in dt.Columns)
-                        {
-                            row.Add(col.ColumnName, dr[col]);
-                        }
-                        rows.Add(row);
-                    }
-                    return Request.CreateResponse(HttpStatusCode.OK, rows);
+                    AnimalSupplieType_Model model = new AnimalSupplieType_Model();
+                    model.Oid = row.Oid.ToString();
+                    model.SupplietypeName = row.SupplietypeName;
+                    model.SalePrice = row.SalePrice;
+                    model.IsActive = row.IsActive;
+                    list.Add(model);
                 }
-                return Request.CreateResponse(HttpStatusCode.BadRequest, rows);
+                return Request.CreateResponse(HttpStatusCode.OK, list);
             }
             catch (Exception ex)
             { //Error case เกิดข้อผิดพลาด
@@ -269,31 +216,30 @@ namespace WebApi.Jwt.Controllers.MasterData
             }
         }
         [AllowAnonymous]
-        [HttpGet]
+        [HttpPost]
         [Route("AnimalType")]
         /// ระดับชั้นพันธุ์
         public HttpResponseMessage AnimalType()
         {
             try
             {
-                DataSet ds = new DataSet();
 
-                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_mobileLoadAnimalType ");
-                DataTable dt = new DataTable();
-                dt = ds.Tables[0];
-                List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
-                Dictionary<string, object> row;
-                foreach (DataRow dr in dt.Rows)
+                XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                XafTypesInfo.Instance.RegisterEntity(typeof(AnimalType));
+                List<AnimalType_Model> list = new List<AnimalType_Model>();
+                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+                IList<AnimalType> collection = ObjectSpace.GetObjects<AnimalType>(CriteriaOperator.Parse(" GCRecord is null and IsActive = 1 ", null));
+                foreach (AnimalType row in collection)
                 {
-                    row = new Dictionary<string, object>();
-                    foreach (DataColumn col in dt.Columns)
-                    {
-                        row.Add(col.ColumnName, dr[col]);
-                    }
-                    rows.Add(row);
+                    AnimalType_Model model = new AnimalType_Model();
+                    model.Oid = row.Oid.ToString();
+                    model.AnimalCode = row.AnimalCode;
+                    model.AnimalName = row.AnimalName;
+                    model.IsActive = row.IsActive;
+                    list.Add(model);
                 }
-                return Request.CreateResponse(HttpStatusCode.OK, rows);
-
+                return Request.CreateResponse(HttpStatusCode.OK, list);
             }
             catch (Exception ex)
             { //Error case เกิดข้อผิดพลาด
@@ -306,31 +252,31 @@ namespace WebApi.Jwt.Controllers.MasterData
             }
         }
         [AllowAnonymous]
-        [HttpGet]
+        [HttpPost]
         [Route("Animal_seed")]
         /// ชื่อพันธุ์พืชอาหารสัตว์
         public HttpResponseMessage AnimalSeed()
         {
             try
             {
-                DataSet ds = new DataSet();
-
-                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MobileGetAnimalSeed ");
-                DataTable dt = new DataTable();
-                dt = ds.Tables[0];
-                List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
-                Dictionary<string, object> row;
-                foreach (DataRow dr in dt.Rows)
+                XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                XafTypesInfo.Instance.RegisterEntity(typeof(AnimalSeed));
+                List<AnimalSeed_Model> list = new List<AnimalSeed_Model>();
+                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+                IList<AnimalSeed> collection = ObjectSpace.GetObjects<AnimalSeed>(CriteriaOperator.Parse(" GCRecord is null and IsActive = 1 ", null));
+                foreach (AnimalSeed row in collection)
                 {
-                    row = new Dictionary<string, object>();
-                    foreach (DataColumn col in dt.Columns)
-                    {
-                        row.Add(col.ColumnName, dr[col]);
-                    }
-                    rows.Add(row);
+                    AnimalSeed_Model model = new AnimalSeed_Model();
+                    model.Oid = row.Oid.ToString();
+                    model.SeedCode = row.SeedCode;
+                    model.SeedName = row.SeedName;
+                    model.SeedNameCommon =row.SeedNameCommon;
+                    model.SeedNameScience =row.SeedNameScience;
+                    model.IsActive = row.IsActive;
+                    list.Add(model);
                 }
-                return Request.CreateResponse(HttpStatusCode.OK, rows);
-
+                return Request.CreateResponse(HttpStatusCode.OK, list);
             }
             catch (Exception ex)
             { //Error case เกิดข้อผิดพลาด
@@ -344,31 +290,29 @@ namespace WebApi.Jwt.Controllers.MasterData
         }
 
         [AllowAnonymous]
-        [HttpGet]
+        [HttpPost]
         [Route("ForageType")]
         /// ชื่อพันธุ์พืชอาหารสัตว์
         public HttpResponseMessage AnimalForageType()
         {
+            
             try
             {
-                DataSet ds = new DataSet();
-
-                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieLoadForageType ");
-                DataTable dt = new DataTable();
-                dt = ds.Tables[0];
-                List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
-                Dictionary<string, object> row;
-                foreach (DataRow dr in dt.Rows)
+                XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                XafTypesInfo.Instance.RegisterEntity(typeof(ForageType));
+                List<ForageType_Model> list = new List<ForageType_Model>();
+                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+                IList<ForageType> collection = ObjectSpace.GetObjects<ForageType>(CriteriaOperator.Parse(" GCRecord is null and IsActive = 1 ", null));
+                foreach (ForageType row in collection)
                 {
-                    row = new Dictionary<string, object>();
-                    foreach (DataColumn col in dt.Columns)
-                    {
-                        row.Add(col.ColumnName, dr[col]);
-                    }
-                    rows.Add(row);
+                    ForageType_Model model = new ForageType_Model();
+                    model.Oid = row.Oid.ToString();
+                    model.ForageTypeName = row.ForageTypeName;        
+                    model.IsActive = row.IsActive;
+                    list.Add(model);
                 }
-                return Request.CreateResponse(HttpStatusCode.OK, rows);
-
+                return Request.CreateResponse(HttpStatusCode.OK, list);
             }
             catch (Exception ex)
             { //Error case เกิดข้อผิดพลาด

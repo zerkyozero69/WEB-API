@@ -275,6 +275,7 @@
     <Compile Include="Models\Disaster assistance.cs" />
     <Compile Include="Models\FarmerCitizen.cs" />
     <Compile Include="Models\Models_Masters\AddressType.cs" />
+    <Compile Include="Models\Models_Masters\AnimalSupplie_info.cs" />
     <Compile Include="Models\Models_Masters\FinanceYear.cs" />
     <Compile Include="Models\Login.cs" />
     <Compile Include="Models\Models_Masters\MasterData.cs" />
@@ -282,6 +283,7 @@
     <Compile Include="Models\Models_Masters\Plant.cs" />
     <Compile Include="Models\Models_Masters\Province.cs" />
     <Compile Include="Models\Models_Masters\SendStatus.cs" />
+    <Compile Include="Models\Models_Masters\ServiceType.cs" />
     <Compile Include="Models\Models_Masters\Unit.cs" />
     <Compile Include="Models\Organization.cs" />
     <Compile Include="Models\refresh_Token.cs" />
