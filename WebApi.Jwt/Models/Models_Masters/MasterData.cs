@@ -20,7 +20,7 @@ namespace WebApi.Jwt.Models
         public int total_count { get; set; }
         public List<TitleName> results { get; set; }
     }
-        public class Gender
+        public class Gender_Model
         {
             public object Oid { get; set; }
             public string GenderName { get; set; }
@@ -43,5 +43,10 @@ namespace WebApi.Jwt.Models
            public int Status  { get;set; }
            public string Message { get; set; }
 
+    }
+    public class EmployeeType_Model
+    {
+        public  string EmployeeTypeName { get; set; }
+        public bool IsActive { get; set; }
     }
 }

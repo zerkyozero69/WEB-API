@@ -28,6 +28,7 @@ using WebApi.Jwt.Filters;
 using WebApi.Jwt.helpclass;
 using NTi.CommonUtility;
 using System.IO;
+using nutrition.Module;
 
 namespace WebApi.Jwt.Controllers.MasterData
 {
@@ -48,24 +49,19 @@ namespace WebApi.Jwt.Controllers.MasterData
         {
             try
             {
-                DataSet ds = new DataSet();
-                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieLoadEmployeeType"); ///อย่าลืมเปลี่ยน คอนเนคชั่นสติง
-                DataTable dt = new DataTable();
-                dt = ds.Tables[0];
-                System.Web.Script.Serialization.JavaScriptSerializer serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
-
-                List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
-                Dictionary<string, object> row;
-                foreach (DataRow dr in dt.Rows)
+                XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.EmployeeType));
+                List<EmployeeType_Model> list = new List<EmployeeType_Model>();
+                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+                IList<EmployeeType> collection = ObjectSpace.GetObjects<EmployeeType>(CriteriaOperator.Parse("  GCRecord is null and IsActive = 1 ", null));
+                foreach (EmployeeType row in collection)
                 {
-                    row = new Dictionary<string, object>();
-                    foreach (DataColumn col in dt.Columns)
-                    {
-                        row.Add(col.ColumnName, dr[col]);
-                    }
-                    rows.Add(row);
+                    EmployeeType_Model model = new EmployeeType_Model();
+                    model.EmployeeTypeName = row.EmployeeTypeName;
+                    model.IsActive = row.IsActive;
                 }
-                return Request.CreateResponse(HttpStatusCode.OK, rows);
+                return Request.CreateResponse(HttpStatusCode.OK, list);
             }
             catch (Exception ex)
             {

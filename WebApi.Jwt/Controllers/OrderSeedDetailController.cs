@@ -55,7 +55,7 @@ namespace WebApi.Jwt.Controllers
             {
                 XpoTypesInfoHelper.GetXpoTypeInfoSource();
                 XafTypesInfo.Instance.RegisterEntity(typeof(SendOrderSeedDetail));
-                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc);
+                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
                 SendOrderSeedDetail OrderSeed;
 
@@ -105,7 +105,7 @@ namespace WebApi.Jwt.Controllers
                 XpoTypesInfoHelper.GetXpoTypeInfoSource();
                 XafTypesInfo.Instance.RegisterEntity(typeof(SendOrderSeed));
 
-                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc);
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
                 List<SendOrderSeed_Model> list_detail = new List<SendOrderSeed_Model>();
 
@@ -425,7 +425,7 @@ namespace WebApi.Jwt.Controllers
                         ObjStockSeedInfoInfo = ObjectSpace.CreateObject<StockSeedInfo>();
 
                         ObjStockSeedInfoInfo.StockDate = DateTime.Now;
-                        ObjStockSeedInfoInfo.OrganizationOid = ObjMaster.SendOrgOid.Oid;
+                        ObjStockSeedInfoInfo.OrganizationOid = ObjMaster.SendOrgOid;
                         ObjStockSeedInfoInfo.FinanceYearOid = ObjMaster.FinanceYearOid;
                         ObjStockSeedInfoInfo.BudgetSourceOid = objSupplierProduct.BudgetSourceOid;
                         ObjStockSeedInfoInfo.AnimalSeedOid = objSupplierProduct.AnimalSeedOid;

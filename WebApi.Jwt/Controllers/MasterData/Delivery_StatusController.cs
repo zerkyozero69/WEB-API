@@ -49,71 +49,45 @@ namespace WebApi.Jwt.Controllers.MasterData
         {
             try
             {
-                //    XpoTypesInfoHelper.GetXpoTypeInfoSource();
-                //    XafTypesInfo.Instance.RegisterEntity(typeof(SendStatus));
-                //    XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
-                //    IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-                //    IList<SendStatus> collection = ObjectSpace.GetObjects<SendStatus>(CriteriaOperator.Parse(" IsActive = 1", null));
+                XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                XafTypesInfo.Instance.RegisterEntity(typeof(SendStatus));
+                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+                IList<SendStatus> collection = ObjectSpace.GetObjects<SendStatus>(CriteriaOperator.Parse("  GCRecord is null and IsActive = 1", null));
 
-                //    if (collection.Count > 0)
-                //    {
-                //        List<SendStatusModel> list = new List<SendStatusModel>();
-                //        foreach (SendStatus row in collection)
-                //        {
-                //            SendStatusModel SendStatus = new SendStatusModel();
-                //            SendStatus.Oid = row.Oid;
-                //            SendStatus.StatusName = row.StatusName;
-                //            list.Add(SendStatus);
-                //        }
-                //        return Request.CreateResponse(HttpStatusCode.OK, list);
-                //    }
-                //    else
-                //    {
-                //        UserError err = new UserError();
-                //        err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-                //        err.message = "No data";
-                //        //  Return resual
-                //        return Request.CreateResponse(HttpStatusCode.BadRequest, err);
-                //    }
-                //}
-                //catch (Exception ex)
-                //{ //Error case เกิดข้อผิดพลาด
-                //    UserError err = new UserError();
-                //    err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-                //    err.message = ex.Message;
-                //    //  Return resual
-                //    return Request.CreateResponse(HttpStatusCode.BadRequest, err);
-                //}
-                DataSet ds = new DataSet();
-
-                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieLoadSendStatus");
-                DataTable dt = new DataTable();
-                dt = ds.Tables[0];
-                List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
-                Dictionary<string, object> row;
-                foreach (DataRow dr in dt.Rows)
+                if (collection.Count > 0)
                 {
-
-                    row = new Dictionary<string, object>();
-                    foreach (DataColumn col in dt.Columns)
+                    List<SendStatusModel> list = new List<SendStatusModel>();
+                    foreach (SendStatus row in collection)
                     {
-                        row.Add(col.ColumnName, dr[col]);
+                        SendStatusModel SendStatus = new SendStatusModel();
+                        SendStatus.Oid = row.Oid;
+                        SendStatus.StatusName = row.StatusName;
+                        list.Add(SendStatus);
                     }
-                    rows.Add(row);
+                    return Request.CreateResponse(HttpStatusCode.OK, list);
                 }
-                return Request.CreateResponse(HttpStatusCode.OK, rows);
+                else
+                {
+                    UserError err = new UserError();
+                    err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                    err.message = "No data";
+                    //  Return resual
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+                }
             }
             catch (Exception ex)
             { //Error case เกิดข้อผิดพลาด
                 UserError err = new UserError();
                 err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-
                 err.message = ex.Message;
                 //  Return resual
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
-
             }
-        }
 
-    }
+
+
+
+
+        }
 }

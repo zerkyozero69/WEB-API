@@ -113,10 +113,7 @@ namespace WebApi.Jwt.Controllers.MasterData
             object ReceiveOrgOid;
             try
             {
-
                 ReceiveOrgOid = HttpContext.Current.Request.Form["ReceiveOrgOid"].ToString();
-
-
                 XpoTypesInfoHelper.GetXpoTypeInfoSource();
                 XafTypesInfo.Instance.RegisterEntity(typeof(SendOrderSupplierAnimal));
                 XafTypesInfo.Instance.RegisterEntity(typeof(SupplierSendDetail));
@@ -245,7 +242,7 @@ namespace WebApi.Jwt.Controllers.MasterData
         [AllowAnonymous]
         [HttpPost]
         [Route("LoadSupplierUseProduct/{No}")] // ใส่ OIDSendOrderSeed ใบนำส่ง /SendOrder/226-0011
-        public IHttpActionResult SendOrderSeedDetail_ByOrderSeedID()
+        public IHttpActionResult SendSupplierSeedDetail_ByOrderSeedID()
         {
             object SupplierAnimalNumber = string.Empty;
             object OrganizationOid = string.Empty;

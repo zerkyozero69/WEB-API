@@ -230,7 +230,6 @@
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\Approval_SendSeedController.cs" />
-    <Compile Include="Controllers\JWT_ReportController.cs" />
     <Compile Include="Controllers\SendorderSuppilerAnimal_Controller.cs" />
     <Compile Include="Controllers\OrderSeedDetailController.cs" />
     <Compile Include="Controllers\Subscriber_UserController.cs" />
@@ -275,9 +274,11 @@
     <Compile Include="Models\Customer_Service.cs" />
     <Compile Include="Models\Disaster assistance.cs" />
     <Compile Include="Models\FarmerCitizen.cs" />
+    <Compile Include="Models\Models_Masters\AddressType.cs" />
     <Compile Include="Models\Models_Masters\FinanceYear.cs" />
     <Compile Include="Models\Login.cs" />
     <Compile Include="Models\Models_Masters\MasterData.cs" />
+    <Compile Include="Models\Models_Masters\Objective_Used.cs" />
     <Compile Include="Models\Models_Masters\Plant.cs" />
     <Compile Include="Models\Models_Masters\SendStatus.cs" />
     <Compile Include="Models\Models_Masters\Unit.cs" />

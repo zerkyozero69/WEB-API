@@ -31,7 +31,7 @@ using System.IO;
 using nutrition.Module.EmployeeAsUserExample.Module.BusinessObjects;
 using nutrition.Module;
 using DevExpress.Xpo;
-
+using WebApi.Jwt.Models.Models_Masters;
 
 namespace WebApi.Jwt.Controllers.MasterData
 {
@@ -45,24 +45,19 @@ namespace WebApi.Jwt.Controllers.MasterData
         {
             try
             {
-                DataSet ds = new DataSet();
-
-                ds = SqlHelper.ExecuteDataset(scc, CommandType.Text, "select * from AddressType where IsActive= 'true' ");
-                DataTable dt = new DataTable();
-                dt = ds.Tables[0];
-                List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
-                Dictionary<string, object> row;
-                foreach (DataRow dr in dt.Rows)
+                XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                XafTypesInfo.Instance.RegisterEntity(typeof(AddressType));
+                List<AddressType_Model> list = new List<AddressType_Model>();
+                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+                IList<AddressType> collection = ObjectSpace.GetObjects<AddressType>(CriteriaOperator.Parse("  GCRecord is null and IsActive = 1 ", null));
+                foreach (AddressType row in collection)
                 {
-
-                    row = new Dictionary<string, object>();
-                    foreach (DataColumn col in dt.Columns)
-                    {
-                        row.Add(col.ColumnName, dr[col]);
-                    }
-                    rows.Add(row);
+                    AddressType_Model model = new AddressType_Model();
+                    model.AddressTypeName = row.AddressTypeName;
+                    model.IsActive = row.IsActive;
                 }
-                return Request.CreateResponse(HttpStatusCode.OK, rows);
+                    return Request.CreateResponse(HttpStatusCode.OK, list);
             }
             catch (Exception ex)
             { //Error case เกิดข้อผิดพลาด

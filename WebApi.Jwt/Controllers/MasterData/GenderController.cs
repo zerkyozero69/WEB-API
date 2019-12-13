@@ -28,6 +28,8 @@ using WebApi.Jwt.Filters;
 using WebApi.Jwt.helpclass;
 using NTi.CommonUtility;
 using System.IO;
+using nutrition.Module;
+using static WebApi.Jwt.Models.MasterData;
 
 namespace WebApi.Jwt.Controllers.MasterData
 {
@@ -37,33 +39,26 @@ namespace WebApi.Jwt.Controllers.MasterData
         [AllowAnonymous]
         [HttpGet]
         [Route("Gender")]
-        public HttpResponseMessage loadGender()
+        public HttpResponseMessage get_Gender()
         {
             try
             {
-                //string language = "TH";
-                //language = HttpContext.Current.Request.Form["language"].ToString();
-
-
-                DataSet ds = new DataSet();
-
-                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "loadGender");
-                DataTable dt = new DataTable();
-                dt = ds.Tables[0];
-                List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
-                Dictionary<string, object> row;
-                foreach (DataRow dr in dt.Rows)
+                XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.Gender));
+                List<Gender_Model> list = new List<Gender_Model>();
+                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+                IList<Gender> collection = ObjectSpace.GetObjects<Gender>(CriteriaOperator.Parse("  GCRecord is null and IsActive = 1", null));
+                foreach (Gender row in collection)
                 {
-                    
-                        row = new Dictionary<string, object>();
-                        foreach (DataColumn col in dt.Columns)
-                        {
-                            row.Add(col.ColumnName, dr[col]);
-                        }
-                        rows.Add(row);
-                    }
-                    return Request.CreateResponse(HttpStatusCode.OK, rows);
+                    Gender_Model model = new Gender_Model();
+                    model.GenderName = row.GenderName;
+                    model.IsActive = row.IsActive;
                 }
+                return Request.CreateResponse(HttpStatusCode.OK, list);
+            }
+                
+              
             catch (Exception ex)
             { //Error case เกิดข้อผิดพลาด
                 UserError err = new UserError();
