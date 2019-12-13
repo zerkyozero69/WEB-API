@@ -425,7 +425,7 @@ namespace WebApi.Jwt.Controllers
                         ObjStockSeedInfoInfo = ObjectSpace.CreateObject<StockSeedInfo>();
 
                         ObjStockSeedInfoInfo.StockDate = DateTime.Now;
-                        ObjStockSeedInfoInfo.OrganizationOid = ObjMaster.SendOrgOid.Oid;
+                        ObjStockSeedInfoInfo.OrganizationOid = ObjMaster.SendOrgOid;
                         ObjStockSeedInfoInfo.FinanceYearOid = ObjMaster.FinanceYearOid;
                         ObjStockSeedInfoInfo.BudgetSourceOid = objSupplierProduct.BudgetSourceOid;
                         ObjStockSeedInfoInfo.AnimalSeedOid = objSupplierProduct.AnimalSeedOid;
