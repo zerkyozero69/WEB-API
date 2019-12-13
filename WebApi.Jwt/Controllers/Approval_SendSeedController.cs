@@ -148,10 +148,10 @@ namespace WebApi.Jwt.Controllers
         /// </summary>
         /// <returns></returns>
    
-        //[AllowAnonymous]
+        [AllowAnonymous]
         [HttpPost]
         [Route("SendOrder/{Send_No}")] // ใส่ OIDSendOrderSeed ใบนำส่ง /SendOrder/226-0011
-        [JwtAuthentication]
+        //[JwtAuthentication]
         public IHttpActionResult SendOrderSeedDetail_ByOrderSeedID()
 
         {
@@ -208,8 +208,9 @@ namespace WebApi.Jwt.Controllers
                         send_Detail.WeightUnit = row.WeightUnitOid.UnitName;
                         send_Detail.AnimalSeedCode = row.AnimalSeedCode;
                         send_Detail.AnimalSeedLevel = row.AnimalSeedLevel;
-                        send_Detail.AnimalSeeName = row.AnimalSeeName;
-                        send_Detail.BudgetSource = row.BudgetSourceOid.BudgetName;                  
+                        send_Detail.AnimalSeedName = row.AnimalSeeName;
+                        send_Detail.BudgetSource = row.BudgetSourceOid.BudgetName;
+                      
                         send_Detail.Weight = row.Weight.ToString();
                         send_Detail.Used = row.Used.ToString();
                         send_Detail.SendOrderSeed = row.SendOrderSeed.SendNo;

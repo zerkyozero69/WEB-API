@@ -16,9 +16,9 @@ namespace WebApi.Jwt.Models
         public string Moo { get; set; }
         public object Soi { get; set; }
         public string Road { get; set; }
-        public object ProvinceOid { get; set; }
-        public string DistrictOid { get; set; }
-        public string SubDistrictOid { get; set; }
+        public object ProvinceName { get; set; }
+        public string DistrictName { get; set; }
+        public string SubDistrictName { get; set; }
         public string IsActive { get; set; }
         public string ZipCode { get; set; }
         public string FullAddress { get; set; }

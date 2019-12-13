@@ -219,9 +219,10 @@ namespace WebApi.Jwt.Controllers
                 {
                     OrgeServiceName = HttpContext.Current.Request.Form["OrgeServiceName"].ToString();
                 }
+   
 
 
-                XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                    XpoTypesInfoHelper.GetXpoTypeInfoSource();
                 XafTypesInfo.Instance.RegisterEntity(typeof(OrgeService));
                 XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
@@ -230,7 +231,8 @@ namespace WebApi.Jwt.Controllers
                 List<OrgeServiceDetail_Model> list_detail = new List<OrgeServiceDetail_Model>();
                 OrgeService OrgeService_;
                 OrgeService_ = ObjectSpace.FindObject<OrgeService>(CriteriaOperator.Parse("GCRecord is null and OrgeServiceName = ? ", OrgeServiceName));
-                if (OrgeServiceName != null)
+                DataSet ds = SqlHelper.ExecuteDataset(scc, CommandType.Text, "select OrgeServiceName from OrgeService where OrgeServiceName = '" + OrgeServiceName + "'");
+                if (ds.Tables[0].Rows.Count != 0)
                 {
                     
 

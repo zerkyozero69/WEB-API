@@ -7,6 +7,7 @@ namespace WebApi.Jwt.Models
 {
     public  class Approve_Model
     {
+        public object Oid { get; set; }
         public string Send_No {get;set;}
         public string SendDate { get; set; }
         public string FinanceYear { get; set; }
@@ -25,18 +26,22 @@ namespace WebApi.Jwt.Models
     
     public class SendOrderSeed_Model
     {
-        public dynamic LotNumber { get; set; }
+        
+        public object LotNumber { get; set; }
         public object WeightUnit { get; set; }
         public string AnimalSeedCode { get; set; }
-        public string AnimalSeeName { get; set; }
+        public string AnimalSeedName { get; set; }
+       
         public string AnimalSeedLevel { get; set; }
+        public object BudgetSourceOid { get; set; }
         public object BudgetSource { get; set; }
         public string Weight { get; set; }
         public string Used { get; set; }
        public object SendOrderSeed { get; set; }
-        public string AnimalSeedOid { get; set; }
-        public string AnimalSeedLevelOid { get; set; }
-        public string SeedTypeOid { get; set; }
+        public object AnimalSeedOid { get; set; }
+        public string    AnimalSeed { get; set; }
+        public object  AnimalSeedLevelOid { get; set; }
+        public object SeedTypeOid { get; set; }
         public double Amount { get; set; }
        
 
@@ -142,14 +147,17 @@ namespace WebApi.Jwt.Models
 }
     public class sendSeed_info
         {
+        public object Oid { get; set; }
         public string Send_No { get; set; }
         public string SendDate { get; set; }
+        public object FinanceYearOid { get; set; }
         public string FinanceYear { get; set; }
         public object SendOrgOid { get; set; }
 
         public string SendOrgName { get; set; }
         public  object ReceiveOrgoid { get; set;}
         public string ReceiveOrgName { get; set; }
+        public string SendStatus { get; set; }
         public string Weight_All { get; set; }
     }
     public class  data_info

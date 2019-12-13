@@ -43,11 +43,8 @@ namespace WebApi.Jwt.Controllers.MasterData
         [Route("Addressinfo")]
         public HttpResponseMessage GetAddressinfo()
         {
-
             try
-
             {
-
                 DataSet ds = new DataSet();
 
                 ds = SqlHelper.ExecuteDataset(scc, CommandType.Text, "select * from AddressType where IsActive= 'true' ");
