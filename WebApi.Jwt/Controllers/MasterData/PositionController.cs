@@ -28,6 +28,8 @@ using WebApi.Jwt.Filters;
 using WebApi.Jwt.helpclass;
 using NTi.CommonUtility;
 using System.IO;
+using nutrition.Module;
+
 namespace WebApi.Jwt.Controllers.MasterData
 {
     public class PositionController : ApiController
@@ -35,38 +37,27 @@ namespace WebApi.Jwt.Controllers.MasterData
         string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
         [AllowAnonymous]
         [HttpGet]
-        
+
         [Route("Position")]/// เรียกตำแหน่งเจ้าหน้าที่
         public HttpResponseMessage loadPosition()
         {
             try
             {
-                DataSet ds = new DataSet();
-                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieLoadPosition");
-                DataTable dt = new DataTable();
-                dt = ds.Tables[0];
-                List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
-                Dictionary<string, object> row;
-
-                foreach (DataRow dr in dt.Rows)
+                XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.Position));
+                List<Position_Model> list = new List<Position_Model>();
+                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+                IList<Position> collection = ObjectSpace.GetObjects<Position>(CriteriaOperator.Parse("  GCRecord is null and IsActive = 1", null));
+                foreach (Position row in collection)
                 {
-                    row = new Dictionary<string, object>();
-                    foreach (DataColumn col in dt.Columns)
-                    {
-                        row.Add(col.ColumnName, dr[col]);
-                    }
-                    rows.Add(row);
+                    Position_Model model = new Position_Model();
+                    model.PositionName = row.PositionName;
+                    model.IsActive = row.IsActive;
                 }
-                if (rows != null)
-                {
-                    return Request.CreateResponse(HttpStatusCode.OK, rows);
-                    //    return new HttpResponseMessage { Content = new StringContent("[{\"Success\":\"Success\"},{\"Message\":\"Login successfully\"}],{\"Data\":" + "200" + "}", System.Text.Encoding.UTF8, "application/json") };
-
-                }
-                {
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, "No data");
-                }
+                return Request.CreateResponse(HttpStatusCode.OK, list);
             }
+            
             catch (Exception ex)
             { //Error case เกิดข้อผิดพลาด
                 UserError err = new UserError();

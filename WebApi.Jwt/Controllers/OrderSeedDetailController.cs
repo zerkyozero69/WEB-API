@@ -36,7 +36,7 @@ using static WebApi.Jwt.Models.Supplier;
 
 namespace WebApi.Jwt.Controllers
 {
-    public class OrderSeedDetailController : ApiController
+    public class OrderSeedDetailController2 : ApiController
     {
         string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
         /// <summary>

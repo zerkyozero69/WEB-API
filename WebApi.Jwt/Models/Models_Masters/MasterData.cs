@@ -14,12 +14,12 @@ namespace WebApi.Jwt.Models
             public string Titlen_Name { get; set; }
             public Boolean IsActive { get; set; }
         }
-        public class  TitleNames
+        public class TitleNames
         {
             public bool status { get; set; }
-        public int total_count { get; set; }
-        public List<TitleName> results { get; set; }
-    }
+            public int total_count { get; set; }
+            public List<TitleName> results { get; set; }
+        }
         public class Gender_Model
         {
             public object Oid { get; set; }
@@ -31,22 +31,33 @@ namespace WebApi.Jwt.Models
     {
         public string Oid { get; set; }
         public string DistrictName_TH { get; set; }
-       
+
     }
     public class _CustomerType
     {
-          public object Oid { get; set; }
-          public string TypeName { get; set; }
-           public bool IsActive { get; set; }
-           public string Remark { get; set; }
-           public string MasterCustomerType { get; set; }
-           public int Status  { get;set; }
-           public string Message { get; set; }
+        public object Oid { get; set; }
+        public string TypeName { get; set; }
+        public bool IsActive { get; set; }
+        public string Remark { get; set; }
+        public string MasterCustomerType { get; set; }
+        public int Status { get; set; }
+        public string Message { get; set; }
 
     }
     public class EmployeeType_Model
     {
-        public  string EmployeeTypeName { get; set; }
+        public string EmployeeTypeName { get; set; }
         public bool IsActive { get; set; }
     }
+    public class Position_Model
+        {
+        public string PositionName { get; set; }
+
+       public string PositionLevelOid { get; set; }
+
+        public string EmployeeTypeOid { get; set; }
+      public string Remark { get; set; }
+
+     public bool IsActive { get; set; }
+            }
 }
