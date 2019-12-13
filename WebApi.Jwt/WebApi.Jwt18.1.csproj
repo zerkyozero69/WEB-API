@@ -250,7 +250,7 @@
     <Compile Include="Controllers\MasterData\OrganizationController.cs" />
     <Compile Include="Controllers\MasterData\PositionController.cs" />
     <Compile Include="Controllers\MasterData\Product_unitController.cs" />
-    <Compile Include="Controllers\MasterData\ProvinceController.cs" />
+    <Compile Include="Controllers\MasterData\Province_DistricController.cs" />
     <Compile Include="Controllers\MasterData\ServiceTypeController.cs" />
     <Compile Include="Controllers\Send_SeedController.cs" />
     <Compile Include="Controllers\MasterData\TitleController.cs" />
@@ -280,6 +280,7 @@
     <Compile Include="Models\Models_Masters\MasterData.cs" />
     <Compile Include="Models\Models_Masters\Objective_Used.cs" />
     <Compile Include="Models\Models_Masters\Plant.cs" />
+    <Compile Include="Models\Models_Masters\Province.cs" />
     <Compile Include="Models\Models_Masters\SendStatus.cs" />
     <Compile Include="Models\Models_Masters\Unit.cs" />
     <Compile Include="Models\Organization.cs" />

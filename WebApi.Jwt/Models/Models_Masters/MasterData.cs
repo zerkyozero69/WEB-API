@@ -60,4 +60,9 @@ namespace WebApi.Jwt.Models
 
      public bool IsActive { get; set; }
             }
+    public class PositionLevel_Model
+    {
+       public string PositionLevelName { get; set; }    
+        public bool IsActive { get; set; }
+    }
 }

@@ -87,6 +87,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                     ProductionObjective_Model model = new ProductionObjective_Model();
                     model.ProductObjectiveName = row.ProductObjectiveName;
                     model.IsActive = row.IsActive;
+                    list.Add(model);
                 }
                 return Request.CreateResponse(HttpStatusCode.OK, list);
             }

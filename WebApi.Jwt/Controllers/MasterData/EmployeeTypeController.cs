@@ -60,6 +60,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                     EmployeeType_Model model = new EmployeeType_Model();
                     model.EmployeeTypeName = row.EmployeeTypeName;
                     model.IsActive = row.IsActive;
+                    list.Add(model);
                 }
                 return Request.CreateResponse(HttpStatusCode.OK, list);
             }

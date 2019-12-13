@@ -56,6 +56,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                     AddressType_Model model = new AddressType_Model();
                     model.AddressTypeName = row.AddressTypeName;
                     model.IsActive = row.IsActive;
+                    list.Add(model);
                 }
                     return Request.CreateResponse(HttpStatusCode.OK, list);
             }

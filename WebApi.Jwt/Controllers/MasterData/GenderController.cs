@@ -54,6 +54,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                     Gender_Model model = new Gender_Model();
                     model.GenderName = row.GenderName;
                     model.IsActive = row.IsActive;
+                    list.Add(model);
                 }
                 return Request.CreateResponse(HttpStatusCode.OK, list);
             }

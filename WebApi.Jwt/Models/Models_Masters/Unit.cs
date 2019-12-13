@@ -10,5 +10,13 @@ namespace WebApi.Jwt.Models.Models_Masters
         public object Oid { get; set; }
         public string UnitCode { get; set; }
         public string UnitName { get; set; }
+        public bool IsActive { get; set; }
+    }
+    public class Package_Model
+    {
+        public string PackageName { get; set; }
+     
+        public bool IsActive { get; set; }
+
     }
 }
