@@ -627,7 +627,7 @@ namespace WebApi.Jwt.Controllers
             #region SendOrderSeedApprove ยืนยันเมล็ดพันธุ์ ทดสอบ
         [AllowAnonymous]
         [HttpPost]
-        [Route("ApprovalSend/2")]
+        [Route("ApprovalSend/Seed")]
 
         public IHttpActionResult ApprovalSend_SupplierUseProduct(string Send_No) 
         {

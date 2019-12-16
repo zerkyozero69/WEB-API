@@ -162,6 +162,10 @@ namespace WebApi.Jwt.Controllers.MasterData
                 return BadRequest(ex.Message);
             }
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpPost ]
         [Route("SupplierUseAnimalProduct/accept")] ///การใช้เสบียงสัตว์

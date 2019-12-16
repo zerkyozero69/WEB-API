@@ -230,8 +230,10 @@
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\Approval_SendSeedController.cs" />
+    <Compile Include="Controllers\ManageAnimalSupplierController.cs" />
     <Compile Include="Controllers\SendorderSuppilerAnimal_Controller.cs" />
     <Compile Include="Controllers\OrderSeedDetailController.cs" />
+    <Compile Include="Controllers\StockSeedController.cs" />
     <Compile Include="Controllers\Subscriber_UserController.cs" />
     <Compile Include="Controllers\SupplierController.cs" />
     <Compile Include="Controllers\testinsert_APIController.cs" />
@@ -274,6 +276,7 @@
     <Compile Include="Models\Customer_Service.cs" />
     <Compile Include="Models\Disaster assistance.cs" />
     <Compile Include="Models\FarmerCitizen.cs" />
+    <Compile Include="Models\ManageAnimalSupplier.cs" />
     <Compile Include="Models\Models_Masters\AddressType.cs" />
     <Compile Include="Models\Models_Masters\AnimalSupplie_info.cs" />
     <Compile Include="Models\Models_Masters\FinanceYear.cs" />
@@ -290,6 +293,7 @@
     <Compile Include="Models\RegisterFarmer.cs" />
     <Compile Include="Models\Reports_values.cs" />
     <Compile Include="Models\SendOrderSupplierAnimal.cs" />
+    <Compile Include="Models\StockSeedInfo.cs" />
     <Compile Include="Models\Subscriber_User.cs" />
     <Compile Include="Models\Supplier.cs" />
     <Compile Include="Models\user.cs" />
