@@ -61,7 +61,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                 List<SendOrderSeed_Model> list_detail = new List<SendOrderSeed_Model>();
                 XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-                IList<SendOrderSupplierAnimal> collection = ObjectSpace.GetObjects<SendOrderSupplierAnimal>(CriteriaOperator.Parse(" GCRecord is null and SendStatus = 2 and SendOrgOid=?", SendOrgOid));
+                IList<SendOrderSupplierAnimal> collection = ObjectSpace.GetObjects<SendOrderSupplierAnimal>(CriteriaOperator.Parse(" GCRecord is null and SendStatus = 5 and SendOrgOid=?", SendOrgOid));
                 if (collection.Count > 0)
                 {
                                 foreach (SendOrderSupplierAnimal row in collection)
@@ -164,42 +164,76 @@ namespace WebApi.Jwt.Controllers.MasterData
         }
         [AllowAnonymous]
         [HttpPost ]
-        [Route("SupplierAnimalProduct/accept")]
-        public IHttpActionResult LoadSupplierAnimalProduct()
+        [Route("SupplierUseAnimalProduct/accept")] ///การใช้เสบียงสัตว์
+        public IHttpActionResult Get_SupplierUseAnimalProduct()
         {
             object OrganizationOid;
+            string ActivityOid;
             try
             {
 
                 OrganizationOid = HttpContext.Current.Request.Form["OrganizationOid"].ToString();
-
+                ActivityOid = HttpContext.Current.Request.Form["ActivityOid"].ToString();
 
                 XpoTypesInfoHelper.GetXpoTypeInfoSource();
-                XafTypesInfo.Instance.RegisterEntity(typeof(SupplierAnimalProduct));
+                XafTypesInfo.Instance.RegisterEntity(typeof(SupplierUseAnimalProduct));
                 XafTypesInfo.Instance.RegisterEntity(typeof(SupplierSendDetail));
-                List<SupplierAnimalProduct_info> list_detail = new List<SupplierAnimalProduct_info>();
+                List<SupplierAnimalUseProduct_Model> list_detail = new List<SupplierAnimalUseProduct_Model>();
                 XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-                IList<SupplierAnimalProduct> collection = ObjectSpace.GetObjects<SupplierAnimalProduct>(CriteriaOperator.Parse(" GCRecord is null and Stauts = 2 and OrganizationOid=?", OrganizationOid));
+                IList<SupplierUseAnimalProduct> collection = ObjectSpace.GetObjects<SupplierUseAnimalProduct>(CriteriaOperator.Parse(" GCRecord is null and Stauts = 1  and OrganizationOid=? and ActivityOid = ? ", OrganizationOid,ActivityOid));
                 double Weight = 0;
                 if (OrganizationOid != null)
                 {
-                    foreach (SupplierAnimalProduct row in collection)
+                    foreach (SupplierUseAnimalProduct row in collection)
                     {
 
-                        SupplierAnimalProduct_info SupplierAnimal = new SupplierAnimalProduct_info();
-                        SupplierAnimal.SupplierAnimalNumber = row.SupplierAnimalNumber;
+                        SupplierAnimalUseProduct_Model SupplierAnimal = new SupplierAnimalUseProduct_Model();
+                        SupplierAnimal.Oid = row.Oid.ToString();
+                        SupplierAnimal.UseDate = row.UseDate.ToString("dd-MM-yyyy", new CultureInfo("us-US"));
+                        SupplierAnimal.UseNo = row.UseNo;
+                        SupplierAnimal.FinanceYearOid = row.FinanceYearOid.Oid.ToString();
                         SupplierAnimal.FinanceYear = row.FinanceYearOid.YearName;
-                        SupplierAnimal.BudgetSource = row.BudgetSourceOid.BudgetName;
-                        SupplierAnimal.OrganizationName = row.OrganizationOid.SubOrganizeName;
-                        SupplierAnimal.AnimalSupplie = row.AnimalSupplieOid.AnimalSupplieName;
-                        SupplierAnimal.AnimalSeed = row.AnimalSeedOid.SeedName;
-                        SupplierAnimal.PlotInfoOid = row.PlotInfoOidOid.PlotCode;
-                        SupplierAnimal.Weight = row.Weight.ToString();
-                        SupplierAnimal.Unit = row.UnitOid.UnitName;
-                        SupplierAnimal.AnimalSupplieType = row.AnimalSupplieTypeOid.SupplietypeName;
-                        SupplierAnimal.Area = row.Area.ToString();
-                        SupplierAnimal.ManufactureDate = row.ManufactureDate.ToString();
+                        SupplierAnimal.OrganizationOid = row.OrganizationOid.Oid.ToString();
+                        SupplierAnimal.Organization = row.OrganizationOid.SubOrganizeName;
+                        if (row.EmployeeOid == null)
+                        {
+                            SupplierAnimal.EmployeeOid = "ไม่มีข้อมูลรายชื่อ";
+                        }
+                        else
+                        {
+                            SupplierAnimal.EmployeeOid = row.EmployeeOid.ToString();
+                        }
+                        
+                        if (row.EmployeeOid  == null)
+                        {
+                            SupplierAnimal.Employee = "ไม่มีข้อมูลรายชื่อ";
+                        }
+                        else
+                        {
+                            SupplierAnimal.Employee = row.EmployeeOid.EmployeeFirstName + row.EmployeeOid.EmployeeLastName;
+                        }
+                            
+                        SupplierAnimal.ActivityOid = row.ActivityOid.Oid.ToString();
+                        SupplierAnimal.ActivityName = row.ActivityOid.ActivityName;
+                       // SupplierAnimal.ApproveDate = row.ApproveDate.ToString("dd-MM-yyyy", new CultureInfo("us-US"));
+                        SupplierAnimal.SubActivityOid = row.SubActivityOid.Oid.ToString();
+                        SupplierAnimal.SubActivityName = row.SubActivityOid.ActivityName;
+                        SupplierAnimal.RegisCusServiceOid = row.RegisCusServiceOid.Oid.ToString();
+                        SupplierAnimal.RegisCusService = row.RegisCusServiceOid.FirstNameTH + row.RegisCusServiceOid.LastNameTH;
+                        if (row.OrgeServiceOid == null)
+                        {
+                            SupplierAnimal.OrgeServiceOid = "ไม่พบข้อมูลองค์กร";
+                            SupplierAnimal.OrgeService = "ไม่พบข้อมูลองค์กร";
+                        }
+                        else
+                        {
+                            SupplierAnimal.OrgeServiceOid = row.OrgeServiceOid.Oid.ToString();
+
+                        }
+                        
+
+                        
 
                         //foreach (SupplierUseProductDetail row2 in row.SupplierUseProductDetails)
                         //{
@@ -241,74 +275,73 @@ namespace WebApi.Jwt.Controllers.MasterData
         }
         [AllowAnonymous]
         [HttpPost]
-        [Route("LoadSupplierUseProduct/{No}")] // ใส่ OIDSendOrderSeed ใบนำส่ง /SendOrder/226-0011
+        [Route("LoadSupplierUseProduct/{UseNo}")] // ใส่ OIDSendOrderSeed ใบนำส่ง
         public IHttpActionResult SendSupplierSeedDetail_ByOrderSeedID()
         {
-            object SupplierAnimalNumber = string.Empty;
+            object UseNo = string.Empty;
             object OrganizationOid = string.Empty;
-            SupplierAnimalProduct_info sendDetail = new SupplierAnimalProduct_info();
+            string ActivityOid = string.Empty;
+            SupplierAnimalUseProduct_Model sendDetail = new SupplierAnimalUseProduct_Model();
 
             SendOrderSeed_Model Model = new SendOrderSeed_Model();
             try
             {
-                if (HttpContext.Current.Request.Form["No"].ToString() != null)
+                if (HttpContext.Current.Request.Form["UseNo"].ToString() != null)
                 {
-                    SupplierAnimalNumber = HttpContext.Current.Request.Form["No"].ToString();
+                    UseNo = HttpContext.Current.Request.Form["UseNo"].ToString();
                 }
                 if (HttpContext.Current.Request.Form["OrganizationOid"].ToString() != null)
                 {
                     OrganizationOid = HttpContext.Current.Request.Form["OrganizationOid"].ToString();
                 }
-                XpoTypesInfoHelper.GetXpoTypeInfoSource();
-                XafTypesInfo.Instance.RegisterEntity(typeof(SupplierUseProduct));
-                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc);
-                List<Approve_Model> list = new List<Approve_Model>();
-                List<SendOrderSeed_Model> list_detail = new List<SendOrderSeed_Model>();
-                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-                SupplierAnimalProduct SupplierUseProduct_;
-                SupplierUseProduct_ = ObjectSpace.FindObject<SupplierAnimalProduct>(CriteriaOperator.Parse("GCRecord is null and SendStatus = 2 and SupplierAnimalNumber=? and OrganizationOid=? ", SupplierAnimalNumber, OrganizationOid));
-                //sendOrderSeed = ObjectSpace.GetObject<SendOrderSeed>(CriteriaOperator.Parse("GCRecord is null and SendStatus = 2 and ReceiveOrgOid=? ", null));
-                if (SupplierAnimalNumber != null)
+                if (HttpContext.Current.Request.Form["ActivityOid"].ToString()!=null)
                 {
-                    sendDetail.SupplierAnimalNumber = SupplierUseProduct_.SupplierAnimalNumber;
-                    sendDetail.FinanceYear = SupplierUseProduct_.FinanceYearOid.YearName;
-                    sendDetail.BudgetSource = SupplierUseProduct_.BudgetSourceOid.BudgetName;
-                    sendDetail.OrganizationName = SupplierUseProduct_.OrganizationOid.SubOrganizeName;
-                    sendDetail.AnimalSupplie = SupplierUseProduct_.AnimalSupplieOid.AnimalSupplieName;
-                    sendDetail.AnimalSeed = SupplierUseProduct_.AnimalSeedOid.SeedName.ToString();
-                    sendDetail.PlotInfoOid = SupplierUseProduct_.PlotInfoOidOid.PlotName.ToString();
-                    sendDetail.Weight = SupplierUseProduct_.Weight.ToString();
-                    sendDetail.Unit = SupplierUseProduct_.UnitOid.UnitName.ToString();
-                    sendDetail.Area = SupplierUseProduct_.Area.ToString();
-                    sendDetail.ManufactureDate = SupplierUseProduct_.ManufactureDate.ToString();
-                    //if (sendOrderSeed.CancelMsg == null)
-                    //{
-                    //    sendDetail.CancelMsg = "";
-                    //}
-                    //else
-                    //{
-                    //    sendDetail.CancelMsg = sendOrderSeed.CancelMsg;
-                    //}
+                    ActivityOid = HttpContext.Current.Request.Form["ActivityOid"].ToString();
+                }
+                XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                XafTypesInfo.Instance.RegisterEntity(typeof(SupplierUseAnimalProduct));
+                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc);
+                List<SupplierAnimalUseProduct_Model> list = new List<SupplierAnimalUseProduct_Model>();
+                List<SupplierAnimalUseProductDetail_Model> list_detail = new List<SupplierAnimalUseProductDetail_Model>();
+                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+                SupplierUseAnimalProduct SupplierUseAnimalProduct_;
+                SupplierUseAnimalProduct_ = ObjectSpace.FindObject<SupplierUseAnimalProduct>(CriteriaOperator.Parse("GCRecord is null and Stauts = 1  and OrganizationOid=? and ActivityOid = ? ", UseNo, OrganizationOid, ActivityOid));
+                //sendOrderSeed = ObjectSpace.GetObject<SendOrderSeed>(CriteriaOperator.Parse("GCRecord is null and SendStatus = 2 and ReceiveOrgOid=? ", null));
+                DataSet ds = SqlHelper.ExecuteDataset(scc, CommandType.Text, "select UseNo from SupplierUseAnimalProduct where UseNo = '" + UseNo + "'");
+                if (ds.Tables[0].Rows.Count != 0)
+                {
+                    sendDetail.Oid = SupplierUseAnimalProduct_.Oid.ToString();
+                    sendDetail.UseNo = SupplierUseAnimalProduct_.UseNo;
+                    sendDetail.UseDate = SupplierUseAnimalProduct_.UseDate.ToString("dd-MM-yyyy", new CultureInfo("us-US"));
+                    sendDetail.FinanceYearOid = SupplierUseAnimalProduct_.FinanceYearOid.ToString();
+                    sendDetail.FinanceYear = SupplierUseAnimalProduct_.FinanceYearOid.YearName;
+                    sendDetail.OrganizationOid = SupplierUseAnimalProduct_.OrganizationOid.ToString();
+                    sendDetail.Organization = SupplierUseAnimalProduct_.OrganizationOid.SubOrganizeName;
+                    if (SupplierUseAnimalProduct_.EmployeeOid == null)
+                    {
+                        sendDetail.EmployeeOid = "ไม่มีข้อมูลรายชื่อ";
+                        sendDetail.Employee = "ไม่พบข้อมูล";
+                    }
+                    else
+                    {
+                        sendDetail.EmployeeOid = SupplierUseAnimalProduct_.EmployeeOid.ToString();
+                        sendDetail.Employee = SupplierUseAnimalProduct_.EmployeeOid.EmployeeFirstName + SupplierUseAnimalProduct_.EmployeeOid.EmployeeLastName;
+                    }
+                  
+                    sendDetail.ActivityOid = SupplierUseAnimalProduct_.ActivityOid.ToString();
+                    sendDetail.ActivityName = SupplierUseAnimalProduct_.ActivityOid.ActivityName;
+                    sendDetail.SubActivityOid = SupplierUseAnimalProduct_.SubActivityOid.ToString();
+                    sendDetail.SubActivityName = SupplierUseAnimalProduct_.SubActivityOid.ActivityName;
+                    sendDetail.Remark = SupplierUseAnimalProduct_.Remark;
+                    sendDetail.ApproveDate = SupplierUseAnimalProduct_.ApproveDate.ToString("dd-MM-yyyy", new CultureInfo("us-US"));
+                    //SupplierAnimalUseProductDetail_Model list_detail = new SupplierAnimalUseProductDetail_Model();
+                    //foreach (SupplierUseProductDetail row in SupplierUseProduct_.SupplierUseAnimalProductDetails)
+                    {
 
-                    //foreach (SendOrderSeedDetail row in sendOrderSeed.SendOrderSeedDetails)
-                    //{
-                    //    SendOrderSeed_Model send_Detail = new SendOrderSeed_Model();
-                    //    send_Detail.LotNumber = row.LotNumber.LotNumber;
-                    //    send_Detail.WeightUnitOid = row.WeightUnitOid.UnitName;
-                    //    send_Detail.AnimalSeedCode = row.AnimalSeedCode;
-                    //    send_Detail.AnimalSeedLevel = row.AnimalSeedLevel;
-                    //    send_Detail.AnimalSeeName = row.AnimalSeeName;
-                    //    send_Detail.BudgetSourceOid = row.BudgetSourceOid.BudgetName;
-                    //    send_Detail.Weight = row.Weight;
-                    //    send_Detail.Used = row.Used.ToString();
-                    //    send_Detail.SendOrderSeed = row.SendOrderSeed.SendNo;
-                    //    send_Detail.AnimalSeedOid = row.AnimalSeedOid.SeedName;
-                    //    send_Detail.AnimalSeedLevelOid = row.AnimalSeedLevelOid.SeedLevelName;
-                    //    send_Detail.SeedTypeOid = row.SeedTypeOid.SeedTypeName;
-                    //    send_Detail.Amount = row.Amount;
-                    //    list_detail.Add(send_Detail);
-                    //}
-                    //sendDetail.objSeed = list_detail;
+                    }
+
+                   
+
                     return Ok(sendDetail);
                 }
                 else

@@ -144,41 +144,76 @@ namespace WebApi.Jwt.Controllers
         }
 
         /// <summary>
-        /// เรียกรายละเอียดการส่ง เบิกจำหน่ายเมล็ดพันธุ์ในหน่วยงาน
+        /// เรียกหน้าใช้เมล็ดพันธุ์  ช่วยภัยพิบัติ
         /// </summary>
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
-        [Route("ApprovalSend/SupplierUseProduct")]
-        public HttpResponseMessage ApprovalSend_SupplierUseProduct()
+        [Route("LoadSupplierUseProduct_Detail")]
+        public IHttpActionResult LoadSupplierUse_accept_Detail()
         {
-            Approve_Model approve_Success = new Approve_Model();
+            object OrganizationOid;
+            string UseNo;
+            SupplierProductUser Detail = new SupplierProductUser();
             try
             {
-                if (HttpContext.Current.Request.Form["UseNo"].ToString() != null)
-                {
-                    approve_Success.Send_No = HttpContext.Current.Request.Form["UseNo"].ToString();
-                }
 
-                approve_Success.Remark = HttpContext.Current.Request.Form["Remark"].ToString();
-                approve_Success.SendStatus = HttpContext.Current.Request.Form["Sendstatus"].ToString();
+                OrganizationOid = HttpContext.Current.Request.Form["OrganizationOid"].ToString();
+                UseNo = HttpContext.Current.Request.Form["UseNo"].ToString();
+                // string ActivityOid = "B100C7C1 - 4755 - 4AF0 - 812E-3DD6BA372D45";
+                XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                XafTypesInfo.Instance.RegisterEntity(typeof(SupplierUseProduct));
+                List<SupplierUseProductDetail_Model> list_detail = new List<SupplierUseProductDetail_Model>();
+                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+                var ActivityOid = "B100C7C1-4755-4AF0-812E-3DD6BA372D45";
+                SupplierUseProduct supplier_Use;
+                supplier_Use = ObjectSpace.FindObject<SupplierUseProduct>(CriteriaOperator.Parse(" GCRecord is null and Stauts = 1 and OrganizationOid=? and ActivityOid = ? and UseNo = ? ", OrganizationOid, ActivityOid, UseNo));
+                //    < SupplierUseProduct > collection = ObjectSpace.GetObjects<SupplierUseProduct>(CriteriaOperator.Parse(" GCRecord is null and Stauts = 1 and OrganizationOid=? and ActivityOid = ?", OrganizationOid, ActivityOid));
+
 
                 DataSet ds = new DataSet();
-                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_Mobile_Approval_SupplierUseProduct", new SqlParameter("@UseNo", approve_Success.Send_No.ToString())
-                          , new SqlParameter("@Remark", approve_Success.Remark)
-                          , new SqlParameter("@SendStatus", approve_Success.SendStatus));
-
-                if (ds.Tables[1].Rows[0]["pStatus"].ToString() == "3")
+                ds = SqlHelper.ExecuteDataset(scc, CommandType.Text, "select  UseNo from SupplierUseProduct where UseNo = '" + UseNo + "' ");
+                if (ds.Tables[0].Rows.Count != 0)
                 {
-                    approve_Success.SendStatus = "3";
-                    approve_Success.Send_Messengr = "อนุมัติการเบิกเมล็ด";
-
+                    double sum = 0;
+                    Detail.Oid = supplier_Use.Oid.ToString();
+                    Detail.UseNo = supplier_Use.UseNo;
+                    Detail.FinanceYearOid = supplier_Use.FinanceYearOid.ToString();
+                    Detail.FinanceYear = supplier_Use.FinanceYearOid.YearName;
+                    Detail.OrganizationName = supplier_Use.OrganizationOid.SubOrganizeName;
+                    Detail.OrgeService = supplier_Use.OrgeServiceOid.ToString();
+                    Detail.OrgeServiceName = supplier_Use.OrgeServiceOid.OrgeServiceName;
+                    Detail.RegisCusService = supplier_Use.RegisCusServiceOid.ToString();
+                    Detail.RegisCusServiceName = supplier_Use.RegisCusServiceOid.FirstNameTH + supplier_Use.RegisCusServiceOid.LastNameTH;
+                    Detail.ServiceCount = supplier_Use.ServiceCount;
+                    Detail.Addrres = supplier_Use.RegisCusServiceOid.FullAddress;
+                    Detail.ActivityNameOid = supplier_Use.SubActivityOid.ActivityName;
+                    if (supplier_Use.Remark == null)
+                    {
+                        Detail.Remark = "ไม่พบข้อมูล";
+                    }
+                    {
+                        Detail.Remark = supplier_Use.Remark;
+                    }
+                    foreach (SupplierUseProductDetail row in supplier_Use.SupplierUseProductDetails)
+                    {
+                        SupplierUseProductDetail_Model model = new SupplierUseProductDetail_Model();
+                        model.Oid = row.Oid.ToString();
+                        model.AnimalSeedName = row.AnimalSeedOid.SeedName;
+                        model.AnimalSeedLevelName = row.AnimalSeedLevelOid.SeedLevelName;
+          
+                        sum = sum + row.Weight;
+                        list_detail.Add(model);
+                    }
+                    Detail.Weight_All = sum.ToString() + " " + "กิโลกรัม";
+                    Detail.objProduct = list_detail;
+                    return Ok(Detail);
                 }
-                else if (ds.Tables[1].Rows[0]["pStatus"].ToString() == "4" || ds.Tables[1].Rows[0]["pMessage"].ToString() == "ไม่อนุมัติข้อมูลการส่ง")
+                else
                 {
-                    return Request.CreateResponse(HttpStatusCode.OK, approve_Success);
+                    return BadRequest("Nodata");
                 }
-                return Request.CreateResponse(HttpStatusCode.OK, approve_Success);
             }
             catch (Exception ex)
             { //Error case เกิดข้อผิดพลาด
@@ -187,7 +222,7 @@ namespace WebApi.Jwt.Controllers
 
                 err.message = ex.Message;
                 //  Return resual
-                return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+                return BadRequest(err.message);
 
             }
 

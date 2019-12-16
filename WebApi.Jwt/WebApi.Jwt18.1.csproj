@@ -146,7 +146,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\NTi.CommonUtility.dll</HintPath>
     </Reference>
-    <Reference Include="nutrition.Module, Version=1.0.7254.27026, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="nutrition.Module, Version=1.0.7288.2887, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\nutrition.Module.dll</HintPath>
     </Reference>

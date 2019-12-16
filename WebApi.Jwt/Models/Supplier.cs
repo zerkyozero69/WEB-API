@@ -57,5 +57,53 @@ namespace WebApi.Jwt.Models
             public string ManufactureDate { get; set; }
     
         }
+
+        public class SupplierAnimalUseProduct_Model
+        {
+            public string Oid { get; set; }
+            public string UseDate { get; set; }
+            public string UseNo { get; set; }
+            public string FinanceYearOid { get; set; }
+            public string FinanceYear { get; set; }
+            public string OrganizationOid { get; set; }
+            public string Organization { get; set; }
+            public string EmployeeOid { get; set; }
+            public string Employee { get; set; }
+            public string ActivityOid { get; set; }
+            public string ActivityName { get; set; }
+            public string SubActivityOid { get; set; }
+            public string SubActivityName { get; set; }
+            public string Remark { get; set; }
+            public string Stauts { get; set; }
+            public string ApproveDate { get; set; }
+            public string ReceiptNo { get; set; }
+            public string RegisCusServiceOid { get; set; }
+            public string RegisCusService { get; set; }
+            public string OrgeServiceOid { get; set; }
+            public string OrgeService { get; set; }
+            public int  ServiceCount { get; set; }
+            IList<SupplierAnimalUseProductDetail_Model> OBJ_ProductDetail { get; set; }
+        }
+        public class SupplierAnimalUseProductDetail_Model
+        {
+            public string Oid { get; set; }
+            public string AnimalSeedOid { get; set; }
+            public string AnimalSeed { get; set; }
+            public string AnimalSeedLevelOid { get; set; }
+            public string AnimalSeedLevel { get; set; }
+            public double StockLimit { get; set; }
+            public double Weight { get; set; }
+            public string WeightUnitOid { get; set; }
+            public string WeightUnit { get; set; }
+            public string BudgetSourceOid { get; set; }
+            public string BudgetSource { get; set; }
+            public string SupplierUseProduct { get; set; }
+            public string LotNumber { get; set; }
+            public string SeedTypeOid { get; set; }
+            public string SeedType { get; set; }
+            public double PerPrice { get; set; }
+            public double Price { get; set; }
+
+        }
     }
 }
