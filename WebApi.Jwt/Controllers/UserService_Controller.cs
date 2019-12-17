@@ -69,12 +69,12 @@ namespace WebApi.Jwt.Controllers
                         OrgeService_info Customer_Info = new OrgeService_info();
 
                         //Customer_Info.OrganizationOid = row.OrganizationOid.OrganizeNameTH;
-                        //   Customer_Info.OrgeServiceID = row.or
+                              
                         Customer_Info.OrgeServiceName = row.OrgeServiceName;
                         Customer_Info.Tel = row.Tel;
                         if (row.Email == null)
                         {
-                            Customer_Info.Email = "ไม่มีข้อมูลอีเมล์";
+                            Customer_Info.Email = "ไม่พบข้อมูลอีเมล์";
                         }
                         else
                         {
@@ -82,7 +82,7 @@ namespace WebApi.Jwt.Controllers
                         }
                         if (row.Address == null)
                         {
-                            Customer_Info.Address = "ไม่มีข้อมูลบ้านเลขที่";
+                            Customer_Info.Address = "ไม่พบข้อมูลบ้านเลขที่";
                         }
                         else
                         {
@@ -91,7 +91,7 @@ namespace WebApi.Jwt.Controllers
 
                         if (row.Moo == null)
                         {
-                            Customer_Info.Moo = "ไม่มีข้อมูลหมู่";
+                            Customer_Info.Moo = "ไม่พบข้อมูลหมู่";
                         }
                         else
                         {
@@ -100,7 +100,7 @@ namespace WebApi.Jwt.Controllers
                         if (row.Soi == null)
                         {
 
-                            Customer_Info.Soi = "ไม่มีข้อมูลซอย";
+                            Customer_Info.Soi = "ไม่พบข้อมูลซอย";
                         }
                         else
                         {
@@ -111,17 +111,17 @@ namespace WebApi.Jwt.Controllers
                         if (row.Road == null)
                         {
 
-                            Customer_Info.Road = "ไม่มีข้อมูลถนน";
+                            Customer_Info.Road = "ไม่พบข้อมูลถนน";
                         }
                         else
                         {
 
                             Customer_Info.Road = row.Road;
                         }
-                        if (row.ProvinceOid.ProvinceNameTH == null)
+                        if (row.ProvinceOid == null)
                         {
 
-                            Customer_Info.ProvinceName = "ไม่มีข้อมูลจังหวัด";
+                            Customer_Info.ProvinceName = "ไม่พบข้อมูลจังหวัด";
                         }
                         else
                         {
@@ -131,7 +131,7 @@ namespace WebApi.Jwt.Controllers
                         if (row.DistrictOid == null)
                         {
 
-                            Customer_Info.DistrictName = "ไม่มีข้อมูลอำเภอ";
+                            Customer_Info.DistrictName = "ไม่พบข้อมูลอำเภอ";
                         }
                         else
                         {
@@ -141,7 +141,7 @@ namespace WebApi.Jwt.Controllers
                         if (row.SubDistrictOid == null)
                         {
 
-                            Customer_Info.SubDistrictName = "ไม่มีข้อมูลตำบล";
+                            Customer_Info.SubDistrictName = "ไม่พบข้อมูลตำบล";
                         }
                         else
                         {
@@ -152,7 +152,7 @@ namespace WebApi.Jwt.Controllers
                         if (row.ZipCode == null)
                         {
 
-                            Customer_Info.ZipCode = "ไม่มีข้อมูลรหัสไปรษณีย์";
+                            Customer_Info.ZipCode = "ไม่พบข้อมูลรหัสไปรษณีย์";
                         }
                         else
                         {
@@ -161,19 +161,19 @@ namespace WebApi.Jwt.Controllers
                         }
 
 
-                        string TempSubDistrict, TempDistrict;
-                        if (row.ProvinceOid.ProvinceNameTH.Contains("กรุงเทพ"))
-                        { TempSubDistrict = "แขวง"; }
-                        else
-                        { TempSubDistrict = "ตำบล"; };
+                        //string TempSubDistrict, TempDistrict;
+                        //if (row.ProvinceOid.ProvinceNameTH.Contains("กรุงเทพ"))
+                        //{ TempSubDistrict = "แขวง"; }
+                        //else
+                        //{ TempSubDistrict = "ตำบล"; };
 
-                        if (row.ProvinceOid.ProvinceNameTH.Contains("กรุงเทพ"))
-                        { TempDistrict = "เขต"; }
-                        else { TempDistrict = "อำเภอ"; };
+                        //if (row.ProvinceOid.ProvinceNameTH.Contains("กรุงเทพ"))
+                        //{ TempDistrict = "เขต"; }
+                        //else { TempDistrict = "อำเภอ"; };
 
-                        Customer_Info.FullAddress = row.Address + " หมู่ที่" + checknull(row.Moo) + " ถนน" + checknull(row.Road) + " " +
-                        TempSubDistrict + row.SubDistrictOid.SubDistrictNameTH + " " + TempDistrict + row.DistrictOid.DistrictNameTH + " " +
-                        "จังหวัด" + row.ProvinceOid.ProvinceNameTH + " " + row.DistrictOid.PostCode;
+                        //Customer_Info.FullAddress = row.Address + " หมู่ที่" + checknull(row.Moo) + " ถนน" + checknull(row.Road) + " " +
+                        //TempSubDistrict + row.SubDistrictOid.SubDistrictNameTH + " " + TempDistrict + row.DistrictOid.DistrictNameTH + " " +
+                        //"จังหวัด" + row.ProvinceOid.ProvinceNameTH + " " + row.DistrictOid.PostCode;
 
 
 
@@ -242,7 +242,7 @@ namespace WebApi.Jwt.Controllers
                     Customer_Info.Tel = OrgeService_.Tel;
                     if (OrgeService_.Email == null)
                     {
-                        Customer_Info.Email = "ไม่มีข้อมูลอีเมล์";
+                        Customer_Info.Email = "ไม่พบข้อมูลอีเมล์";
                     }
                     else
                     {
@@ -250,7 +250,7 @@ namespace WebApi.Jwt.Controllers
                     }
                     if (OrgeService_.Address == null)
                     {
-                        Customer_Info.Address = "ไม่มีข้อมูลบ้านเลขที่";
+                        Customer_Info.Address = "ไม่พบมูลบ้านเลขที่";
                     }
                     else
                     {
@@ -259,7 +259,7 @@ namespace WebApi.Jwt.Controllers
 
                     if (OrgeService_.Moo == null)
                     {
-                        Customer_Info.Moo = "ไม่มีข้อมูลหมู่";
+                        Customer_Info.Moo = "ไม่พบข้อมูลหมู่";
                     }
                     else
                     {
@@ -268,7 +268,7 @@ namespace WebApi.Jwt.Controllers
                     if (OrgeService_.Soi == null)
                     {
 
-                        Customer_Info.Soi = "ไม่มีข้อมูลซอย";
+                        Customer_Info.Soi = "ไม่พบข้อมูลซอย";
                     }
                     else
                     {
@@ -279,7 +279,7 @@ namespace WebApi.Jwt.Controllers
                     if (OrgeService_.Road == null)
                     {
 
-                        Customer_Info.Road = "ไม่มีข้อมูลถนน";
+                        Customer_Info.Road = "ไม่พบข้อมูลถนน";
                     }
                     else
                     {
@@ -289,7 +289,7 @@ namespace WebApi.Jwt.Controllers
                     if (OrgeService_.ProvinceOid == null)
                     {
 
-                        Customer_Info.ProvinceName = "ไม่มีข้อมูลจังหวัด";
+                        Customer_Info.ProvinceName = "ไม่พบข้อมูลจังหวัด";
                     }
                     else
                     {
@@ -299,7 +299,7 @@ namespace WebApi.Jwt.Controllers
                     if (OrgeService_.DistrictOid == null)
                     {
 
-                        Customer_Info.DistrictName = "ไม่มีข้อมูลอำเภอ";
+                        Customer_Info.DistrictName = "ไม่พบข้อมูลอำเภอ";
                     }
                     else
                     {
@@ -309,7 +309,7 @@ namespace WebApi.Jwt.Controllers
                     if (OrgeService_.SubDistrictOid == null)
                     {
 
-                        Customer_Info.SubDistrictName = "ไม่มีข้อมูลตำบล";
+                        Customer_Info.SubDistrictName = "ไม่พบข้อมูลตำบล";
                     }
                     else
                     {
@@ -320,7 +320,7 @@ namespace WebApi.Jwt.Controllers
                     if (OrgeService_.ZipCode == null)
                     {
 
-                        Customer_Info.ZipCode = "ไม่มีข้อมูลรหัสไปรษณีย์";
+                        Customer_Info.ZipCode = "ไม่พบข้อมูลรหัสไปรษณีย์";
                     }
                     else
                     {

@@ -170,50 +170,10 @@ namespace WebApi.Jwt.Controllers.MasterData
                             return Request.CreateResponse(HttpStatusCode.ExpectationFailed, err);
                         }
                                 }
-                [AllowAnonymous]      
-                [HttpPost]
-                [Route("SubDistricts")]
-        public HttpResponseMessage loadSubDistricts() // โหลดอำเภอ
-        {
-            try
-            {
-                XpoTypesInfoHelper.GetXpoTypeInfoSource();
-                XafTypesInfo.Instance.RegisterEntity(typeof(SubDistrict));
-                List<SubDistrict_Model> list = new List<SubDistrict_Model>();
-                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
-                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-                IList<SubDistrict> collection = ObjectSpace.GetObjects<SubDistrict>(CriteriaOperator.Parse(" GCRecord is null and IsActive = 1 ", null));
-                foreach (SubDistrict row in collection)
-                {
-                    SubDistrict_Model model = new SubDistrict_Model();
-                    model.Oid = row.Oid.ToString();
-                    model.SubDistrictCode = row.SubDistrictCode;
-                    model.SubDistrictNameTH = row.SubDistrictNameTH;
-                    model.SubDistrictNameENG = row.SubDistrictNameENG;
-       
-                    model.IsActive = row.IsActive;
-                    model.Latitude = row.Latitude;
-                    model.Longitude = row.Longitude;
-
-                    list.Add(model);
-                }
-                return Request.CreateResponse(HttpStatusCode.OK, list);
-
-
-            }
-            catch (Exception ex)
-            { //Error case เกิดข้อผิดพลาด
-                UserError err = new UserError();
-                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-
-                err.message = ex.Message;
-                //  Return resual
-                return Request.CreateResponse(HttpStatusCode.ExpectationFailed, err);
-            }
-        }
+               
         [AllowAnonymous]
         [HttpPost]
-        [Route("Districts/Oid")]
+        [Route("Districts")]
         public HttpResponseMessage getDistricts_ByProvince(string Oid) ///โหลดอำเภอ by จังหวัด
         {
             try
@@ -224,10 +184,8 @@ namespace WebApi.Jwt.Controllers.MasterData
                 XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
                 List<District_Model> list_detail = new List<District_Model>();
-                IList<District> collection = ObjectSpace.GetObjects<District>(CriteriaOperator.Parse(" GCRecord is null and IsActive = 1  and Oid=? ", Oid));
-                DataSet ds = SqlHelper.ExecuteDataset(scc, CommandType.Text, "select Oid from District where GCRecord is null and IsActive = 1 and Oid= '" + Oid + "'");
-                if (ds.Tables[0].Rows.Count != 0)
-                {
+                IList<District> collection = ObjectSpace.GetObjects<District>(CriteriaOperator.Parse(" GCRecord is null and IsActive = 1   ",null));
+         
                     foreach (District row in collection)
                     {
                         District_Model model = new District_Model();
@@ -242,11 +200,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                         list_detail.Add(model);
                     }
                     return Request.CreateResponse(HttpStatusCode.OK, list_detail);
-                }
-                else
-                {
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, "NoData");
-                }
+          
             }
             catch (Exception ex)
             {
@@ -262,8 +216,8 @@ namespace WebApi.Jwt.Controllers.MasterData
         }
         [AllowAnonymous]
         [HttpPost]
-        [Route("SubDistricts/Oid")]
-        public HttpResponseMessage getSubDistricts_ByDistricts(string Oid) ///โหลดตำบล by อำเภอ
+        [Route("SubDistricts")]
+        public HttpResponseMessage getSubDistricts_ByDistricts() ///โหลดตำบล by อำเภอ
         {
             try
             {
@@ -273,10 +227,8 @@ namespace WebApi.Jwt.Controllers.MasterData
                 XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
                 List<SubDistrict_Model> list_detail = new List<SubDistrict_Model>();
-                IList<SubDistrict> collection = ObjectSpace.GetObjects<SubDistrict>(CriteriaOperator.Parse(" GCRecord is null and IsActive = 1  and Oid=? ", Oid));
-                DataSet ds = SqlHelper.ExecuteDataset(scc, CommandType.Text, "select Oid from SubDistrict where GCRecord is null and IsActive = 1 and Oid= '" + Oid + "'");
-                if (ds.Tables[0].Rows.Count != 0)
-                {
+                IList<SubDistrict> collection = ObjectSpace.GetObjects<SubDistrict>(CriteriaOperator.Parse(" GCRecord is null and IsActive = 1  ",null));
+        
                     foreach (SubDistrict row in collection)
                     {
                         SubDistrict_Model model = new SubDistrict_Model();
@@ -291,11 +243,8 @@ namespace WebApi.Jwt.Controllers.MasterData
                         list_detail.Add(model);
                     }
                     return Request.CreateResponse(HttpStatusCode.OK, list_detail);
-                }
-                else
-                {
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, "NoData");
-                }
+       
+            
             }
             catch (Exception ex)
             {

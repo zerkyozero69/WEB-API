@@ -225,7 +225,14 @@ namespace WebApi.Jwt.Controllers.MasterData
                         SupplierAnimal.SubActivityName = row.SubActivityOid.ActivityName;
                         SupplierAnimal.RegisCusServiceOid = row.RegisCusServiceOid.Oid.ToString();
                         SupplierAnimal.RegisCusService = row.RegisCusServiceOid.FirstNameTH + row.RegisCusServiceOid.LastNameTH;
-                        if (row.OrgeServiceOid == null)
+                        if (row.
+                            
+                            
+                            
+                            
+                            
+                            
+                            Oid == null)
                         {
                             SupplierAnimal.OrgeServiceOid = "ไม่พบข้อมูลองค์กร";
                             SupplierAnimal.OrgeService = "ไม่พบข้อมูลองค์กร";

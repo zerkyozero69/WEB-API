@@ -9,25 +9,40 @@ namespace WebApi.Jwt.Models
     public class ManageAnimalSupplier_Model
     {
         public string Oid { get; set; }
+        public double TotalProvinceQTY { get; set; }
         public string FinanceYearOid { get; set; }
         public string FinanceYear { get; set; }
-        public string  OrgZoneOid { get; set; }
+        public string OrgZoneOid { get; set; }
         public string OrgZone { get; set; }
-        public string  OrganizationOid { get; set; }
+        public string OrganizationOid { get; set; }
         public string Organization { get; set; }
-        public string  AnimalSupplieOid { get; set; }
+        public string AnimalSupplieOid { get; set; }
         public string AnimalSupplie { get; set; }
         public double ZoneQTY { get; set; }
-        public double CenterQTY { get; set; }     
+        public double CenterQTY { get; set; }
         public double OfficeQTY { get; set; }
-        public double OfficeGAPQTY { get; set; }   
-        public double OfficeBeanQTY { get; set; }  
+        public double OfficeGAPQTY { get; set; }
+        public double OfficeBeanQTY { get; set; }
         public double SumProvinceQTY { get; }
-   
-        public EnumManageBudget Status { get; set; }
-       
-      //  public XPCollection<ManageSubAnimalSupplier> ManageSubAnimalSuppliers { get; }
-      
+
+        public string Status { get; set; }
+
+      public List<ManageSubAnimalSupplier> ManageSubAnimalSuppliers { get; set; }
+
         public double SortID { get; set; }
+
+    }
+    public   class ManageSubAnimalSupplier_Model
+    {
+        public string Oid { get; set; }
+        public string ProvinceOid { get; set; }
+        public string Province { get; set; }
+        public string AnimalSupplieTypeOid { get; set; }
+        public string AnimalSupplieType { get; set; }
+        public double ProvinceQTY { get; set; }
+   
+        public string UnitOid { get; set; }
+        public string Unit { get; set; }
+
     }
 }

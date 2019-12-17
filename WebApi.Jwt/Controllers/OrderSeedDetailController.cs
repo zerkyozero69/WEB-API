@@ -114,7 +114,7 @@ namespace WebApi.Jwt.Controllers
                 data_info Temp_data = new data_info();
                 IList<SendOrderSeed> collection = ObjectSpace.GetObjects<SendOrderSeed>(CriteriaOperator.Parse(" GCRecord is null and SendStatus = 5 and SendOrgOid=? ", SendOrgOid));
 
-                double Amount = 0;
+
                 if (collection.Count > 0)
                 {
 
@@ -254,7 +254,7 @@ namespace WebApi.Jwt.Controllers
                // string ActivityOid = "B100C7C1 - 4755 - 4AF0 - 812E-3DD6BA372D45";
                 XpoTypesInfoHelper.GetXpoTypeInfoSource();
                 XafTypesInfo.Instance.RegisterEntity(typeof(SupplierUseProduct));
-                SupplierUseProduct supplier_UseProduct;
+                
                 List<SupplierProductUser> list_detail = new List<SupplierProductUser>();
                 XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
@@ -383,7 +383,7 @@ namespace WebApi.Jwt.Controllers
                 // string ActivityOid = "B100C7C1 - 4755 - 4AF0 - 812E-3DD6BA372D45";
                 XpoTypesInfoHelper.GetXpoTypeInfoSource();
                 XafTypesInfo.Instance.RegisterEntity(typeof(SupplierUseProduct));
-                SupplierUseProduct supplier_UseProduct;
+  
                 List<SupplierProductUser> list_detail = new List<SupplierProductUser>();
                 XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
@@ -512,7 +512,7 @@ namespace WebApi.Jwt.Controllers
                 // string ActivityOid = "B100C7C1 - 4755 - 4AF0 - 812E-3DD6BA372D45";
                 XpoTypesInfoHelper.GetXpoTypeInfoSource();
                 XafTypesInfo.Instance.RegisterEntity(typeof(SupplierUseProduct));
-                SupplierUseProduct supplier_UseProduct;
+              
                 List<SupplierProductUser> list_detail = new List<SupplierProductUser>();
                 XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
@@ -627,7 +627,7 @@ namespace WebApi.Jwt.Controllers
             #region SendOrderSeedApprove ยืนยันเมล็ดพันธุ์ ทดสอบ
         [AllowAnonymous]
         [HttpPost]
-        [Route("ApprovalSend/Seed")]
+        [Route("ApprovalSend/")]
 
         public IHttpActionResult ApprovalSend_SupplierUseProduct(string Send_No) 
         {
@@ -686,6 +686,7 @@ namespace WebApi.Jwt.Controllers
                         list_detail.Add(objsend_Detail);
         
                     }      
+                            
                     nutrition.Module.StockSeedInfo ObjStockSeedInfoInfo;
        var objSupplierProduct = ObjectSpace.FindObject<SupplierProductModifyDetail>(CriteriaOperator.Parse("Oid =?",objsend_Detail.LotNumber));
 

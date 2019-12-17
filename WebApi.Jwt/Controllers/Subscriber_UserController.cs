@@ -35,6 +35,7 @@ using Newtonsoft.Json.Linq;
 using nutrition.Module.EmployeeAsUserExample.Module.BusinessObjects;
 using static WebApi.Jwt.Models.Farmerinfo;
 using nutrition.Module;
+using Organization = nutrition.Module.Organization;
 
 namespace WebApi.Jwt.Controllers.MasterData
 {
@@ -117,8 +118,12 @@ namespace WebApi.Jwt.Controllers.MasterData
                 }
 
                 XPObjectSpaceProvider osProvider = new XPObjectSpaceProvider(scc, null);
-                IObjectSpace objectSpace = osProvider.CreateObjectSpace();
-                DataSet ds = new DataSet();
+                IObjectSpace ObjectSpace = osProvider.CreateObjectSpace();
+                nutrition.Module.RegisterCusService Regi_subscriber_;
+
+                XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.RegisterCusService));
+                Regi_subscriber_ = ObjectSpace.CreateObject<RegisterCusService>();
+               
                 SqlParameter[] prm = new SqlParameter[19]; /// parameter นับได้เท่าไร ใส่เท่านั้น c#
                 prm[0] = new SqlParameter("@OrganizationOid", Regi_subscriber.OrganizationOid); ///แต่ array ต้องนับจาก 0
                 prm[1] = new SqlParameter("@RegisterDate", Regi_subscriber.RegisterDate);
@@ -139,27 +144,14 @@ namespace WebApi.Jwt.Controllers.MasterData
                 prm[16] = new SqlParameter("@Address_districts", Regi_subscriber.DistrictOid);
                 prm[17] = new SqlParameter("@Address_subdistricts", Regi_subscriber.SubDistrictOid);
                 prm[18] = new SqlParameter("@ZipCode", Regi_subscriber.ZipCode);
-                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieRigisterUser_Service", prm);
-                if (ds.Tables[0].Rows[0]["pStatus"].ToString() != "0" || ds.Tables[0].Rows[0]["pStatus"].ToString() == "2")
-                {
+                ObjectSpace.CommitChanges();
+            
 
                     var subscriber_User = new Farmer_Status();
                     subscriber_User.Status = "1";
-                    subscriber_User.Message = "บันทึกข้อมูลผู้ขอรับบริการ เรียบร้อยแล้ว";
-                    return Request.CreateResponse(HttpStatusCode.OK, ds.Tables[0]);
-
-
-                }
-                else
-                {
-
-                    UserError err = new UserError();
-
-                    err.code = "2";
-                    err.message = "ผิดพลาด กรอกข้อมูลไม่ครบ";
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, err);
-                    // return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "naughty");
-                }
+                    subscriber_User.Message = "ลงทะเบียนผู้ขอรับบริการ เรียบร้อยแล้ว";
+                    return Request.CreateResponse(HttpStatusCode.OK, subscriber_User.Message);
+  
             }
             catch (Exception ex)
             {
@@ -331,67 +323,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
         }
-        [AllowAnonymous]
-        // [JwtAuthentication]
-        [HttpPost]
-        [Route("GetCusService")]  
-        public HttpResponseMessage GetCusService()
-        {
-            List<FarmerCitizen> farmerCitizenList = new List<FarmerCitizen>();
-            FarmerCitizen farmer_info = new FarmerCitizen();
-
-            try
-            {
-                string CitizenID = string.Empty;
-                if (HttpContext.Current.Request.Form["CitizenID"].ToString() != null)
-                {
-                    CitizenID = HttpContext.Current.Request.Form["CitizenID"].ToString();
-                }
-                DataSet ds = new DataSet();
-                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MobileGetCusService", new SqlParameter("@CitizenID", CitizenID));
-                if (ds.Tables[0].Rows.Count > 0)
-                {
-
-
-
-                    DataTable dt = new DataTable();
-                    dt = ds.Tables[0];
-
-                    System.Web.Script.Serialization.JavaScriptSerializer serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
-
-                    List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
-                    Dictionary<string, object> row;
-                    foreach (DataRow dr in dt.Rows)
-                    {
-                        row = new Dictionary<string, object>();
-                        foreach (DataColumn col in dt.Columns)
-                        {
-                            row.Add(col.ColumnName, dr[col]);
-                        }
-                        rows.Add(row);
-                    }
-                    return Request.CreateResponse(HttpStatusCode.OK, rows);
-                }
-                else if (ds.Tables[0].Rows.Count == 0)
-                {
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, "ไม่พบบัตรประจำตัวประชาชน");
-                }
-                else
-                {
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, "NoData");
-                }
-            }
-            catch (Exception ex)
-            {
-                //Error case เกิดข้อผิดพลาด
-                UserError err = new UserError();
-                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-
-                err.message = ex.Message;
-                //  Return resual
-                return Request.CreateResponse(HttpStatusCode.BadRequest, err);
-            }
-        }
+     
         [AllowAnonymous]
         [HttpPost]
         [Route("Register_OrgeService")]
@@ -581,9 +513,13 @@ namespace WebApi.Jwt.Controllers.MasterData
         {
             string TempService_ = string.Empty;
             RegisterSubscriber_User Regi_subscriber = new RegisterSubscriber_User();
+          
 
             try
             {
+                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc);
+                IObjectSpace objectSpace = directProvider.CreateObjectSpace();
+                nutrition.Module.RegisterCusService Regi_subscriber_;
 
                 string requestString = Request.Content.ReadAsStringAsync().Result;
                 JObject jObject = (JObject)JsonConvert.DeserializeObject(requestString);
@@ -641,20 +577,40 @@ namespace WebApi.Jwt.Controllers.MasterData
                     Regi_subscriber.ZipCode = jObject.SelectToken("ZipCode").Value<string>();
                     //Regi_subscriber.FullAddress = jObject.SelectToken("FullAddress").Value<string>();
 
-
+                   
 
 
                 }
-
-                
+                var ObjOwnerOrganization = objectSpace.FindObject<Organization>(CriteriaOperator.Parse("Oid=?", Regi_subscriber.OrganizationOid));
+                var ObjOwnerTitle = objectSpace.FindObject<Title>(CriteriaOperator.Parse("Oid=?", Regi_subscriber.TitleOid));
+                var ObjOwnerGender = objectSpace.FindObject<Gender>(CriteriaOperator.Parse("Oid=?", Regi_subscriber.Gender));
+                dynamic ObjOwnerProvinceOid = objectSpace.FindObject<Province>(CriteriaOperator.Parse("Oid=?", Regi_subscriber.ProvinceOid));
+                dynamic ObjOwnerDistrictOid = objectSpace.FindObject<District>(CriteriaOperator.Parse("Oid=?", Regi_subscriber.DistrictOid));
+                dynamic ObjOwnerSubDistrictOid = objectSpace.FindObject<SubDistrict>(CriteriaOperator.Parse("Oid=?", Regi_subscriber.SubDistrictOid));
                 XpoTypesInfoHelper.GetXpoTypeInfoSource();
                 XPObjectSpaceProvider osProvider = new XPObjectSpaceProvider(scc, null);
-                IObjectSpace objectSpace = osProvider.CreateObjectSpace();
-                nutrition.Module.RegisterCusService Regi_subscriber_;
+             
 
                 XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.RegisterCusService));
                 Regi_subscriber_ = objectSpace.CreateObject<RegisterCusService>();
-                Regi_subscriber.OrganizationOid = "F97EF626-FDB7-4361-A9F3-1C9D14FAC27E";
+                Regi_subscriber_.OrganizationOid = ObjOwnerOrganization;
+                Regi_subscriber_.RegisterDate = DateTime.Now;
+                Regi_subscriber_.CitizenID = Regi_subscriber.CitizenID;
+                Regi_subscriber_.TitleOid = ObjOwnerTitle;
+                Regi_subscriber_.FirstNameTH = Regi_subscriber.FirstNameTH;
+                Regi_subscriber_.LastNameTH = Regi_subscriber.LastNameTH;
+                Regi_subscriber_.GenderOid = ObjOwnerGender;
+                Regi_subscriber_.BirthDate = Convert.ToDateTime(Regi_subscriber.BirthDate);
+                Regi_subscriber_.Tel = Regi_subscriber.Tel;
+                Regi_subscriber_.Email = Regi_subscriber.Email;
+                Regi_subscriber_.Address = Regi_subscriber.Address;
+                Regi_subscriber_.Moo = Regi_subscriber.Moo;
+                Regi_subscriber_.Soi = Regi_subscriber.Soi;
+                Regi_subscriber_.Road = Regi_subscriber.Road;
+                Regi_subscriber_.ProvinceOid = ObjOwnerProvinceOid;
+                Regi_subscriber_.DistrictOid = ObjOwnerDistrictOid;
+                Regi_subscriber_.SubDistrictOid = ObjOwnerSubDistrictOid;
+                Regi_subscriber_.ZipCode = Regi_subscriber.ZipCode;
 
 
 

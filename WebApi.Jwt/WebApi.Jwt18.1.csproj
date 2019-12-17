@@ -231,6 +231,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\Approval_SendSeedController.cs" />
     <Compile Include="Controllers\ManageAnimalSupplierController.cs" />
+    <Compile Include="Controllers\SendOrderSeedController.cs" />
     <Compile Include="Controllers\SendorderSuppilerAnimal_Controller.cs" />
     <Compile Include="Controllers\OrderSeedDetailController.cs" />
     <Compile Include="Controllers\StockSeedController.cs" />
@@ -254,7 +255,6 @@
     <Compile Include="Controllers\MasterData\Product_unitController.cs" />
     <Compile Include="Controllers\MasterData\Province_DistricController.cs" />
     <Compile Include="Controllers\MasterData\ServiceTypeController.cs" />
-    <Compile Include="Controllers\Send_SeedController.cs" />
     <Compile Include="Controllers\MasterData\TitleController.cs" />
     <Compile Include="Controllers\MasterData\SeedProductController.cs" />
     <Compile Include="Controllers\RegisterFarmerController.cs" />
@@ -292,6 +292,7 @@
     <Compile Include="Models\refresh_Token.cs" />
     <Compile Include="Models\RegisterFarmer.cs" />
     <Compile Include="Models\Reports_values.cs" />
+    <Compile Include="Models\SendOrderSeedModel.cs" />
     <Compile Include="Models\SendOrderSupplierAnimal.cs" />
     <Compile Include="Models\StockSeedInfo.cs" />
     <Compile Include="Models\Subscriber_User.cs" />
