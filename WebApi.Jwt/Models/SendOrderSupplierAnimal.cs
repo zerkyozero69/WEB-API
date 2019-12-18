@@ -24,6 +24,7 @@ namespace WebApi.Jwt.Models
         public string SendNo { get; set; }
         public string  SendDate { get; set; }
         public string FinanceYear { get; set; }
+        public string BudgetSourceName { get; set; }
         public string SendOrgOid { get; set; }
         public string SendOrgName { get; set; }
         //[XafDisplayName("หน่วยจัดส่ง")]
@@ -34,7 +35,7 @@ namespace WebApi.Jwt.Models
         public string SendStatus { get; set; }
         public string Remark { get; set; }
         public string CancelMsg { get; set; }
-
+        public string AnimalSupplieTypeName { get; set; }
         public string RefNo { get; set; }
         //[XafDisplayName("หน่วยจัดส่ง")]
         //[XafDisplayName("หน่วยจัดส่ง")]
@@ -50,10 +51,10 @@ namespace WebApi.Jwt.Models
 
 
         //[XafDisplayName("พันธุ์พืชอาหารสัตว์")]
-        public string AnimalSeedOid { get; set; }
+        public string AnimalSeedName { get; set; }
   
-   
-        
+          
+
 
 
         //     [XafDisplayName("หน่วยนับ")]
@@ -86,46 +87,26 @@ namespace WebApi.Jwt.Models
         public string AnimalSupplieName { get; set; }
 
         //    [XafDisplayName("หน่วยที่ได้รับ")]
-      
+      public string PerUnit { get; set; }
 
         // [XafDisplayName("ปศุสัตว์จังหวัด")]
-    //    public ManageSubAnimalSupplier ManageSubAnimalSupplierOid { get; set; }
+        //    public ManageSubAnimalSupplier ManageSubAnimalSupplierOid { get; set; }
         public string TotalWeight { get; set; }
-  
-       // public List<SendOrderSupplierDetailType> Details { get; set; }
+
+         public List<ManageSubAnimalSupplierOid_Model> Details { get; set; }
     }
 
-    //public class SendOrderSupplierDetailType
-    //{
+    public class ManageSubAnimalSupplierOid_Model
+    {
+        public string ProvinceName { get; set; }
     
-    //    //[XafDisplayName("หน่วย")]
-    //    public string WeightUnitOid { get; set; }
-    //    public string WeightUnitName { get; set; }
-    //    //[XafDisplayName("รหัสพันธุ์")]
-    //    public string AnimalSeedCode { get; set; }
-    //    //[XafDisplayName("ชื่อเมล็ด")]
-    //    public string AnimalSeeName { get; set; }
-    //    //[XafDisplayName("ชั้นพันธุ์")]
-    //    public string AnimalSeedLevel { get; set; }
-    //    public string AnimalSeedLevelName { get; set; }
-    //    //[XafDisplayName("พันธุ์พืชอาหารสัตว์")]
-    //    public string AnimalSeedOid { get; set; }
-    //    public string AnimalSeedName { get; set; }
-    //    //[XafDisplayName("ชั้นพันธุ์")]
-    //    public string AnimalSeedLevelOid { get; set; }
-    //    //[XafDisplayName("ประเภทเมล็ดพันธุ์")]
-    //    public string SeedTypeOid { get; set; }
-    //    public string SeedTypeName { get; set; }
-    //    //[XafDisplayName("แหล่งงบประมาณ")]
-    //    public string BudgetSourceOid { get; set; }
-    //    public string BudgetSourceName { get; set; }
-    //    //[XafDisplayName("นน.เมล็ด(กก.)")]
-    //    public double Weight { get; set; }
-    //    //[XafDisplayName("คงเหลือ(กก.)")]
-    //    public double Amount { get; set; }
-    //    public bool Used { get; set; }
-    //    public string SendOrderSeed { get; set; }
-    //}
+        public string AnimalSupplieTypeName { get; set; }
+       
+        public double ProvinceQTY { get; set; }
+        
+        public string Unit { get; set; }
+       
+    }
 
 
 }

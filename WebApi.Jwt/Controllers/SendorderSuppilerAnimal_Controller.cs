@@ -32,6 +32,7 @@ using nutrition.Module.EmployeeAsUserExample.Module.BusinessObjects;
 using nutrition.Module;
 using System.Globalization;
 using static WebApi.Jwt.Models.Supplier;
+using DevExpress.Xpo;
 
 namespace WebApi.Jwt.Controllers.MasterData
 {
@@ -141,18 +142,19 @@ namespace WebApi.Jwt.Controllers.MasterData
                                 item.TotalWeight = row.StockLimit + " กิโลกรัม";
                                 ReceiveItems.Add(item);
                             }
-                            //lists.Receive = ReceiveItems;
-                            return Request.CreateResponse(HttpStatusCode.OK, ReceiveItems);
+                            //lists.Receive = ReceiveItems;   
                         }
+                        return Request.CreateResponse(HttpStatusCode.OK, ReceiveItems);
                     }
-
-                    //invalid
-                    UserError err = new UserError();
-                    err.status = "false";
-                    err.code = "0";
-                    err.message = "กรุณาใส่ข้อมูล Org_Oid และ type (1=รับ/2=ส่ง) ให้เรียบร้อยก่อน";
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, err);
-
+                    else
+                    {
+                        UserError err = new UserError();
+                        err.status = "false";
+                        err.code = "0";
+                        err.message = "กรุณาใส่ type ให้ถูกต้อง";
+                        return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+                    }
+                   
                 }
                 else
                 {
@@ -187,6 +189,7 @@ namespace WebApi.Jwt.Controllers.MasterData
             try
             {
                 string RefNo = HttpContext.Current.Request.Form["RefNo"].ToString();
+              
 
                 if (RefNo != "")
                 {
@@ -205,39 +208,113 @@ namespace WebApi.Jwt.Controllers.MasterData
                     foreach (SendOrderSupplierAnimal row in collection)
                     {
                         item = new SendOrderSupplierType();
+
                         item.SendNo = row.SendNo;
-                        item.SendDate = row.SendDate.ToString("dd/MM/yyyy");
+                        if (row.SendDate.ToString("dd/MM/yyyy") !="")
+                        {
+                            item.SendDate = row.SendDate.ToString("dd/MM/yyyy");
+                        }
+                 
                         item.SendOrgOid = row.SendOrgOid.Oid.ToString();
                         item.SendOrgName = row.SendOrgOid.SubOrganizeName;
                         item.SendOrgFullName = row.SendOrgOid.OrganizeNameTH;
+                        item.BudgetSourceName = row.BudgetSourceOid.BudgetName.ToString();
                         item.Remark = row.Remark;
                         item.SendStatus = row.SendStatus.ToString();
                         item.FinanceYear = row.FinanceYearOid.YearName;
-                        item.CancelMsg = row.CancelMsg;
-                        item.ReceiveOrgOid = row.ReceiveOrgOid.Oid.ToString();
-                        item.ReceiveOrgName = row.ReceiveOrgOid.SubOrganizeName;
-                        item.ReceiveOrgFullName = row.ReceiveOrgOid.OrganizeNameTH;
-                        item.ObjectTypeName = row.ObjectTypeOid.ObjectTypeName;
-                        if (row.QuotaTypeOid == null)
+                        if (row.CancelMsg != null)
                         {
-                            item.QuotaTypeName = "ไม่พบข้อมูลโควต้าศูนย์";
+                            item.CancelMsg = row.CancelMsg.ToString();
+                        }
+                        if (row.ReceiveOrgOid != null)
+                        {
+                            item.ReceiveOrgOid = row.ReceiveOrgOid.Oid.ToString();
+                            item.ReceiveOrgName = row.ReceiveOrgOid.SubOrganizeName.ToString();
+                            item.ReceiveOrgFullName = row.ReceiveOrgOid.OrganizeNameTH.ToString();
+                        }
+                        
+
+                        
+                        
+                        if (row.ObjectTypeOid==null)
+                        {
+                            item.ObjectTypeName = "ไม่พบข้อมูลวัตถุประสงค์";
                         }
                         else
                         {
-                            item.QuotaTypeName = row.QuotaTypeOid.QuotaName;
+                            item.ObjectTypeName = row.ObjectTypeOid.ObjectTypeName.ToString();
+                        }
+                       
+                        if (row.QuotaTypeOid == null)
+                        {
+                            item.QuotaTypeName = "ไม่พบข้อมูลโควตาศูนย์";
+                        }
+                        else
+                        {
+                            item.QuotaTypeName = row.QuotaTypeOid.QuotaName.ToString();
+                        }
+                        if (row.StockLimit.ToString() != "")
+                        {
+                   
+                            item.StockLimit = row.StockLimit;
                         }
                         
-                        item.StockLimit = row.StockLimit;
-                        item.AnimalSupplieName = row.AnimalSupplieOid.AnimalSupplieName;
-                        item.UnitName = row.UnitOid.UnitName;
-                        item.RefNo = RefNo;
-                        item.TotalWeight = row.QTY.ToString();
+                        if (row.AnimalSupplieOid == null )
+                        {
+                            item.AnimalSupplieName = "ไม่พบข้อมูลชนิดเสบียงสัตว์";
+                        }
+                        else
+                        {
+                            item.AnimalSupplieName = row.AnimalSupplieOid.AnimalSupplieName;
+                        }
+                        if  (row.UnitOid == null)
+                        {
+                            item.UnitName = "ไม่พบข้อมูลหน่วยนับ";
+                        }
+                        else
+                        {
+                            item.UnitName = row.UnitOid.UnitName;
+                        }
 
+                        item.AnimalSeedName = row.AnimalSeedOid.SeedName;
+                        item.AnimalSupplieTypeName = row.AnimalSupplieTypeOid.SupplietypeName.ToString();
+                        item.PackageName = row.PackageOid.PackageName;
+                        item.PerUnit = row.PerUnit.ToString();
+                   
+                        item.RefNo = RefNo;
+                      
+                        item.QTY = row.QTY;
                         //List<SendOrderSeedDetailType> details = new List<SendOrderSeedDetailType>();
                         //SendOrderSeedDetailType _dt = null;
 
-                  
 
+                        //if (SendOrderSupplierAnimal.o != null)
+                        //{
+                        //    List<ManageSubAnimalSupplierOid> listDetail = new List<ManageSubAnimalSupplierOid>();
+                        //    listDetail = row.ManageSubAnimalSupplier
+                        //   }
+                        List<ManageSubAnimalSupplierOid_Model> listitem = new List<ManageSubAnimalSupplierOid_Model>();
+                        double TotalW = 0;
+                        if (row.ManageSubAnimalSupplierOid!=null && row.ManageSubAnimalSupplierOid.ManageAnimalSupplierOid!=null && row.ManageSubAnimalSupplierOid.ManageAnimalSupplierOid.ManageSubAnimalSuppliers.Count>0 )
+                        {
+                           
+                            XPCollection<ManageSubAnimalSupplier> listDetail;
+                            listDetail = row.ManageSubAnimalSupplierOid.ManageAnimalSupplierOid.ManageSubAnimalSuppliers;
+                            foreach (ManageSubAnimalSupplier d in listDetail)
+                            {
+                                ManageSubAnimalSupplierOid_Model itemD = new ManageSubAnimalSupplierOid_Model();
+                                itemD.ProvinceName = d.ProvinceOid.ProvinceNameTH;
+                                itemD.AnimalSupplieTypeName = d.AnimalSupplieTypeOid.SupplietypeName;
+                                itemD.Unit = d.UnitOid.UnitName;
+                                itemD.ProvinceQTY = d.ProvinceQTY;
+                                TotalW = TotalW + d.ProvinceQTY;
+                                listitem.Add(itemD);
+
+                            }
+                        }
+                     
+                        item.TotalWeight = TotalW.ToString();
+                        item.Details = listitem;
                     }
                     return Request.CreateResponse(HttpStatusCode.OK, item);
                 }
@@ -260,7 +337,6 @@ namespace WebApi.Jwt.Controllers.MasterData
         }
 
 
-
         /// <summary>
         /// ปรับปรุงข้อมูลส่ง-รับเมล็ดพันธุ์
         /// </summary>
@@ -270,8 +346,8 @@ namespace WebApi.Jwt.Controllers.MasterData
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
-        [Route("SendOrderSeed/Update")]
-        public HttpResponseMessage UpdateSendOrderSeed()
+        [Route("SendOrderAnimalstock/Update")]
+        public HttpResponseMessage UpdateSendOrderAnimalstock()
         {
             try
             {
@@ -287,24 +363,24 @@ namespace WebApi.Jwt.Controllers.MasterData
                     string _type = arr[2]; //ประเภทส่ง(2)-รับ(1)
 
                     XpoTypesInfoHelper.GetXpoTypeInfoSource();
-                    XafTypesInfo.Instance.RegisterEntity(typeof(SendOrderSupplierAnimal));
-                    List<SendOrderSupplierType> list = new List<SendOrderSupplierType>();
+                    XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.SendOrderSeed));
+                    List<SendOrderSeed> list = new List<SendOrderSeed>();
                     XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                     IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
 
-                    SendOrderSupplierAnimal objSupplierProduct = ObjectSpace.FindObject<SendOrderSupplierAnimal>(CriteriaOperator.Parse("SendNo=?", _refno));
+                    SendOrderSeed objSupplierProduct = ObjectSpace.FindObject<SendOrderSeed>(CriteriaOperator.Parse("SendNo=?", _refno));
                     if (objSupplierProduct != null)
                     {
                         if (_type == "1") //รับ
                         {
                             if (Status == "1")
                             { //Approve
-                                objSupplierProduct.SendStatus = EnumSendOrderAnimalStatus.Accept; //3
+                                objSupplierProduct.SendStatus = EnumSendOrderSeedStatus.Accept; //3
                                 ObjectSpace.CommitChanges();
                             }
                             else if (Status == "2")
                             { //Reject
-                                objSupplierProduct.SendStatus = EnumSendOrderAnimalStatus.Eject; //8
+                                objSupplierProduct.SendStatus = EnumSendOrderSeedStatus.Eject; //8
                                 objSupplierProduct.CancelMsg = CancelMsg;
                                 ObjectSpace.CommitChanges();
                             }
@@ -313,12 +389,12 @@ namespace WebApi.Jwt.Controllers.MasterData
                         {
                             if (Status == "1")
                             { //Approve
-                                objSupplierProduct.SendStatus = EnumSendOrderAnimalStatus.SendApprove; //6
+                                objSupplierProduct.SendStatus = EnumSendOrderSeedStatus.SendApprove; //6
                                 ObjectSpace.CommitChanges();
                             }
                             else if (Status == "2")
                             { //Reject
-                                objSupplierProduct.SendStatus = EnumSendOrderAnimalStatus.SendEject; //9
+                                objSupplierProduct.SendStatus = EnumSendOrderSeedStatus.SendEject; //9
                                 objSupplierProduct.CancelMsg = CancelMsg;
                                 ObjectSpace.CommitChanges();
                             }

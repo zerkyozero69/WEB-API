@@ -92,6 +92,7 @@ namespace WebApi.Jwt.Models
         public string ActivityNameOid { get; set; }
         public string ActivityName { get; set; }
         public string SubActivityName { get; set; }
+        public string SubActivityLevelName { get; set; }
         public string ReceiptNo { get; set; }
         public string Weight_All { get; set; }
         
@@ -136,20 +137,37 @@ namespace WebApi.Jwt.Models
 
     public class SupplierUseProductDetail_Model
         {
-        public string Oid { get; set; }
-        public string AnimalSeedName { get; set; }
-        public string AnimalSeedLevelName { get; set; }
-        public double StockLimit { get; set; }
-        public double Weights { get; set; }
-        public string WeightUnit { get; set; }
-        public string BudgetSourceName { get; set; }
-        public string SupplierUseProduct { get; set; }
-        public string LotNumber { get; set; }
-        public string SeedType { get; set; }
+        public string SupplierUseAnimalProductOid { get; set; }
         public double PerPrice { get; set; }
+       
+        public string SupplierUseAnimalProductName { get; set; }
+
+        public double Amount { get; set; }
+    
+        public double Weight { get; set; }
+   
+        public double StockUsed { get; set; }
+   
+        public double StockLimit { get; set; }
+   
         public double Price { get; set; }
+    
+        public double QuotaQTY { get; set; }
       
-}
+      
+     
+        public string QuotaTypeName { get; set; }
+   
+        
+        public string AnimalSupplieTypeName { get; set; }
+    
+        public string AnimalSupplieName { get; set; }
+        
+        public string AnimalSeedName { get; set; }
+        
+        public string BudgetSourceName { get; set; }
+
+    }
     public class sendSeed_info
         {
         public object Oid { get; set; }

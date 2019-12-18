@@ -283,7 +283,7 @@ namespace WebApi.Jwt.Controllers
                         { 
                             if (Status == "1")
                             { //Approve
-                                objSupplierProduct.SendStatus = EnumSendOrderSeedStatus.Accept; //3
+                                objSupplierProduct.SendStatus = EnumSendOrderSeedStatus.Approve; //3
                                 ObjectSpace.CommitChanges();
                             }
                             else if (Status == "2")

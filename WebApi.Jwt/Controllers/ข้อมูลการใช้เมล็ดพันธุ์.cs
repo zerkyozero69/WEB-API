@@ -518,121 +518,174 @@ namespace WebApi.Jwt.Controllers
         [Route("LoadSupplierUseProduct_Serve")]
         public IHttpActionResult LoadSupplierUse_accept_serve()
         {
-            object OrganizationOid;
+            string OrganizationOid;
 
             try
             {
 
                 OrganizationOid = HttpContext.Current.Request.Form["OrganizationOid"].ToString();
-
-                // string ActivityOid = "B100C7C1 - 4755 - 4AF0 - 812E-3DD6BA372D45";
-               XpoTypesInfoHelper.GetXpoTypeInfoSource();
-                XafTypesInfo.Instance.RegisterEntity(typeof(SupplierUseProduct));
-              
-                List<SupplierProductUser> list_detail = new List<SupplierProductUser>();
-                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
-                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-                var ActivityOid = "A29D77A9-4BCB-4774-9744-FF97A373353E";
-                IList<SupplierUseProduct> collection = ObjectSpace.GetObjects<SupplierUseProduct>(CriteriaOperator.Parse(" GCRecord is null and Stauts = 1 and OrganizationOid=? and ActivityOid = ?", OrganizationOid, ActivityOid));
-                double Weight = 0;
-                if (collection.Count >0)
+              string  YearName = HttpContext.Current.Request.Form["YearName"].ToString();
+                // string RefNo = HttpContext.Current.Request.Form["RefNo"].ToString();
+                if ( OrganizationOid != "")
                 {
-                    foreach (SupplierUseProduct row in collection)
+                    //string[] arr = RefNo.Split('|');
+                    //string _refno = arr[0]; //เลขที่อ้างอิง
+                    //string _org_oid = arr[1]; //oid หน่วยงาน
+                    //string _type = arr[2]; //ประเภทส่ง(2)-รับ(1)
+
+                    // string ActivityOid = "B100C7C1 - 4755 - 4AF0 - 812E-3DD6BA372D45";
+                    XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                    XafTypesInfo.Instance.RegisterEntity(typeof(SupplierUseAnimalProduct));
+
+                    List<SupplierProductUser> list_detail = new List<SupplierProductUser>();
+                 
+                    XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                    IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+                    var ActivityOid = HttpContext.Current.Request.Form["ActivityOid"].ToString(); //รหัสกิจกรรม
+                    IList< SupplierUseAnimalProduct> collection = ObjectSpace.GetObjects< SupplierUseAnimalProduct> (CriteriaOperator.Parse(" GCRecord is null and Stauts = 1 and OrganizationOid=? and ActivityOid = ? and FinanceYearOid.YearName = ?", OrganizationOid, ActivityOid,YearName));
+                    double Weight = 0;
+                    if (collection.Count > 0)
                     {
+                        foreach (SupplierUseAnimalProduct row in collection)
+                        {
 
-                        SupplierProductUser Supplier_ = new SupplierProductUser();
-                        Supplier_.Oid = row.Oid.ToString();
-                        Supplier_.UseDate = row.UseDate.ToString("dd-MM-yyyy", new CultureInfo("us-US"));
-                        Supplier_.UseNo = row.UseNo;
-                        if (row.RegisCusServiceOid == null)
-                        {
-                            Supplier_.RegisCusService = "ไม่พบข้อมูล";
-                            Supplier_.RegisCusServiceName = "ไม่พบข้อมูล";
-                        }
-                        else
-                        {
-                            Supplier_.RegisCusService = row.RegisCusServiceOid.Oid.ToString();
-                            Supplier_.RegisCusServiceName = row.RegisCusServiceOid.FirstNameTH + row.RegisCusServiceOid.LastNameTH;
-                        }
+                            SupplierProductUser Supplier_ = new SupplierProductUser();
+                            Supplier_.Oid = row.Oid.ToString();
+                            Supplier_.UseDate = row.UseDate.ToString("dd-MM-yyyy", new CultureInfo("us-US"));
+                            Supplier_.UseNo = row.UseNo.ToString();
+                            if (row.RegisCusServiceOid == null)
+                            {
+                                Supplier_.RegisCusService = "ไม่พบข้อมูล";
+                                Supplier_.RegisCusServiceName = "ไม่พบข้อมูล";
+                            }
+                            else
+                            {
+                                Supplier_.RegisCusService = row.RegisCusServiceOid.Oid.ToString();
+                                Supplier_.RegisCusServiceName = row.RegisCusServiceOid.FirstNameTH + row.RegisCusServiceOid.LastNameTH;
+                            }
 
-                        if (row.OrgeServiceOid == null)
-                        {
-                            Supplier_.OrgeServiceName = "ไม่พบข้อมูลหน่วยงานขอรับบริการ";
-                        }
-                        else
-                        {
-                            Supplier_.OrgeServiceName = row.OrgeServiceOid.OrgeServiceName;
-                        }
-                        Supplier_.ActivityName = row.ActivityOid.ActivityName;
-                        Supplier_.FinanceYear = row.FinanceYearOid.YearName;
-                        Supplier_.OrganizationName = row.OrganizationOid.SubOrganizeName;
-                        if (row.EmployeeOid == null)
-                        {
-                            Supplier_.EmployeeName = "ไม่มีรายชื่อผู้ขอรับบริการ";
-                        }
-                        else
-                        {
-                            Supplier_.EmployeeName = row.EmployeeOid.EmployeeFirstName + " " + row.EmployeeOid.EmployeeLastName;
-                        }
+                            if (row.OrgeServiceOid == null)
+                            {
+                                Supplier_.OrgeServiceName = "ไม่พบข้อมูลหน่วยงานขอรับบริการ";
+                            }
+                            else
+                            {
+                                Supplier_.OrgeServiceName = row.OrgeServiceOid.OrgeServiceName;
+                            }
+                            Supplier_.ActivityName = row.ActivityOid.ActivityName.ToString();
+                            if (row.SubActivityOid != null)
+                            {
+                                Supplier_.SubActivityName = row.SubActivityOid.ActivityName;
+                            }
+                            if (row.SubActivityLevelOid != null)
+                            {
+                                Supplier_.SubActivityLevelName = row.SubActivityLevelOid.ActivityName;
+                            }
+                           
+                            Supplier_.FinanceYear = row.FinanceYearOid.YearName.ToString();
+                            Supplier_.OrganizationName = row.OrganizationOid.SubOrganizeName.ToString();
+                            if (row.EmployeeOid == null)
+                            {
+                                Supplier_.EmployeeName = "ไม่มีรายชื่อผู้ขอรับบริการ";
+                            }
+                            else
+                            {
+                                Supplier_.EmployeeName = row.EmployeeOid.EmployeeFirstName + " " + row.EmployeeOid.EmployeeLastName;
+                            }
 
-                        Supplier_.Remark = row.Remark;
-                        //Supplier.Stauts = row.Stauts;
-                        Supplier_.ApproveDate = row.ApproveDate.ToString("dd-MM-yyyy", new CultureInfo("us-US"));
-                        Supplier_.ActivityNameOid = row.ActivityOid.Oid.ToString();
-                        Supplier_.ActivityName = row.ActivityOid.ActivityName;
+                            Supplier_.Remark = row.Remark;
+                            Supplier_.Stauts = row.Stauts.ToString();
+                            Supplier_.ApproveDate = row.ApproveDate.ToString("dd-MM-yyyy", new CultureInfo("us-US"));
+                            Supplier_.ActivityNameOid = row.ActivityOid.Oid.ToString();
+                            Supplier_.ActivityName = row.ActivityOid.ActivityName.ToString();
 
-                        if (row.SubActivityOid == null)
-                        {
-                            Supplier_.SubActivityName = "ไม่มีข้อมูลกิจกรรม";
-                        }
-                        else
-                        {
-                            Supplier_.SubActivityName = row.SubActivityOid.ActivityName;
-                        }
-                        foreach (SupplierUseProductDetail row2 in row.SupplierUseProductDetails)
-                        {
-                            Weight = row2.Weight;
-                        }
-                        Supplier_.Weight = Weight + " " + "กิโลกรัม";
-                        Supplier_.ServiceCount = row.ServiceCount;
+                            if (row.SubActivityOid == null)
+                            {
+                                Supplier_.SubActivityName = "ไม่มีข้อมูลกิจกรรม";
+                            }
+                            else
+                            {
+                                Supplier_.SubActivityName = row.SubActivityOid.ActivityName.ToString();
+                            }
+                            List<SupplierUseProductDetail_Model> listD = new List<SupplierUseProductDetail_Model>();
+                            foreach (SupplierUseAnimalProductDetail row2 in row.SupplierUseAnimalProductDetails)
+                            {
+                                SupplierUseProductDetail_Model item2 = new SupplierUseProductDetail_Model();
+                                item2.SupplierUseAnimalProductOid = row2.SupplierUseAnimalProductOid.Oid.ToString();
+                                item2.Weight = row2.Weight;
+                                if (row2.Weight == 0)
+                                {
+                                    Weight = 0;
+                                }
+                                else
+                                {
+                                    Weight =  Weight+row2.Weight;
+                                }
+                                if (row2.AnimalSupplieTypeOid != null)
+                                {
+                                    item2.AnimalSupplieTypeName = row2.AnimalSupplieTypeOid.SupplietypeName;
+                                }
+                                if (row2.AnimalSeedOid != null)
+                                {
+                                    item2.AnimalSeedName = row2.AnimalSeedOid.SeedName;
+                                }
 
-                        //if (row.RegisCusServiceOid.DisPlayName == "")
-                        //{
-                        //    Supplier.RegisCusServiceOid = "ไม่มีข้อมูล";
-                        //}
-                        //else
-                        //{
-                        //    Supplier.RegisCusServiceOid = row.RegisCusServiceOid.DisPlayName;
-                        //}
-                        //if (row.OrgeServiceOid.OrgeServiceName == "")
-                        //{
-                        //    Supplier.OrgeServiceOid = "ไม่มีข้อมูล";
-                        //}
-                        //else
-                        //{
-                        //    Supplier.OrgeServiceOid = row.OrgeServiceOid.OrgeServiceName;
-                        //}
-                        list_detail.Add(Supplier_);
+                                if (row2.BudgetSourceOid != null)
+                                {
+                                    item2.BudgetSourceName = row2.BudgetSourceOid.BudgetName;
+                                }
+                                item2.PerPrice = row2.PerPrice;
+                                item2.Price = row2.Price;
+                                if (row2.QuotaTypeOid != null)
+                                {
+                                    item2.QuotaTypeName = row2.QuotaTypeOid.QuotaName;
+                                }
+                                item2.QuotaQTY = row2.QuotaQTY;
+                                item2.StockLimit = row2.StockLimit;
+                                item2.StockUsed = row2.StockUsed;
+                                item2.Amount = row2.Amount;
+                                listD.Add(item2);
+
+
+                            }
+                            
+                            Supplier_.Weight = Weight + " " + "กิโลกรัม";
+                            Supplier_.ReceiptNo = row.ReceiptNo;
+                            Supplier_.ServiceCount = row.ServiceCount;
+                            Supplier_.objProduct = listD;
+                            list_detail.Add(Supplier_);
+
+
+
+                        }
+                        
+                        return Ok(list_detail);
                     }
 
-                    return Ok(list_detail.Count == 0);
-                }
-
-                else if (list_detail == null)
-                {
-                    UserError err = new UserError();
-                    err.code = "3"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-                    err.message = "No data";
-                    //  Return resual
-                    return BadRequest(err.message);
+                    else if (list_detail == null)
+                    {
+                        UserError err = new UserError();
+                        err.code = "3"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                        err.message = "No data";
+                        //  Return resual
+                        return BadRequest(err.message);
+                    }
+                    else
+                    {
+                        UserError err = new UserError();
+                        err.code = "5"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                        err.message = "No data";
+                        //  Return resual
+                        return BadRequest("NoData");
+                    }
                 }
                 else
                 {
                     UserError err = new UserError();
-                    err.code = "5"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-                    err.message = "No data";
+                    err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                    err.message = "กรุณากรอก RefNo และ OrganizationOid ";
                     //  Return resual
-                    return BadRequest("NoData");
+                    return BadRequest(err.message);
                 }
             }
             catch (Exception ex)

@@ -7,7 +7,7 @@ namespace WebApi.Jwt.Models.แผนการผลิตโมเดล
 {
     public class PlanSeedInfo_Model
     {
-        public DateTime StockDate { get; set; }
+        public string StockDate { get; set; }
 
      //   [XafDisplayName("หน่วยงาน")]
         public string OrganizationOid { get; set; }
