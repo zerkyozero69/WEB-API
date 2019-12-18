@@ -35,11 +35,12 @@ using WebApi.Jwt.Models.Models_Masters;
 namespace WebApi.Jwt.Controllers.MasterData
 #region จังหวัด อำเภอ ตำบล
 {/// <summary>
-/// ใช้เรียกจังหวัด อำเภอ ตำบล
-/// </summary>
-    public class Province_DistricController : ApiController
+ /// ใช้เรียกจังหวัด อำเภอ ตำบล
+ /// </summary>
+    public class ProvinceController : ApiController
     {
         string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
+
 
         [AllowAnonymous]
         [HttpPost]
@@ -49,75 +50,23 @@ namespace WebApi.Jwt.Controllers.MasterData
         {
             try
             {
-                XpoTypesInfoHelper.GetXpoTypeInfoSource();
-                XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.Province));
-                List<Province_Model> list = new List<Province_Model>();
-                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
-                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-                IList<Province> collection = ObjectSpace.GetObjects<Province>(CriteriaOperator.Parse("  GCRecord is null and IsActive = 1 ", null));
-                foreach (Province row in collection)
+                DataSet ds = new DataSet();
+                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieLoadProvinces");
+                DataTable dt = new DataTable();
+                dt = ds.Tables[0];
+                List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
+                Dictionary<string, object> row;
+                foreach (DataRow dr in dt.Rows)
                 {
-                    Province_Model model = new Province_Model();
-                    model.Oid = row.Oid.ToString();
-                    model.ProvinceCode = row.ProvinceCode;
-                    model.ProvinceNameTH = row.ProvinceNameTH;
-                    model.ProvinceNameENG = row.ProvinceNameENG;
-                    model.IsActive = row.IsActive;
-                    model.Latitude =row.Latitude;
-                    model.Longitude =row.Longitude;
-                    list.Add(model);
-                }
-                return Request.CreateResponse(HttpStatusCode.OK, list);
-
-            }
-            catch (Exception ex)
-            { //Error case เกิดข้อผิดพลาด
-                UserError err = new UserError();
-                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-
-                err.message = ex.Message;
-                //  Return resual
-                return Request.CreateResponse(HttpStatusCode.ExpectationFailed, err);
-            }
-        }
-        [AllowAnonymous]
-        [HttpPost]
-
-        [Route("Province/Oid")]
-        public HttpResponseMessage loadProvince_ByID(string Oid) /// get จังหวัด ด้วย Oid
-        {
-        
-            try
-            {
-                XpoTypesInfoHelper.GetXpoTypeInfoSource();
-                XafTypesInfo.Instance.RegisterEntity(typeof(Province));
-
-                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
-                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-                List<Province_Model> list_detail = new List<Province_Model>();
-                IList<Province> collection = ObjectSpace.GetObjects<Province>(CriteriaOperator.Parse(" GCRecord is null and IsActive = 1  and Oid=? ", Oid));
-                DataSet ds = SqlHelper.ExecuteDataset(scc, CommandType.Text, "select Oid from Province where GCRecord is null and IsActive = 1 and Oid= '" + Oid + "'");
-                if (ds.Tables[0].Rows.Count != 0)
-                {
-                    foreach (Province row in collection)
+                    row = new Dictionary<string, object>();
+                    foreach (DataColumn col in dt.Columns)
                     {
-                        Province_Model model = new Province_Model();
-                        model.Oid = row.Oid.ToString();
-                        model.ProvinceCode = row.ProvinceCode;
-                        model.ProvinceNameTH = row.ProvinceNameTH;
-                        model.ProvinceNameENG = row.ProvinceNameENG;
-                        model.IsActive = row.IsActive;
-                        model.Latitude = row.Latitude;
-                        model.Longitude = row.Longitude;
-               
-                        list_detail.Add(model);
+                        row.Add(col.ColumnName, dr[col]);
                     }
-                    return Request.CreateResponse(HttpStatusCode.OK, list_detail);
+                    rows.Add(row);
                 }
-                else
-                {
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, "NoData");
-                }
+                return Request.CreateResponse(HttpStatusCode.OK, rows);
+
 
             }
             catch (Exception ex)
@@ -130,77 +79,43 @@ namespace WebApi.Jwt.Controllers.MasterData
                 return Request.CreateResponse(HttpStatusCode.ExpectationFailed, err);
             }
         }
-                    [AllowAnonymous]
-                    [HttpPost]
-                    [Route("Districts")]
-                    public HttpResponseMessage loadDistricts() // โหลดอำเภอ
-                    {
-                        try
-                        {
-                XpoTypesInfoHelper.GetXpoTypeInfoSource();
-                XafTypesInfo.Instance.RegisterEntity(typeof(District));
-                List<District_Model> list = new List<District_Model>();
-                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
-                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-                IList<District> collection = ObjectSpace.GetObjects<District>(CriteriaOperator.Parse(" GCRecord is null and IsActive = 1 ", null));
-                foreach (District row in collection)
-                {
-                    District_Model model = new District_Model();
-                    model.Oid = row.Oid.ToString();
-                    model.DistrictCode = row.DistrictCode;
-                    model.DistrictNameTH = row.DistrictNameTH;
-                    model.DistrictNameENG = row.DistrictNameENG;
-                    model.PostCode = row.PostCode;
-                    model.IsActive = row.IsActive;
-                    model.Latitude = row.Latitude;
-                    model.Longitude = row.Longitude;
-                   
-                    list.Add(model);
-                }
-                return Request.CreateResponse(HttpStatusCode.OK, list);
-
-            }
-            catch (Exception ex)
-                        { //Error case เกิดข้อผิดพลาด
-                            UserError err = new UserError();
-                            err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-
-                            err.message = ex.Message;
-                            //  Return resual
-                            return Request.CreateResponse(HttpStatusCode.ExpectationFailed, err);
-                        }
-                                }
-               
+    
         [AllowAnonymous]
         [HttpPost]
         [Route("Districts")]
-        public HttpResponseMessage getDistricts_ByProvince(string Oid) ///โหลดอำเภอ by จังหวัด
+        public HttpResponseMessage getDistricts_ByProvince() ///โหลดอำเภอ by จังหวัด
         {
             try
             {
-                XpoTypesInfoHelper.GetXpoTypeInfoSource();
-                XafTypesInfo.Instance.RegisterEntity(typeof(District));
+                string Oid = null; // Oid จังหวัด
 
-                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
-                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-                List<District_Model> list_detail = new List<District_Model>();
-                IList<District> collection = ObjectSpace.GetObjects<District>(CriteriaOperator.Parse(" GCRecord is null and IsActive = 1   ",null));
-         
-                    foreach (District row in collection)
+                if (HttpContext.Current.Request.Form["Oid"].ToString() != null)
+                {
+                    if (HttpContext.Current.Request.Form["Oid"].ToString() != "")
                     {
-                        District_Model model = new District_Model();
-                        model.Oid = row.Oid.ToString();
-                        model.DistrictCode = row.DistrictCode;
-                        model.DistrictNameTH = row.DistrictNameTH;
-                        model.DistrictNameENG = row.DistrictNameENG;
-                        model.IsActive = row.IsActive;
-                        model.Latitude = row.Latitude;
-                        model.Longitude = row.Longitude;
-
-                        list_detail.Add(model);
+                        Oid = HttpContext.Current.Request.Form["Oid"].ToString();
                     }
-                    return Request.CreateResponse(HttpStatusCode.OK, list_detail);
-          
+                }
+                DataSet ds = new DataSet();
+                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieGetDistricts_ByProvince", new SqlParameter("@Oid", Oid)
+                   );
+
+                _Districts districts = new _Districts();
+                DataTable dt = new DataTable();
+                dt = ds.Tables[0];
+                List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
+                Dictionary<string, object> row;
+                foreach (DataRow dr in dt.Rows)
+                {
+                    row = new Dictionary<string, object>();
+                    foreach (DataColumn col in dt.Columns)
+                    {
+                        row.Add(col.ColumnName, dr[col]);
+                    }
+                    rows.Add(row);
+                }
+                return Request.CreateResponse(HttpStatusCode.OK, rows);
+
             }
             catch (Exception ex)
             {
@@ -221,30 +136,36 @@ namespace WebApi.Jwt.Controllers.MasterData
         {
             try
             {
-                XpoTypesInfoHelper.GetXpoTypeInfoSource();
-                XafTypesInfo.Instance.RegisterEntity(typeof(SubDistrict));
+                string Oid = null; // Oid อำเภอ
 
-                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
-                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-                List<SubDistrict_Model> list_detail = new List<SubDistrict_Model>();
-                IList<SubDistrict> collection = ObjectSpace.GetObjects<SubDistrict>(CriteriaOperator.Parse(" GCRecord is null and IsActive = 1  ",null));
-        
-                    foreach (SubDistrict row in collection)
+                if (HttpContext.Current.Request.Form["Oid"].ToString() != null)
+                {
+                    if (HttpContext.Current.Request.Form["Oid"].ToString() != "")
                     {
-                        SubDistrict_Model model = new SubDistrict_Model();
-                        model.Oid = row.Oid.ToString();
-                        model.SubDistrictCode = row.SubDistrictCode;
-                        model.SubDistrictNameTH = row.SubDistrictNameTH;
-                        model.SubDistrictNameENG = row.SubDistrictNameENG;
-                        model.IsActive = row.IsActive;
-                        model.Latitude = row.Latitude;
-                        model.Longitude = row.Longitude;
-
-                        list_detail.Add(model);
+                        Oid = HttpContext.Current.Request.Form["Oid"].ToString();
                     }
-                    return Request.CreateResponse(HttpStatusCode.OK, list_detail);
-       
-            
+                }
+
+                DataSet ds = new DataSet();
+                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieGetSubDistricts_ByDistricts", new SqlParameter("@Oid", Oid)
+                   );
+
+                _Districts districts = new _Districts();
+                DataTable dt = new DataTable();
+                dt = ds.Tables[0];
+                List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
+                Dictionary<string, object> row;
+                foreach (DataRow dr in dt.Rows)
+                {
+                    row = new Dictionary<string, object>();
+                    foreach (DataColumn col in dt.Columns)
+                    {
+                        row.Add(col.ColumnName, dr[col]);
+                    }
+                    rows.Add(row);
+                }
+                return Request.CreateResponse(HttpStatusCode.OK, rows);
+
             }
             catch (Exception ex)
             {
@@ -258,6 +179,6 @@ namespace WebApi.Jwt.Controllers.MasterData
                 return Request.CreateResponse(HttpStatusCode.ExpectationFailed, err);
             }
         }
-        #endregion
     }
+    #endregion
 }

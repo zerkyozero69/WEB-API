@@ -246,7 +246,7 @@ namespace WebApi.Jwt.Controllers
         }
 
         /// <summary>
-        /// ปรัปรุงข้อมูลส่ง-รับเมล็ดพันธุ์
+        /// ปรับปรุงข้อมูลส่ง-รับเมล็ดพันธุ์
         /// </summary>
         /// <param name="RefNo">เลขที่อ้างอิง|Oid หน่วยงาน|ประเภท</param>
         /// <param name="Status">สถานะการตรวจสอบ (1=อนุมัติ/2=ไม่อนุมัติ)</param>
@@ -259,7 +259,7 @@ namespace WebApi.Jwt.Controllers
         {
             try
             {
-                string RefNo = HttpContext.Current.Request.Form["RefNo"].ToString(); //ข้อมูลเขที่อ้างอิง
+                string RefNo = HttpContext.Current.Request.Form["RefNo"].ToString(); //ข้อมูลเลขที่อ้างอิง
                 string Status = HttpContext.Current.Request.Form["Status"].ToString(); //สถานะ
                 string CancelMsg = HttpContext.Current.Request.Form["CancelMsg"].ToString(); //หมายเหตุ
 

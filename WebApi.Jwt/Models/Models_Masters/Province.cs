@@ -7,7 +7,7 @@ namespace WebApi.Jwt.Models.Models_Masters
 {
     public class Province_Model
     {
-        public string Oid { get; set; }
+        public Guid Oid { get; set; }
         public string ProvinceCode { get; set; }
         public string ProvinceNameTH { get; set; }
         public string ProvinceNameENG { get; set; }
@@ -33,7 +33,7 @@ namespace WebApi.Jwt.Models.Models_Masters
         public double Longitude { get; set; }
    
 
-        public List<SubDistrict_Model> objSubDistrict;
+      
 
 
     }

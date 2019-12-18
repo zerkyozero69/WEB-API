@@ -25,7 +25,7 @@ namespace WebApi.Jwt.Models
         }
         public class Gender_Model
         {
-            public object Oid { get; set; }
+             public string Oid { get; set; }
             public string GenderName { get; set; }
             public Boolean IsActive { get; set; }
         }
@@ -96,4 +96,9 @@ namespace WebApi.Jwt.Models
        public string PositionLevelName { get; set; }    
         public bool IsActive { get; set; }
     }
+    public class UpdateResult
+    {
+        public string status { get; set; }
+        public string message { get; set; }
+        }
 }

@@ -233,7 +233,7 @@
     <Compile Include="Controllers\ManageAnimalSupplierController.cs" />
     <Compile Include="Controllers\SendOrderSeedController.cs" />
     <Compile Include="Controllers\SendorderSuppilerAnimal_Controller.cs" />
-    <Compile Include="Controllers\OrderSeedDetailController.cs" />
+    <Compile Include="Controllers\ข้อมูลการใช้เมล็ดพันธุ์.cs" />
     <Compile Include="Controllers\StockSeedController.cs" />
     <Compile Include="Controllers\Subscriber_UserController.cs" />
     <Compile Include="Controllers\SupplierController.cs" />
@@ -260,6 +260,7 @@
     <Compile Include="Controllers\RegisterFarmerController.cs" />
     <Compile Include="Controllers\TokenController.cs" />
     <Compile Include="Controllers\ValueController.cs" />
+    <Compile Include="Controllers\แผนการผลิต\PlanSeedInfo_SumController.cs" />
     <Compile Include="Filters\AuthenticationFailureResult.cs" />
     <Compile Include="Filters\HttpAuthenticationChallengeContextExtensions.cs" />
     <Compile Include="Filters\AddChallengeOnUnauthorizedResult.cs" />
@@ -299,6 +300,7 @@
     <Compile Include="Models\Supplier.cs" />
     <Compile Include="Models\user.cs" />
     <Compile Include="Models\UserError.cs" />
+    <Compile Include="Models\แผนการผลิตโมเดล\PlanSeedInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

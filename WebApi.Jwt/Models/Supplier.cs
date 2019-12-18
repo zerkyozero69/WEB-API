@@ -105,5 +105,56 @@ namespace WebApi.Jwt.Models
             public double Price { get; set; }
 
         }
+        public class SupplierUseAnimalProductDetail_Model
+        {
+            public string BudgetSource { get; set; }
+
+            //[XafDisplayName("แหล่งงบประมาณ")]
+          
+
+
+            public string AnimalSupplie { get; set; }
+
+            //[XafDisplayName("ประเภทชนิดเสบียงสัตว์")]
+            //    public SupplierUseAnimalProduct SupplierUseAnimalProductOid { get; set; }
+
+ 
+            public string AnimalSupplieType { get; set; }
+            // [XafDisplayName("ประเภทการผลิตเสบียงสัตว์")]
+            public string AnimalSeed { get; set; }
+            //[XafDisplayName("พันธุ์พืชอาหารสัตว์")]
+
+            public string QuotaType { get; set; }
+            //[XafDisplayName("โควตา")]
+
+            public double QuotaQTY { get; set; }
+
+
+            // [XafDisplayName("แผนจัดสรร (กก.)")]
+
+          
+            public double Price { get; set; }
+            //   [XafDisplayName("ราคาจำหน่าย")]
+
+            public double StockLimit { get; set; }
+
+            //     [XafDisplayName("คงเหลือตามจริง")]
+
+
+            //[XafDisplayName("ปศุสัตว์จังหวัด")]
+            //   public ManageSubAnimalSupplier ManageSubAnimalSupplierOid { get; set; }
+
+
+            public double StockUsed { get; set; }
+            //       [XafDisplayName("จำนวนที่เบิกไปแล้ว")]
+            public double Weight { get; set; }
+            //         [XafDisplayName("จำนวนที่ขอใช้(กก.)")]
+
+            public double Amount { get; set; }
+            //[XafDisplayName("จำนวนคงเหลือตามแผนจัดสรร")]
+
+
+            public double PerPrice { get; set; }
+        }
     }
 }

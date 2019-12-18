@@ -35,9 +35,332 @@ using static WebApi.Jwt.Models.Supplier;
 
 namespace WebApi.Jwt.Controllers.MasterData
 {
+    /// <summary>
+    /// ข้อมูลส่ง-รับเมล็ดพันธุ์ให้หน่วยงาน
+    /// ==================
+    /// SendStatus:
+    ///     รับเสบียงสัตว์
+    ///         NotSend = 0 (อยู่ระหว่างดำเนินการ)
+    ///         Send = 1(จัดส่งเมล็ดพันธุ์แล้ว)
+    ///         Accept = 2 (ตรวจสอบแล้ว)
+    ///         Approve = 3(อนุมัติรับเมล็ดพันธุ์)
+    ///         Cancel = 4 (ยกเลิก)
+    ///         Eject = 8(ไม่อนุมัติ)
+    ///     ==================
+    ///     ส่งเสบียงสัตว์
+    ///         SendAccept = 5(ตรวจสอบแล้ว)
+    ///         SendApprove = 6 (อนุมัติส่งเมล็ดพันธุ์)
+    ///         SendCancel = 7(ยกเลิกส่งเมล็ดพันธุ์)
+    ///         SendEject = 9 (ไม่อนุมัติส่งเมล็ดพันธุ์)
+    /// </summary>
     public class SendorderSuppilerAnimal_Controller : ApiController
     {
         string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
+
+
+        /// <summary>
+        /// แสดงข้อมูลส่ง-รับเสบียงสัตว์ให้หน่วยงาน
+        /// </summary>
+        /// <param name="Org_Oid">OID ของหน่วยงาน</param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("SendOrderAnimalstock/List")]
+        public HttpResponseMessage GetSendOrderAnimalstock()
+        {
+            try
+            {
+                string org_oid = HttpContext.Current.Request.Form["Org_Oid"].ToString();
+                string type = HttpContext.Current.Request.Form["type"].ToString(); //รับ=1/ส่ง=2
+
+                if (org_oid != "" && type != "")
+                {
+                    XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                    XafTypesInfo.Instance.RegisterEntity(typeof(SendOrderSupplierAnimal));
+
+                    List<SendOrderSupplierType> SendItems = new List<SendOrderSupplierType>();
+                    List<SendOrderSupplierType> ReceiveItems = new List<SendOrderSupplierType>();
+                    SendOrderSupplierModel lists = new SendOrderSupplierModel();
+                    lists.org_oid = org_oid;
+
+                    XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                    IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+
+                    if (type == "2")
+                    {  //ส่ง
+
+                        IList<SendOrderSupplierAnimal> collection = ObjectSpace.GetObjects<SendOrderSupplierAnimal>(CriteriaOperator.Parse("GCRecord is null and SendStatus=2 and SendOrgOid.Oid='" + org_oid + "'", null));
+                        if (collection.Count > 0)
+                        {
+                            foreach (SendOrderSupplierAnimal row in collection)
+                            {
+                                SendOrderSupplierType item = new SendOrderSupplierType();
+                                item.SendNo = row.SendNo;
+                                item.SendDate = row.SendDate.ToString("dd/MM/yyyy");
+                                item.SendOrgOid = row.SendOrgOid.Oid.ToString();
+                                item.SendOrgName = row.SendOrgOid.SubOrganizeName;
+                                item.SendOrgFullName = row.SendOrgOid.OrganizeNameTH;
+                                item.Remark = row.Remark;
+                                item.SendStatus = row.SendStatus.ToString();
+                                item.FinanceYear = row.FinanceYearOid.YearName;
+                                item.CancelMsg = row.CancelMsg;
+                                item.ReceiveOrgOid = row.ReceiveOrgOid.Oid.ToString();
+                                item.ReceiveOrgName = row.ReceiveOrgOid.SubOrganizeName;
+                                item.ReceiveOrgFullName = row.ReceiveOrgOid.OrganizeNameTH;
+                                item.RefNo = row.SendNo + "|" + row.SendOrgOid.Oid.ToString() + "|2";
+
+                                item.TotalWeight = row.StockLimit + " กิโลกรัม";
+                                SendItems.Add(item);
+                            }
+                        }
+                        //lists.Sender = null; //SendItems;
+                        return Request.CreateResponse(HttpStatusCode.OK, SendItems);
+                    }
+                    else if (type == "1")
+                    {  //รับ
+
+                        IList<SendOrderSupplierAnimal> collection2 = ObjectSpace.GetObjects<SendOrderSupplierAnimal>(CriteriaOperator.Parse("GCRecord is null and SendStatus=5 and ReceiveOrgOid.Oid='" + org_oid + "'", null));
+                        if (collection2.Count > 0)
+                        {
+                            foreach (SendOrderSupplierAnimal row in collection2)
+                            {
+                                SendOrderSupplierType item = new SendOrderSupplierType();
+                                item.SendNo = row.SendNo;
+                                item.SendDate = row.SendDate.ToString("dd/MM/yyyy");
+                                item.SendOrgOid = row.SendOrgOid.Oid.ToString();
+                                item.SendOrgName = row.SendOrgOid.SubOrganizeName;
+                                item.SendOrgFullName = row.SendOrgOid.OrganizeNameTH;
+                                item.Remark = row.Remark;
+                                item.SendStatus = row.SendStatus.ToString();
+                                item.FinanceYear = row.FinanceYearOid.YearName;
+                                item.CancelMsg = row.CancelMsg;
+                                item.ReceiveOrgOid = row.ReceiveOrgOid.Oid.ToString();
+                                item.ReceiveOrgName = row.ReceiveOrgOid.SubOrganizeName;
+                                item.ReceiveOrgFullName = row.ReceiveOrgOid.OrganizeNameTH;
+                                item.RefNo = row.SendNo + "|" + row.ReceiveOrgOid.Oid.ToString() + "|1";
+                                item.TotalWeight = row.StockLimit + " กิโลกรัม";
+                                ReceiveItems.Add(item);
+                            }
+                            //lists.Receive = ReceiveItems;
+                            return Request.CreateResponse(HttpStatusCode.OK, ReceiveItems);
+                        }
+                    }
+
+                    //invalid
+                    UserError err = new UserError();
+                    err.status = "false";
+                    err.code = "0";
+                    err.message = "กรุณาใส่ข้อมูล Org_Oid และ type (1=รับ/2=ส่ง) ให้เรียบร้อยก่อน";
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+
+                }
+                else
+                {
+                    UserError err = new UserError();
+                    err.status = "false";
+                    err.code = "0";
+                    err.message = "กรุณาใส่ข้อมูล Org_Oid และ type (1=รับ/2=ส่ง) ให้เรียบร้อยก่อน";
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+                }
+            }
+            catch (Exception ex)
+            {
+                UserError err = new UserError();
+                err.status = "false";
+                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                err.message = "ไม่พบข้อมูล";
+                return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+            }
+        }
+
+
+        /// <summary>
+        /// แสดงรายละเอียดข้อมูลส่ง-รับเสบียงสัตว์
+        /// </summary>
+        /// <param name="RefNo">เลขที่อ้างอิง|Oid หน่วยงาน|ประเภท</param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("SendOrderAnimalstock/Detail")]
+        public HttpResponseMessage GetSendOrderAnimalstockDetail()
+        {
+            try
+            {
+                string RefNo = HttpContext.Current.Request.Form["RefNo"].ToString();
+
+                if (RefNo != "")
+                {
+                    string[] arr = RefNo.Split('|');
+                    string _refno = arr[0]; //เลขที่อ้างอิง
+                    string _org_oid = arr[1]; //oid หน่วยงาน
+                    string _type = arr[2]; //ประเภทส่ง(2)-รับ(1)
+
+                    XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                    XafTypesInfo.Instance.RegisterEntity(typeof(SendOrderSupplierAnimal));
+                    SendOrderSupplierType item = null;
+                    XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                    IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+                    IList<SendOrderSupplierAnimal> collection = ObjectSpace.GetObjects<SendOrderSupplierAnimal>(CriteriaOperator.Parse("GCRecord is null and SendNo='" + _refno + "'", null));
+
+                    foreach (SendOrderSupplierAnimal row in collection)
+                    {
+                        item = new SendOrderSupplierType();
+                        item.SendNo = row.SendNo;
+                        item.SendDate = row.SendDate.ToString("dd/MM/yyyy");
+                        item.SendOrgOid = row.SendOrgOid.Oid.ToString();
+                        item.SendOrgName = row.SendOrgOid.SubOrganizeName;
+                        item.SendOrgFullName = row.SendOrgOid.OrganizeNameTH;
+                        item.Remark = row.Remark;
+                        item.SendStatus = row.SendStatus.ToString();
+                        item.FinanceYear = row.FinanceYearOid.YearName;
+                        item.CancelMsg = row.CancelMsg;
+                        item.ReceiveOrgOid = row.ReceiveOrgOid.Oid.ToString();
+                        item.ReceiveOrgName = row.ReceiveOrgOid.SubOrganizeName;
+                        item.ReceiveOrgFullName = row.ReceiveOrgOid.OrganizeNameTH;
+                        item.ObjectTypeName = row.ObjectTypeOid.ObjectTypeName;
+                        if (row.QuotaTypeOid == null)
+                        {
+                            item.QuotaTypeName = "ไม่พบข้อมูลโควต้าศูนย์";
+                        }
+                        else
+                        {
+                            item.QuotaTypeName = row.QuotaTypeOid.QuotaName;
+                        }
+                        
+                        item.StockLimit = row.StockLimit;
+                        item.AnimalSupplieName = row.AnimalSupplieOid.AnimalSupplieName;
+                        item.UnitName = row.UnitOid.UnitName;
+                        item.RefNo = RefNo;
+                        item.TotalWeight = row.QTY.ToString();
+
+                        //List<SendOrderSeedDetailType> details = new List<SendOrderSeedDetailType>();
+                        //SendOrderSeedDetailType _dt = null;
+
+                  
+
+                    }
+                    return Request.CreateResponse(HttpStatusCode.OK, item);
+                }
+                else
+                {
+                    UserError err = new UserError();
+                    err.status = "false";
+                    err.code = "0";
+                    err.message = "กรุณาใส่ข้อมูล RefNo ให้เรียบร้อยก่อน";
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+                }
+            }
+            catch (Exception ex)
+            {
+                UserError err = new UserError();
+                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                err.message = ex.Message;
+                return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+            }
+        }
+
+
+
+        /// <summary>
+        /// ปรับปรุงข้อมูลส่ง-รับเมล็ดพันธุ์
+        /// </summary>
+        /// <param name="RefNo">เลขที่อ้างอิง|Oid หน่วยงาน|ประเภท</param>
+        /// <param name="Status">สถานะการตรวจสอบ (1=อนุมัติ/2=ไม่อนุมัติ)</param>
+        /// <param name="CancelMsg">หมายเหตุกรณีไม่อนุมัติ</param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("SendOrderSeed/Update")]
+        public HttpResponseMessage UpdateSendOrderSeed()
+        {
+            try
+            {
+                string RefNo = HttpContext.Current.Request.Form["RefNo"].ToString(); //ข้อมูลเลขที่อ้างอิง
+                string Status = HttpContext.Current.Request.Form["Status"].ToString(); //สถานะ
+                string CancelMsg = HttpContext.Current.Request.Form["CancelMsg"].ToString(); //หมายเหตุ
+
+                if (RefNo != "" && Status != "")
+                {
+                    string[] arr = RefNo.Split('|');
+                    string _refno = arr[0]; //เลขที่อ้างอิง
+                    string _org_oid = arr[1]; //oid หน่วยงาน
+                    string _type = arr[2]; //ประเภทส่ง(2)-รับ(1)
+
+                    XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                    XafTypesInfo.Instance.RegisterEntity(typeof(SendOrderSupplierAnimal));
+                    List<SendOrderSupplierType> list = new List<SendOrderSupplierType>();
+                    XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                    IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+
+                    SendOrderSupplierAnimal objSupplierProduct = ObjectSpace.FindObject<SendOrderSupplierAnimal>(CriteriaOperator.Parse("SendNo=?", _refno));
+                    if (objSupplierProduct != null)
+                    {
+                        if (_type == "1") //รับ
+                        {
+                            if (Status == "1")
+                            { //Approve
+                                objSupplierProduct.SendStatus = EnumSendOrderAnimalStatus.Accept; //3
+                                ObjectSpace.CommitChanges();
+                            }
+                            else if (Status == "2")
+                            { //Reject
+                                objSupplierProduct.SendStatus = EnumSendOrderAnimalStatus.Eject; //8
+                                objSupplierProduct.CancelMsg = CancelMsg;
+                                ObjectSpace.CommitChanges();
+                            }
+                        }
+                        else if (_type == "2") //ส่ง
+                        {
+                            if (Status == "1")
+                            { //Approve
+                                objSupplierProduct.SendStatus = EnumSendOrderAnimalStatus.SendApprove; //6
+                                ObjectSpace.CommitChanges();
+                            }
+                            else if (Status == "2")
+                            { //Reject
+                                objSupplierProduct.SendStatus = EnumSendOrderAnimalStatus.SendEject; //9
+                                objSupplierProduct.CancelMsg = CancelMsg;
+                                ObjectSpace.CommitChanges();
+                            }
+                        }
+
+                        UpdateResult ret = new UpdateResult();
+                        ret.status = "true";
+                        ret.message = "บันทึกข้อมูลเสร็จเรียบร้อยแล้ว";
+                        return Request.CreateResponse(HttpStatusCode.OK, ret);
+
+                    }
+                    else
+                    {
+                        UserError err = new UserError();
+                        err.status = "false";
+                        err.code = "-1";
+                        err.message = "ไม่พบข้อมูล";
+                        return Request.CreateResponse(HttpStatusCode.NotFound, err);
+                    }
+                }
+                else
+                {
+                    UserError err = new UserError();
+                    err.status = "false";
+                    err.code = "0";
+                    err.message = "กรุณาใส่ข้อมูล RefNo ให้เรียบร้อยก่อน";
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+                }
+            }
+            catch (Exception ex)
+            {
+                UserError err = new UserError();
+                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                err.message = ex.Message;
+                return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+            }
+        }
+
+
+
+
+
         /// <summary>
         /// หน้าส่งเสบียงสัตว์
         /// </summary>
@@ -351,7 +674,6 @@ namespace WebApi.Jwt.Controllers.MasterData
 
                     }
 
-                   
 
                     return Ok(sendDetail);
                 }

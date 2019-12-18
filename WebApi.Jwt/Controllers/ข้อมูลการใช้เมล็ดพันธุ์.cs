@@ -241,7 +241,7 @@ namespace WebApi.Jwt.Controllers
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
-        [Route("LoadSupplierUseProduct_calamity")]
+        [Route("LoadSupplierUseProduct_calamity")]  ///LoadSupplierUseProduct_calamity
         public IHttpActionResult LoadSupplierUse_accept()
         {
             object OrganizationOid;
@@ -261,7 +261,7 @@ namespace WebApi.Jwt.Controllers
                 var ActivityOid = "B100C7C1-4755-4AF0-812E-3DD6BA372D45";
                 IList<SupplierUseProduct> collection = ObjectSpace.GetObjects<SupplierUseProduct>(CriteriaOperator.Parse(" GCRecord is null and Stauts = 1 and OrganizationOid=? and ActivityOid = ?", OrganizationOid, ActivityOid)); 
                 double Weight = 0;
-                if (collection != null)
+                if (collection.Count > 0)
                 {
                     foreach (SupplierUseProduct row in collection)
                     {
@@ -269,18 +269,26 @@ namespace WebApi.Jwt.Controllers
                         SupplierProductUser Supplier_ = new SupplierProductUser();
                         Supplier_.Oid = row.Oid.ToString();
                         Supplier_.UseDate = row.UseDate.ToString("dd-MM-yyyy", new CultureInfo("us-US"));
+                        Supplier_.UseNo = row.UseNo;
                         if (row.RegisCusServiceOid == null)
                         {
-                            Supplier_.RegisCusService = "ไม่พบข้อมูล";
-                            Supplier_.RegisCusServiceName = "ไม่พบข้อมูล";
+                            Supplier_.RegisCusService = "ไม่ใช่รายเดี่ยว";
+                            Supplier_.RegisCusServiceName = "ไม่ใช่รายเดี่ยว";
                         }
                         else
                         {
                             Supplier_.RegisCusService = row.RegisCusServiceOid.Oid.ToString();
                             Supplier_.RegisCusServiceName = row.RegisCusServiceOid.FirstNameTH + row.RegisCusServiceOid.LastNameTH;
                         }
-
-                        Supplier_.OrgeServiceName = row.UseNo.ToString();
+                        if (row.OrgeServiceOid == null)
+                        {
+                            Supplier_.OrgeServiceName = "ไม่ใช่รายหน่วยงาน";
+                        }
+                        else
+                        {
+                            Supplier_.OrgeServiceName = row.OrgeServiceOid.OrgeServiceName;
+                        }
+                       
                         Supplier_.ActivityName = row.ActivityOid.ActivityName;
                         Supplier_.FinanceYear = row.FinanceYearOid.YearName;
                         Supplier_.OrganizationName = row.OrganizationOid.SubOrganizeName;
@@ -336,7 +344,7 @@ namespace WebApi.Jwt.Controllers
                     return Ok(list_detail);
                 }
 
-                else if (list_detail == null)
+                else if (list_detail.Count == 0)
                 {
                     UserError err = new UserError();
                     err.code = "3"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
@@ -390,7 +398,7 @@ namespace WebApi.Jwt.Controllers
                 var ActivityOid = "1B648296-1105-4216-B4C2-ECEEF6859E96";
                 IList<SupplierUseProduct> collection = ObjectSpace.GetObjects<SupplierUseProduct>(CriteriaOperator.Parse(" GCRecord is null and Stauts = 1 and OrganizationOid=? and ActivityOid = ?", OrganizationOid, ActivityOid));
                 double Weight = 0;
-                if (collection != null)
+                if (collection.Count >0)
                 {
                     foreach (SupplierUseProduct row in collection)
                     {
@@ -398,6 +406,7 @@ namespace WebApi.Jwt.Controllers
                         SupplierProductUser Supplier_ = new SupplierProductUser();
                         Supplier_.Oid = row.Oid.ToString();
                         Supplier_.UseDate = row.UseDate.ToString("dd-MM-yyyy", new CultureInfo("us-US"));
+                        Supplier_.UseNo = row.UseNo;
                         if (row.RegisCusServiceOid == null)
                         {
                             Supplier_.RegisCusService = "ไม่พบข้อมูล";
@@ -409,7 +418,14 @@ namespace WebApi.Jwt.Controllers
                             Supplier_.RegisCusServiceName = row.RegisCusServiceOid.FirstNameTH + row.RegisCusServiceOid.LastNameTH;
                         }
 
-                        Supplier_.OrgeServiceName = row.UseNo.ToString();
+                        if (row.OrgeServiceOid == null)
+                        {
+                            Supplier_.OrgeServiceName = "ไม่พบข้อมูลหน่วยงานขอรับบริการ";
+                        }
+                        else
+                        {
+                            Supplier_.OrgeServiceName = row.OrgeServiceOid.OrgeServiceName;
+                        }
                         Supplier_.ActivityName = row.ActivityOid.ActivityName;
                         Supplier_.FinanceYear = row.FinanceYearOid.YearName;
                         Supplier_.OrganizationName = row.OrganizationOid.SubOrganizeName;
@@ -465,7 +481,7 @@ namespace WebApi.Jwt.Controllers
                     return Ok(list_detail);
                 }
 
-                else if (list_detail == null)
+                else if (list_detail.Count == 0)
                 {
                     UserError err = new UserError();
                     err.code = "3"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
@@ -494,7 +510,7 @@ namespace WebApi.Jwt.Controllers
 
 
         /// <summary>
-        /// เรียกหน้าใช้เมล็ดพันธุ์   การจำหน่าย
+        /// เรียกหน้าใช้เมล็ดพันธุ์   การแจก
         /// </summary>
         /// <returns></returns>
         [AllowAnonymous]
@@ -510,7 +526,7 @@ namespace WebApi.Jwt.Controllers
                 OrganizationOid = HttpContext.Current.Request.Form["OrganizationOid"].ToString();
 
                 // string ActivityOid = "B100C7C1 - 4755 - 4AF0 - 812E-3DD6BA372D45";
-                XpoTypesInfoHelper.GetXpoTypeInfoSource();
+               XpoTypesInfoHelper.GetXpoTypeInfoSource();
                 XafTypesInfo.Instance.RegisterEntity(typeof(SupplierUseProduct));
               
                 List<SupplierProductUser> list_detail = new List<SupplierProductUser>();
@@ -519,7 +535,7 @@ namespace WebApi.Jwt.Controllers
                 var ActivityOid = "A29D77A9-4BCB-4774-9744-FF97A373353E";
                 IList<SupplierUseProduct> collection = ObjectSpace.GetObjects<SupplierUseProduct>(CriteriaOperator.Parse(" GCRecord is null and Stauts = 1 and OrganizationOid=? and ActivityOid = ?", OrganizationOid, ActivityOid));
                 double Weight = 0;
-                if (collection != null)
+                if (collection.Count >0)
                 {
                     foreach (SupplierUseProduct row in collection)
                     {
@@ -527,6 +543,7 @@ namespace WebApi.Jwt.Controllers
                         SupplierProductUser Supplier_ = new SupplierProductUser();
                         Supplier_.Oid = row.Oid.ToString();
                         Supplier_.UseDate = row.UseDate.ToString("dd-MM-yyyy", new CultureInfo("us-US"));
+                        Supplier_.UseNo = row.UseNo;
                         if (row.RegisCusServiceOid == null)
                         {
                             Supplier_.RegisCusService = "ไม่พบข้อมูล";
@@ -538,7 +555,14 @@ namespace WebApi.Jwt.Controllers
                             Supplier_.RegisCusServiceName = row.RegisCusServiceOid.FirstNameTH + row.RegisCusServiceOid.LastNameTH;
                         }
 
-                        Supplier_.OrgeServiceName = row.UseNo.ToString();
+                        if (row.OrgeServiceOid == null)
+                        {
+                            Supplier_.OrgeServiceName = "ไม่พบข้อมูลหน่วยงานขอรับบริการ";
+                        }
+                        else
+                        {
+                            Supplier_.OrgeServiceName = row.OrgeServiceOid.OrgeServiceName;
+                        }
                         Supplier_.ActivityName = row.ActivityOid.ActivityName;
                         Supplier_.FinanceYear = row.FinanceYearOid.YearName;
                         Supplier_.OrganizationName = row.OrganizationOid.SubOrganizeName;
@@ -591,7 +615,7 @@ namespace WebApi.Jwt.Controllers
                         list_detail.Add(Supplier_);
                     }
 
-                    return Ok(list_detail);
+                    return Ok(list_detail.Count == 0);
                 }
 
                 else if (list_detail == null)
@@ -629,15 +653,12 @@ namespace WebApi.Jwt.Controllers
         [HttpPost]
         [Route("ApprovalSend/")]
 
-        public IHttpActionResult ApprovalSend_SupplierUseProduct(string Send_No) 
+        public IHttpActionResult ApprovalSend_SupplierUseProduct() 
         {
-
-         
-
-
             SendOrderSeed_Model Model = new SendOrderSeed_Model();
             try
             {
+                string Send_No = HttpContext.Current.Request.Form["Send_No"].ToString();
 
                 XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();

@@ -44,7 +44,7 @@ namespace WebApi.Jwt.Controllers.MasterData
             try
             {
                 XpoTypesInfoHelper.GetXpoTypeInfoSource();
-                XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.Gender));
+                XafTypesInfo.Instance.RegisterEntity(typeof(Gender));
                 List<Gender_Model> list = new List<Gender_Model>();
                 XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
@@ -52,6 +52,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                 foreach (Gender row in collection)
                 {
                     Gender_Model model = new Gender_Model();
+                    model.Oid = row.Oid.ToString();
                     model.GenderName = row.GenderName;
                     model.IsActive = row.IsActive;
                     list.Add(model);

@@ -36,7 +36,7 @@ namespace WebApi.Jwt.Controllers.MasterData
     {
         string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
         [AllowAnonymous]
-        [HttpGet]
+        [HttpPost]
 
         [Route("Position")]/// เรียกตำแหน่งเจ้าหน้าที่
         public HttpResponseMessage loadPosition()
@@ -72,7 +72,7 @@ namespace WebApi.Jwt.Controllers.MasterData
             
         }
         [AllowAnonymous]
-        [HttpGet]
+        [HttpPost]
         [Route("Position/Level")] /// เรียกลำดับชั้นของตำแหน่ง
         public HttpResponseMessage loadPosition_Tier()
         {
