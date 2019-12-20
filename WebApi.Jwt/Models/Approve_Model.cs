@@ -73,18 +73,32 @@ namespace WebApi.Jwt.Models
         public  object ReceiveOrderSeed { get; set; }
    
     }
+    public class SupplierUseAnimalProduct_Model
+    {
+        public string org_oid { get; set; }
+       
+        public List<SupplierProductUser> UseACT1 { get; set; }
+      
+        public List<SupplierProductUser> UseACT2 { get; set; }
+
+        public List<SupplierProductUser> UseACT3 { get; set; }
+        public List<SupplierProductUser> UseACT4 { get; set; }
+    }
+
     public class SupplierProductUser
     {
+        /// <summary>
+        /// แจกเมล็ดพันธุ์
+        /// </summary>
+        public string TypeMoblie { get; set; }
         public string Oid { get; set; }
-        public string OrgeService { get; set; }
         public string RegisCusService{ get; set; }
         public string UseDate { get; set; }
         public string UseNo { get; set; }
         public string FinanceYearOid { get; set; }
         public string FinanceYear { get; set; }
-
+        public string OrganizationOid { get; set; }
         public string OrganizationName { get; set; }
-        public string Addrres { get; set; }
         public string EmployeeName { get; set; }
         public string Remark { get; set; }
         public string Stauts { get; set; }
@@ -94,15 +108,16 @@ namespace WebApi.Jwt.Models
         public string SubActivityName { get; set; }
         public string SubActivityLevelName { get; set; }
         public string ReceiptNo { get; set; }
-        public string Weight_All { get; set; }
-        
-   
+            
         public string RegisCusServiceName { get; set; }
         public string OrgeServiceName { get; set; }
+        public string Refno { get; set; }
         public string Weight { get; set; }
         public int ServiceCount { get; set; }
+        public string TotalAmout { get; set; }
 
-        public List<SupplierUseProductDetail_Model> objProduct;
+        public List<SupplierUseProductDetail_Model> Detail;
+        public List<SupplierUseProductDetail_Model2> objDetail;
 
     }
     public class SendOrderSupplierAnimal_info
@@ -134,18 +149,26 @@ namespace WebApi.Jwt.Models
         public string Package { get; set; }
         public string Send_Messengr { get; set; }
     }
+    public class Seedlevel_Model
+        {
+        public string Oid { get; set; }
+        public string SeedlevelName { get; set; }
+
+        }
 
     public class SupplierUseProductDetail_Model
         {
+        
+        public string Oid { get; set; }
         public string SupplierUseAnimalProductOid { get; set; }
         public double PerPrice { get; set; }
-       
-        public string SupplierUseAnimalProductName { get; set; }
-
+ 
         public double Amount { get; set; }
     
         public double Weight { get; set; }
-   
+        public double WeightAll { get; set; }
+
+
         public double StockUsed { get; set; }
    
         public double StockLimit { get; set; }
@@ -166,8 +189,32 @@ namespace WebApi.Jwt.Models
         public string AnimalSeedName { get; set; }
         
         public string BudgetSourceName { get; set; }
+        public string AnimalSeedLevelOid { get; set; }
+        public string AnimalSeedLevelName { get; set; }
 
     }
+    public class SupplierUseProductDetail_Model2
+    {
+        public string Oid { get; set; }
+        public string SupplierUseAnimalProductOid { get; set; }
+        public double PerPrice { get; set; }
+
+        public double Amount { get; set; }
+
+        public double Weight { get; set; }
+        public double StockUsed { get; set; }    
+
+        public string AnimalSupplieTypeName { get; set; }
+
+        public string AnimalSupplieName { get; set; }
+
+        public string AnimalSeedName { get; set; }
+
+        public string BudgetSourceName { get; set; }
+
+
+    }
+
     public class sendSeed_info
         {
         public object Oid { get; set; }

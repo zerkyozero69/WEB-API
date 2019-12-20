@@ -29,4 +29,26 @@ namespace WebApi.Jwt.Models
         public string SeedTypeOid { get; set; }
         public string SeedType { get; set; }
     }
+    public class ManageAnimalSupplier_Modelinfo
+    {
+        public string Oid { get; set; }
+        public string FinanceYearOid { get; set; }  
+        public string OrgZoneOid { get; set; } 
+        public string OrganizationOid { get; set; }
+        public string AnimalSupplieOid { get; set; }
+        public double ZoneQTY { get; set; }
+        public double CenterQTY { get; set; }
+        public double OfficeQTY { get; set; } 
+        public double OfficeGAPQTY { get; set; }
+
+        public double OfficeBeanQTY { get; set; }
+   
+        public double? SumProvinceQTY { get; }
+ 
+        public string Status { get; set; }
+    
+      //  public XPCollection<ManageSubAnimalSupplier> ManageSubAnimalSuppliers { get; }
+
+        public double SortID { get; set; }
+    }
 }

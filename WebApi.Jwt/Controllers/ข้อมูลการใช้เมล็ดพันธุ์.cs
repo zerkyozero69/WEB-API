@@ -245,27 +245,27 @@ namespace WebApi.Jwt.Controllers
         public IHttpActionResult LoadSupplierUse_accept()
         {
             object OrganizationOid;
-           
+
             try
             {
 
                 OrganizationOid = HttpContext.Current.Request.Form["OrganizationOid"].ToString();
-               
-               // string ActivityOid = "B100C7C1 - 4755 - 4AF0 - 812E-3DD6BA372D45";
+
+                // string ActivityOid = "B100C7C1 - 4755 - 4AF0 - 812E-3DD6BA372D45";
                 XpoTypesInfoHelper.GetXpoTypeInfoSource();
                 XafTypesInfo.Instance.RegisterEntity(typeof(SupplierUseProduct));
-                
+
                 List<SupplierProductUser> list_detail = new List<SupplierProductUser>();
                 XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
                 var ActivityOid = "B100C7C1-4755-4AF0-812E-3DD6BA372D45";
-                IList<SupplierUseProduct> collection = ObjectSpace.GetObjects<SupplierUseProduct>(CriteriaOperator.Parse(" GCRecord is null and Stauts = 1 and OrganizationOid=? and ActivityOid = ?", OrganizationOid, ActivityOid)); 
+                IList<SupplierUseProduct> collection = ObjectSpace.GetObjects<SupplierUseProduct>(CriteriaOperator.Parse(" GCRecord is null and Stauts = 1 and OrganizationOid=? and ActivityOid = ?", OrganizationOid, ActivityOid));
                 double Weight = 0;
                 if (collection.Count > 0)
                 {
                     foreach (SupplierUseProduct row in collection)
                     {
-                        
+
                         SupplierProductUser Supplier_ = new SupplierProductUser();
                         Supplier_.Oid = row.Oid.ToString();
                         Supplier_.UseDate = row.UseDate.ToString("dd-MM-yyyy", new CultureInfo("us-US"));
@@ -288,7 +288,7 @@ namespace WebApi.Jwt.Controllers
                         {
                             Supplier_.OrgeServiceName = row.OrgeServiceOid.OrgeServiceName;
                         }
-                       
+
                         Supplier_.ActivityName = row.ActivityOid.ActivityName;
                         Supplier_.FinanceYear = row.FinanceYearOid.YearName;
                         Supplier_.OrganizationName = row.OrganizationOid.SubOrganizeName;
@@ -372,150 +372,14 @@ namespace WebApi.Jwt.Controllers
         }
 
 
+
         /// <summary>
-        /// เรียกหน้าใช้เมล็ดพันธุ์   การจำหน่าย
+        /// เรียกหน้าใช้เสบียงสัตว์   การแจก
         /// </summary>
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
-        [Route("LoadSupplierUseProduct_Sale")]
-        public IHttpActionResult LoadSupplierUse_accept_Sale()
-        {
-            object OrganizationOid;
-
-            try
-            {
-
-                OrganizationOid = HttpContext.Current.Request.Form["OrganizationOid"].ToString();
-
-                // string ActivityOid = "B100C7C1 - 4755 - 4AF0 - 812E-3DD6BA372D45";
-                XpoTypesInfoHelper.GetXpoTypeInfoSource();
-                XafTypesInfo.Instance.RegisterEntity(typeof(SupplierUseProduct));
-  
-                List<SupplierProductUser> list_detail = new List<SupplierProductUser>();
-                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
-                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-                var ActivityOid = "1B648296-1105-4216-B4C2-ECEEF6859E96";
-                IList<SupplierUseProduct> collection = ObjectSpace.GetObjects<SupplierUseProduct>(CriteriaOperator.Parse(" GCRecord is null and Stauts = 1 and OrganizationOid=? and ActivityOid = ?", OrganizationOid, ActivityOid));
-                double Weight = 0;
-                if (collection.Count >0)
-                {
-                    foreach (SupplierUseProduct row in collection)
-                    {
-
-                        SupplierProductUser Supplier_ = new SupplierProductUser();
-                        Supplier_.Oid = row.Oid.ToString();
-                        Supplier_.UseDate = row.UseDate.ToString("dd-MM-yyyy", new CultureInfo("us-US"));
-                        Supplier_.UseNo = row.UseNo;
-                        if (row.RegisCusServiceOid == null)
-                        {
-                            Supplier_.RegisCusService = "ไม่พบข้อมูล";
-                            Supplier_.RegisCusServiceName = "ไม่พบข้อมูล";
-                        }
-                        else
-                        {
-                            Supplier_.RegisCusService = row.RegisCusServiceOid.Oid.ToString();
-                            Supplier_.RegisCusServiceName = row.RegisCusServiceOid.FirstNameTH + row.RegisCusServiceOid.LastNameTH;
-                        }
-
-                        if (row.OrgeServiceOid == null)
-                        {
-                            Supplier_.OrgeServiceName = "ไม่พบข้อมูลหน่วยงานขอรับบริการ";
-                        }
-                        else
-                        {
-                            Supplier_.OrgeServiceName = row.OrgeServiceOid.OrgeServiceName;
-                        }
-                        Supplier_.ActivityName = row.ActivityOid.ActivityName;
-                        Supplier_.FinanceYear = row.FinanceYearOid.YearName;
-                        Supplier_.OrganizationName = row.OrganizationOid.SubOrganizeName;
-                        if (row.EmployeeOid == null)
-                        {
-                            Supplier_.EmployeeName = "ไม่มีรายชื่อผู้ขอรับบริการ";
-                        }
-                        else
-                        {
-                            Supplier_.EmployeeName = row.EmployeeOid.EmployeeFirstName + " " + row.EmployeeOid.EmployeeLastName;
-                        }
-
-                        Supplier_.Remark = row.Remark;
-                        //Supplier.Stauts = row.Stauts;
-                        Supplier_.ApproveDate = row.ApproveDate.ToString("dd-MM-yyyy", new CultureInfo("us-US"));
-                        Supplier_.ActivityNameOid = row.ActivityOid.Oid.ToString();
-                        Supplier_.ActivityName = row.ActivityOid.ActivityName;
-
-                        if (row.SubActivityOid == null)
-                        {
-                            Supplier_.SubActivityName = "ไม่มีข้อมูลกิจกรรม";
-                        }
-                        else
-                        {
-                            Supplier_.SubActivityName = row.SubActivityOid.ActivityName;
-                        }
-                        foreach (SupplierUseProductDetail row2 in row.SupplierUseProductDetails)
-                        {
-                            Weight = row2.Weight;
-                        }
-                        Supplier_.Weight = Weight + " " + "กิโลกรัม";
-                        Supplier_.ServiceCount = row.ServiceCount;
-
-                        //if (row.RegisCusServiceOid.DisPlayName == "")
-                        //{
-                        //    Supplier.RegisCusServiceOid = "ไม่มีข้อมูล";
-                        //}
-                        //else
-                        //{
-                        //    Supplier.RegisCusServiceOid = row.RegisCusServiceOid.DisPlayName;
-                        //}
-                        //if (row.OrgeServiceOid.OrgeServiceName == "")
-                        //{
-                        //    Supplier.OrgeServiceOid = "ไม่มีข้อมูล";
-                        //}
-                        //else
-                        //{
-                        //    Supplier.OrgeServiceOid = row.OrgeServiceOid.OrgeServiceName;
-                        //}
-                        list_detail.Add(Supplier_);
-                    }
-
-                    return Ok(list_detail);
-                }
-
-                else if (list_detail.Count == 0)
-                {
-                    UserError err = new UserError();
-                    err.code = "3"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-                    err.message = "No data";
-                    //  Return resual
-                    return BadRequest(err.message);
-                }
-                else
-                {
-                    UserError err = new UserError();
-                    err.code = "5"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-                    err.message = "No data";
-                    //  Return resual
-                    return BadRequest("NoData");
-                }
-            }
-            catch (Exception ex)
-            { //Error case เกิดข้อผิดพลาด
-                UserError err = new UserError();
-                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-                err.message = ex.Message;
-                //  Return resual
-                return BadRequest(ex.Message);
-            }
-        }
-
-
-        /// <summary>
-        /// เรียกหน้าใช้เมล็ดพันธุ์   การแจก
-        /// </summary>
-        /// <returns></returns>
-        [AllowAnonymous]
-        [HttpPost]
-        [Route("LoadSupplierUseProduct_Serve")]
+        [Route("SupplierUseAnimal/Detail")]
         public IHttpActionResult LoadSupplierUse_accept_serve()
         {
             string OrganizationOid;
@@ -523,31 +387,31 @@ namespace WebApi.Jwt.Controllers
             try
             {
 
-                OrganizationOid = HttpContext.Current.Request.Form["OrganizationOid"].ToString();
-              string  YearName = HttpContext.Current.Request.Form["YearName"].ToString();
-                // string RefNo = HttpContext.Current.Request.Form["RefNo"].ToString();
-                if ( OrganizationOid != "")
+                string RefNo = HttpContext.Current.Request.Form["RefNo"].ToString();
+                //  string  YearName = HttpContext.Current.Request.Form["YearName"].ToString();
+
+                if (RefNo != "")
                 {
-                    //string[] arr = RefNo.Split('|');
-                    //string _refno = arr[0]; //เลขที่อ้างอิง
-                    //string _org_oid = arr[1]; //oid หน่วยงาน
-                    //string _type = arr[2]; //ประเภทส่ง(2)-รับ(1)
+                    string[] arr = RefNo.Split('|');
+                    string _refno = arr[0]; //เลขที่อ้างอิง
+                    string _org_oid = arr[1]; //oid หน่วยงาน
+                    string _type = arr[2]; //ประเภทส่ง(2)-รับ(1)
 
                     // string ActivityOid = "B100C7C1 - 4755 - 4AF0 - 812E-3DD6BA372D45";
                     XpoTypesInfoHelper.GetXpoTypeInfoSource();
                     XafTypesInfo.Instance.RegisterEntity(typeof(SupplierUseAnimalProduct));
 
                     List<SupplierProductUser> list_detail = new List<SupplierProductUser>();
-                 
+
                     XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                     IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-                    var ActivityOid = HttpContext.Current.Request.Form["ActivityOid"].ToString(); //รหัสกิจกรรม
-                    IList< SupplierUseAnimalProduct> collection = ObjectSpace.GetObjects< SupplierUseAnimalProduct> (CriteriaOperator.Parse(" GCRecord is null and Stauts = 1 and OrganizationOid=? and ActivityOid = ? and FinanceYearOid.YearName = ?", OrganizationOid, ActivityOid,YearName));
-                    double Weight = 0;
+
+                    IList<SupplierUseAnimalProduct> collection = ObjectSpace.GetObjects<SupplierUseAnimalProduct>(CriteriaOperator.Parse(" GCRecord is null and Stauts = 1 and UseNo = '" + _refno + "'", null));
                     if (collection.Count > 0)
                     {
                         foreach (SupplierUseAnimalProduct row in collection)
                         {
+                            double Weight = 0;
 
                             SupplierProductUser Supplier_ = new SupplierProductUser();
                             Supplier_.Oid = row.Oid.ToString();
@@ -572,6 +436,9 @@ namespace WebApi.Jwt.Controllers
                             {
                                 Supplier_.OrgeServiceName = row.OrgeServiceOid.OrgeServiceName;
                             }
+                            Supplier_.FinanceYearOid = row.FinanceYearOid.Oid.ToString();
+                            Supplier_.OrganizationOid = row.OrganizationOid.Oid.ToString();
+                            Supplier_.ActivityNameOid = row.ActivityOid.Oid.ToString();
                             Supplier_.ActivityName = row.ActivityOid.ActivityName.ToString();
                             if (row.SubActivityOid != null)
                             {
@@ -581,7 +448,7 @@ namespace WebApi.Jwt.Controllers
                             {
                                 Supplier_.SubActivityLevelName = row.SubActivityLevelOid.ActivityName;
                             }
-                           
+
                             Supplier_.FinanceYear = row.FinanceYearOid.YearName.ToString();
                             Supplier_.OrganizationName = row.OrganizationOid.SubOrganizeName.ToString();
                             if (row.EmployeeOid == null)
@@ -598,6 +465,8 @@ namespace WebApi.Jwt.Controllers
                             Supplier_.ApproveDate = row.ApproveDate.ToString("dd-MM-yyyy", new CultureInfo("us-US"));
                             Supplier_.ActivityNameOid = row.ActivityOid.Oid.ToString();
                             Supplier_.ActivityName = row.ActivityOid.ActivityName.ToString();
+                            Supplier_.ServiceCount = 1;
+
 
                             if (row.SubActivityOid == null)
                             {
@@ -607,10 +476,17 @@ namespace WebApi.Jwt.Controllers
                             {
                                 Supplier_.SubActivityName = row.SubActivityOid.ActivityName.ToString();
                             }
-                            List<SupplierUseProductDetail_Model> listD = new List<SupplierUseProductDetail_Model>();
+
+
+
+
+
+                            List<SupplierUseProductDetail_Model2> listD = new List<SupplierUseProductDetail_Model2>();
                             foreach (SupplierUseAnimalProductDetail row2 in row.SupplierUseAnimalProductDetails)
                             {
-                                SupplierUseProductDetail_Model item2 = new SupplierUseProductDetail_Model();
+                                SupplierUseProductDetail_Model2 item2 = new SupplierUseProductDetail_Model2();
+                                item2.SupplierUseAnimalProductOid = Supplier_.Oid.ToString();
+                                item2.Oid = row2.Oid.ToString();
                                 item2.SupplierUseAnimalProductOid = row2.SupplierUseAnimalProductOid.Oid.ToString();
                                 item2.Weight = row2.Weight;
                                 if (row2.Weight == 0)
@@ -619,7 +495,7 @@ namespace WebApi.Jwt.Controllers
                                 }
                                 else
                                 {
-                                    Weight =  Weight+row2.Weight;
+                                    Weight = Weight + row2.Weight;
                                 }
                                 if (row2.AnimalSupplieTypeOid != null)
                                 {
@@ -635,30 +511,27 @@ namespace WebApi.Jwt.Controllers
                                     item2.BudgetSourceName = row2.BudgetSourceOid.BudgetName;
                                 }
                                 item2.PerPrice = row2.PerPrice;
-                                item2.Price = row2.Price;
-                                if (row2.QuotaTypeOid != null)
-                                {
-                                    item2.QuotaTypeName = row2.QuotaTypeOid.QuotaName;
-                                }
-                                item2.QuotaQTY = row2.QuotaQTY;
-                                item2.StockLimit = row2.StockLimit;
                                 item2.StockUsed = row2.StockUsed;
+                                item2.AnimalSupplieName = row2.AnimalSupplieOid.AnimalSupplieName;
+                                
+
                                 item2.Amount = row2.Amount;
                                 listD.Add(item2);
 
 
                             }
-                            
+
                             Supplier_.Weight = Weight + " " + "กิโลกรัม";
                             Supplier_.ReceiptNo = row.ReceiptNo;
                             Supplier_.ServiceCount = row.ServiceCount;
-                            Supplier_.objProduct = listD;
+                            Supplier_.Refno = RefNo;
+                            Supplier_.objDetail = listD;
                             list_detail.Add(Supplier_);
 
 
 
                         }
-                        
+
                         return Ok(list_detail);
                     }
 
@@ -697,16 +570,873 @@ namespace WebApi.Jwt.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        /// <summary>
+        /// ข้อมูลการใช้เสบียงสัตว์
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("SupplierUseAnimal/List")]
+        public HttpResponseMessage GetSupplierUse()
+        {
+            try
+            {
+                string org_oid = HttpContext.Current.Request.Form["Org_Oid"].ToString();
+                string type = HttpContext.Current.Request.Form["type"].ToString(); //การแจกจ่าย=1/การจำหน่าย=2/ภัยพิบัติ=3
+
+
+                if (org_oid != "" && type != "")
+                {
+                    XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                    XafTypesInfo.Instance.RegisterEntity(typeof(SupplierUseAnimalProduct));
+
+                    List<SupplierProductUser> UseACT1 = new List<SupplierProductUser>();
+                    List<SupplierProductUser> UseACT2 = new List<SupplierProductUser>();
+                    List<SupplierProductUser> UseACT3 = new List<SupplierProductUser>();
+                    List<SupplierProductUser> UseACT4 = new List<SupplierProductUser>();
+                    SupplierUseAnimalProduct_Model lists = new SupplierUseAnimalProduct_Model();
+                    lists.org_oid = org_oid;
+
+                    XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                    IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+
+                    if (type == "1")
+                    {  //เพื่อใช้ในกิจกรรมกรมปศุสัตว์
+                        string ActivityOid = "069CB598-B40E-472A-A386-4F8056FB78D2";
+                        IList<SupplierUseAnimalProduct> collection = ObjectSpace.GetObjects<SupplierUseAnimalProduct>(CriteriaOperator.Parse("GCRecord is null and Stauts = 1 and OrganizationOid='" + org_oid + "' and  ActivityOid = '" + ActivityOid + "' ", null));
+                        if (collection.Count > 0)
+                        {
+                            foreach (SupplierUseAnimalProduct row in collection)
+                            {
+
+                                SupplierProductUser Supplier_ = new SupplierProductUser();
+                                Supplier_.TypeMoblie = type;
+                                Supplier_.Oid = row.Oid.ToString();
+                                Supplier_.UseDate = row.UseDate.ToString("dd-MM-yyyy", new CultureInfo("us-US"));
+                                Supplier_.UseNo = row.UseNo.ToString();
+                                if (row.RegisCusServiceOid == null)
+                                {
+                                    Supplier_.RegisCusService = "ไม่พบข้อมูล";
+                                    Supplier_.RegisCusServiceName = "ไม่พบข้อมูล";
+                                }
+                                else
+                                {
+                                    Supplier_.RegisCusService = row.RegisCusServiceOid.Oid.ToString();
+                                    Supplier_.RegisCusServiceName = row.RegisCusServiceOid.FirstNameTH + row.RegisCusServiceOid.LastNameTH;
+                                }
+
+                                if (row.OrgeServiceOid == null)
+                                {
+                                    Supplier_.OrgeServiceName = "ไม่พบข้อมูลหน่วยงานขอรับบริการ";
+                                }
+                                else
+                                {
+                                    Supplier_.OrgeServiceName = row.OrgeServiceOid.OrgeServiceName;
+                                }
+                                Supplier_.ActivityName = row.ActivityOid.ActivityName.ToString();
+                                if (row.SubActivityOid != null)
+                                {
+                                    Supplier_.SubActivityName = row.SubActivityOid.ActivityName;
+                                }
+                                if (row.SubActivityLevelOid != null)
+                                {
+                                    Supplier_.SubActivityLevelName = row.SubActivityLevelOid.ActivityName;
+                                }
+
+                                Supplier_.FinanceYear = row.FinanceYearOid.YearName.ToString();
+                                Supplier_.OrganizationName = row.OrganizationOid.SubOrganizeName.ToString();
+                                if (row.EmployeeOid == null)
+                                {
+                                    Supplier_.EmployeeName = "ไม่มีรายชื่อผู้ขอรับบริการ";
+                                }
+                                else
+                                {
+                                    Supplier_.EmployeeName = row.EmployeeOid.EmployeeFirstName + " " + row.EmployeeOid.EmployeeLastName;
+                                }
+                                Supplier_.OrganizationOid = row.OrganizationOid.Oid.ToString();
+                                Supplier_.ActivityNameOid = row.ActivityOid.Oid.ToString();
+                                Supplier_.Remark = row.Remark;
+                                Supplier_.Stauts = row.Stauts.ToString();
+                                Supplier_.ApproveDate = row.ApproveDate.ToString("dd-MM-yyyy", new CultureInfo("us-US"));
+                                Supplier_.ActivityNameOid = row.ActivityOid.Oid.ToString();
+                                Supplier_.ActivityName = row.ActivityOid.ActivityName.ToString();
+
+                                if (row.SubActivityOid == null)
+                                {
+                                    Supplier_.SubActivityName = "ไม่มีข้อมูลกิจกรรม";
+                                }
+                                else
+                                {
+                                    Supplier_.SubActivityName = row.SubActivityOid.ActivityName.ToString();
+                                }
+                                Supplier_.Refno = row.UseNo + "|" + row.OrganizationOid + "|1";
+                                Supplier_.Weight = row.SupplierUseAnimalProductDetails.Sum((c => c.Weight)).ToString() + "กิโลกรัม";
+                                UseACT1.Add(Supplier_);
+                            }
+                        }
+                        //lists.UseACT1 = null; //UseACT1;
+                        return Request.CreateResponse(HttpStatusCode.OK, UseACT1);
+                    }
+                    else if (type == "2")
+                    {  //การจำหน่าย
+                        string ActivityOid = "1B648296-1105-4216-B4C2-ECEEF6859E96";
+
+                        IList<SupplierUseAnimalProduct> collection2 = ObjectSpace.GetObjects<SupplierUseAnimalProduct>(CriteriaOperator.Parse("GCRecord is null and Stauts = 1 and OrganizationOid='" + org_oid + "'and ActivityOid = '" + ActivityOid + "' ", null));
+                        if (collection2.Count > 0)
+                        {
+                            foreach (SupplierUseAnimalProduct row in collection2)
+                            {
+
+                                SupplierProductUser Supplier_2 = new SupplierProductUser();
+                                Supplier_2.TypeMoblie = type;
+                                Supplier_2.Oid = row.Oid.ToString();
+                                Supplier_2.UseDate = row.UseDate.ToString("dd-MM-yyyy", new CultureInfo("us-US"));
+                                Supplier_2.UseNo = row.UseNo.ToString();
+                                if (row.RegisCusServiceOid == null)
+                                {
+                                    Supplier_2.RegisCusService = "ไม่พบข้อมูล";
+                                    Supplier_2.RegisCusServiceName = "ไม่พบข้อมูล";
+                                }
+                                else
+                                {
+                                    Supplier_2.RegisCusService = row.RegisCusServiceOid.Oid.ToString();
+                                    Supplier_2.RegisCusServiceName = row.RegisCusServiceOid.FirstNameTH + row.RegisCusServiceOid.LastNameTH;
+                                }
+
+                                if (row.OrgeServiceOid == null)
+                                {
+                                    Supplier_2.OrgeServiceName = "ไม่พบข้อมูลหน่วยงานขอรับบริการ";
+                                }
+                                else
+                                {
+                                    Supplier_2.OrgeServiceName = row.OrgeServiceOid.OrgeServiceName;
+                                }
+                                Supplier_2.ActivityName = row.ActivityOid.ActivityName.ToString();
+                                if (row.SubActivityOid != null)
+                                {
+                                    Supplier_2.SubActivityName = row.SubActivityOid.ActivityName;
+                                }
+                                if (row.SubActivityLevelOid != null)
+                                {
+                                    Supplier_2.SubActivityLevelName = row.SubActivityLevelOid.ActivityName;
+                                }
+
+                                Supplier_2.FinanceYear = row.FinanceYearOid.YearName.ToString();
+                                Supplier_2.OrganizationName = row.OrganizationOid.SubOrganizeName.ToString();
+                                if (row.EmployeeOid == null)
+                                {
+                                    Supplier_2.EmployeeName = "ไม่มีรายชื่อผู้ขอรับบริการ";
+                                }
+                                else
+                                {
+                                    Supplier_2.EmployeeName = row.EmployeeOid.EmployeeFirstName + " " + row.EmployeeOid.EmployeeLastName;
+                                }
+                                Supplier_2.OrganizationOid = row.OrganizationOid.Oid.ToString();
+                                Supplier_2.ActivityNameOid = row.ActivityOid.Oid.ToString();
+                                Supplier_2.Remark = row.Remark;
+                                Supplier_2.Stauts = row.Stauts.ToString();
+                                Supplier_2.ApproveDate = row.ApproveDate.ToString("dd-MM-yyyy", new CultureInfo("us-US"));
+                                Supplier_2.ActivityNameOid = row.ActivityOid.Oid.ToString();
+                                Supplier_2.ActivityName = row.ActivityOid.ActivityName.ToString();
+
+                                if (row.SubActivityOid == null)
+                                {
+                                    Supplier_2.SubActivityName = "ไม่มีข้อมูลกิจกรรม";
+                                }
+                                else
+                                {
+                                    Supplier_2.SubActivityName = row.SubActivityOid.ActivityName.ToString();
+                                }
+                                Supplier_2.ReceiptNo = row.ReceiptNo;
+                                Supplier_2.Refno = row.UseNo + "|" + row.OrganizationOid + "|2";
+                                Supplier_2.Weight = row.SupplierUseAnimalProductDetails.Sum((c => c.Weight)).ToString() + "กิโลกรัม";
+                                UseACT2.Add(Supplier_2);
+                            }
+                            //lists.UseACT2 = UseACT2;
+                            return Request.CreateResponse(HttpStatusCode.OK, UseACT2);
+                        }
+                    }
+                    else if (type == "3")
+                    {
+                        //การอนุมัติภัยพิบัติ
+                        string ActivityOid = "b100c7c1-4755-4af0-812e-3dd6ba372d45";
+
+                        IList<SupplierUseAnimalProduct> collection3 = ObjectSpace.GetObjects<SupplierUseAnimalProduct>(CriteriaOperator.Parse("GCRecord is null and Stauts = 1 and OrganizationOid='" + org_oid + "'and ActivityOid = '" + ActivityOid + "' ", null));
+                        if (collection3.Count > 0)
+                        {
+                            foreach (SupplierUseAnimalProduct row in collection3)
+                            {
+
+                                SupplierProductUser Supplier_3 = new SupplierProductUser();
+                                Supplier_3.TypeMoblie = type;
+                                Supplier_3.Oid = row.Oid.ToString();
+                                Supplier_3.UseDate = row.UseDate.ToString("dd-MM-yyyy", new CultureInfo("us-US"));
+                                Supplier_3.UseNo = row.UseNo.ToString();
+                                if (row.RegisCusServiceOid == null)
+                                {
+                                    Supplier_3.RegisCusService = "ไม่พบข้อมูล";
+                                    Supplier_3.RegisCusServiceName = "ไม่พบข้อมูล";
+                                }
+                                else
+                                {
+                                    Supplier_3.RegisCusService = row.RegisCusServiceOid.Oid.ToString();
+                                    Supplier_3.RegisCusServiceName = row.RegisCusServiceOid.FirstNameTH + row.RegisCusServiceOid.LastNameTH;
+                                }
+
+                                if (row.OrgeServiceOid == null)
+                                {
+                                    Supplier_3.OrgeServiceName = "ไม่พบข้อมูลหน่วยงานขอรับบริการ";
+                                }
+                                else
+                                {
+                                    Supplier_3.OrgeServiceName = row.OrgeServiceOid.OrgeServiceName;
+                                }
+                                Supplier_3.ActivityNameOid = row.ActivityOid.Oid.ToString();
+                                Supplier_3.ActivityName = row.ActivityOid.ActivityName.ToString();
+                                Supplier_3.OrganizationOid = row.OrganizationOid.Oid.ToString();
+                                if (row.SubActivityOid != null)
+                                {
+                                    Supplier_3.SubActivityName = row.SubActivityOid.ActivityName;
+                                }
+                                if (row.SubActivityLevelOid != null)
+                                {
+                                    Supplier_3.SubActivityLevelName = row.SubActivityLevelOid.ActivityName;
+                                }
+
+                                Supplier_3.FinanceYear = row.FinanceYearOid.YearName.ToString();
+                                Supplier_3.OrganizationName = row.OrganizationOid.SubOrganizeName.ToString();
+                                if (row.EmployeeOid == null)
+                                {
+                                    Supplier_3.EmployeeName = "ไม่มีรายชื่อผู้ขอรับบริการ";
+                                }
+                                else
+                                {
+                                    Supplier_3.EmployeeName = row.EmployeeOid.EmployeeFirstName + " " + row.EmployeeOid.EmployeeLastName;
+                                }
+
+                                Supplier_3.Remark = row.Remark;
+                                Supplier_3.Stauts = row.Stauts.ToString();
+                                Supplier_3.ApproveDate = row.ApproveDate.ToString("dd-MM-yyyy", new CultureInfo("us-US"));
+                                Supplier_3.ActivityNameOid = row.ActivityOid.Oid.ToString();
+                                Supplier_3.ActivityName = row.ActivityOid.ActivityName.ToString();
+
+                                if (row.SubActivityOid == null)
+                                {
+                                    Supplier_3.SubActivityName = "ไม่มีข้อมูลกิจกรรม";
+                                }
+                                else
+                                {
+                                    Supplier_3.SubActivityName = row.SubActivityOid.ActivityName.ToString();
+                                }
+                                Supplier_3.ReceiptNo = row.ReceiptNo;
+                                Supplier_3.Refno = row.UseNo + "|" + row.OrganizationOid + "|3";
+                                Supplier_3.Weight = row.SupplierUseAnimalProductDetails.Sum((c => c.Weight)).ToString() + "กิโลกรัม";
+                                UseACT3.Add(Supplier_3);
+                            }
+                            //lists.UseACT2 = UseACT2;
+                            return Request.CreateResponse(HttpStatusCode.OK, UseACT3);
+                        }
+                    }
+                    else if (type == "4")
+                    {
+                        //เพื่อการแจกจ่าย (สนับสนุนเกษตรกร)
+                        string ActivityOid = "A29D77A9-4BCB-4774-9744-FF97A373353E";
+
+                        IList<SupplierUseAnimalProduct> collection4 = ObjectSpace.GetObjects<SupplierUseAnimalProduct>(CriteriaOperator.Parse("GCRecord is null and Stauts = 1 and OrganizationOid='" + org_oid + "'and ActivityOid = '" + ActivityOid + "' ", null));
+                        if (collection4.Count > 0)
+                        {
+                            foreach (SupplierUseAnimalProduct row in collection4)
+                            {
+
+                                SupplierProductUser Supplier_4 = new SupplierProductUser();
+                                Supplier_4.TypeMoblie = type;
+                                Supplier_4.Oid = row.Oid.ToString();
+                                Supplier_4.UseDate = row.UseDate.ToString("dd-MM-yyyy", new CultureInfo("us-US"));
+                                Supplier_4.UseNo = row.UseNo.ToString();
+                                if (row.RegisCusServiceOid == null)
+                                {
+                                    Supplier_4.RegisCusService = "ไม่พบข้อมูล";
+                                    Supplier_4.RegisCusServiceName = "ไม่พบข้อมูล";
+                                }
+                                else
+                                {
+                                    Supplier_4.RegisCusService = row.RegisCusServiceOid.Oid.ToString();
+                                    Supplier_4.RegisCusServiceName = row.RegisCusServiceOid.FirstNameTH + row.RegisCusServiceOid.LastNameTH;
+                                }
+
+                                if (row.OrgeServiceOid == null)
+                                {
+                                    Supplier_4.OrgeServiceName = "ไม่พบข้อมูลหน่วยงานขอรับบริการ";
+                                }
+                                else
+                                {
+                                    Supplier_4.OrgeServiceName = row.OrgeServiceOid.OrgeServiceName;
+                                }
+                                Supplier_4.ActivityName = row.ActivityOid.ActivityName.ToString();
+                                Supplier_4.ActivityNameOid = row.ActivityOid.Oid.ToString();
+                                if (row.SubActivityOid != null)
+                                {
+                                    Supplier_4.SubActivityName = row.SubActivityOid.ActivityName;
+                                }
+                                if (row.SubActivityLevelOid != null)
+                                {
+                                    Supplier_4.SubActivityLevelName = row.SubActivityLevelOid.ActivityName;
+                                }
+                                Supplier_4.OrganizationOid = row.OrganizationOid.Oid.ToString();
+                                Supplier_4.ActivityNameOid = row.ActivityOid.Oid.ToString();
+                                Supplier_4.FinanceYear = row.FinanceYearOid.YearName.ToString();
+                                Supplier_4.OrganizationName = row.OrganizationOid.SubOrganizeName.ToString();
+                                if (row.EmployeeOid == null)
+                                {
+                                    Supplier_4.EmployeeName = "ไม่มีรายชื่อผู้ขอรับบริการ";
+                                }
+                                else
+                                {
+                                    Supplier_4.EmployeeName = row.EmployeeOid.EmployeeFirstName + " " + row.EmployeeOid.EmployeeLastName;
+                                }
+
+                                Supplier_4.Remark = row.Remark;
+                                Supplier_4.Stauts = row.Stauts.ToString();
+                                Supplier_4.ApproveDate = row.ApproveDate.ToString("dd-MM-yyyy", new CultureInfo("us-US"));
+                                Supplier_4.ActivityNameOid = row.ActivityOid.Oid.ToString();
+                                Supplier_4.ActivityName = row.ActivityOid.ActivityName.ToString();
+
+                                if (row.SubActivityOid == null)
+                                {
+                                    Supplier_4.SubActivityName = "ไม่มีข้อมูลกิจกรรม";
+                                }
+                                else
+                                {
+                                    Supplier_4.SubActivityName = row.SubActivityOid.ActivityName.ToString();
+                                }
+                                if (row.ReceiptNo != null)
+                                {
+                                    Supplier_4.ReceiptNo = row.ReceiptNo.ToString();
+                                }
+
+                                Supplier_4.Refno = row.UseNo + "|" + row.OrganizationOid + "|4";
+                                if (row.SupplierUseAnimalProductDetails != null)
+                                {
+                                    Supplier_4.Weight = row.SupplierUseAnimalProductDetails.Sum((c => c.Weight)).ToString() + "กิโลกรัม";
+                                }
+                                UseACT4.Add(Supplier_4);
+                            }
+                            //lists.UseACT2 = UseACT2;
+                            return Request.CreateResponse(HttpStatusCode.OK, UseACT4);
+                        }
+                    }
+                    //invalid
+                    UserError err = new UserError();
+                    err.status = "false";
+                    err.code = "0";
+                    err.message = "กรุณาใส่ข้อมูล type (type 1 เพื่อใช้ในกิจกรรม/ 2 การจำหน่าย /3 ภัยพิบัติ/4 เพื่อการแจกจ่าย (สนับสนุนเกษตรกร)) ให้เรียบร้อยก่อน";
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+
+                }
+                else
+                {
+                    UserError err = new UserError();
+                    err.status = "false";
+                    err.code = "0";
+                    err.message = "กรุณาใส่ข้อมูล Org_Oid และ type (type 1 เพื่อใช้ในกิจกรรม/ 2 การจำหน่าย 3/ ภัยพิบัติ/4 เพื่อการแจกจ่าย (สนับสนุนเกษตรกร)) ให้เรียบร้อยก่อน";
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+                }
+            }
+            catch (Exception ex)
+            {
+                UserError err = new UserError();
+                err.status = "false";
+                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                err.message = "ไม่พบข้อมูล";
+                return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("SupplierUseProduct/List")]
+        public HttpResponseMessage GetSupplierUse_List()
+        {
+            try
+            {
+                string org_oid = HttpContext.Current.Request.Form["Org_Oid"].ToString();
+                string type = HttpContext.Current.Request.Form["type"].ToString(); //รับ=1/ส่ง=2
+
+                if (org_oid != "" && type != "")
+                {
+                    XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                    XafTypesInfo.Instance.RegisterEntity(typeof(SupplierUseProduct));
+
+                    List<SupplierProductUser_Model> UserACT1 = new List<SupplierProductUser_Model>();
+                    List<SupplierProductUser_Model> UserACT2 = new List<SupplierProductUser_Model>();
+                    List<SupplierProductUser_Model> UserACT3 = new List<SupplierProductUser_Model>();
+                    List<SupplierProductUser_Model> UserACT4 = new List<SupplierProductUser_Model>();
+                    SendOrderSeedModel lists = new SendOrderSeedModel();
+                    lists.org_oid = org_oid;
+
+                    XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                    IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+
+                    if (type == "1")
+                    {  //เพื่อใช้ในกิจกรรม 
+
+                        IList<SupplierUseProduct> collection = ObjectSpace.GetObjects<SupplierUseProduct>(CriteriaOperator.Parse("GCRecord is null and SendStatus=1 and OrganizationOid='" + org_oid + "'", null));
+                        if (collection.Count > 0)
+                        {
+                            foreach (SupplierUseProduct row in collection)
+                            {
+                                SupplierProductUser_Model item = new SupplierProductUser_Model();
+                                item.Oid = row.Oid.ToString();
+                                item.UseDate = row.UseDate.ToString("dd-MM-yyyy", new CultureInfo("us-US"));
+                                item.UseNo = row.UseNo.ToString();
+                                if (row.RegisCusServiceOid == null)
+                                {
+                                    item.RegisCusService = "ไม่พบข้อมูล";
+                                    item.RegisCusServiceName = "ไม่พบข้อมูล";
+                                }
+                                else
+                                {
+                                    item.RegisCusService = row.RegisCusServiceOid.Oid.ToString();
+                                    item.RegisCusServiceName = row.RegisCusServiceOid.FirstNameTH + row.RegisCusServiceOid.LastNameTH;
+                                }
+
+                                if (row.OrgeServiceOid == null)
+                                {
+                                    item.OrgeServiceName = "ไม่พบข้อมูลหน่วยงานขอรับบริการ";
+                                }
+                                else
+                                {
+                                    item.OrgeServiceName = row.OrgeServiceOid.OrgeServiceName;
+                                }
+                                item.ActivityName = row.ActivityOid.ActivityName.ToString();
+                                if (row.SubActivityOid != null)
+                                {
+                                    item.SubActivityName = row.SubActivityOid.ActivityName;
+                                }
+                                if (row.SubActivityLevelOid != null)
+                                {
+                                    item.SubActivityLevelName = row.SubActivityLevelOid.ActivityName;
+                                }
+
+                                item.FinanceYear = row.FinanceYearOid.YearName.ToString();
+                                item.OrganizationName = row.OrganizationOid.SubOrganizeName.ToString();
+                                if (row.EmployeeOid == null)
+                                {
+                                    item.EmployeeName = "ไม่มีรายชื่อผู้ขอรับบริการ";
+                                }
+                                else
+                                {
+                                    item.EmployeeName = row.EmployeeOid.EmployeeFirstName + " " + row.EmployeeOid.EmployeeLastName;
+                                }
+
+                                item.Remark = row.Remark;
+                                item.Stauts = row.Stauts.ToString();
+                                item.ApproveDate = row.ApproveDate.ToString("dd-MM-yyyy", new CultureInfo("us-US"));
+                                item.ActivityNameOid = row.ActivityOid.Oid.ToString();
+                                item.ActivityName = row.ActivityOid.ActivityName.ToString();
+
+                                if (row.SubActivityOid == null)
+                                {
+                                    item.SubActivityName = "ไม่มีข้อมูลกิจกรรม";
+                                }
+                                else
+                                {
+                                    item.SubActivityName = row.SubActivityOid.ActivityName.ToString();
+                                }
+                                item.Refno = row.UseNo + "|" + row.OrganizationOid + "|1";
+                                item.Weight = row.SupplierUseProductDetails.Sum((c => c.Weight)).ToString() + "กิโลกรัม";
+                                UserACT1.Add(item);
+                            }
+                        }
+                        //lists.UseACT1 = null; //UseACT1;
+                        return Request.CreateResponse(HttpStatusCode.OK, UserACT1);
+                    }
+                    else if (type == "2")
+                    {  //การจำหน่าย
+                        string ActivityOid = "1B648296-1105-4216-B4C2-ECEEF6859E96";
+
+                        IList<SupplierUseProduct> collection2 = ObjectSpace.GetObjects<SupplierUseProduct>(CriteriaOperator.Parse("GCRecord is null and Stauts = 1 and OrganizationOid='" + org_oid + "'and ActivityOid = '" + ActivityOid + "' ", null));
+                        if (collection2.Count > 0)
+                        {
+                            foreach (SupplierUseProduct row in collection2)
+                            {
+
+                                SupplierProductUser_Model item2 = new SupplierProductUser_Model();
+                                item2.Oid = row.Oid.ToString();
+                                item2.UseDate = row.UseDate.ToString("dd-MM-yyyy", new CultureInfo("us-US"));
+                                item2.UseNo = row.UseNo.ToString();
+                                if (row.RegisCusServiceOid == null)
+                                {
+                                    item2.RegisCusService = "ไม่พบข้อมูล";
+                                    item2.RegisCusServiceName = "ไม่พบข้อมูล";
+                                }
+                                else
+                                {
+                                    item2.RegisCusService = row.RegisCusServiceOid.Oid.ToString();
+                                    item2.RegisCusServiceName = row.RegisCusServiceOid.FirstNameTH + row.RegisCusServiceOid.LastNameTH;
+                                }
+
+                                if (row.OrgeServiceOid == null)
+                                {
+                                    item2.OrgeServiceName = "ไม่พบข้อมูลหน่วยงานขอรับบริการ";
+                                }
+                                else
+                                {
+                                    item2.OrgeServiceName = row.OrgeServiceOid.OrgeServiceName;
+                                }
+                                item2.ActivityName = row.ActivityOid.ActivityName.ToString();
+                                if (row.SubActivityOid != null)
+                                {
+                                    item2.SubActivityName = row.SubActivityOid.ActivityName;
+                                }
+                                if (row.SubActivityLevelOid != null)
+                                {
+                                    item2.SubActivityLevelName = row.SubActivityLevelOid.ActivityName;
+                                }
+
+                                item2.FinanceYear = row.FinanceYearOid.YearName.ToString();
+                                item2.OrganizationName = row.OrganizationOid.SubOrganizeName.ToString();
+                                if (row.EmployeeOid == null)
+                                {
+                                    item2.EmployeeName = "ไม่มีรายชื่อผู้ขอรับบริการ";
+                                }
+                                else
+                                {
+                                    item2.EmployeeName = row.EmployeeOid.EmployeeFirstName + " " + row.EmployeeOid.EmployeeLastName;
+                                }
+
+                                item2.Remark = row.Remark;
+                                item2.Stauts = row.Stauts.ToString();
+                                item2.ApproveDate = row.ApproveDate.ToString("dd-MM-yyyy", new CultureInfo("us-US"));
+                                item2.ActivityNameOid = row.ActivityOid.Oid.ToString();
+                                item2.ActivityName = row.ActivityOid.ActivityName.ToString();
+
+                                if (row.SubActivityOid == null)
+                                {
+                                    item2.SubActivityName = "ไม่มีข้อมูลกิจกรรม";
+                                }
+                                else
+                                {
+                                    item2.SubActivityName = row.SubActivityOid.ActivityName.ToString();
+                                }
+                                item2.ReceiptNo = row.ReceiptNo;
+                                item2.Refno = row.UseNo + "|" + row.OrganizationOid + "|2";
+                                item2.Weight = row.SupplierUseProductDetails.Sum((c => c.Weight)).ToString() + "กิโลกรัม";
+                                UserACT2.Add(item2);
+                            }
+                            //lists.UseACT2 = UseACT2;
+                            return Request.CreateResponse(HttpStatusCode.OK, UserACT2);
+                        }
+                    }
+                    else if (type == "3")
+                    {
+                        //การอนุมัติภัยพิบัติ
+                        string ActivityOid = "b100c7c1-4755-4af0-812e-3dd6ba372d45";
+
+                        IList<SupplierUseProduct> collection3 = ObjectSpace.GetObjects<SupplierUseProduct>(CriteriaOperator.Parse("GCRecord is null and Stauts = 1 and OrganizationOid='" + org_oid + "'and ActivityOid = '" + ActivityOid + "' ", null));
+                        if (collection3.Count > 0)
+                        {
+                            foreach (SupplierUseProduct row in collection3)
+                            {
+
+                                SupplierProductUser_Model item3 = new SupplierProductUser_Model();
+                                item3.Oid = row.Oid.ToString();
+                                item3.UseDate = row.UseDate.ToString("dd-MM-yyyy", new CultureInfo("us-US"));
+                                item3.UseNo = row.UseNo.ToString();
+                                if (row.RegisCusServiceOid == null)
+                                {
+                                    item3.RegisCusService = "ไม่พบข้อมูล";
+                                    item3.RegisCusServiceName = "ไม่พบข้อมูล";
+                                }
+                                else
+                                {
+                                    item3.RegisCusService = row.RegisCusServiceOid.Oid.ToString();
+                                    item3.RegisCusServiceName = row.RegisCusServiceOid.FirstNameTH + row.RegisCusServiceOid.LastNameTH;
+                                }
+
+                                if (row.OrgeServiceOid == null)
+                                {
+                                    item3.OrgeServiceName = "ไม่พบข้อมูลหน่วยงานขอรับบริการ";
+                                }
+                                else
+                                {
+                                    item3.OrgeServiceName = row.OrgeServiceOid.OrgeServiceName;
+                                }
+                                item3.ActivityName = row.ActivityOid.ActivityName.ToString();
+                                if (row.SubActivityOid != null)
+                                {
+                                    item3.SubActivityName = row.SubActivityOid.ActivityName;
+                                }
+                                if (row.SubActivityLevelOid != null)
+                                {
+                                    item3.SubActivityLevelName = row.SubActivityLevelOid.ActivityName;
+                                }
+
+                                item3.FinanceYear = row.FinanceYearOid.YearName.ToString();
+                                item3.OrganizationName = row.OrganizationOid.SubOrganizeName.ToString();
+                                if (row.EmployeeOid == null)
+                                {
+                                    item3.EmployeeName = "ไม่มีรายชื่อผู้ขอรับบริการ";
+                                }
+                                else
+                                {
+                                    item3.EmployeeName = row.EmployeeOid.EmployeeFirstName + " " + row.EmployeeOid.EmployeeLastName;
+                                }
+
+                                item3.Remark = row.Remark;
+                                item3.Stauts = row.Stauts.ToString();
+                                item3.ApproveDate = row.ApproveDate.ToString("dd-MM-yyyy", new CultureInfo("us-US"));
+                                item3.ActivityNameOid = row.ActivityOid.Oid.ToString();
+                                item3.ActivityName = row.ActivityOid.ActivityName.ToString();
+
+                                if (row.SubActivityOid == null)
+                                {
+                                    item3.SubActivityName = "ไม่มีข้อมูลกิจกรรม";
+                                }
+                                else
+                                {
+                                    item3.SubActivityName = row.SubActivityOid.ActivityName.ToString();
+                                }
+                                item3.ReceiptNo = row.ReceiptNo;
+                                item3.Refno = row.UseNo + "|" + row.OrganizationOid + "|3";
+                                item3.Weight = row.SupplierUseProductDetails.Sum((c => c.Weight)).ToString() + "กิโลกรัม";
+                                UserACT3.Add(item3);
+                            }
+                            //lists.UseACT3 = UseACT3;
+                            return Request.CreateResponse(HttpStatusCode.OK, UserACT3);
+                        }
+                    }
+                    else if (type == "4")
+                    {
+                        //การอนุมัติภัยพิบัติ
+                        string ActivityOid = "A29D77A9-4BCB-4774-9744-FF97A373353E";
+
+                        IList<SupplierUseProduct> collection4 = ObjectSpace.GetObjects<SupplierUseProduct>(CriteriaOperator.Parse("GCRecord is null and Stauts = 1 and OrganizationOid='" + org_oid + "'and ActivityOid = '" + ActivityOid + "' ", null));
+                        if (collection4.Count > 0)
+                        {
+                            foreach (SupplierUseProduct row in collection4)
+                            {
+
+                                SupplierProductUser_Model Supplier_4 = new SupplierProductUser_Model();
+                                Supplier_4.Oid = row.Oid.ToString();
+                                Supplier_4.UseDate = row.UseDate.ToString("dd-MM-yyyy", new CultureInfo("us-US"));
+                                Supplier_4.UseNo = row.UseNo.ToString();
+                                if (row.RegisCusServiceOid == null)
+                                {
+                                    Supplier_4.RegisCusService = "ไม่พบข้อมูล";
+                                    Supplier_4.RegisCusServiceName = "ไม่พบข้อมูล";
+                                }
+                                else
+                                {
+                                    Supplier_4.RegisCusService = row.RegisCusServiceOid.Oid.ToString();
+                                    Supplier_4.RegisCusServiceName = row.RegisCusServiceOid.FirstNameTH + row.RegisCusServiceOid.LastNameTH;
+                                }
+
+                                if (row.OrgeServiceOid == null)
+                                {
+                                    Supplier_4.OrgeServiceName = "ไม่พบข้อมูลหน่วยงานขอรับบริการ";
+                                }
+                                else
+                                {
+                                    Supplier_4.OrgeServiceName = row.OrgeServiceOid.OrgeServiceName;
+                                }
+                                Supplier_4.ActivityName = row.ActivityOid.ActivityName.ToString();
+                                if (row.SubActivityOid != null)
+                                {
+                                    Supplier_4.SubActivityName = row.SubActivityOid.ActivityName;
+                                }
+                                if (row.SubActivityLevelOid != null)
+                                {
+                                    Supplier_4.SubActivityLevelName = row.SubActivityLevelOid.ActivityName;
+                                }
+
+                                Supplier_4.FinanceYear = row.FinanceYearOid.YearName.ToString();
+                                Supplier_4.OrganizationName = row.OrganizationOid.SubOrganizeName.ToString();
+                                if (row.EmployeeOid == null)
+                                {
+                                    Supplier_4.EmployeeName = "ไม่มีรายชื่อผู้ขอรับบริการ";
+                                }
+                                else
+                                {
+                                    Supplier_4.EmployeeName = row.EmployeeOid.EmployeeFirstName + " " + row.EmployeeOid.EmployeeLastName;
+                                }
+
+                                Supplier_4.Remark = row.Remark;
+                                Supplier_4.Stauts = row.Stauts.ToString();
+                                Supplier_4.ApproveDate = row.ApproveDate.ToString("dd-MM-yyyy", new CultureInfo("us-US"));
+                                Supplier_4.ActivityNameOid = row.ActivityOid.Oid.ToString();
+                                Supplier_4.ActivityName = row.ActivityOid.ActivityName.ToString();
+
+                                if (row.SubActivityOid == null)
+                                {
+                                    Supplier_4.SubActivityName = "ไม่มีข้อมูลกิจกรรม";
+                                }
+                                else
+                                {
+                                    Supplier_4.SubActivityName = row.SubActivityOid.ActivityName.ToString();
+                                }
+                                Supplier_4.ReceiptNo = row.ReceiptNo;
+                                Supplier_4.Refno = row.UseNo + "|" + row.OrganizationOid + "|4";
+                                Supplier_4.Weight = row.SupplierUseProductDetails.Sum((c => c.Weight)).ToString() + "กิโลกรัม";
+                                UserACT4.Add(Supplier_4);
+                            }
+                            //lists.UseACT2 = UseACT2;
+                            return Request.CreateResponse(HttpStatusCode.OK, UserACT4);
+                        }
+                    }
+
+                    //invalid
+                    UserError err = new UserError();
+                    err.status = "false";
+                    err.code = "0";
+                    err.message = "กรุณาใส่ข้อมูล  type (type 1 เพื่อใช้ในกิจกรรม/ 2 การจำหน่าย 3/ ภัยพิบัติ/4 เพื่อการแจกจ่าย (สนับสนุนเกษตรกร))  ให้เรียบร้อยก่อน";
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+
+                }
+                else
+                {
+                    UserError err = new UserError();
+                    err.status = "false";
+                    err.code = "0";
+                    err.message = "กรุณาใส่ข้อมูล Org_Oid และ type (type 1 เพื่อใช้ในกิจกรรม/ 2 การจำหน่าย 3/ ภัยพิบัติ/4 เพื่อการแจกจ่าย (สนับสนุนเกษตรกร))  ให้เรียบร้อยก่อน";
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+                }
+            }
+            catch (Exception ex)
+            {
+                UserError err = new UserError();
+                err.status = "false";
+                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                err.message = "ไม่พบข้อมูล";
+                return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+            }
+        }
+        /// <summary>
+        /// รายละเอียดหน้าการใช้เมล็ดพันธุ์
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("SupplierUseProduct/Detail")]
+        public HttpResponseMessage GetSupplierUseProduct_detail()
+        {
+            try
+            {
+                string RefNo = HttpContext.Current.Request.Form["RefNo"].ToString();
+            //    string YearName = HttpContext.Current.Request.Form["YearName"].ToString();
+
+                if (RefNo != "")
+                {
+                    string[] arr = RefNo.Split('|');
+                    string _refno = arr[0]; //เลขที่อ้างอิง
+                    string _org_oid = arr[1]; //oid หน่วยงาน
+                    string _type = arr[2]; //ประเภทส่ง(2)-รับ(1)
+
+
+                    XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                    XafTypesInfo.Instance.RegisterEntity(typeof(SupplierUseProduct));
+
+                    List<SupplierProductUser> list_detail = new List<SupplierProductUser>();
+
+                    XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                    IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+
+                    IList<SupplierUseProduct> collection = ObjectSpace.GetObjects<SupplierUseProduct>(CriteriaOperator.Parse(" GCRecord is null and Stauts = 1 and UseNo = '" + _refno + "'", null));
+
+                    if (collection.Count > 0)
+                    {
+                        foreach (SupplierUseProduct row in collection)
+                        { double WeightAll = 0;
+                            double Amout = 0;
+                            SupplierProductUser item = new SupplierProductUser();
+                            item.Oid = row.Oid.ToString();
+                            item.UseNo = row.UseNo;
+                            item.UseDate = row.UseDate.ToString();
+                            item.FinanceYearOid = row.FinanceYearOid.Oid.ToString();
+                            item.FinanceYear = row.FinanceYearOid.YearName;
+                            item.OrganizationOid = row.OrganizationOid.Oid.ToString();
+                            item.OrganizationName = row.OrganizationOid.OrganizeNameTH;
+                            item.SubActivityLevelName = row.SubActivityLevelOid.ActivityName;
+                            if (row.RegisCusServiceOid != null)
+                            {
+                                item.RegisCusService = row.RegisCusServiceOid.Oid.ToString();
+                                item.RegisCusServiceName = row.RegisCusServiceOid.FirstNameTH + " " + row.RegisCusServiceOid.LastNameTH;
+                            }
+                            
+                            item.ServiceCount = row.ServiceCount;
+                            item.ActivityNameOid = row.ActivityOid.Oid.ToString();
+                            item.ActivityName = row.ActivityOid.ActivityName;
+                            item.SubActivityLevelName = row.SubActivityLevelOid.ActivityName;
+                            if (row.SubActivityOid != null)
+                            {
+                                item.SubActivityName = row.SubActivityOid.ActivityName;
+                            }
+                        
+                            item.ReceiptNo = row.ReceiptNo;
+                            item.Refno = _refno;
+                            if (row.EmployeeOid != null)
+                            {
+                                item.EmployeeName = row.EmployeeOid.EmployeeFirstName + " " + row.EmployeeOid.EmployeeLastName;
+                            }
+                            
+                            item.Stauts = row.Stauts.ToString();
+                            List<SupplierUseProductDetail_Model> item2 = new List<SupplierUseProductDetail_Model>();
+                            foreach (SupplierUseProductDetail row2 in row.SupplierUseProductDetails)
+                            {
+                                SupplierUseProductDetail_Model D2 = new SupplierUseProductDetail_Model();
+                                D2.SupplierUseAnimalProductOid = item.Oid.ToString();
+                                D2.Oid = row2.Oid.ToString();
+                                D2.AnimalSeedLevelOid = row2.AnimalSeedLevelOid.Oid.ToString();
+                                D2.AnimalSeedLevelName = row2.AnimalSeedLevelOid.SeedLevelName;
+                                D2.PerPrice = row2.PerPrice;
+                                D2.Price = row2.Price;
+                                D2.BudgetSourceName = row2.BudgetSourceOid.BudgetName;
+                                D2.AnimalSeedName = row2.AnimalSeedOid.SeedName;
+                                D2.Weight = row2.Weight;
+                                WeightAll = WeightAll + row2.Weight;
+                                Amout = Amout + D2.Price;
+                                item2.Add(D2);
+                            }
+                            item.Remark = row.Remark;
+                            item.Weight = WeightAll.ToString();
+                            item.TotalAmout = Amout.ToString();
+                            item.Detail = item2;
+                            list_detail.Add(item);
+                        }
+                    }
+                    return Request.CreateResponse(HttpStatusCode.OK, list_detail);
+                }
+                else {
+                    UserError err = new UserError();
+                    err.status = "false";
+                    err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                    err.message = "กรุณาใส่เลข RefNo";
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                UserError err = new UserError();
+                err.status = "false";
+                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                err.message = "ไม่พบข้อมูล";
+                return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+            }
+        }
+
+
+
 
         #endregion ใช้เมล็ดพันธุ์
 
 
-            #region SendOrderSeedApprove ยืนยันเมล็ดพันธุ์ ทดสอบ
+        #region SendOrderSeedApprove ยืนยันเมล็ดพันธุ์ ทดสอบ
         [AllowAnonymous]
         [HttpPost]
         [Route("ApprovalSend/")]
 
-        public IHttpActionResult ApprovalSend_SupplierUseProduct() 
+        public IHttpActionResult ApprovalSend_SupplierUseProduct()
         {
             SendOrderSeed_Model Model = new SendOrderSeed_Model();
             try
@@ -715,19 +1445,19 @@ namespace WebApi.Jwt.Controllers
 
                 XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-              sendSeed_info sendDetail = new sendSeed_info(); 
+                sendSeed_info sendDetail = new sendSeed_info();
                 XpoTypesInfoHelper.GetXpoTypeInfoSource();
                 XafTypesInfo.Instance.RegisterEntity(typeof(SendOrderSeed));
-                SendOrderSeed ObjMaster ;
+                SendOrderSeed ObjMaster;
                 ObjMaster = ObjectSpace.FindObject<SendOrderSeed>(CriteriaOperator.Parse("SendNo=?", Send_No));
                 List<SendOrderSeed_Model> list_detail = new List<SendOrderSeed_Model>();
-            
-             ;
+
+                ;
                 //SendOrderSeed sendOrderSeed;
                 //sendOrderSeed = ObjectSpace.FindObject<SendOrderSeed>(CriteriaOperator.Parse("SendNo=?", Send_No));
 
                 DataSet ds = SqlHelper.ExecuteDataset(scc, CommandType.Text, "select SendNo from SendOrderSeed where SendNo = '" + Send_No + "'");
-                if (ds.Tables[0].Rows.Count != 0)          
+                if (ds.Tables[0].Rows.Count != 0)
                 {
                     double sum = 0;
                     //sendDetail.Oid = sendOrderSeed.Oid;
@@ -739,7 +1469,7 @@ namespace WebApi.Jwt.Controllers
                     //sendDetail.ReceiveOrgName = sendOrderSeed.ReceiveOrgOid.SubOrganizeName;
                     //sendDetail.FinanceYearOid = sendOrderSeed.FinanceYearOid;
                     //sendDetail.FinanceYear = sendOrderSeed.FinanceYearOid.YearName;
-                  
+
                     SendOrderSeed_Model objsend_Detail = new SendOrderSeed_Model();
                     foreach (SendOrderSeedDetail row in ObjMaster.SendOrderSeedDetails)
                     {
@@ -751,55 +1481,55 @@ namespace WebApi.Jwt.Controllers
                         objsend_Detail.BudgetSourceOid = row.BudgetSourceOid;
                         objsend_Detail.BudgetSource = row.BudgetSourceOid.BudgetName;
                         objsend_Detail.Weight = row.Weight.ToString();
-                        objsend_Detail.Used = row.Used.ToString();         
+                        objsend_Detail.Used = row.Used.ToString();
                         objsend_Detail.AnimalSeedOid = row.AnimalSeedOid;
                         objsend_Detail.AnimalSeedLevelOid = row.AnimalSeedLevelOid;
                         objsend_Detail.SeedTypeOid = row.SeedTypeOid.SeedTypeName;
                         objsend_Detail.Amount = row.Amount;
                         sum = sum + row.Weight;
                         list_detail.Add(objsend_Detail);
-        
-                    }      
-                            
-                    nutrition.Module.StockSeedInfo ObjStockSeedInfoInfo;
-       var objSupplierProduct = ObjectSpace.FindObject<SupplierProductModifyDetail>(CriteriaOperator.Parse("Oid =?",objsend_Detail.LotNumber));
 
-                    var objStockSeedInfo = ObjectSpace.GetObjects<StockSeedInfo>(CriteriaOperator.Parse("OrganizationOid= ? and FinanceYearOid=? and BudgetSourceOid=? and AnimalSeedOid=? and AnimalSeedLevelOid=? and StockType=0 ", ObjMaster.SendOrgOid.Oid, ObjMaster.FinanceYearOid ,objsend_Detail.BudgetSourceOid, objsend_Detail.AnimalSeedOid
+                    }
+
+                    nutrition.Module.StockSeedInfo ObjStockSeedInfoInfo;
+                    var objSupplierProduct = ObjectSpace.FindObject<SupplierProductModifyDetail>(CriteriaOperator.Parse("Oid =?", objsend_Detail.LotNumber));
+
+                    var objStockSeedInfo = ObjectSpace.GetObjects<StockSeedInfo>(CriteriaOperator.Parse("OrganizationOid= ? and FinanceYearOid=? and BudgetSourceOid=? and AnimalSeedOid=? and AnimalSeedLevelOid=? and StockType=0 ", ObjMaster.SendOrgOid.Oid, ObjMaster.FinanceYearOid, objsend_Detail.BudgetSourceOid, objsend_Detail.AnimalSeedOid
                     , objsend_Detail.AnimalSeedLevelOid, objsend_Detail.LotNumber));
-                    if (objStockSeedInfo.Count !=0)
+                    if (objStockSeedInfo.Count != 0)
                     {
 
                         //var stockSeedInfos = from Item in objStockSeedInfo
                         //                     orderby Item.StockDate descending
                         //                     select Item;
                         //XafTypesInfo.Instance.RegisterEntity(typeof(StockSeedInfo));
-    //  string ConnStr = System.Configuration.ConfigurationManager.ConnectionStrings["Scc"].ConnectionString;
-                    //    string userName = "chai-nat";
-                    //    string password = "123456";
-                    //    XpoTypesInfoHelper.GetXpoTypeInfoSource();
-                    //    XafTypesInfo.Instance.RegisterEntity(typeof(UserInfo));
-                    //    XafTypesInfo.Instance.RegisterEntity(typeof(RoleInfo));
+                        //  string ConnStr = System.Configuration.ConfigurationManager.ConnectionStrings["Scc"].ConnectionString;
+                        //    string userName = "chai-nat";
+                        //    string password = "123456";
+                        //    XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                        //    XafTypesInfo.Instance.RegisterEntity(typeof(UserInfo));
+                        //    XafTypesInfo.Instance.RegisterEntity(typeof(RoleInfo));
 
-                    //    AuthenticationMixed authentication = new AuthenticationMixed();
-                    //    authentication.LogonParametersType = typeof(AuthenticationStandardLogonParameters);
-                    //    authentication.AddAuthenticationStandardProvider(typeof( UserInfo));
-                    //    authentication.AddIdentityAuthenticationProvider(typeof(RoleInfo));
-                    //    //CustomLogin authentication = new  CustomLogin();
-                    //    //authentication.SetupAuthenticationProvider(authenticationName, parameter);
-                    //    SecurityStrategyComplex security = new SecurityStrategyComplex(typeof(UserInfo), typeof(RoleInfo), authentication);
-                    ////    security.RegisterXPOAdapterProviders();   
-                    //    //SecurityStrategyComplex security = new SecurityStrategyComplex(typeof(UserInfo), typeof(RoleInfo), authentication);
-                    //    SecuredObjectSpaceProvider objectSpaceProvider = new SecuredObjectSpaceProvider(security, ConnStr, null);
+                        //    AuthenticationMixed authentication = new AuthenticationMixed();
+                        //    authentication.LogonParametersType = typeof(AuthenticationStandardLogonParameters);
+                        //    authentication.AddAuthenticationStandardProvider(typeof( UserInfo));
+                        //    authentication.AddIdentityAuthenticationProvider(typeof(RoleInfo));
+                        //    //CustomLogin authentication = new  CustomLogin();
+                        //    //authentication.SetupAuthenticationProvider(authenticationName, parameter);
+                        //    SecurityStrategyComplex security = new SecurityStrategyComplex(typeof(UserInfo), typeof(RoleInfo), authentication);
+                        ////    security.RegisterXPOAdapterProviders();   
+                        //    //SecurityStrategyComplex security = new SecurityStrategyComplex(typeof(UserInfo), typeof(RoleInfo), authentication);
+                        //    SecuredObjectSpaceProvider objectSpaceProvider = new SecuredObjectSpaceProvider(security, ConnStr, null);
 
-                    //    PasswordCryptographer.EnableRfc2898 = true;
-                    //    PasswordCryptographer.SupportLegacySha512 = false;
+                        //    PasswordCryptographer.EnableRfc2898 = true;
+                        //    PasswordCryptographer.SupportLegacySha512 = false;
 
-                    //    authentication.SetLogonParameters(new AuthenticationStandardLogonParameters(userName, password));
-                    //    IObjectSpace loginObjectSpace = objectSpaceProvider.CreateObjectSpace();
-                    //    security.Logon(loginObjectSpace);
+                        //    authentication.SetLogonParameters(new AuthenticationStandardLogonParameters(userName, password));
+                        //    IObjectSpace loginObjectSpace = objectSpaceProvider.CreateObjectSpace();
+                        //    security.Logon(loginObjectSpace);
 
-                    //    IObjectSpace securedObjectSpace = objectSpaceProvider.CreateObjectSpace();
- 
+                        //    IObjectSpace securedObjectSpace = objectSpaceProvider.CreateObjectSpace();
+
 
                         StockSeedInfo objSotockSeedInfoNew;
                         XafTypesInfo.Instance.RegisterEntity(typeof(StockSeedInfo));
@@ -818,14 +1548,14 @@ namespace WebApi.Jwt.Controllers
                         objSotockSeedInfoNew.ReferanceCode = objSupplierProduct.LotNumberFactory;
                         ObjectSpace.CommitChanges();
                     }
-                         ObjMaster.SendStatus = EnumSendOrderSeedStatus.SendApprove;
-                        ObjectSpace.CommitChanges();
-                        return Ok(true);
-                 
+                    ObjMaster.SendStatus = EnumSendOrderSeedStatus.SendApprove;
+                    ObjectSpace.CommitChanges();
+                    return Ok(true);
+
                 }
                 else
                 {
-                    return BadRequest(); 
+                    return BadRequest();
                 }
 
 
@@ -840,7 +1570,7 @@ namespace WebApi.Jwt.Controllers
                 return BadRequest(ex.Message);
             }
         }
-       
+
         #endregion
     }
 }

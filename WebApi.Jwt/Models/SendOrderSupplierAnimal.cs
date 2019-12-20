@@ -5,7 +5,9 @@ using System.Web;
 
 namespace WebApi.Jwt.Models
 {
-
+    /// <summary>
+    /// เสบียงสัตว์
+    /// </summary>
     public class SendOrderSupplierModel
     {
         public string org_oid { get; set; }
@@ -37,36 +39,12 @@ namespace WebApi.Jwt.Models
         public string CancelMsg { get; set; }
         public string AnimalSupplieTypeName { get; set; }
         public string RefNo { get; set; }
-        //[XafDisplayName("หน่วยจัดส่ง")]
-        //[XafDisplayName("หน่วยจัดส่ง")]
-        // [XafDisplayName("แหล่งงบประมาณ")]
 
-        //[XafDisplayName("ปีงบประมาณ")]
-
-
-
-        // [XafDisplayName("วันที่ส่ง")]
-
-        // [XafDisplayName("เลขที่ใบส่ง")]
-
-
-        //[XafDisplayName("พันธุ์พืชอาหารสัตว์")]
         public string AnimalSeedName { get; set; }
-  
-          
-
-
 
         //     [XafDisplayName("หน่วยนับ")]
         public string UnitName { get; set; }
 
-        //      [XafDisplayName("สาเหตุยกเลิก")]
-
-        
-       // [XafDisplayName("สถานะ")]
-      
-        // [XafDisplayName("หมายเหตุ")]
- 
 
         // [XafDisplayName("ภาชนะบรรจุ")]
         public string PackageName { get; set; }
@@ -93,7 +71,7 @@ namespace WebApi.Jwt.Models
         //    public ManageSubAnimalSupplier ManageSubAnimalSupplierOid { get; set; }
         public string TotalWeight { get; set; }
 
-         public List<ManageSubAnimalSupplierOid_Model> Details { get; set; }
+         public List<SendOrderSupplierType_Model> Details { get; set; }
     }
 
     public class ManageSubAnimalSupplierOid_Model
@@ -106,6 +84,18 @@ namespace WebApi.Jwt.Models
         
         public string Unit { get; set; }
        
+    }
+
+    public class SendOrderSupplierType_Model
+    {
+        public string BudgetSourceName { get; set; }
+        public string AnimalSupplieTypeName { get; set; }
+        public string AnimalSupplieName { get; set; }
+        public string AnimalSeedName { get; set; }
+        public string QTY { get; set; }
+        public string TotalWeight { get; set; }
+        public string PackageName { get; set; }
+
     }
 
 

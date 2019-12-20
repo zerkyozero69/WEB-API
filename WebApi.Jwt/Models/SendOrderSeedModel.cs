@@ -70,5 +70,82 @@ namespace WebApi.Jwt.Models
         public string SendOrderSeed { get; set; }
     }
 
+    public class SupplierUseProduct_Model
+    {
+        public string org_oid { get; set; }
+
+        public List<SupplierProductUser_Model> UseACT1 { get; set; }
+
+        public List<SupplierProductUser_Model> UseACT2 { get; set; }
+
+        public List<SupplierProductUser_Model> UseACT3 { get; set; }
+        public List<SupplierProductUser_Model> UseACT4 { get; set; }
+    }
+
+    public class SupplierProductUser_Model
+    {
+        public string Oid { get; set; }
+        public string RegisCusService { get; set; }
+        public string UseDate { get; set; }
+        public string UseNo { get; set; }
+        public string FinanceYearOid { get; set; }
+        public string FinanceYear { get; set; }
+
+        public string OrganizationName { get; set; }
+        public string EmployeeName { get; set; }
+        public string Remark { get; set; }
+        public string Stauts { get; set; }
+        public string ApproveDate { get; set; }
+        public string ActivityNameOid { get; set; }
+        public string ActivityName { get; set; }
+        public string SubActivityName { get; set; }
+        public string SubActivityLevelName { get; set; }
+        public string ReceiptNo { get; set; }
+
+
+
+        public string RegisCusServiceName { get; set; }
+        public string OrgeServiceName { get; set; }
+        public string Refno { get; set; }
+        public string Weight { get; set; }
+        public int ServiceCount { get; set; }
+
+        public List<SupplierUseDetail_Model> objProduct;
+
+    }
+    public class SupplierUseDetail_Model
+    {
+        public string SupplierUseAnimalProductOid { get; set; }
+        public double PerPrice { get; set; }
+
+        public string SupplierUseAnimalProductName { get; set; }
+
+        public double Amount { get; set; }
+
+        public double Weight { get; set; }
+
+        public double StockUsed { get; set; }
+
+        public double StockLimit { get; set; }
+
+        public double Price { get; set; }
+
+        public double QuotaQTY { get; set; }
+
+
+
+        public string QuotaTypeName { get; set; }
+
+
+        public string AnimalSupplieTypeName { get; set; }
+
+        public string AnimalSupplieName { get; set; }
+
+        public string AnimalSeedName { get; set; }
+
+        public string BudgetSourceName { get; set; }
+
+    }
+
 
 }

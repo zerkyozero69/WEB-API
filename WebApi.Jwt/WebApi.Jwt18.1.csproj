@@ -260,6 +260,7 @@
     <Compile Include="Controllers\RegisterFarmerController.cs" />
     <Compile Include="Controllers\TokenController.cs" />
     <Compile Include="Controllers\ValueController.cs" />
+    <Compile Include="Controllers\อนุมัติภัยพิบัตื\CalamityController.cs" />
     <Compile Include="Controllers\แผนการผลิต\PlanSeedInfo_SumController.cs" />
     <Compile Include="Filters\AuthenticationFailureResult.cs" />
     <Compile Include="Filters\HttpAuthenticationChallengeContextExtensions.cs" />

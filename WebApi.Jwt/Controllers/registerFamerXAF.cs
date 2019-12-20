@@ -51,7 +51,7 @@ namespace WebApi.Jwt.Controllers.MasterData
             XpoTypesInfoHelper.GetTypesInfo();
             XafTypesInfo.Instance.RegisterEntity(typeof(Farmer));
             XafTypesInfo.Instance.RegisterEntity(typeof(Organization));
-            Organization org;
+            Organization org = null;
             Farmerinfo._Registerfarmer farmerinfo = new Farmerinfo._Registerfarmer();
             string TempForageType = string.Empty;
             //Farmer _Farmer = new Farmer();
