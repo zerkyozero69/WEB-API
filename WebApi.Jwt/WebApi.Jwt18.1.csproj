@@ -229,6 +229,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\API นับรายการ ที่ให้ผ.อ. อนุมัติ\Count_RequestController.cs" />
     <Compile Include="Controllers\Approval_SendSeedController.cs" />
     <Compile Include="Controllers\ManageAnimalSupplierController.cs" />
     <Compile Include="Controllers\MasterData\ภัยพิบัติController.cs" />
@@ -303,6 +304,7 @@
     <Compile Include="Models\Supplier.cs" />
     <Compile Include="Models\user.cs" />
     <Compile Include="Models\UserError.cs" />
+    <Compile Include="Models\นับจำนวนกิจกรรม\count_Number.cs" />
     <Compile Include="Models\แผนการผลิตโมเดล\PlanSeedInfo.cs" />
     <Compile Include="Models\แผนการผลิตโมเดล\การใช้เมล็ดพันธุ์อนุมัติภัยพิบัติ.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

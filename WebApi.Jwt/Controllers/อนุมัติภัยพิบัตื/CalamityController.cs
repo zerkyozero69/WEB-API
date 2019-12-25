@@ -488,17 +488,14 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
             try
             {
                 
-                    string RefNo = HttpContext.Current.Request.Form["RefNo"].ToString(); //ข้อมูลเลขที่อ้างอิง
+                    string UseNo = HttpContext.Current.Request.Form["UseNo"].ToString(); //ข้อมูลเลขที่อ้างอิง
                     string Status = HttpContext.Current.Request.Form["Status"].ToString(); //สถานะ
                     string Remark = HttpContext.Current.Request.Form["Remark"].ToString(); //หมายเหตุ
                     string activityNameOid = HttpContext.Current.Request.Form["activityNameOid"].ToString();
 
-                    if (RefNo != "" && Status != "" && activityNameOid != "")
+                    if (UseNo != "" && Status != "" && activityNameOid != "")
                     {
-                        string[] arr = RefNo.Split('|');
-                        string _refno = arr[0]; //เลขที่อ้างอิง
-                        string _org_oid = arr[1]; //oid หน่วยงาน
-                        string _type = arr[2]; //ประเภทส่ง(2)-รับ(1)
+                       
 
                         XpoTypesInfoHelper.GetXpoTypeInfoSource();
                         XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.SupplierUseAnimalProduct));
@@ -506,86 +503,31 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                         XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                         IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
 
-                        SupplierUseAnimalProduct objSupplierUseAnimalProduct = ObjectSpace.FindObject<SupplierUseAnimalProduct>(CriteriaOperator.Parse("UseNo=? and ActivityOid= ? ", _refno, activityNameOid));
+                        SupplierUseAnimalProduct objSupplierUseAnimalProduct = ObjectSpace.FindObject<SupplierUseAnimalProduct>(CriteriaOperator.Parse(" GCRecord is null  and Stauts = 1 and UseNo=? and ActivityOid= ? ", UseNo, activityNameOid));
 
-                        nutrition.Module.Farmer objfarmer = null;
-                        XafTypesInfo.Instance.RegisterEntity(typeof(Farmer));
                         if (objSupplierUseAnimalProduct != null)
                         {
 
                             if (Status == "1")
-                            { //อนุมัติ
-                            string requestString = Request.Content.ReadAsStringAsync().Result;
-                            JObject jObject = (JObject)JsonConvert.DeserializeObject(requestString);
-                            if (jObject != null)
-                            {
-                                Registerfarmer.CitizenID = jObject.SelectToken("CitizenID").Value<Int64>();
-                                if (jObject.SelectToken("CitizenID") != null)
-                                {
-                                    int intCitizenID;
-                                    if (int.TryParse(jObject.SelectToken("CitizenID").ToString(), out intCitizenID))
-                                    {
-                                        Registerfarmer.CitizenID = intCitizenID;
-                                    }
-                                    Registerfarmer.TitleOid = jObject.SelectToken("TitleOid").Value<string>();
-                                    Registerfarmer.FirstNameTH = jObject.SelectToken("FirstNameTH").Value<string>();
-                                    Registerfarmer.LastNameTH = jObject.SelectToken("LastNameTH").Value<string>();
-                                    Registerfarmer.BirthDate = jObject.SelectToken("BirthDate").Value<DateTime>();
+                            { //อนุมัติ                      
+                            objSupplierUseAnimalProduct.UseNo = objSupplierUseAnimalProduct.UseNo;
 
-                                    Registerfarmer.Address = jObject.SelectToken("Address").Value<string>();
-
-                                    if (jObject.SelectToken("Moo") == null)
-                                    {
-                                        Registerfarmer.Moo = string.Empty;
-                                    }
-                                    else
-                                    {
-                                        Registerfarmer.Moo = jObject.SelectToken("Moo").Value<string>();
-                                    }
-
-                                    if (jObject.SelectToken("Soi") == null)
-                                    {
-                                        Registerfarmer.Soi = string.Empty;
-                                    }
-                                    else
-                                    {
-                                        Registerfarmer.Soi = jObject.SelectToken("Soi").Value<string>();
-                                    }
-
-                                    if (jObject.SelectToken("Road") == null)
-                                    {
-                                        Registerfarmer.Road = string.Empty;
-                                    }
-                                    else
-                                    {
-                                        Registerfarmer.Road = jObject.SelectToken("Road").Value<string>();
-                                    }
-
-                                }
-                                Registerfarmer.ProvinceOid = jObject.SelectToken("ProvinceOid").Value<string>();
-                                Registerfarmer.DistrictOid = jObject.SelectToken("DistrictOid").Value<string>();
-                                Registerfarmer.SubDistrictOid = jObject.SelectToken("SubDistrictOid").Value<string>();
-                                Registerfarmer.ZipCode = jObject.SelectToken("ZipCode").Value<string>();
-                            }
-                            objfarmer.CitizenID = Registerfarmer.CitizenID.ToString();
-                                objfarmer.FirstNameTH = Registerfarmer.FirstNameTH;
-                                objfarmer.LastNameTH = Registerfarmer.LastNameTH;
-                                objfarmer.Address = Registerfarmer.Address + Registerfarmer.Moo + Registerfarmer.Soi;
-                                objfarmer.ProvinceOid = ObjectSpace.FindObject<Province>(CriteriaOperator.Parse("GCRecord is null and Status = 1 ", Registerfarmer.ProvinceOid));
-                                objfarmer.DistrictOid = ObjectSpace.FindObject<District>(CriteriaOperator.Parse("GCRecord is null and Status = 1 ", Registerfarmer.DistrictOid));
-                                objfarmer.SubDistrictOid = ObjectSpace.FindObject<SubDistrict>(CriteriaOperator.Parse("GCRecord is null and Status = 1 ", Registerfarmer.SubDistrictOid));
-                            objfarmer.ZipCode = Registerfarmer.ZipCode;
-
-                                objSupplierUseAnimalProduct.Stauts = EnumRodBreedProductSeedStatus.Approve; //2
+                                objSupplierUseAnimalProduct.Stauts = EnumRodBreedProductSeedStatus.Accept; //1
                                 if (Remark != "")
                                 {
                                     objSupplierUseAnimalProduct.Remark = Remark;
                                 }
                                 ObjectSpace.CommitChanges();
-                            }
+
+                            UpdateResult Accept = new UpdateResult();
+                            Accept.status = "true";
+                            Accept.message = "บันทึกข้อมูลเสร็จเรียบร้อยแล้ว";
+                            return Request.CreateResponse(HttpStatusCode.OK, Accept);
+                        }
                             else if (Status == "2")
-                            { //ไม่อนุมัติ
-                                objSupplierUseAnimalProduct.Stauts = EnumRodBreedProductSeedStatus.NoApprove; //4
+                            { // อนุมัติให้ ผ.อ.
+                            objSupplierUseAnimalProduct.UseNo = objSupplierUseAnimalProduct.UseNo;
+                            objSupplierUseAnimalProduct.Stauts = EnumRodBreedProductSeedStatus.Approve; //2
                                 if (Remark != "")
                                 {
                                     objSupplierUseAnimalProduct.Remark = Remark;
@@ -595,7 +537,7 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
 
                             UpdateResult ret = new UpdateResult();
                             ret.status = "true";
-                            ret.message = "บันทึกข้อมูลเสร็จเรียบร้อยแล้ว";
+                            ret.message = "ยืนยันการส่งให้ ผอ.อนุมัติเรียบร้อยแล้ว";
                             return Request.CreateResponse(HttpStatusCode.OK, ret);
 
                         }
@@ -783,7 +725,7 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
             }
         }
         ///// <summary>
-        ///// อนุมัติ-ไม่อนุมัติการใช้เมล็ดพันธุ์
+        ///// อนุมัติ-ไม่อนุมัติการใช้เสบียงสัตว์
         ///// </summary>
         ///// <returns></returns>
         [AllowAnonymous]
