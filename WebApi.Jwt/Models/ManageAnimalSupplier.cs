@@ -23,11 +23,11 @@ namespace WebApi.Jwt.Models
         public double OfficeQTY { get; set; }
         public double OfficeGAPQTY { get; set; }
         public double OfficeBeanQTY { get; set; }
-        public double SumProvinceQTY { get; }
+        public double SumProvinceQTY { get; set; }
 
         public string Status { get; set; }
 
-      public List<ManageSubAnimalSupplier> ManageSubAnimalSuppliers { get; set; }
+      public List<ManageSubAnimalSupplier_Model> Detail { get; set; }
 
         public double SortID { get; set; }
 

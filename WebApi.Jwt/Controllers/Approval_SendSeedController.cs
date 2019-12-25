@@ -267,7 +267,8 @@ namespace WebApi.Jwt.Controllers
         //        if (UseNo != null)
         //        {
         //            double sum = 0;
-        //            supplierproduct.UseDate = supplierUseProduct.UseDate.ToString("dd-MM-yyyy", new CultureInfo("us-US")); ;
+        //            supplierproduct.UseDate = supplierUseProduct.
+      //  .ToString("dd-MM-yyyy", new CultureInfo("us-US")); ;
         //            supplierproduct.UseNo = supplierUseProduct.UseNo;
         //            supplierproduct.FinanceYear = supplierUseProduct.FinanceYearOid.YearName;
         //            supplierproduct.OrganizationName = supplierUseProduct.OrganizationOid.SubOrganizeName;

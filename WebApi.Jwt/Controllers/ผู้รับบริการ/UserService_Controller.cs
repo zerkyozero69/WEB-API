@@ -45,7 +45,7 @@ namespace WebApi.Jwt.Controllers
         /// <param name=</param>
         /// <returns></returns>
         [AllowAnonymous]
-        //[JwtAuthentication] /ถ้าใช้โทเคนต้องครอบ /*ติดปัญหา*/
+        //[JwtAuthentication] /ถ้าใช้โทเคนต้องครอบ 
         // [HttpPost] 
         [HttpPost]
         [Route("SeachCustomer/info")]
@@ -69,7 +69,7 @@ namespace WebApi.Jwt.Controllers
                         OrgeService_info Customer_Info = new OrgeService_info();
 
                         //Customer_Info.OrganizationOid = row.OrganizationOid.OrganizeNameTH;
-                              
+
                         Customer_Info.OrgeServiceName = row.OrgeServiceName;
                         Customer_Info.Tel = row.Tel;
                         if (row.Email == null)
@@ -187,6 +187,7 @@ namespace WebApi.Jwt.Controllers
                 else
                 {
 
+
                     return Request.CreateResponse(HttpStatusCode.BadRequest, "NoData");
 
                 }
@@ -204,7 +205,7 @@ namespace WebApi.Jwt.Controllers
         }
         [AllowAnonymous]
         //[JwtAuthentication] /ถ้าใช้โทเคนต้องครอบ 
-        ///ค้นหาด้วยชื่อ
+        ///ค้นหาด้วยชื่อ หน่วยงาน
         // [HttpPost] 
         [HttpPost]
         [Route("SeachCustomer/ID")]
@@ -219,10 +220,10 @@ namespace WebApi.Jwt.Controllers
                 {
                     OrgeServiceName = HttpContext.Current.Request.Form["OrgeServiceName"].ToString();
                 }
-   
 
 
-                    XpoTypesInfoHelper.GetXpoTypeInfoSource();
+
+                XpoTypesInfoHelper.GetXpoTypeInfoSource();
                 XafTypesInfo.Instance.RegisterEntity(typeof(OrgeService));
                 XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
@@ -234,7 +235,7 @@ namespace WebApi.Jwt.Controllers
                 DataSet ds = SqlHelper.ExecuteDataset(scc, CommandType.Text, "select OrgeServiceName from OrgeService where OrgeServiceName = '" + OrgeServiceName + "'");
                 if (ds.Tables[0].Rows.Count != 0)
                 {
-                    
+
 
                     //Customer_Info.OrganizationOid = row.OrganizationOid.OrganizeNameTH;
                     //   Customer_Info.OrgeServiceID = row.or
@@ -353,8 +354,8 @@ namespace WebApi.Jwt.Controllers
                     return Request.CreateResponse(HttpStatusCode.OK, Customer_Info);
                 }
 
-               
-     
+
+
 
 
                 else
@@ -375,60 +376,234 @@ namespace WebApi.Jwt.Controllers
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
         }
-       
-        //        public  HttpResponseMessage  Approve_sendID2()
-        //        {
-        //            try
-        //            {
+        [AllowAnonymous]
+        //[JwtAuthentication] /ถ้าใช้โทเคนต้องครอบ 
+        ///ค้นหาชื่อผู้ขอรับบริการ
+        // [HttpPost] 
+        [HttpPost]
+        [Route("SeachCusService/List")]
+
+        public HttpResponseMessage GetRegisterCusServiceList()
+        {
+            try
+            {
+                XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                XafTypesInfo.Instance.RegisterEntity(typeof(RegisterCusService));
+                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+                List<RegicusService_Model> list = new List<RegicusService_Model>();
+                IList<RegisterCusService> collection = ObjectSpace.GetObjects<RegisterCusService>(CriteriaOperator.Parse("GCRecord is null and IsActive = 1 ", null));
+                if (collection.Count > 0)
+                {
+                    foreach (RegisterCusService row in collection)
+                    {
+                        RegicusService_Model item = new RegicusService_Model();
+                        if (row.OrganizationOid != null)
+                        {
+                            item.OrganizationOid = row.OrganizationOid.Oid.ToString();
+                        }
+                        
+                        item.RegisterDate = row.RegisterDate.ToString();
+                        item.CitizenID = row.CitizenID;
+                        item.TitleOid = row.TitleOid.TitleName;
+                        item.FirstNameTH = row.FirstNameTH;
+                        item.LastNameTH = row.LastNameTH;
+                        item.GenderOid = row.GenderOid.GenderName;
+                        if (row.BirthDate != null)
+                        {
+                            item.BirthDate = row.BirthDate.ToString();
+                        }
+                        if (row.Tel != null)
+                        {
+                            item.Tel = row.Tel;
+                        }
+                        if (row.Email != null)
+                        {
+                            item.Email = row.Email;
+                        }                  
+                        item.DisPlayName = row.FirstNameTH +" " + row.LastNameTH;               
+                              string TempSubDistrict, TempDistrict;
+                                if (row.ProvinceOid.ProvinceNameTH.Contains("กรุงเทพ"))
+                                {
+                                    TempSubDistrict = "แขวง";
+                                }
+                                else
+                                {
+                                    TempSubDistrict = "ตำบล";
+                                };
+
+                                if (row.DistrictOid.DistrictNameTH.Contains("กรุงเทพ"))
+                                {
+                                    TempDistrict = "เขต";
+                                }
+                                else { TempDistrict = "อำเภอ"; };                              
+                            item.Address = "เลขที่" + row.Address + " หมู่ที่" + checknull(row.Moo) + " ถนน" + checknull(row.Road) +
+                                TempSubDistrict + " " + row.SubDistrictOid.SubDistrictNameTH + " " + TempDistrict + row.DistrictOid.DistrictNameTH + " " +
+                                "จังหวัด" + row.ProvinceOid.ProvinceNameTH + " รหัสไปรษณีย์ " + row.DistrictOid.PostCode;
+                            
+                        
+                        if (row.Remark != null)
+                        {
+                            item.Remark = row.Remark;
+                        }
+           
+                        item.IsActive = row.IsActive;
+
+                        //List<RegisterCusServiceDetail_Model> item2 = new List<RegisterCusServiceDetail_Model>();
+                        //foreach (RegisterCusServiceDetail row2 in row.RegisterCusServiceDetails)
+                        //{
+                        //    RegisterCusServiceDetail_Model d2 = new RegisterCusServiceDetail_Model();
+                        //    d2.RegisterCusServiceOid = row2.RegisterCusServiceOid.Oid.ToString();
+                        //    d2.RefOid = row2.RefOid;
+                        //    d2.ReceiveDate = row2.ReceiveDate.ToString();
+                        //    d2.ServiceTypeOid = d2.ServiceTypeOid;
+                        //    d2.ServiceTypeName = d2.ServiceTypeName;
+                        //    d2.SubServiceTypeOid = d2.SubServiceTypeOid;
+                        //    d2.ServiceTypeName = d2.SubServiceTypeName;
+                        //    item2.Add(d2);
+                        //}
+                        //item.Detail = item2;
+                        list.Add(item);
+
+                    }
+                    return Request.CreateResponse(HttpStatusCode.OK, list);
+
+                }              
+                 else {
+                    UserError err = new UserError();
+                    err.status = "false";
+                    err.code = "0";
+                    err.message = "ไม่มีชื่อผู้ขอรับบริการ โปรดทำการลงทะเบียน";
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+                }
+            }
+            catch (Exception ex)
+            {
+                UserError err = new UserError();
+                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                err.message = ex.Message;
+                //  Return resual
+                return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+            }
+
+        }
+        [AllowAnonymous]
+        //[JwtAuthentication] /ถ้าใช้โทเคนต้องครอบ 
+        ///ค้นหาด้วยเลขบัตร ปชช CitizenID
+        // [HttpPost] 
+        [HttpPost]
+        [Route("SeachCusService/CitizenID")]
+        public HttpResponseMessage RegisterCusService_ByCitizenID()
+        {
+            string CitizenID = string.Empty;
+            try
 
 
-        //                SelectedData data =   session.ExecuteSproc("TestProc", new OperandValue(123), new OperandValue("abc"));
-
-        //                XpoTypesInfoHelper.GetXpoTypeInfoSource();
-        //                XafTypesInfo.Instance.RegisterEntity(typeof(SupplierSend));
-
-        //                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
-        //                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-        //                IList<SupplierSend> collection = ObjectSpace.GetObjects<SupplierSend>(CriteriaOperator.Parse(" GCRecord is null and IsActive = 1", null));
-        //                if (collection.Count > 0)
-        //            }
-        //            catch
-        //        }
-        //public HttpResponseMessage Approve_sendID()
-        //{
-        //    Approve_Model approve_Success = new Approve_Model();
-        //    try
-        //    {
-        //        if (HttpContext.Current.Request.Form["Send_Code"].ToString() != null)
-        //        {
-        //            approve_Success.Send_Code = HttpContext.Current.Request.Form["Send_Code"].ToString();
-        //        }
-
-        //        if (HttpContext.Current.Request.Form["Send_No"].ToString() != null)
-        //        {
-        //            approve_Success.Send_No = HttpContext.Current.Request.Form["Send_No"].ToString();
-        //        }
-        //        if (HttpContext.Current.Request.Form["Send_Messengr"].ToString() != null)
-        //        {
-        //            approve_Success.Send_Messengr = HttpContext.Current.Request.Form["Send_Messengr"].ToString();
-        //        }
-
-        //        DataSet ds = new DataSet();
-        //        ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieApproval_SendSeed", new SqlParameter("@SendNo", approve_Success.Send_No));
-        //        if (ds.Tables[0].Rows.Count > 0)
-        //        {
-        //            approve_Success.Send_No = 1;
-        //            approve_Success.Send_Messengr = "อนุมัติ";
-
-        //        }
-
-        //    }
-        //    catch (Exception)
-        //    {
-        //    }
+            {
+                if (HttpContext.Current.Request.Form["CitizenID"].ToString() != null)
+                {
+                    CitizenID = HttpContext.Current.Request.Form["CitizenID"].ToString();
+                }
 
 
-        //}
+                if (CitizenID != "")
+                {
+                    XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                    XafTypesInfo.Instance.RegisterEntity(typeof(RegisterCusService));
+                    XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                    IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+                    RegicusService_Model RegisterCusServicer_Info = new RegicusService_Model();
+                    RegisterCusService RegisterCusService_;
+                    RegisterCusService_ = ObjectSpace.FindObject<RegisterCusService>(CriteriaOperator.Parse("GCRecord is null and CitizenID = ? ", CitizenID));
+
+                    if (RegisterCusService_ != null)
+                    {
+                        RegicusService_Model item = new RegicusService_Model();
+                        item.Oid = RegisterCusService_.Oid.ToString();
+                        item.OrganizationOid = RegisterCusService_.OrganizationOid.Oid.ToString();
+                        item.RegisterDate = RegisterCusService_.RegisterDate.ToString();
+                        item.CitizenID = RegisterCusService_.CitizenID;
+                        item.TitleOid = RegisterCusService_.TitleOid.TitleName;
+                        item.FirstNameTH = RegisterCusService_.FirstNameTH;
+                        item.LastNameTH = RegisterCusService_.LastNameTH;
+                        item.GenderOid = RegisterCusService_.GenderOid.GenderName;
+                        if (RegisterCusService_.BirthDate != null)
+                        {
+                            item.BirthDate = RegisterCusService_.BirthDate.ToString();
+                        }
+                        if (RegisterCusService_.Tel != null)
+                        {
+                            item.Tel = RegisterCusService_.Tel;
+                        }
+                        if (RegisterCusService_.Email != null)
+                        {
+                            item.Email = RegisterCusService_.Email;
+                        }
+                        item.DisPlayName = RegisterCusService_.FirstNameTH + " " + RegisterCusService_.LastNameTH;
+                        string TempSubDistrict, TempDistrict;
+                        if (RegisterCusService_.ProvinceOid.ProvinceNameTH.Contains("กรุงเทพ"))
+                        {
+                            TempSubDistrict = "แขวง";
+                        }
+                        else
+                        {
+                            TempSubDistrict = "ตำบล";
+                        };
+
+                        if (RegisterCusService_.DistrictOid.DistrictNameTH.Contains("กรุงเทพ"))
+                        {
+                            TempDistrict = "เขต";
+                        }
+                        else { TempDistrict = "อำเภอ"; };
+                        item.Address = "เลขที่" + RegisterCusService_.Address + " หมู่ที่" + checknull(RegisterCusService_.Moo) + " ถนน" + checknull(RegisterCusService_.Road) +
+                            TempSubDistrict + " " + RegisterCusService_.SubDistrictOid.SubDistrictNameTH + " " + TempDistrict + RegisterCusService_.DistrictOid.DistrictNameTH + " " +
+                            "จังหวัด" + RegisterCusService_.ProvinceOid.ProvinceNameTH + " รหัสไปรษณีย์ " + RegisterCusService_.DistrictOid.PostCode;
+
+
+                        if (RegisterCusService_.Remark != null)
+                        {
+                            item.Remark = RegisterCusService_.Remark;
+                        }
+
+                        item.IsActive = RegisterCusService_.IsActive;
+                        return Request.CreateResponse(HttpStatusCode.OK, item);
+                    }
+
+
+
+
+
+                    else
+                    {
+
+                        return Request.CreateResponse(HttpStatusCode.BadRequest, "NoData");
+
+                    }
+
+                }
+                else
+                {
+                    UserError err = new UserError();
+                    err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                    err.message = "กรุณาระบุเลขบัตรประชาชน";
+                    //  Return resual
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+                }
+            }
+            catch (Exception ex)
+            {
+                UserError err = new UserError();
+                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                err.message = ex.Message;
+                //  Return resual
+                return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+            }
+        }
+
+
+
+
+
 
         public string checknull(object val)
         {

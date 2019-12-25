@@ -67,8 +67,11 @@ namespace WebApi.Jwt.Controllers.MasterData
                     {
                         Regi_subscriber.OrganizationOid = jObject.SelectToken("Organization").Value<string>();
                     }
-
-                    Regi_subscriber.RegisterDate = jObject.SelectToken("RegisterDate").Value<string>();
+                    if (jObject.SelectToken("RegisterDate") != null)
+                    {
+                        Regi_subscriber.RegisterDate = jObject.SelectToken("RegisterDate").Value<string>();
+                    }
+              
                     Regi_subscriber.CitizenID = jObject.SelectToken("CitizenID").Value<string>();
                     Regi_subscriber.TitleOid = jObject.SelectToken("TitleOid").Value<string>();
                     Regi_subscriber.FirstNameTH = jObject.SelectToken("FirstNameTH").Value<string>();
@@ -387,6 +390,10 @@ namespace WebApi.Jwt.Controllers.MasterData
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
         }
+        /// <summary>
+        /// ลงทะเบียนหน่วยงานผู้ขอรับบริการ
+        /// </summary>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
         [Route("Register_OrgeService")]
@@ -571,11 +578,11 @@ namespace WebApi.Jwt.Controllers.MasterData
 
         //[AllowAnonymous]
         //[HttpPost]
-        [Route("Register_CustomerXAF")]
-        public IHttpActionResult RegisterCustomerXAF()
+        [Route("Register_OrgeService")]
+        public IHttpActionResult RegisterOrgeService()
         {
             string TempService_ = string.Empty;
-            RegisterSubscriber_User Regi_subscriber = new RegisterSubscriber_User();
+            registerOrgeService Regi_Orge = new registerOrgeService();
 
             try
             {
@@ -584,22 +591,15 @@ namespace WebApi.Jwt.Controllers.MasterData
                 JObject jObject = (JObject)JsonConvert.DeserializeObject(requestString);
                 if (jObject != null)
                 {
-                    if (jObject.SelectToken("Organization") == null)
-                    {
-                        Regi_subscriber.OrganizationOid = "ไม่มีข้อมูลศูนย์";
-                    }
-                    else
-                    {
-                        Regi_subscriber.OrganizationOid = jObject.SelectToken("Organization").Value<string>();
-                    }
 
-                    Regi_subscriber.RegisterDate = jObject.SelectToken("RegisterDate").Value<string>();
-                    Regi_subscriber.CitizenID = jObject.SelectToken("CitizenID").Value<string>();
-                    Regi_subscriber.TitleOid = jObject.SelectToken("TitleOid").Value<string>();
-                    Regi_subscriber.FirstNameTH = jObject.SelectToken("FirstNameTH").Value<string>();
-                    Regi_subscriber.LastNameTH = jObject.SelectToken("LastNameTH").Value<string>();
-                    Regi_subscriber.Gender = jObject.SelectToken("Gender").Value<string>();
-                    Regi_subscriber.BirthDate = jObject.SelectToken("BirthDate").Value<string>();
+                    Regi_Orge.OrganizationOid = jObject.SelectToken("OrganizationOid").Value<string>();
+                    Regi_Orge.OrgeServiceName = jObject.SelectToken("OrgeServiceName").Value<string>();
+                    Regi_Orge.Tel = jObject.SelectToken("Tel").Value<string>();
+                    Regi_Orge.Email = jObject.SelectToken("Email").Value<string>();
+                    Regi_Orge.Address = jObject.SelectToken("Address").Value<string>();
+                    Regi_Orge.Moo = jObject.SelectToken("Moo").Value<string>();
+                    Regi_Orge.Soi = jObject.SelectToken("Soi").Value<string>();
+                    Regi_Orge.Road = jObject.SelectToken("Road").Value<string>();
                     //Regi_subscriber.Tel = jObject.SelectToken("Tel").Value<string>();
                     //Regi_subscriber.Email = jObject.SelectToken("Email").Value<string>();
                     //Regi_subscriber.DisPlayName = jObject.SelectToken("DisPlayName").Value<string>();
@@ -630,10 +630,10 @@ namespace WebApi.Jwt.Controllers.MasterData
                     //    Regi_subscriber.Road = jObject.SelectToken("Road").Value<string>();
                     //}
 
-                    Regi_subscriber.ProvinceOid = jObject.SelectToken("ProvinceOid").Value<string>();
-                    Regi_subscriber.DistrictOid = jObject.SelectToken("DistrictOid").Value<string>();
-                    Regi_subscriber.SubDistrictOid = jObject.SelectToken("SubDistrictOid").Value<string>();
-                    Regi_subscriber.ZipCode = jObject.SelectToken("ZipCode").Value<string>();
+                    Regi_Orge.ProvinceOid = jObject.SelectToken("ProvinceOid").Value<string>();
+                    Regi_Orge.DistrictOid = jObject.SelectToken("DistrictOid").Value<string>();
+                    Regi_Orge.SubDistrictOid = jObject.SelectToken("SubDistrictOid").Value<string>();
+                    Regi_Orge.ZipCode = jObject.SelectToken("ZipCode").Value<string>();
                     //Regi_subscriber.FullAddress = jObject.SelectToken("FullAddress").Value<string>();
 
 
@@ -645,17 +645,28 @@ namespace WebApi.Jwt.Controllers.MasterData
                 XpoTypesInfoHelper.GetXpoTypeInfoSource();
                 XPObjectSpaceProvider osProvider = new XPObjectSpaceProvider(scc, null);
                 IObjectSpace objectSpace = osProvider.CreateObjectSpace();
-                nutrition.Module.RegisterCusService Regi_subscriber_;
+            
 
-                XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.RegisterCusService));
-                Regi_subscriber_ = objectSpace.CreateObject<RegisterCusService>();
-                Regi_subscriber.OrganizationOid = "F97EF626-FDB7-4361-A9F3-1C9D14FAC27E";
+                nutrition.Module.OrgeService Regi_OrgeService;
 
+                XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.OrgeService));
+                Regi_OrgeService = objectSpace.CreateObject<OrgeService>();
+                Regi_OrgeService.OrganizationOid = objectSpace.FindObject<Organization>(CriteriaOperator.Parse("GCRecord is null and Status = 1 ",Regi_Orge.OrganizationOid));
+                Regi_OrgeService.OrgeServiceName = Regi_Orge.OrgeServiceName;
+                Regi_OrgeService.Tel = Regi_Orge.Tel ;
+                Regi_OrgeService.Email = Regi_Orge.Email;
+                Regi_OrgeService.Address = Regi_Orge.Address;
+                Regi_OrgeService.Moo = Regi_Orge.Moo;
+                Regi_OrgeService.Soi = Regi_Orge.Soi;
+                Regi_OrgeService.Road = Regi_Orge.Road;
+                Regi_OrgeService.ProvinceOid = objectSpace.FindObject<Province>(CriteriaOperator.Parse("GCRecord is null and Status = 1 ", Regi_Orge.ProvinceOid)) ;
+                Regi_OrgeService.DistrictOid = objectSpace.FindObject<District>(CriteriaOperator.Parse("GCRecord is null and Status = 1 ", Regi_Orge.DistrictOid)); 
+                Regi_OrgeService.SubDistrictOid = objectSpace.FindObject<SubDistrict>(CriteriaOperator.Parse("GCRecord is null and Status = 1 ", Regi_Orge.SubDistrictOid)); 
 
 
                 objectSpace.CommitChanges();
 
-                return Ok(Regi_subscriber);
+                return Ok(true);
                 {
                     return BadRequest();
                 }

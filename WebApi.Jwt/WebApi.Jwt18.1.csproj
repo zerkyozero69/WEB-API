@@ -231,14 +231,16 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\Approval_SendSeedController.cs" />
     <Compile Include="Controllers\ManageAnimalSupplierController.cs" />
+    <Compile Include="Controllers\MasterData\ภัยพิบัติController.cs" />
+    <Compile Include="Models\Models_Masters\ภัยพิบัติ.cs" />
     <Compile Include="Controllers\SendOrderSeedController.cs" />
     <Compile Include="Controllers\SendorderSuppilerAnimal_Controller.cs" />
-    <Compile Include="Controllers\ข้อมูลการใช้เมล็ดพันธุ์.cs" />
+    <Compile Include="Controllers\ข้อมูลการใช้เมล็ดพันธุ์และเสบียงสัตว์.cs" />
     <Compile Include="Controllers\StockSeedController.cs" />
-    <Compile Include="Controllers\Subscriber_UserController.cs" />
+    <Compile Include="Controllers\ผู้รับบริการ\Subscriber_UserController.cs" />
     <Compile Include="Controllers\SupplierController.cs" />
     <Compile Include="Controllers\testinsert_APIController.cs" />
-    <Compile Include="Controllers\UserService_Controller.cs" />
+    <Compile Include="Controllers\ผู้รับบริการ\UserService_Controller.cs" />
     <Compile Include="Controllers\AuthenticationController.cs" />
     <Compile Include="Controllers\Getlog_Controller.cs" />
     <Compile Include="Controllers\Get_RolesController.cs" />
@@ -302,6 +304,7 @@
     <Compile Include="Models\user.cs" />
     <Compile Include="Models\UserError.cs" />
     <Compile Include="Models\แผนการผลิตโมเดล\PlanSeedInfo.cs" />
+    <Compile Include="Models\แผนการผลิตโมเดล\การใช้เมล็ดพันธุ์อนุมัติภัยพิบัติ.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

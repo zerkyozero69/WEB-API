@@ -672,7 +672,7 @@ namespace WebApi.Jwt.Controllers.MasterData
 
                         SupplierAnimalUseProduct_Model SupplierAnimal = new SupplierAnimalUseProduct_Model();
                         SupplierAnimal.Oid = row.Oid.ToString();
-                        SupplierAnimal.UseDate = row.UseDate.ToString("dd-MM-yyyy", new CultureInfo("us-US"));
+                        SupplierAnimal.UseDate= row.UseDate.ToString("dd-MM-yyyy", new CultureInfo("us-US"));
                         SupplierAnimal.UseNo = row.UseNo;
                         SupplierAnimal.FinanceYearOid = row.FinanceYearOid.Oid.ToString();
                         SupplierAnimal.FinanceYear = row.FinanceYearOid.YearName;

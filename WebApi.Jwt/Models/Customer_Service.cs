@@ -6,7 +6,7 @@ using System.Web;
 namespace WebApi.Jwt.Models
 {
     public class OrgeService_info
-    { 
+    {
         public string OrganizationOid { get; set; }
         public string OrgeServiceID { get; set; }
         public string OrgeServiceName { get; set; }
@@ -31,8 +31,75 @@ namespace WebApi.Jwt.Models
         public string OrgeServiceOid { get; set; }
 
     }
+    public class RegicusService_Model
+    {
+        public string Oid { get; set; }
+        public string RegisterDate { get; set; }
+
+
+        public string OrganizationOid { get; set; }
+        public string TitleOid { get; set; }
+        public string TitleName { get; set; }
+        public string CitizenID { get; set; }
+
+        public string FirstNameTH { get; set; }
+
+        public string LastNameTH { get; set; }
+        public string BirthDate { get; set; }
+
+        public string GenderOid { get; set; }
+
+        public string Tel { get; set; }
+        public string Email { get; set; }
+
+
+
+
+        public string Remark { get; set; }
+
+        public string FullAddress { get; set; }
+
+
+        public string Address { get; set; }
+
+        public string DisPlayName { get; set; }
+
+  
+
+        public bool IsActive { get; set; }
+
+
+
+
+
+
+        //  public XPCollection<RegisterCusPetAnimalDetail> RegisterCusPetAnimalDetails { get; }
+
+        public string ServicesNumber { get; }
+        public List<RegisterCusServiceDetail_Model> Detail { get; set; }
+    }
+    public class RegisterCusServiceDetail_Model
+    {
+
+        public string ServiceTypeOid { get; set; }
+        public string ServiceTypeName { get; set; }
+        public string SubServiceTypeOid { get; set; }
+        public string SubServiceTypeName { get; set; }
+
+        public string ReceiveDate { get; set; }
+
+        public string RefOid { get; set; }
+
+        public string RegisterCusServiceOid { get; set; }
+    }
+
     public class OrgeService_Data
-        {
+    {
         public List<OrgeService_info> Data { get; set; }
     }
+
+
+
+
+
 }

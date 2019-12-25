@@ -67,4 +67,29 @@ namespace WebApi.Jwt.Models
  
    
     }
+    public class registerOrgeService
+    {
+        public int ServicesNumber { get; set; }
+        public string OrganizationOid { get; set; }
+        public string OrgeServiceName { get; set; }
+        public string Tel { get; set; }
+        public string Email { get; set; }
+        public string Address { get; set; }
+        public string Moo { get; set; }
+        public string Soi { get; set; }
+        public string Road { get; set; }
+        public string ProvinceOid { get; set; }
+        public string DistrictOid { get; set; }
+        public string SubDistrictOid { get; set; }
+
+
+       
+       // public List<OrgeServiceDetail> OrgeServiceDetails { get;set }
+        public string ZipCode { get; set; }
+
+        public bool IsActive { get; set; }
+
+        public string FullAddress { get; }
+
+    }
 }

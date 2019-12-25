@@ -87,17 +87,19 @@ namespace WebApi.Jwt.Controllers.MasterData
         [AllowAnonymous]
         // [JwtAuthentication]
         [HttpGet    ]
-        [Route("GetCusServiceList")]
+        [Route("GetCusService/ID")]
         public IHttpActionResult RegisterCusService()
         {
+            string RegisterCusService = null;
             try
             {
+                 RegisterCusService =  HttpContext.Current.Request.Form["RegisterCusService"].ToString(); ;
                 XpoTypesInfoHelper.GetXpoTypeInfoSource();
                 XafTypesInfo.Instance.RegisterEntity(typeof(RegisterCusService));
                 XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc);
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
 
-                IList<RegisterCusService> collection = ObjectSpace.GetObjects<RegisterCusService>(CriteriaOperator.Parse(" IsActive = 1 and GCRecord is null", null));
+                IList<RegisterCusService> collection = ObjectSpace.GetObjects<RegisterCusService>(CriteriaOperator.Parse(" IsActive = 1 and GCRecord is null and RegisterCusService ", RegisterCusService));
                 List<RegisterCusService_Model> list = new List<RegisterCusService_Model>();
                 foreach (RegisterCusService row in collection)
                 {
