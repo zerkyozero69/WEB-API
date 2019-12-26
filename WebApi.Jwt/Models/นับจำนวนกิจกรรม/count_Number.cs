@@ -28,7 +28,6 @@ namespace WebApi.Jwt.Models.นับจำนวนกิจกรรม
     public class Status_count
     {
         public string ActivityName { get; set; }
-        public string StatusName { get; set; }
         public string CountActivityName { get; set; }
     }
 

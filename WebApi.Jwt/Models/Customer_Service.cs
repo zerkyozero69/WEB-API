@@ -51,16 +51,17 @@ namespace WebApi.Jwt.Models
 
         public string Tel { get; set; }
         public string Email { get; set; }
-
-
-
-
-        public string Remark { get; set; }
-
-        public string FullAddress { get; set; }
-
-
         public string Address { get; set; }
+        public string Moo { get; set; }
+        public string Soi { get; set; }
+
+        public string Road { get; set; }
+        public string ProvinceName { get; set; }
+        public string DistrictName { get; set; }
+        public string SubDistrictName { get; set; }
+        public string ZipCode { get; set; }
+        public string FullAddress { get; set; }
+        public string Remark { get; set; }
 
         public string DisPlayName { get; set; }
 

@@ -405,80 +405,87 @@ namespace WebApi.Jwt.Controllers.MasterData
             {
                 string requestString = Request.Content.ReadAsStringAsync().Result;
                 JObject jObject = (JObject)JsonConvert.DeserializeObject(requestString);
-                if (jObject != null)
+                if (jObject.Count > 0)
                 {
                     if (jObject.SelectToken("OrganizationOid") == null)
                     {
-                        OrgeService.OrganizationOid = string.Empty;
+                        OrgeService.OrganizationOid = null;
                     }
                     else
                     {
                         OrgeService.OrganizationOid = jObject.SelectToken("OrganizationOid").Value<string>();
                     }
-                }
-                OrgeService.OrgeServiceID = jObject.SelectToken("OrgeServiceID").Value<string>();
-                OrgeService.OrgeServiceName = jObject.SelectToken("OrgeServiceName").Value<string>();
-                OrgeService.Email = jObject.SelectToken("Email").Value<string>();
-                OrgeService.Tel = jObject.SelectToken("Tel").Value<string>();
-                OrgeService.Address = jObject.SelectToken("Address").Value<string>();
-                if (jObject.SelectToken("Moo") == null)
-                {
-                    OrgeService.Moo = null;
-                }
-                else
-                {
-                    OrgeService.Moo = jObject.SelectToken("Moo").Value<string>();
-                }
 
-                if (jObject.SelectToken("Soi") == null)
-                {
-                    OrgeService.Soi = null;
-                }
-                else
-                {
-                    OrgeService.Soi = jObject.SelectToken("Soi").Value<string>();
-                }
+                    OrgeService.OrgeServiceID = jObject.SelectToken("OrgeServiceID").Value<string>();
+                    OrgeService.OrgeServiceName = jObject.SelectToken("OrgeServiceName").Value<string>();
+                    OrgeService.Email = jObject.SelectToken("Email").Value<string>();
+                    OrgeService.Tel = jObject.SelectToken("Tel").Value<string>();
+                    OrgeService.Address = jObject.SelectToken("Address").Value<string>();
+                    if (jObject.SelectToken("Moo") == null)
+                    {
+                        OrgeService.Moo = null;
+                    }
+                    else
+                    {
+                        OrgeService.Moo = jObject.SelectToken("Moo").Value<string>();
+                    }
 
-                if (jObject.SelectToken("Road") == null)
-                {
-                    OrgeService.Road = null;
-                }
-                else
-                {
-                    OrgeService.Road = jObject.SelectToken("Road").Value<string>();
-                }
+                    if (jObject.SelectToken("Soi") == null)
+                    {
+                        OrgeService.Soi = null;
+                    }
+                    else
+                    {
+                        OrgeService.Soi = jObject.SelectToken("Soi").Value<string>();
+                    }
 
-                OrgeService.Province = jObject.SelectToken("Province").Value<string>();
-                OrgeService.District = jObject.SelectToken("District").Value<string>();
-                OrgeService.SubDistrict = jObject.SelectToken("SubDistrict ").Value<string>();
-                OrgeService.Zipcode = jObject.SelectToken("Zipcode").Value<string>();
+                    if (jObject.SelectToken("Road") == null)
+                    {
+                        OrgeService.Road = null;
+                    }
+                    else
+                    {
+                        OrgeService.Road = jObject.SelectToken("Road").Value<string>();
+                    }
 
+                    OrgeService.Province = jObject.SelectToken("Province").Value<string>();
+                    OrgeService.District = jObject.SelectToken("District").Value<string>();
+                    OrgeService.SubDistrict = jObject.SelectToken("SubDistrict ").Value<string>();
+                    OrgeService.Zipcode = jObject.SelectToken("Zipcode").Value<string>();
+             
+                    DataSet ds = new DataSet();
+                    SqlParameter[] prm = new SqlParameter[13]; /// parameter นับได้เท่าไร ใส่เท่านั้น c#
+                    prm[0] = new SqlParameter("@OrganizationOid", OrgeService.OrganizationOid); ///แต่ array ต้องนับจาก 0
+                    prm[1] = new SqlParameter("@OrgeServiceID", OrgeService.OrgeServiceID);
+                    prm[2] = new SqlParameter("@OrgeServiceName", OrgeService.OrgeServiceName);
+                    prm[3] = new SqlParameter("@Tel", OrgeService.Tel);
+                    prm[4] = new SqlParameter("@Email", OrgeService.Email);
+                    prm[5] = new SqlParameter("@Address_No", OrgeService.Address);
+                    prm[6] = new SqlParameter("@Address_moo", OrgeService.Moo);
+                    prm[7] = new SqlParameter("@Address_Soi", OrgeService.Soi);
+                    prm[8] = new SqlParameter("@Address_Road", OrgeService.Road);
+                    prm[9] = new SqlParameter("@Address_provinces", OrgeService.Province);
+                    prm[10] = new SqlParameter("@Address_districts", OrgeService.District);
+                    prm[11] = new SqlParameter("@Address_subdistricts", OrgeService.SubDistrict);
+                    prm[12] = new SqlParameter("@ZipCode", OrgeService.Zipcode);
+                    ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieRigisteOrgeService", prm);
+                    if (ds.Tables[0].Rows[0]["pStatus"].ToString() != "0" || ds.Tables[0].Rows[0]["pStatus"].ToString() == "2")
+                    {
+                        var subscriber_User = new Farmer_Status();
+                        subscriber_User.Status = "1";
+                        subscriber_User.Message = "บันทึกข้อมูลผู้ขอรับบริการ เรียบร้อยแล้ว";
+                        return Request.CreateResponse(HttpStatusCode.OK, ds.Tables[0]);
+                    }
+                    else
+                    {
 
-                DataSet ds = new DataSet();
-                SqlParameter[] prm = new SqlParameter[13]; /// parameter นับได้เท่าไร ใส่เท่านั้น c#
-                prm[0] = new SqlParameter("@OrganizationOid", OrgeService.OrganizationOid); ///แต่ array ต้องนับจาก 0
-                prm[1] = new SqlParameter("@OrgeServiceID", OrgeService.OrgeServiceID);
-                prm[2] = new SqlParameter("@OrgeServiceName", OrgeService.OrgeServiceName);
-                prm[3] = new SqlParameter("@Tel", OrgeService.Tel);
-                prm[4] = new SqlParameter("@Email", OrgeService.Email);
-                prm[5] = new SqlParameter("@Address_No", OrgeService.Address);
-                prm[6] = new SqlParameter("@Address_moo", OrgeService.Moo);
-                prm[7] = new SqlParameter("@Address_Soi", OrgeService.Soi);
-                prm[8] = new SqlParameter("@Address_Road", OrgeService.Road);
-                prm[9] = new SqlParameter("@Address_provinces", OrgeService.Province);
-                prm[10] = new SqlParameter("@Address_districts", OrgeService.District);
-                prm[11] = new SqlParameter("@Address_subdistricts", OrgeService.SubDistrict);
-                prm[12] = new SqlParameter("@ZipCode", OrgeService.Zipcode);
-                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieRigisteOrgeService", prm);
-                if (ds.Tables[0].Rows[0]["pStatus"].ToString() != "0" || ds.Tables[0].Rows[0]["pStatus"].ToString() == "2")
-                {
+                        UserError err = new UserError();
 
-                    var subscriber_User = new Farmer_Status();
-                    subscriber_User.Status = "1";
-                    subscriber_User.Message = "บันทึกข้อมูลผู้ขอรับบริการ เรียบร้อยแล้ว";
-                    return Request.CreateResponse(HttpStatusCode.OK, ds.Tables[0]);
-
-
+                        err.code = "5";
+                        err.message = "ไม่สามารถลงทะเบียนได้โปรดตรวจสอบ";
+                        return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+                        // return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "naughty");
+                    }
                 }
                 else
                 {
@@ -490,6 +497,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                     return Request.CreateResponse(HttpStatusCode.BadRequest, err);
                     // return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "naughty");
                 }
+                
 
             }
             catch (Exception ex)
@@ -578,7 +586,7 @@ namespace WebApi.Jwt.Controllers.MasterData
 
         //[AllowAnonymous]
         //[HttpPost]
-        [Route("Register_OrgeService")]
+        [Route("Register_OrgeServiceXAF")]
         public IHttpActionResult RegisterOrgeService()
         {
             string TempService_ = string.Empty;

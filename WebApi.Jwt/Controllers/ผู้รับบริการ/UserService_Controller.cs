@@ -62,6 +62,7 @@ namespace WebApi.Jwt.Controllers
                 List<OrgeService_info> list = new List<OrgeService_info>();
                 List<OrgeServiceDetail_Model> list_detail = new List<OrgeServiceDetail_Model>();
                 IList<OrgeService> collection = ObjectSpace.GetObjects<OrgeService>(CriteriaOperator.Parse("GCRecord is null and IsActive = 1 ", null));
+                string TempSubDistrict =" ", TempDistrict=" ";
                 if (collection.Count > 0)
                 {
                     foreach (OrgeService row in collection)
@@ -70,127 +71,96 @@ namespace WebApi.Jwt.Controllers
 
                         //Customer_Info.OrganizationOid = row.OrganizationOid.OrganizeNameTH;
 
+                       
                         Customer_Info.OrgeServiceName = row.OrgeServiceName;
-                        Customer_Info.Tel = row.Tel;
-                        if (row.Email == null)
+                        if (row.Tel != null)
                         {
-                            Customer_Info.Email = "ไม่พบข้อมูลอีเมล์";
+                            Customer_Info.Tel = row.Tel;
                         }
-                        else
+
+                        if (row.Email != null)
                         {
                             Customer_Info.Email = row.Email;
                         }
-                        if (row.Address == null)
-                        {
-                            Customer_Info.Address = "ไม่พบข้อมูลบ้านเลขที่";
-                        }
-                        else
+              
+                        if (row.Address != "")
                         {
                             Customer_Info.Address = row.Address;
                         }
+       
 
-                        if (row.Moo == null)
-                        {
-                            Customer_Info.Moo = "ไม่พบข้อมูลหมู่";
-                        }
-                        else
+                        if (row.Moo != "")
                         {
                             Customer_Info.Moo = row.Moo;
                         }
-                        if (row.Soi == null)
-                        {
-
-                            Customer_Info.Soi = "ไม่พบข้อมูลซอย";
-                        }
-                        else
+        
+                        if (row.Soi != "")
                         {
 
                             Customer_Info.Soi = row.Soi;
                         }
-
-                        if (row.Road == null)
-                        {
-
-                            Customer_Info.Road = "ไม่พบข้อมูลถนน";
-                        }
-                        else
+        
+                        if (row.Road != "")
                         {
 
                             Customer_Info.Road = row.Road;
                         }
-                        if (row.ProvinceOid == null)
-                        {
-
-                            Customer_Info.ProvinceName = "ไม่พบข้อมูลจังหวัด";
-                        }
-                        else
+                   
+                        if (row.ProvinceOid != null)
                         {
 
                             Customer_Info.ProvinceName = row.ProvinceOid.ProvinceNameTH;
-                        }
-                        if (row.DistrictOid == null)
-                        {
+                            if (row.ProvinceOid.ProvinceNameTH.Contains("กรุงเทพ"))
+                            { TempSubDistrict = "แขวง"; }
+                            else
+                            { TempSubDistrict = "ตำบล"; };
+                            if (row.ProvinceOid.ProvinceNameTH.Contains("กรุงเทพ"))
+                            { TempDistrict = "เขต"; }
+                            else { TempDistrict = "อำเภอ"; };
 
-                            Customer_Info.DistrictName = "ไม่พบข้อมูลอำเภอ";
                         }
-                        else
+
+                        if (row.DistrictOid != null)
                         {
 
                             Customer_Info.DistrictName = row.DistrictOid.DistrictNameTH;
-                        }
-                        if (row.SubDistrictOid == null)
+                         
+                        }       
+                   
+                        if (row.SubDistrictOid  != null)
                         {
-
-                            Customer_Info.SubDistrictName = "ไม่พบข้อมูลตำบล";
-                        }
-                        else
-                        {
-
                             Customer_Info.SubDistrictName = row.SubDistrictOid.SubDistrictNameTH;
                         }
+              
 
-                        if (row.ZipCode == null)
-                        {
-
-                            Customer_Info.ZipCode = "ไม่พบข้อมูลรหัสไปรษณีย์";
-                        }
-                        else
+                        if (row.ZipCode != null)
                         {
 
                             Customer_Info.ZipCode = row.ZipCode;
                         }
 
 
-                        //string TempSubDistrict, TempDistrict;
-                        //if (row.ProvinceOid.ProvinceNameTH.Contains("กรุงเทพ"))
-                        //{ TempSubDistrict = "แขวง"; }
-                        //else
-                        //{ TempSubDistrict = "ตำบล"; };
-
-                        //if (row.ProvinceOid.ProvinceNameTH.Contains("กรุงเทพ"))
-                        //{ TempDistrict = "เขต"; }
-                        //else { TempDistrict = "อำเภอ"; };
-
-                        //Customer_Info.FullAddress = row.Address + " หมู่ที่" + checknull(row.Moo) + " ถนน" + checknull(row.Road) + " " +
-                        //TempSubDistrict + row.SubDistrictOid.SubDistrictNameTH + " " + TempDistrict + row.DistrictOid.DistrictNameTH + " " +
-                        //"จังหวัด" + row.ProvinceOid.ProvinceNameTH + " " + row.DistrictOid.PostCode;
 
 
+
+                        //if (Customer_Info.Address != null && Customer_Info.Moo != null && Customer_Info.Road != null)
+
+                        
+                        Customer_Info.FullAddress = "เลขที่" +" "+ Customer_Info.Address + " หมู่ที่" +" "+ checknull(Customer_Info.Moo) + " ถนน" +" "+ checknull(Customer_Info.Road)+" "+ TempSubDistrict
+                         + " " + Customer_Info.SubDistrictName + " " + TempDistrict +" "+ Customer_Info.DistrictName + " " +
+                        "จังหวัด" +" "+ Customer_Info.ProvinceName + " รหัสไปรษณีย์ " + Customer_Info.ZipCode;
+                        
 
                         list.Add(Customer_Info);
-                    }
-
-                    return Request.CreateResponse(HttpStatusCode.OK, list);
-
-
-                }
+                    }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   }
+        
                 else
                 {
-
-
                     return Request.CreateResponse(HttpStatusCode.BadRequest, "NoData");
 
                 }
+
+                return Request.CreateResponse(HttpStatusCode.OK, list);
 
 
             }
@@ -339,9 +309,11 @@ namespace WebApi.Jwt.Controllers
                     { TempDistrict = "เขต"; }
                     else { TempDistrict = "อำเภอ"; };
 
-                    Customer_Info.FullAddress = OrgeService_.Address + " หมู่ที่" + checknull(OrgeService_.Moo) + " ถนน" + checknull(OrgeService_.Road) + " " +
-                    TempSubDistrict + OrgeService_.SubDistrictOid.SubDistrictNameTH + " " + TempDistrict + OrgeService_.DistrictOid.DistrictNameTH + " " +
-                    "จังหวัด" + OrgeService_.ProvinceOid.ProvinceNameTH + " " + OrgeService_.DistrictOid.PostCode;
+
+                    Customer_Info.FullAddress = "เลขที่" + " " + Customer_Info.Address + " หมู่ที่" + " " + checknull(Customer_Info.Moo) + " ถนน" + " " + checknull(Customer_Info.Road) + " " + TempSubDistrict
+                     + " " + Customer_Info.SubDistrictName + " " + TempDistrict + " " + Customer_Info.DistrictName + " " +
+                    "จังหวัด" + " " + Customer_Info.ProvinceName + " รหัสไปรษณีย์ " + Customer_Info.ZipCode;
+
                     foreach (OrgeServiceDetail row in OrgeService_.OrgeServiceDetails)
                     {
                         OrgeServiceDetail_Model Model = new OrgeServiceDetail_Model();
@@ -393,6 +365,7 @@ namespace WebApi.Jwt.Controllers
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
                 List<RegicusService_Model> list = new List<RegicusService_Model>();
                 IList<RegisterCusService> collection = ObjectSpace.GetObjects<RegisterCusService>(CriteriaOperator.Parse("GCRecord is null and IsActive = 1 ", null));
+                string TempSubDistrict = " ", TempDistrict = " ";
                 if (collection.Count > 0)
                 {
                     foreach (RegisterCusService row in collection)
@@ -411,7 +384,7 @@ namespace WebApi.Jwt.Controllers
                         item.GenderOid = row.GenderOid.GenderName;
                         if (row.BirthDate != null)
                         {
-                            item.BirthDate = row.BirthDate.ToString();
+                            item.BirthDate = row.BirthDate.ToString("dd/MM/yyyy");
                         }
                         if (row.Tel != null)
                         {
@@ -420,28 +393,73 @@ namespace WebApi.Jwt.Controllers
                         if (row.Email != null)
                         {
                             item.Email = row.Email;
-                        }                  
-                        item.DisPlayName = row.FirstNameTH +" " + row.LastNameTH;               
-                              string TempSubDistrict, TempDistrict;
-                                if (row.ProvinceOid.ProvinceNameTH.Contains("กรุงเทพ"))
-                                {
-                                    TempSubDistrict = "แขวง";
-                                }
-                                else
-                                {
-                                    TempSubDistrict = "ตำบล";
-                                };
+                        }
+                        if (row.Address != "")
+                        {
+                            item.Address = row.Address;
+                        }
 
-                                if (row.DistrictOid.DistrictNameTH.Contains("กรุงเทพ"))
-                                {
-                                    TempDistrict = "เขต";
-                                }
-                                else { TempDistrict = "อำเภอ"; };                              
-                            item.Address = "เลขที่" + row.Address + " หมู่ที่" + checknull(row.Moo) + " ถนน" + checknull(row.Road) +
-                                TempSubDistrict + " " + row.SubDistrictOid.SubDistrictNameTH + " " + TempDistrict + row.DistrictOid.DistrictNameTH + " " +
-                                "จังหวัด" + row.ProvinceOid.ProvinceNameTH + " รหัสไปรษณีย์ " + row.DistrictOid.PostCode;
-                            
-                        
+
+                        if (row.Moo != "")
+                        {
+                            item.Moo = row.Moo;
+                        }
+
+                        if (row.Soi != "")
+                        {
+
+                            item.Soi = row.Soi;
+                        }
+
+                        if (row.Road != "")
+                        {
+
+                            item.Road = row.Road;
+                        }
+
+                        if (row.ProvinceOid != null)
+                        {
+
+                            item.ProvinceName = row.ProvinceOid.ProvinceNameTH;
+                            if (row.ProvinceOid.ProvinceNameTH.Contains("กรุงเทพ"))
+                            { TempSubDistrict = "แขวง"; }
+                            else
+                            { TempSubDistrict = "ตำบล"; };
+                            if (row.ProvinceOid.ProvinceNameTH.Contains("กรุงเทพ"))
+                            { TempDistrict = "เขต"; }
+                            else { TempDistrict = "อำเภอ"; };
+
+                        }
+
+                        if (row.DistrictOid != null)
+                        {
+
+                            item.DistrictName = row.DistrictOid.DistrictNameTH;
+
+                        }
+
+                        if (row.SubDistrictOid != null)
+                        {
+                            item.SubDistrictName = row.SubDistrictOid.SubDistrictNameTH;
+                        }
+
+
+                        if (row.ZipCode != null)
+                        {
+
+                            item.ZipCode = row.ZipCode;
+                        }
+
+
+                        item.DisPlayName = row.FirstNameTH +" " + row.LastNameTH;                                          
+                 
+
+
+                        item.FullAddress = "เลขที่" + " " + item.Address + " หมู่ที่" + " " + checknull(item.Moo) + " ถนน" + " " + checknull(item.Road) + " " + TempSubDistrict
+                         + " " + item.SubDistrictName + " " + TempDistrict + " " + item.DistrictName + " " +
+                        "จังหวัด" + " " + item.ProvinceName + " รหัสไปรษณีย์ " + item.ZipCode;
+
+
                         if (row.Remark != null)
                         {
                             item.Remark = row.Remark;
@@ -515,13 +533,13 @@ namespace WebApi.Jwt.Controllers
                     RegicusService_Model RegisterCusServicer_Info = new RegicusService_Model();
                     RegisterCusService RegisterCusService_;
                     RegisterCusService_ = ObjectSpace.FindObject<RegisterCusService>(CriteriaOperator.Parse("GCRecord is null and CitizenID = ? ", CitizenID));
-
+                    string TempSubDistrict= "" , TempDistrict="";
                     if (RegisterCusService_ != null)
                     {
                         RegicusService_Model item = new RegicusService_Model();
                         item.Oid = RegisterCusService_.Oid.ToString();
                         item.OrganizationOid = RegisterCusService_.OrganizationOid.Oid.ToString();
-                        item.RegisterDate = RegisterCusService_.RegisterDate.ToString();
+                        item.RegisterDate = RegisterCusService_.RegisterDate.ToString("dd/MM/yyyy");
                         item.CitizenID = RegisterCusService_.CitizenID;
                         item.TitleOid = RegisterCusService_.TitleOid.TitleName;
                         item.FirstNameTH = RegisterCusService_.FirstNameTH;
@@ -529,7 +547,7 @@ namespace WebApi.Jwt.Controllers
                         item.GenderOid = RegisterCusService_.GenderOid.GenderName;
                         if (RegisterCusService_.BirthDate != null)
                         {
-                            item.BirthDate = RegisterCusService_.BirthDate.ToString();
+                            item.BirthDate = RegisterCusService_.BirthDate.ToString("dd/MM/yyyy");
                         }
                         if (RegisterCusService_.Tel != null)
                         {
@@ -540,24 +558,66 @@ namespace WebApi.Jwt.Controllers
                             item.Email = RegisterCusService_.Email;
                         }
                         item.DisPlayName = RegisterCusService_.FirstNameTH + " " + RegisterCusService_.LastNameTH;
-                        string TempSubDistrict, TempDistrict;
-                        if (RegisterCusService_.ProvinceOid.ProvinceNameTH.Contains("กรุงเทพ"))
+                     
+                        if (RegisterCusService_.Address != "")
                         {
-                            TempSubDistrict = "แขวง";
+                            item.Address = RegisterCusService_.Address;
                         }
-                        else
-                        {
-                            TempSubDistrict = "ตำบล";
-                        };
 
-                        if (RegisterCusService_.DistrictOid.DistrictNameTH.Contains("กรุงเทพ"))
+
+                        if (RegisterCusService_.Moo != "")
                         {
-                            TempDistrict = "เขต";
+                            item.Moo = RegisterCusService_.Moo;
+                        }
+
+                        if (RegisterCusService_.Soi != "")
+                        {
+
+                            item.Soi = RegisterCusService_.Soi;
+                        }
+
+                        if (RegisterCusService_.Road != "")
+                        {
+
+                            item.Road = RegisterCusService_.Road;
+                        }
+
+                        if (RegisterCusService_.ProvinceOid != null)
+                        {
+
+                            item.ProvinceName = RegisterCusService_.ProvinceOid.ProvinceNameTH;
+                            if (RegisterCusService_.ProvinceOid.ProvinceNameTH.Contains("กรุงเทพ"))
+                            { TempSubDistrict = "แขวง"; }
+                            else
+                            { TempSubDistrict = "ตำบล"; };
+                            if (RegisterCusService_.ProvinceOid.ProvinceNameTH.Contains("กรุงเทพ"))
+                            { TempDistrict = "เขต"; }
+                            else { TempDistrict = "อำเภอ"; };
+
+                        }
+
+                        if (RegisterCusService_.DistrictOid != null)
+                        {
+
+                            item.DistrictName = RegisterCusService_.DistrictOid.DistrictNameTH;
+
+                        }
+
+                        if (RegisterCusService_.SubDistrictOid != null)
+                        {
+                            item.SubDistrictName = RegisterCusService_.SubDistrictOid.SubDistrictNameTH;
+                        }
+
+
+                        if (RegisterCusService_.ZipCode != null)
+                        {
+
+                            item.ZipCode = RegisterCusService_.ZipCode;
                         }
                         else { TempDistrict = "อำเภอ"; };
-                        item.Address = "เลขที่" + RegisterCusService_.Address + " หมู่ที่" + checknull(RegisterCusService_.Moo) + " ถนน" + checknull(RegisterCusService_.Road) +
-                            TempSubDistrict + " " + RegisterCusService_.SubDistrictOid.SubDistrictNameTH + " " + TempDistrict + RegisterCusService_.DistrictOid.DistrictNameTH + " " +
-                            "จังหวัด" + RegisterCusService_.ProvinceOid.ProvinceNameTH + " รหัสไปรษณีย์ " + RegisterCusService_.DistrictOid.PostCode;
+                        item.FullAddress = "เลขที่" +" "+ RegisterCusService_.Address + " หมู่ที่" +" "+ checknull(RegisterCusService_.Moo) + " ถนน" +" "+ checknull(RegisterCusService_.Road) 
+                            +" "+TempSubDistrict + " " + RegisterCusService_.SubDistrictOid.SubDistrictNameTH + " " + TempDistrict + " "+RegisterCusService_.DistrictOid.DistrictNameTH + " " +
+                            "จังหวัด" +" "+ RegisterCusService_.ProvinceOid.ProvinceNameTH + " รหัสไปรษณีย์ " + RegisterCusService_.DistrictOid.PostCode;
 
 
                         if (RegisterCusService_.Remark != null)
@@ -607,19 +667,19 @@ namespace WebApi.Jwt.Controllers
 
         public string checknull(object val)
         {
-            string ret = "-";
+            object ret = "-";
             try
             {
                 if (val != null || val.ToString() != string.Empty)
                 {
-                    ret = val.ToString();
+                    ret = val;
                 };
             }
-            catch (Exception ex)
+            catch (Exception )
             {
                 ret = "-";
             }
-            return ret;
+            return ret.ToString();
         }
 
     }

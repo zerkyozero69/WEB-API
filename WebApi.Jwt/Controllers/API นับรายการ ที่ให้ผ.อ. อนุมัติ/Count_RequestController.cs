@@ -29,7 +29,7 @@ namespace WebApi.Jwt.Controllers.API_นับรายการ_ที่ให
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
-        [Route("SupplierAnimalUseProduct/Count")]
+        [Route("SupplierAnimalProduct/Count")]
         public HttpResponseMessage CountSupplierUseAnimalProduct()  ///SupplierUseAnimalProduct/Update
         {
             try
@@ -62,6 +62,7 @@ namespace WebApi.Jwt.Controllers.API_นับรายการ_ที่ให
                             Group_.GroupName = dr["GroupName"].ToString();
                             Status_count item = new Status_count();
                             item.ActivityName = dr["StatusName"].ToString();
+
                             item.CountActivityName = dr["CountStatus"].ToString();
                             //status.Add(item);
                             //Group_.Status_List = status;
