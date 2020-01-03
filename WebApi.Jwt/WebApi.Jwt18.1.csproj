@@ -232,10 +232,12 @@
     <Compile Include="Controllers\API นับรายการ ที่ให้ผ.อ. อนุมัติ\Count_RequestController.cs" />
     <Compile Include="Controllers\Approval_SendSeedController.cs" />
     <Compile Include="Controllers\ManageAnimalSupplierController.cs" />
+    <Compile Include="Controllers\MasterData\ActivityController.cs" />
     <Compile Include="Controllers\MasterData\ภัยพิบัติController.cs" />
+    <Compile Include="Models\Models_Masters\Activity_Model.cs" />
     <Compile Include="Models\Models_Masters\ภัยพิบัติ.cs" />
-    <Compile Include="Controllers\SendOrderSeedController.cs" />
-    <Compile Include="Controllers\SendorderSuppilerAnimal_Controller.cs" />
+    <Compile Include="Controllers\ส่งพืชพันธุ์อาหารสัตว์\SendOrderSeedController.cs" />
+    <Compile Include="Controllers\ส่งพืชพันธุ์อาหารสัตว์\SendorderSuppilerAnimal_Controller.cs" />
     <Compile Include="Controllers\ข้อมูลการใช้เมล็ดพันธุ์และเสบียงสัตว์.cs" />
     <Compile Include="Controllers\StockSeedController.cs" />
     <Compile Include="Controllers\ผู้รับบริการ\Subscriber_UserController.cs" />

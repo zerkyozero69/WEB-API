@@ -607,6 +607,7 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                         if (Status == "1")
                         {
                             objSupplierUseAnimalProduct.Stauts = EnumRodBreedProductSeedStatus.Approve;
+                            objSupplierUseAnimalProduct.Remark = Remark;
                         }
                         else
                         {
@@ -683,12 +684,13 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                         if (Status == "1")
                         { //อนุมัติ
                             objSupplierUseProduct.Stauts = EnumSupplierUseStatus.Approved; //2
+                            objSupplierUseProduct.Remark = Remark;
                             ObjectSpace.CommitChanges();
                         }
                         else if (Status == "2")
                         { //ไม่อนุมัติ
                             objSupplierUseProduct.Stauts = EnumSupplierUseStatus.Eject; //4
-
+                            objSupplierUseProduct.Remark = Remark;
                             ObjectSpace.CommitChanges();
                         }
 
@@ -704,7 +706,7 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                         err.status = "false";
                         err.code = "-1";
                         err.message = "ไม่พบข้อมูล";
-                        return Request.CreateResponse(HttpStatusCode.NotFound, err);
+                        return Request.CreateResponse(HttpStatusCode.BadRequest, err);
                     }
                 }
                 else

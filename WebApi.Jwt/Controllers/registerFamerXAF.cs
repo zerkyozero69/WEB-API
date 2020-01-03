@@ -166,7 +166,9 @@ namespace WebApi.Jwt.Controllers.MasterData
                 //   IList<Farmer> collection = ObjectSpace.GetObjects<Farmer>(CriteriaOperator.Parse(" GCRecord is null and IsActive = 1", null));
 
                 //     XPCollection collection = (XPCollection)ObjectSpace.CreateCollection(typeof(Farmer));
- 
+
+
+
                 DataSet ds = new DataSet();
                 Farmer farmer_ = ObjectSpace.CreateObject< Farmer >();  // new Farmer(session);
              /*   ds = SqlHelper.ExecuteDataset(scc, CommandType.Text, sql)*/;

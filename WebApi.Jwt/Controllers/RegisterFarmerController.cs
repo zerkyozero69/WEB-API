@@ -161,7 +161,7 @@ namespace WebApi.Jwt.Controllers
                 DataSet ds;
                 SqlParameter[] prm = new SqlParameter[21];
 
-                prm[0] = new SqlParameter("@OrganizationOid", Registerfarmer.OrganizationOid);
+                prm[0] = new SqlParameter("@OrganizationOid", Registerfarmer.OrganizationOid); ///ต้องระบุชื่อศูนย์ที่จะสมัคร ถึงขึ้นที่หน้าเว็บ
                 prm[1] = new SqlParameter("@Citizen_ID", Registerfarmer.CitizenID);
                 prm[2] = new SqlParameter("@TitleOid", Registerfarmer.TitleOid);
                 prm[3] = new SqlParameter("@FirstName_TH", Registerfarmer.FirstNameTH);
@@ -556,6 +556,10 @@ namespace WebApi.Jwt.Controllers
             }
 
         }
+        /// <summary>
+        /// ค้นหาเลขบัตรประชาชน จากฐานเรา และถ้า TGS
+        /// </summary>
+        /// <returns></returns>
         [AllowAnonymous]
         // [JwtAuthentication]
         [HttpPost]

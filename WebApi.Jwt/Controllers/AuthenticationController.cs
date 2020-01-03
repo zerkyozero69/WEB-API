@@ -67,6 +67,7 @@ namespace WebApi.Jwt.Controllers
                 {
                     login.Password = HttpContext.Current.Request.Form["Password"].ToString();
                 }
+
                 helpController result = new helpController();
                 //login.resultLogin = result.CheckLogin_XAF(login.Username, login.Password);
                 //if (login.resultLogin != null)

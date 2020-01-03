@@ -108,7 +108,7 @@ namespace WebApi.Jwt.helpclass
                     { TempDistrict = "เขต"; }
                     else { TempDistrict = "อำเภอ"; };
 
-                    objUser_info.FullAddress = User.Organization.Address + " หมู่ที่" + checknull(User.Organization.Moo) + " ถนน" + checknull(User.Organization.Road) + " " +
+                    objUser_info.FullAddress = User.Organization.Address + " หมู่ที่" +" "+ checknull(User.Organization.Moo) + " ถนน" + checknull(User.Organization.Road) + " " +
                     TempSubDistrict + User.Organization.SubDistrictOid.SubDistrictNameTH + " " + TempDistrict + User.Organization.DistrictOid.DistrictNameTH + " " +
                     "จังหวัด" + User.Organization.ProvinceOid.ProvinceNameTH + " " + User.Organization.DistrictOid.PostCode;
 

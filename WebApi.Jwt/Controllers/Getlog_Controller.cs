@@ -46,6 +46,7 @@ namespace WebApi.Jwt.Controllers
             try
             {
 
+
                 DataSet ds = new DataSet();
 
                 ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "Get_LogEvent");

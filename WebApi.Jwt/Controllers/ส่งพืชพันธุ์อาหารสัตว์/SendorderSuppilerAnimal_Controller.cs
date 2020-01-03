@@ -37,7 +37,7 @@ using DevExpress.Xpo;
 namespace WebApi.Jwt.Controllers.MasterData
 {
     /// <summary>
-    /// ข้อมูลส่ง-รับเมล็ดพันธุ์ให้หน่วยงาน
+    /// ข้อมูลส่ง-รับเสบียงสัตว์ให้หน่วยงาน
     /// ==================
     /// SendStatus:
     ///     รับเสบียงสัตว์

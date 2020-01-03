@@ -52,7 +52,8 @@ namespace WebApi.Jwt.Controllers
             try
 
             {
-                //DataSet ds;
+                //
+            DataSet    ds;
                 //ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieGetRoles_ByUser", new SqlParameter("@Oid", Oid)); ///อย่าลืมเปลี่ยน คอนเนคชั่นสติง
                 //DataTable dt = new DataTable();
                 //dt = ds.Tables[0];

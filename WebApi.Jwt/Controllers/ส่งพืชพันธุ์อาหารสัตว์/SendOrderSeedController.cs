@@ -134,7 +134,7 @@ namespace WebApi.Jwt.Controllers
 
                 }
                 else {
-                    UserError err = new UserError();
+                    UserError err = new UserError();                                                                                                                                                    
                     err.status = "false";
                     err.code = "0";
                     err.message = "กรุณาใส่ข้อมูล Org_Oid และ type (1=รับ/2=ส่ง) ให้เรียบร้อยก่อน";

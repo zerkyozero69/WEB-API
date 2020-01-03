@@ -220,12 +220,6 @@ namespace WebApi.Jwt.Controllers.MasterData
                 return BadRequest(ex.Message);
             }
         }
-        //public IHttpActionResult OrgeService()
-        //{
-        //    try
-        //    {
-        //    }
-        //}
 
 
 }
