@@ -1362,7 +1362,7 @@ namespace WebApi.Jwt.Controllers
                 UserError err = new UserError();
                 err.status = "false";
                 err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-                err.message = "ไม่พบข้อมูล";
+                err.message = ex.Message;
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
         }
@@ -1728,7 +1728,7 @@ namespace WebApi.Jwt.Controllers
                 UserError err = new UserError();
                 err.status = "false";
                 err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-                err.message = "ไม่พบข้อมูล";
+                err.message = ex.Message;
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
         }
@@ -1919,7 +1919,7 @@ namespace WebApi.Jwt.Controllers
                 UserError err = new UserError();
                 err.status = "false";
                 err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-                err.message = "ไม่พบข้อมูล";
+                err.message = ex.Message;
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
         }
@@ -1974,7 +1974,7 @@ namespace WebApi.Jwt.Controllers
                     {
 
                         objsend_Detail.LotNumber = row.LotNumber.Oid;
-
+                      
                         objsend_Detail.WeightUnit = row.WeightUnitOid.UnitName;
                         objsend_Detail.AnimalSeedLevelOid = row.AnimalSeedLevelOid;
                         objsend_Detail.BudgetSourceOid = row.BudgetSourceOid;
@@ -1995,7 +1995,7 @@ namespace WebApi.Jwt.Controllers
 
                     var objStockSeedInfo = ObjectSpace.GetObjects<StockSeedInfo>(CriteriaOperator.Parse("OrganizationOid= ? and FinanceYearOid=? and BudgetSourceOid=? and AnimalSeedOid=? and AnimalSeedLevelOid=? and StockType=0 ", ObjMaster.SendOrgOid.Oid, ObjMaster.FinanceYearOid, objsend_Detail.BudgetSourceOid, objsend_Detail.AnimalSeedOid
                     , objsend_Detail.AnimalSeedLevelOid, objsend_Detail.LotNumber));
-                    if (objStockSeedInfo.Count == 0)
+                    if (objStockSeedInfo.Count != 0)
                     {
 
                         //var stockSeedInfos = from Item in objStockSeedInfo

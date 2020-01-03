@@ -580,10 +580,10 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
             _Registerfarmer Registerfarmer = new _Registerfarmer();
             try
             {
-
+                string Remark = "";
                 string RefNo = HttpContext.Current.Request.Form["RefNo"].ToString(); //ข้อมูลเลขที่อ้างอิง
                 string Status = HttpContext.Current.Request.Form["Status"].ToString(); //สถานะ
-                string Remark = HttpContext.Current.Request.Form["Remark"].ToString(); //หมายเหตุ
+                Remark = HttpContext.Current.Request.Form["Remark"].ToString(); //หมายเหตุ
                 string activityNameOid = HttpContext.Current.Request.Form["activityNameOid"].ToString();
 
                 if (RefNo != "" && Status != "" && activityNameOid != "")
@@ -656,10 +656,7 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
         {
             try
             {
-                string Remark = "";
-               
-                    Remark = HttpContext.Current.Request.Form["Remark"].ToString();
-                
+                string Remark = HttpContext.Current.Request.Form["Remark"].ToString();
                 string RefNo = HttpContext.Current.Request.Form["RefNo"].ToString(); //ข้อมูลเลขที่อ้างอิง
                 string Status = HttpContext.Current.Request.Form["Status"].ToString(); //สถานะ
 
@@ -690,7 +687,11 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                         else if (Status == "2")
                         { //ไม่อนุมัติ
                             objSupplierUseProduct.Stauts = EnumSupplierUseStatus.Eject; //4
-                            objSupplierUseProduct.Remark = Remark;
+                           //if( Remark != " ")
+                           // {
+                                objSupplierUseProduct.Remark = Remark;
+                            //}
+                          
                             ObjectSpace.CommitChanges();
                         }
 
@@ -737,6 +738,8 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
         {
             try
             {
+                string Remark = "";
+                Remark = HttpContext.Current.Request.Form["Remark"].ToString();
                 string RefNo = HttpContext.Current.Request.Form["RefNo"].ToString(); //ข้อมูลเลขที่อ้างอิง
                 string Status = HttpContext.Current.Request.Form["Status"].ToString(); //สถานะ
 
@@ -761,12 +764,13 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                         if (Status == "1")
                         { //อนุมัติ
                             objSupplierUseProduct.Stauts = EnumRodBreedProductSeedStatus.Approve; //2
+                            objSupplierUseProduct.Remark = Remark.ToString();
                             ObjectSpace.CommitChanges();
                         }
                         else if (Status == "2")
                         { //ไม่อนุมัติ
                             objSupplierUseProduct.Stauts = EnumRodBreedProductSeedStatus.NoApprove; //4
-
+                            objSupplierUseProduct.Remark = Remark.ToString();
                             ObjectSpace.CommitChanges();
                         }
 
