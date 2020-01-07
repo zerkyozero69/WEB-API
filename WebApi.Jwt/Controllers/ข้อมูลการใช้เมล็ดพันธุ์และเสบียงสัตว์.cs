@@ -922,7 +922,7 @@ namespace WebApi.Jwt.Controllers
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
-        [Route("SupplierUseAnimal/InsertDetai")]
+        [Route("SupplierUseAnimal/InsertDetail")]
         public HttpResponseMessage SupplierUseAnimal_InsertDetail()  ///SupplierUseAnimal_InsertDetail
         {
 
@@ -1732,11 +1732,133 @@ namespace WebApi.Jwt.Controllers
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
         }
-        #endregion แก้ไขกิจกรรม
         /// <summary>
-        /// รายละเอียดหน้าการใช้เมล็ดพันธุ์
+        /// ไม่อนุมัติ การช่วยเหลือภัยพิบัติ status 4
         /// </summary>
         /// <returns></returns>
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("SupplierUseAnimal/List/NotApprove")]
+        public HttpResponseMessage GetSupplierUse_NotApprove()
+        {
+            try
+            {
+                string org_oid = HttpContext.Current.Request.Form["Org_Oid"].ToString();
+           //การแจกจ่าย=1/การจำหน่าย=2/ภัยพิบัติ=3
+                if (org_oid != "" )
+                {
+                    XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                    XafTypesInfo.Instance.RegisterEntity(typeof(SupplierUseAnimalProduct));
+
+                    List<SupplierProductUser> UseACT = new List<SupplierProductUser>();
+                    SupplierUseAnimalProduct_Model lists = new SupplierUseAnimalProduct_Model();
+                    lists.org_oid = org_oid;
+
+                    XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                    IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+                    //เพื่อใช้ในกิจกรรมกรมปศุสัตว์           
+                    string ActivityOid = "b100c7c1-4755-4af0-812e-3dd6ba372d45";
+
+                    IList<SupplierUseAnimalProduct> collection3 = ObjectSpace.GetObjects<SupplierUseAnimalProduct>(CriteriaOperator.Parse("GCRecord is null and Stauts = 4 and OrganizationOid='" + org_oid + "'and ActivityOid = '" + ActivityOid + "' ", null));
+                    if (collection3.Count > 0)
+                    {
+                        foreach (SupplierUseAnimalProduct row in collection3)
+                        {
+
+                            SupplierProductUser Supplier_3 = new SupplierProductUser();          
+                            Supplier_3.Oid = row.Oid.ToString();
+                            Supplier_3.UseDate = row.UseDate.ToString("dd-MM-yyyy", new CultureInfo("us-US"));
+                            Supplier_3.UseNo = row.UseNo.ToString();
+                            if (row.RegisCusServiceOid == null)
+                            {
+                                Supplier_3.RegisCusServiceOid = "ไม่พบข้อมูล";
+                                Supplier_3.RegisCusServiceName = "ไม่พบข้อมูล";
+                            }
+                            else
+                            {
+                                Supplier_3.RegisCusServiceOid = row.RegisCusServiceOid.Oid.ToString();
+                                Supplier_3.RegisCusServiceName = row.RegisCusServiceOid.FirstNameTH + " " + row.RegisCusServiceOid.LastNameTH;
+                            }
+
+                            if (row.OrgeServiceOid == null)
+                            {
+                                Supplier_3.OrgeServiceName = "ไม่พบข้อมูลหน่วยงานขอรับบริการ";
+                            }
+                            else
+                            {
+                                Supplier_3.OrgeServiceName = row.OrgeServiceOid.OrgeServiceName;
+                            }
+                            Supplier_3.ActivityNameOid = row.ActivityOid.Oid.ToString();
+                            Supplier_3.ActivityName = row.ActivityOid.ActivityName.ToString();
+                            Supplier_3.OrganizationOid = row.OrganizationOid.Oid.ToString();
+                            if (row.SubActivityOid != null)
+                            {
+                                Supplier_3.SubActivityName = row.SubActivityOid.ActivityName;
+                            }
+                            if (row.SubActivityLevelOid != null)
+                            {
+                                Supplier_3.SubActivityLevelName = row.SubActivityLevelOid.ActivityName;
+                            }
+
+                            Supplier_3.FinanceYear = row.FinanceYearOid.YearName.ToString();
+                            Supplier_3.OrganizationName = row.OrganizationOid.SubOrganizeName.ToString();
+                            if (row.EmployeeOid == null)
+                            {
+                                Supplier_3.EmployeeName = "ไม่มีรายชื่อผู้ขอรับบริการ";
+                            }
+                            else
+                            {
+                                Supplier_3.EmployeeName = row.EmployeeOid.EmployeeFirstName + " " + row.EmployeeOid.EmployeeLastName;
+                            }
+
+                            Supplier_3.Remark = row.Remark;
+                            Supplier_3.Stauts = row.Stauts.ToString();
+                            Supplier_3.ApproveDate = row.ApproveDate.ToString("dd-MM-yyyy", new CultureInfo("us-US"));
+                            Supplier_3.ActivityNameOid = row.ActivityOid.Oid.ToString();
+                            Supplier_3.ActivityName = row.ActivityOid.ActivityName.ToString();
+
+                            if (row.SubActivityOid == null)
+                            {
+                                Supplier_3.SubActivityName = "ไม่มีข้อมูลกิจกรรม";
+                            }
+                            else
+                            {
+                                Supplier_3.SubActivityName = row.SubActivityOid.ActivityName.ToString();
+                            }
+                            Supplier_3.ReceiptNo = row.ReceiptNo;
+                            Supplier_3.Refno = row.UseNo + "|" + row.OrganizationOid.Oid.ToString() + "|3";
+                            Supplier_3.Weight = row.SupplierUseAnimalProductDetails.Sum((c => c.Weight)).ToString() + " " + "กิโลกรัม";
+                            UseACT.Add(Supplier_3);
+                        }
+                        //lists.UseACT = UseACT;
+                       
+                    }
+                    return Request.CreateResponse(HttpStatusCode.OK, UseACT);
+                }
+                else
+                {
+                    UserError err = new UserError();
+                    err.status = "false";
+                    err.code = "0";
+                    err.message = "กรุณาใส่ข้อมูล Org_Oid ให้เรียบร้อย";
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+                }
+            }
+            catch (Exception ex)
+            {
+                UserError err = new UserError();
+                err.status = "false";
+                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                err.message = ex.Message;
+                return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+            }
+        }
+
+        #endregion แก้ไขกิจกรรม
+            /// <summary>
+            /// รายละเอียดหน้าการใช้เมล็ดพันธุ์
+            /// </summary>
+            /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
         [Route("SupplierUseProduct/Detail")]  ///SupplierUseProduct/Detail 

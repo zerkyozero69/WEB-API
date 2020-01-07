@@ -55,7 +55,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                 {
                     Objective_Used_Model model = new Objective_Used_Model();
                     model.ObjectTypeName = row.ObjectTypeName;
-                    model.IsActive = row.IsActive;
+                    model.Oid = row.Oid.ToString();
                     list.Add(model);
                 }
                 return Request.CreateResponse(HttpStatusCode.OK, list);

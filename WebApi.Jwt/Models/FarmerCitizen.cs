@@ -24,7 +24,7 @@ namespace WebApi.Jwt.Models
         public object provinceNameTH { get; set; }
         public object districtNameTH { get; set; }
         public object subDistrictNameTH { get; set; }
-        public object zipCode { get; set; }
+        public object PostCode { get; set; }
         public object latitude { get; set; }
         public object longitude { get; set; }
 

@@ -191,13 +191,12 @@ namespace WebApi.Jwt.Controllers
 
                 if (ds.Tables[0].Rows[0]["pStatus"].ToString() != "0" || ds.Tables[0].Rows[0]["pStatus"].ToString() == "2")
                 {
+                    string Register_Type = "";
 
                     Farmer_Status Farmer = new Farmer_Status();
+                    Register_Type = TempForageType;
                     Farmer.Message = "ลงทะเบียนสำเร็จ ";
-
-                    Farmer.Fullname = @Registerfarmer.FirstNameTH + "  " + @Registerfarmer.LastNameTH;
-                    Farmer.CitizenID = "รหัสบัตรประชาชน" + " = " + @Registerfarmer.CitizenID;
-
+                    
 
                     //return Request.CreateResponse(HttpStatusCode.OK);
                     return Request.CreateResponse(true);
@@ -652,7 +651,7 @@ namespace WebApi.Jwt.Controllers
                     farmer_info.provinceNameTH = farmerResul["provinceName"];
                     farmer_info.districtNameTH = farmerResul["amphurName"];
                     farmer_info.subDistrictNameTH = farmerResul["tambolName"];
-                    farmer_info.zipCode = farmerResul["postCode"];
+                    farmer_info.PostCode = farmerResul["postCode"];
                     farmer_info.latitude = farmerResul["latitude"];
                     farmer_info.longitude = farmerResul["longitude"];
 

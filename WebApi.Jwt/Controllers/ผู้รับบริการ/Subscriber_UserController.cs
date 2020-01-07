@@ -51,7 +51,8 @@ namespace WebApi.Jwt.Controllers.MasterData
         [Route("Register_Subscriber")]
         public HttpResponseMessage Register_Subscriber()
         {
-            RegisterSubscriber_User Regi_subscriber = new RegisterSubscriber_User();
+            RegicusService_Model Regi_subscriber = new RegicusService_Model();
+
 
             try
             {
@@ -59,28 +60,24 @@ namespace WebApi.Jwt.Controllers.MasterData
                 JObject jObject = (JObject)JsonConvert.DeserializeObject(requestString);
                 if (jObject != null)
                 {
-                    if (jObject.SelectToken("Organization") == null)
+                    if (jObject.SelectToken("OrganizationOid") == null)
                     {
                         Regi_subscriber.OrganizationOid = "ไม่มีข้อมูลศูนย์";
                     }
                     else
                     {
-                        Regi_subscriber.OrganizationOid = jObject.SelectToken("Organization").Value<string>();
+                        Regi_subscriber.OrganizationOid = jObject.SelectToken("OrganizationOid").Value<string>();
                     }
-                    if (jObject.SelectToken("RegisterDate") != null)
-                    {
-                        Regi_subscriber.RegisterDate = jObject.SelectToken("RegisterDate").Value<string>();
-                    }
-              
+                   
                     Regi_subscriber.CitizenID = jObject.SelectToken("CitizenID").Value<string>();
                     Regi_subscriber.TitleOid = jObject.SelectToken("TitleOid").Value<string>();
                     Regi_subscriber.FirstNameTH = jObject.SelectToken("FirstNameTH").Value<string>();
                     Regi_subscriber.LastNameTH = jObject.SelectToken("LastNameTH").Value<string>();
-                    Regi_subscriber.Gender = jObject.SelectToken("Gender").Value<string>();
+                    Regi_subscriber.GenderOid = jObject.SelectToken("GenderOid").Value<string>();
                     Regi_subscriber.BirthDate = jObject.SelectToken("BirthDate").Value<string>();
                     Regi_subscriber.Tel = jObject.SelectToken("Tel").Value<string>();
                     Regi_subscriber.Email = jObject.SelectToken("Email").Value<string>();
-                    Regi_subscriber.Address = jObject.SelectToken("Address_No").Value<string>();
+                    Regi_subscriber.Address = jObject.SelectToken("Address").Value<string>();
 
                     if (jObject.SelectToken("Moo") == null)
                     {
@@ -108,41 +105,40 @@ namespace WebApi.Jwt.Controllers.MasterData
                     {
                         Regi_subscriber.Road = jObject.SelectToken("Road").Value<string>();
                     }
-
+                    if (jObject.SelectToken("Remark") != null)
+                    {
+                        Regi_subscriber.Remark = jObject.SelectToken("Remark").Value<string>();
+                    }
+                 
                     Regi_subscriber.ProvinceOid = jObject.SelectToken("ProvinceOid").Value<string>();
                     Regi_subscriber.DistrictOid = jObject.SelectToken("DistrictOid").Value<string>();
                     Regi_subscriber.SubDistrictOid = jObject.SelectToken("SubDistrictOid").Value<string>();
                     Regi_subscriber.ZipCode = jObject.SelectToken("ZipCode").Value<string>();
-
-
-
-
 
                 }
 
                 XPObjectSpaceProvider osProvider = new XPObjectSpaceProvider(scc, null);
                 IObjectSpace objectSpace = osProvider.CreateObjectSpace();
                 DataSet ds = new DataSet();
-                SqlParameter[] prm = new SqlParameter[19]; /// parameter นับได้เท่าไร ใส่เท่านั้น c#
-                prm[0] = new SqlParameter("@OrganizationOid", Regi_subscriber.OrganizationOid); ///แต่ array ต้องนับจาก 0
-                prm[1] = new SqlParameter("@RegisterDate", Regi_subscriber.RegisterDate);
-                prm[2] = new SqlParameter("@Citizen_ID", Regi_subscriber.CitizenID);
-                prm[3] = new SqlParameter("@TitleOid", Regi_subscriber.TitleOid);
-                prm[4] = new SqlParameter("@FirstName_TH", Regi_subscriber.FirstNameTH);
-                prm[5] = new SqlParameter("@LastName_TH", Regi_subscriber.LastNameTH);
-                prm[6] = new SqlParameter("@Gender", Regi_subscriber.Gender);
-                prm[7] = new SqlParameter("@Birthdate", Regi_subscriber.BirthDate);
-                prm[8] = new SqlParameter("@Tel", Regi_subscriber.Tel);
-                prm[9] = new SqlParameter("@Email", Regi_subscriber.Email);
-                prm[10] = new SqlParameter("@Remark", Regi_subscriber.Remark);
-                prm[11] = new SqlParameter("@Address_No", Regi_subscriber.Address);
-                prm[12] = new SqlParameter("@Address_moo", Regi_subscriber.Moo);
-                prm[13] = new SqlParameter("@Address_Soi", Regi_subscriber.Soi);
-                prm[14] = new SqlParameter("@Address_Road", Regi_subscriber.Road);
-                prm[15] = new SqlParameter("@Address_provinces", Regi_subscriber.ProvinceOid);
-                prm[16] = new SqlParameter("@Address_districts", Regi_subscriber.DistrictOid);
-                prm[17] = new SqlParameter("@Address_subdistricts", Regi_subscriber.SubDistrictOid);
-                prm[18] = new SqlParameter("@ZipCode", Regi_subscriber.ZipCode);
+                SqlParameter[] prm = new SqlParameter[18]; /// parameter นับได้เท่าไร ใส่เท่านั้น c#
+                prm[0] = new SqlParameter("@OrganizationOid", Regi_subscriber.OrganizationOid); ///แต่ array ต้องนับจาก 0        
+                prm[1] = new SqlParameter("@Citizen_ID", Regi_subscriber.CitizenID);
+                prm[2] = new SqlParameter("@TitleOid", Regi_subscriber.TitleOid);
+                prm[3] = new SqlParameter("@FirstName_TH", Regi_subscriber.FirstNameTH);
+                prm[4] = new SqlParameter("@LastName_TH", Regi_subscriber.LastNameTH);
+                prm[5] = new SqlParameter("@Gender", Regi_subscriber.Gender);
+                prm[6] = new SqlParameter("@Birthdate", Regi_subscriber.BirthDate);
+                prm[7] = new SqlParameter("@Tel", Regi_subscriber.Tel);
+                prm[8] = new SqlParameter("@Email", Regi_subscriber.Email);
+                prm[9] = new SqlParameter("@Remark", Regi_subscriber.Remark);
+                prm[10] = new SqlParameter("@Address_No", Regi_subscriber.Address);
+                prm[11] = new SqlParameter("@Address_moo", Regi_subscriber.Moo);
+                prm[12] = new SqlParameter("@Address_Soi", Regi_subscriber.Soi);
+                prm[13] = new SqlParameter("@Address_Road", Regi_subscriber.Road);
+                prm[14] = new SqlParameter("@Address_provinces", Regi_subscriber.ProvinceOid);
+                prm[15] = new SqlParameter("@Address_districts", Regi_subscriber.DistrictOid);
+                prm[16] = new SqlParameter("@Address_subdistricts", Regi_subscriber.SubDistrictOid);
+                prm[17] = new SqlParameter("@ZipCode", Regi_subscriber.ZipCode);
                 ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieRigisterUser_Service", prm);
                 if (ds.Tables[0].Rows[0]["pStatus"].ToString() != "0" || ds.Tables[0].Rows[0]["pStatus"].ToString() == "2")
                 {
@@ -150,8 +146,8 @@ namespace WebApi.Jwt.Controllers.MasterData
                     var subscriber_User = new Farmer_Status();
                     subscriber_User.Status = "1";
                     subscriber_User.Message = "บันทึกข้อมูลผู้ขอรับบริการ เรียบร้อยแล้ว";
-                    return Request.CreateResponse(HttpStatusCode.OK, ds.Tables[0]);
 
+                    return Request.CreateResponse(HttpStatusCode.OK, ds.Tables[0]);
 
                 }
                 else
@@ -448,9 +444,9 @@ namespace WebApi.Jwt.Controllers.MasterData
                         OrgeService.Road = jObject.SelectToken("Road").Value<string>();
                     }
 
-                    OrgeService.Province = jObject.SelectToken("Province").Value<string>();
-                    OrgeService.District = jObject.SelectToken("District").Value<string>();
-                    OrgeService.SubDistrict = jObject.SelectToken("SubDistrict ").Value<string>();
+                    OrgeService.Province = jObject.SelectToken("ProvinceOid").Value<string>();
+                    OrgeService.District = jObject.SelectToken("DistrictOid").Value<string>();
+                    OrgeService.SubDistrict = jObject.SelectToken("SubDistrictOid ").Value<string>();
                     OrgeService.Zipcode = jObject.SelectToken("Zipcode").Value<string>();
              
                     DataSet ds = new DataSet();

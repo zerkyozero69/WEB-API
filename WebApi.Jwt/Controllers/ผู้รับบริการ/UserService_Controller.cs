@@ -71,8 +71,9 @@ namespace WebApi.Jwt.Controllers
 
                         //Customer_Info.OrganizationOid = row.OrganizationOid.OrganizeNameTH;
 
-                       
+                        Customer_Info.OrgeService_Oid = row.Oid.ToString();
                         Customer_Info.OrgeServiceName = row.OrgeServiceName;
+                        
                         if (row.Tel != null)
                         {
                             Customer_Info.Tel = row.Tel;
@@ -108,7 +109,7 @@ namespace WebApi.Jwt.Controllers
                    
                         if (row.ProvinceOid != null)
                         {
-
+                            Customer_Info.ProvinceOid = row.ProvinceOid.Oid.ToString();
                             Customer_Info.ProvinceName = row.ProvinceOid.ProvinceNameTH;
                             if (row.ProvinceOid.ProvinceNameTH.Contains("กรุงเทพ"))
                             { TempSubDistrict = "แขวง"; }
@@ -122,13 +123,14 @@ namespace WebApi.Jwt.Controllers
 
                         if (row.DistrictOid != null)
                         {
-
+                            Customer_Info.DistrictOid = row.DistrictOid.Oid.ToString();
                             Customer_Info.DistrictName = row.DistrictOid.DistrictNameTH;
                          
                         }       
                    
                         if (row.SubDistrictOid  != null)
                         {
+                            Customer_Info.SubDistrictOid = row.SubDistrictOid.Oid.ToString();
                             Customer_Info.SubDistrictName = row.SubDistrictOid.SubDistrictNameTH;
                         }
               
@@ -138,10 +140,6 @@ namespace WebApi.Jwt.Controllers
 
                             Customer_Info.ZipCode = row.ZipCode;
                         }
-
-
-
-
 
                         //if (Customer_Info.Address != null && Customer_Info.Moo != null && Customer_Info.Road != null)
 
@@ -375,10 +373,12 @@ namespace WebApi.Jwt.Controllers
                         {
                             item.OrganizationOid = row.OrganizationOid.Oid.ToString();
                         }
-                        
+
+                        item.RegicusServiceOid = row.Oid.ToString();
                         item.RegisterDate = row.RegisterDate.ToString();
                         item.CitizenID = row.CitizenID;
-                        item.TitleOid = row.TitleOid.TitleName;
+                        item.TitleOid = row.TitleOid.Oid.ToString();
+                        item.TitleName = row.TitleOid.TitleName;
                         item.FirstNameTH = row.FirstNameTH;
                         item.LastNameTH = row.LastNameTH;
                         item.GenderOid = row.GenderOid.GenderName;
@@ -451,7 +451,7 @@ namespace WebApi.Jwt.Controllers
                         }
 
 
-                        item.DisPlayName = row.FirstNameTH +" " + row.LastNameTH;                                          
+                        item.FullName = item.TitleName + item.FirstNameTH +" " + item.LastNameTH;                                          
                  
 
 
@@ -466,6 +466,7 @@ namespace WebApi.Jwt.Controllers
                         }
            
                         item.IsActive = row.IsActive;
+                        item.ServicesNumber = row.ServicesNumber.ToString();
 
                         //List<RegisterCusServiceDetail_Model> item2 = new List<RegisterCusServiceDetail_Model>();
                         //foreach (RegisterCusServiceDetail row2 in row.RegisterCusServiceDetails)
@@ -537,14 +538,16 @@ namespace WebApi.Jwt.Controllers
                     if (RegisterCusService_ != null)
                     {
                         RegicusService_Model item = new RegicusService_Model();
-                        item.Oid = RegisterCusService_.Oid.ToString();
+                        item.RegicusServiceOid = RegisterCusService_.Oid.ToString();
                         item.OrganizationOid = RegisterCusService_.OrganizationOid.Oid.ToString();
                         item.RegisterDate = RegisterCusService_.RegisterDate.ToString("dd/MM/yyyy");
                         item.CitizenID = RegisterCusService_.CitizenID;
-                        item.TitleOid = RegisterCusService_.TitleOid.TitleName;
+                        item.TitleOid = RegisterCusService_.TitleOid.Oid.ToString();
+                        item.TitleName = RegisterCusService_.TitleOid.TitleName;
                         item.FirstNameTH = RegisterCusService_.FirstNameTH;
                         item.LastNameTH = RegisterCusService_.LastNameTH;
-                        item.GenderOid = RegisterCusService_.GenderOid.GenderName;
+                        item.GenderOid = RegisterCusService_.GenderOid.Oid.ToString();
+                        item.Gender = RegisterCusService_.GenderOid.GenderName;
                         if (RegisterCusService_.BirthDate != null)
                         {
                             item.BirthDate = RegisterCusService_.BirthDate.ToString("dd/MM/yyyy");
@@ -557,7 +560,7 @@ namespace WebApi.Jwt.Controllers
                         {
                             item.Email = RegisterCusService_.Email;
                         }
-                        item.DisPlayName = RegisterCusService_.FirstNameTH + " " + RegisterCusService_.LastNameTH;
+                        item.FullName = item.TitleName+item.FirstNameTH + " " + item.LastNameTH;
                      
                         if (RegisterCusService_.Address != "")
                         {
@@ -584,7 +587,7 @@ namespace WebApi.Jwt.Controllers
 
                         if (RegisterCusService_.ProvinceOid != null)
                         {
-
+                            item.ProvinceOid = RegisterCusService_.ProvinceOid.Oid.ToString();
                             item.ProvinceName = RegisterCusService_.ProvinceOid.ProvinceNameTH;
                             if (RegisterCusService_.ProvinceOid.ProvinceNameTH.Contains("กรุงเทพ"))
                             { TempSubDistrict = "แขวง"; }
@@ -598,13 +601,14 @@ namespace WebApi.Jwt.Controllers
 
                         if (RegisterCusService_.DistrictOid != null)
                         {
-
+                            item.DistrictOid = RegisterCusService_.DistrictOid.Oid.ToString();
                             item.DistrictName = RegisterCusService_.DistrictOid.DistrictNameTH;
 
                         }
 
                         if (RegisterCusService_.SubDistrictOid != null)
                         {
+                            item.SubDistrictOid = RegisterCusService_.SubDistrictOid.Oid.ToString();
                             item.SubDistrictName = RegisterCusService_.SubDistrictOid.SubDistrictNameTH;
                         }
 
@@ -617,7 +621,7 @@ namespace WebApi.Jwt.Controllers
                         else { TempDistrict = "อำเภอ"; };
                         item.FullAddress = "เลขที่" +" "+ RegisterCusService_.Address + " หมู่ที่" +" "+ checknull(RegisterCusService_.Moo) + " ถนน" +" "+ checknull(RegisterCusService_.Road) 
                             +" "+TempSubDistrict + " " + RegisterCusService_.SubDistrictOid.SubDistrictNameTH + " " + TempDistrict + " "+RegisterCusService_.DistrictOid.DistrictNameTH + " " +
-                            "จังหวัด" +" "+ RegisterCusService_.ProvinceOid.ProvinceNameTH + " รหัสไปรษณีย์ " + RegisterCusService_.DistrictOid.PostCode;
+                            "จังหวัด" +" "+ RegisterCusService_.ProvinceOid.ProvinceNameTH + " รหัสไปรษณีย์ " + RegisterCusService_.ZipCode;
 
 
                         if (RegisterCusService_.Remark != null)

@@ -337,17 +337,14 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
 
                     string iDate = jObject.SelectToken("UseDate").Value<string>();
                     DateTime oDate = Convert.ToDateTime(iDate);
-                    productUser.UseNo = jObject.SelectToken("UseNo").Value<string>();
+                    productUser.UseNo = "";
                     productUser.UseDate = oDate.Year + "-" + oDate.Month + "-" + oDate.Day;
                     productUser.FinanceYearOid = jObject.SelectToken("FinanceYearOid").Value<string>();
                     productUser.OrganizationOid = jObject.SelectToken("OrganizationOid").Value<string>();
                     productUser.Remark = jObject.SelectToken("Remark").Value<string>();
                     productUser.ActivityNameOid = jObject.SelectToken("ActivityNameOid").Value<string>();
                     productUser.CitizenID = jObject.SelectToken("CitizenID").Value<string>();
-
-
-                    productUser.YearName = jObject.SelectToken("YearName").Value<string>();
-
+                    productUser.YearName = jObject.SelectToken("YearName").Value<string>(); ///ใช้สำหรับเจนเลข ออโต้
                     if (jObject.SelectToken("SubActivityOid") != null)
                     {
                         productUser.SubActivityOid = jObject.SelectToken("SubActivityOid").Value<string>();
@@ -355,13 +352,13 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                     if (jObject.SelectToken("SubActivityLevelName") != null)
                     { productUser.SubActivityLevelName = jObject.SelectToken("SubActivityLevelName").Value<string>(); }
 
-                    if (jObject.SelectToken("RegisCusServiceOid ") != null)
+                    if (jObject.SelectToken("RegisCusServiceOid") != null)
                     {
-                        productUser.RegisCusServiceOid = jObject.SelectToken("RegisCusServiceOid ").Value<string>();
-                    }
-                    if (jObject.SelectToken("OrgeServiceOid ") != null)
+                        productUser.RegisCusServiceOid = jObject.SelectToken("RegisCusServiceOid").Value<string>();
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  }
+                    if (jObject.SelectToken("OrgeServiceOid") != null)
                     {
-                        productUser.OrgeServiceOid = jObject.SelectToken("OrgeServiceOid ").Value<string>();
+                        productUser.OrgeServiceOid = jObject.SelectToken("OrgeServiceOid").Value<string>();
                     }
 
                     productUser.ServiceCount = jObject.SelectToken("ServiceCount").Value<int>();
@@ -382,43 +379,72 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                         if (runningNumber != null)
                         {
                             string customerNumberFormat = string.Empty;
-                            string Postfix = "000" + runningNumber.LastNumber + 1;
+                            int numberfix = Convert.ToInt32(runningNumber.LastNumber) + 1;
+                            string Postfix = "000" + numberfix;
                             var FullNumber = objORG.OrganizationCode + "-" + productUser.YearName.Substring(productUser.YearName.Length - 2, 2).PadLeft(2, '0') + "-" + (runningNumber.LastNumber + 1).ToString().PadLeft(6, '0');
 
-                            productUser.UseNo = FullNumber;
+                            productUser.UseNo = FullNumber;                  
+                            SqlParameter[] prm2 = new SqlParameter[5];
+
+                            prm2[0] = new SqlParameter("@orgcode", objORG.OrganizationCode);
+                            prm2[1] = new SqlParameter("@BudgetYear", productUser.YearName);
+                            prm2[2] = new SqlParameter("@LastNumber", numberfix);
+                            prm2[3] = new SqlParameter("@FormType", "UseProduct");
+                            prm2[4] = new SqlParameter("@Type", 1);
+
+                             SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "Insert_RuningNumber", prm2);
+
                         }
                         else
                         {
                             DataSet ds2;
-                            SqlParameter[] prm2 = new SqlParameter[10];
+                            SqlParameter[] prm2 = new SqlParameter[5];
 
                             prm2[0] = new SqlParameter("@orgcode", objORG.OrganizationCode);
                             prm2[1] = new SqlParameter("@BudgetYear", productUser.YearName);
                             prm2[2] = new SqlParameter("@LastNumber", 1);
                             prm2[3] = new SqlParameter("@FormType", "UseProduct");
+                            prm2[4] = new SqlParameter("@Type", 0);
 
                             ds2 = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "Insert_RuningNumber", prm2);
+
 
                             productUser.UseNo = objORG.OrganizationCode + "-" + productUser.YearName.Substring(productUser.YearName.Length - 2, 2).PadLeft(2, '0') + "-000001";
                         }
                     }
 
                     DataSet ds;
-                    SqlParameter[] prm = new SqlParameter[10];
-
-                    prm[0] = new SqlParameter("@UseNo", productUser.UseNo);
-                    prm[1] = new SqlParameter("@UseDate", productUser.UseDate);
-                    prm[2] = new SqlParameter("@YearName", productUser.YearName);
-                    prm[3] = new SqlParameter("@OrganizationOid", productUser.OrganizationOid);
-                    prm[4] = new SqlParameter("@Remark", productUser.Remark);
-                    prm[5] = new SqlParameter("@ActivityOid", productUser.ActivityNameOid);
-                    prm[6] = new SqlParameter("@RegisCusServiceOid", productUser.RegisCusServiceOid);
-                    prm[7] = new SqlParameter("@OrgeServiceOid", productUser.OrgeServiceOid);
-                    prm[8] = new SqlParameter("@ServiceCount", productUser.ServiceCount);
-                    prm[9] = new SqlParameter("@CitizenID", productUser.CitizenID);
-
-
-                    ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieInserts_Calamity_SupplierUseAnimalProduct", prm);
+                    SqlParameter[] prm = new SqlParameter[11];
+                    if (productUser.OrgeServiceOid == null)
+                    {
+                        prm[0] = new SqlParameter("@UseNo", productUser.UseNo);
+                        prm[1] = new SqlParameter("@UseDate", productUser.UseDate);
+                        prm[2] = new SqlParameter("@YearName", productUser.YearName);
+                        prm[3] = new SqlParameter("@OrganizationOid", productUser.OrganizationOid);
+                        prm[4] = new SqlParameter("@Remark", productUser.Remark);
+                        prm[5] = new SqlParameter("@ActivityOid", productUser.ActivityNameOid);
+                        prm[6] = new SqlParameter("@RegisCusServiceOid", productUser.RegisCusServiceOid);
+                        prm[7] = new SqlParameter("@OrgeServiceOid", productUser.OrgeServiceOid);
+                        prm[8] = new SqlParameter("@ServiceCount", productUser.ServiceCount);
+                        prm[9] = new SqlParameter("@CitizenID", productUser.CitizenID);
+                        prm[10] = new SqlParameter("@SubActivityOid", productUser.SubActivityOid);
+                    }
+                    else if (productUser.OrgeServiceOid != null)
+                    {
+               
+                        prm[0] = new SqlParameter("@UseNo", productUser.UseNo);
+                        prm[1] = new SqlParameter("@UseDate", productUser.UseDate);
+                        prm[2] = new SqlParameter("@YearName", productUser.YearName);
+                        prm[3] = new SqlParameter("@OrganizationOid", productUser.OrganizationOid);
+                        prm[4] = new SqlParameter("@Remark", "เป็นตัวแทนของ"+productUser.Remark);
+                        prm[5] = new SqlParameter("@ActivityOid", productUser.ActivityNameOid);
+                        prm[6] = new SqlParameter("@RegisCusServiceOid", productUser.RegisCusServiceOid);
+                        prm[7] = new SqlParameter("@OrgeServiceOid", productUser.OrgeServiceOid);
+                        prm[8] = new SqlParameter("@ServiceCount", productUser.ServiceCount);
+                        prm[9] = new SqlParameter("@CitizenID", productUser.CitizenID);
+                        prm[10] = new SqlParameter("@SubActivityOid", productUser.SubActivityOid);
+                    }
+                        ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieInserts_Calamity_SupplierUseAnimalProduct", prm);
                     DataTable dt = new DataTable();
                     dt = ds.Tables[0];
 

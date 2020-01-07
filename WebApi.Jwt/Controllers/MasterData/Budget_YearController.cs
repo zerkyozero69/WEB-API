@@ -44,7 +44,7 @@ namespace WebApi.Jwt.Controllers.MasterData
         /// </summary>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpGet]
+        [HttpPost]
         [Route("Budget/Year")]
         public HttpResponseMessage GetBudget_Year()
         {
@@ -57,7 +57,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                 XafTypesInfo.Instance.RegisterEntity(typeof(FinanceYear));
                 XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-                IList<FinanceYear> collection = ObjectSpace.GetObjects<FinanceYear>(CriteriaOperator.Parse("  GCRecord is null and IsActive = 1", null));
+                IList<FinanceYear> collection = ObjectSpace.GetObjects<FinanceYear>(CriteriaOperator.Parse("GCRecord is null and IsActive = 1", null));
 
                 if (collection.Count > 0)
                 {
@@ -65,8 +65,8 @@ namespace WebApi.Jwt.Controllers.MasterData
                     foreach (FinanceYear row in collection)
                     {
                         FinanceYearModel Finance = new FinanceYearModel();
-                        Finance.Oid = row.Oid;
-                        Finance.YearName = row.YearName;
+                        Finance.FinanceYearOid = row.Oid.ToString();
+                        Finance.FinanceYear = row.YearName;
                         list.Add(Finance);
                     }
                     return Request.CreateResponse(HttpStatusCode.OK, list);
@@ -95,7 +95,7 @@ namespace WebApi.Jwt.Controllers.MasterData
 
 
         [AllowAnonymous]
-        [HttpGet]
+        [HttpPost   ]
         [Route("Budget/info")]
         public HttpResponseMessage  GetBudget_Info()
         {

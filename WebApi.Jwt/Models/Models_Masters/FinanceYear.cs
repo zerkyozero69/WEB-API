@@ -7,8 +7,8 @@ namespace WebApi.Jwt.Models
 {
     public class FinanceYearModel
     {
-        public object Oid { get; set; }
-        public string YearName { get; set; }
+        public string FinanceYearOid { get; set; }
+        public string FinanceYear { get; set; }
       
     }
     public class BudgetSourceModel
