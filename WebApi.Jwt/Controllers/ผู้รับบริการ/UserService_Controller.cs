@@ -381,7 +381,12 @@ namespace WebApi.Jwt.Controllers
                         item.TitleName = row.TitleOid.TitleName;
                         item.FirstNameTH = row.FirstNameTH;
                         item.LastNameTH = row.LastNameTH;
-                        item.GenderOid = row.GenderOid.GenderName;
+                        if (row.GenderOid != null)
+                        {
+                            item.GenderOid = row.GenderOid.Oid.ToString();
+                            item.Gender = row.GenderOid.GenderName;
+                        }
+
                         if (row.BirthDate != null)
                         {
                             item.BirthDate = row.BirthDate.ToString("dd/MM/yyyy");
@@ -546,8 +551,13 @@ namespace WebApi.Jwt.Controllers
                         item.TitleName = RegisterCusService_.TitleOid.TitleName;
                         item.FirstNameTH = RegisterCusService_.FirstNameTH;
                         item.LastNameTH = RegisterCusService_.LastNameTH;
-                        item.GenderOid = RegisterCusService_.GenderOid.Oid.ToString();
-                        item.Gender = RegisterCusService_.GenderOid.GenderName;
+                        if (RegisterCusService_.GenderOid != null)
+                        {
+                            item.GenderOid = RegisterCusService_.GenderOid.Oid.ToString();
+                            item.Gender = RegisterCusService_.GenderOid.GenderName;
+
+                        }
+              
                         if (RegisterCusService_.BirthDate != null)
                         {
                             item.BirthDate = RegisterCusService_.BirthDate.ToString("dd/MM/yyyy");
@@ -573,7 +583,7 @@ namespace WebApi.Jwt.Controllers
                             item.Moo = RegisterCusService_.Moo;
                         }
 
-                        if (RegisterCusService_.Soi != "")
+                        if (RegisterCusService_.Soi != " ")
                         {
 
                             item.Soi = RegisterCusService_.Soi;
@@ -632,9 +642,6 @@ namespace WebApi.Jwt.Controllers
                         item.IsActive = RegisterCusService_.IsActive;
                         return Request.CreateResponse(HttpStatusCode.OK, item);
                     }
-
-
-
 
 
                     else

@@ -69,51 +69,51 @@ namespace WebApi.Jwt.Controllers.MasterData
                         Regi_subscriber.OrganizationOid = jObject.SelectToken("OrganizationOid").Value<string>();
                     }
                    
-                    Regi_subscriber.CitizenID = jObject.SelectToken("CitizenID").Value<string>();
-                    Regi_subscriber.TitleOid = jObject.SelectToken("TitleOid").Value<string>();
-                    Regi_subscriber.FirstNameTH = jObject.SelectToken("FirstNameTH").Value<string>();
-                    Regi_subscriber.LastNameTH = jObject.SelectToken("LastNameTH").Value<string>();
-                    Regi_subscriber.GenderOid = jObject.SelectToken("GenderOid").Value<string>();
-                    Regi_subscriber.BirthDate = jObject.SelectToken("BirthDate").Value<string>();
-                    Regi_subscriber.Tel = jObject.SelectToken("Tel").Value<string>();
-                    Regi_subscriber.Email = jObject.SelectToken("Email").Value<string>();
-                    Regi_subscriber.Address = jObject.SelectToken("Address").Value<string>();
+                    Regi_subscriber.CitizenID = jObject.SelectToken("citizenId").Value<string>(); 
+                    Regi_subscriber.TitleOid = jObject.SelectToken("titleOid").Value<string>();
+                    Regi_subscriber.FirstNameTH = jObject.SelectToken("firstNameTh").Value<string>();
+                    Regi_subscriber.LastNameTH = jObject.SelectToken("lastNameTh").Value<string>();
+                    Regi_subscriber.GenderOid = jObject.SelectToken("genderOid").Value<string>();
+                    Regi_subscriber.BirthDate = jObject.SelectToken("birthDate").Value<string>();
+                    Regi_subscriber.Tel = jObject.SelectToken("tel").Value<string>();
+                    Regi_subscriber.Email = jObject.SelectToken("email").Value<string>();
+                    Regi_subscriber.Address = jObject.SelectToken("address").Value<string>();
 
-                    if (jObject.SelectToken("Moo") == null)
+                    if (jObject.SelectToken("moo") == null)
                     {
                         Regi_subscriber.Moo = null;
                     }
                     else
                     {
-                        Regi_subscriber.Moo = jObject.SelectToken("Moo").Value<string>();
+                        Regi_subscriber.Moo = jObject.SelectToken("moo").Value<string>();
                     }
 
-                    if (jObject.SelectToken("Soi") == null)
+                    if (jObject.SelectToken("soi") == null)
                     {
                         Regi_subscriber.Soi = null;
                     }
                     else
                     {
-                        Regi_subscriber.Soi = jObject.SelectToken("Soi").Value<string>();
+                        Regi_subscriber.Soi = jObject.SelectToken("soi").Value<string>();
                     }
 
-                    if (jObject.SelectToken("Road") == null)
+                    if (jObject.SelectToken("road") == null)
                     {
                         Regi_subscriber.Road = null;
                     }
                     else
                     {
-                        Regi_subscriber.Road = jObject.SelectToken("Road").Value<string>();
+                        Regi_subscriber.Road = jObject.SelectToken("road").Value<string>();
                     }
-                    if (jObject.SelectToken("Remark") != null)
+                    if (jObject.SelectToken("remark") != null)
                     {
-                        Regi_subscriber.Remark = jObject.SelectToken("Remark").Value<string>();
+                        Regi_subscriber.Remark = jObject.SelectToken("remark").Value<string>();
                     }
                  
-                    Regi_subscriber.ProvinceOid = jObject.SelectToken("ProvinceOid").Value<string>();
-                    Regi_subscriber.DistrictOid = jObject.SelectToken("DistrictOid").Value<string>();
-                    Regi_subscriber.SubDistrictOid = jObject.SelectToken("SubDistrictOid").Value<string>();
-                    Regi_subscriber.ZipCode = jObject.SelectToken("ZipCode").Value<string>();
+                    Regi_subscriber.ProvinceOid = jObject.SelectToken("provinceOid").Value<string>();
+                    Regi_subscriber.DistrictOid = jObject.SelectToken("districtOid").Value<string>();
+                    Regi_subscriber.SubDistrictOid = jObject.SelectToken("subDistrictOid").Value<string>();
+                    Regi_subscriber.ZipCode = jObject.SelectToken("zipCode").Value<string>();
 
                 }
 
@@ -126,7 +126,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                 prm[2] = new SqlParameter("@TitleOid", Regi_subscriber.TitleOid);
                 prm[3] = new SqlParameter("@FirstName_TH", Regi_subscriber.FirstNameTH);
                 prm[4] = new SqlParameter("@LastName_TH", Regi_subscriber.LastNameTH);
-                prm[5] = new SqlParameter("@Gender", Regi_subscriber.Gender);
+                prm[5] = new SqlParameter("@Gender", Regi_subscriber.GenderOid);
                 prm[6] = new SqlParameter("@Birthdate", Regi_subscriber.BirthDate);
                 prm[7] = new SqlParameter("@Tel", Regi_subscriber.Tel);
                 prm[8] = new SqlParameter("@Email", Regi_subscriber.Email);
@@ -412,42 +412,42 @@ namespace WebApi.Jwt.Controllers.MasterData
                         OrgeService.OrganizationOid = jObject.SelectToken("OrganizationOid").Value<string>();
                     }
 
-                    OrgeService.OrgeServiceID = jObject.SelectToken("OrgeServiceID").Value<string>();
-                    OrgeService.OrgeServiceName = jObject.SelectToken("OrgeServiceName").Value<string>();
-                    OrgeService.Email = jObject.SelectToken("Email").Value<string>();
-                    OrgeService.Tel = jObject.SelectToken("Tel").Value<string>();
-                    OrgeService.Address = jObject.SelectToken("Address").Value<string>();
-                    if (jObject.SelectToken("Moo") == null)
+                    OrgeService.OrgeServiceID = jObject.SelectToken("orgeServiceID").Value<string>();
+                    OrgeService.OrgeServiceName = jObject.SelectToken("orgeServiceName").Value<string>();
+                    OrgeService.Email = jObject.SelectToken("email").Value<string>();
+                    OrgeService.Tel = jObject.SelectToken("tel").Value<string>();
+                    OrgeService.Address = jObject.SelectToken("address").Value<string>();
+                    if (jObject.SelectToken("moo") == null)
                     {
                         OrgeService.Moo = null;
                     }
                     else
                     {
-                        OrgeService.Moo = jObject.SelectToken("Moo").Value<string>();
+                        OrgeService.Moo = jObject.SelectToken("moo").Value<string>();
                     }
 
-                    if (jObject.SelectToken("Soi") == null)
+                    if (jObject.SelectToken("soi") == null)
                     {
                         OrgeService.Soi = null;
                     }
                     else
                     {
-                        OrgeService.Soi = jObject.SelectToken("Soi").Value<string>();
+                        OrgeService.Soi = jObject.SelectToken("soi").Value<string>();
                     }
 
-                    if (jObject.SelectToken("Road") == null)
+                    if (jObject.SelectToken("road") == null)
                     {
                         OrgeService.Road = null;
                     }
                     else
                     {
-                        OrgeService.Road = jObject.SelectToken("Road").Value<string>();
+                        OrgeService.Road = jObject.SelectToken("road").Value<string>();
                     }
 
-                    OrgeService.Province = jObject.SelectToken("ProvinceOid").Value<string>();
-                    OrgeService.District = jObject.SelectToken("DistrictOid").Value<string>();
-                    OrgeService.SubDistrict = jObject.SelectToken("SubDistrictOid ").Value<string>();
-                    OrgeService.Zipcode = jObject.SelectToken("Zipcode").Value<string>();
+                    OrgeService.Province = jObject.SelectToken("provinceOid").Value<string>();
+                    OrgeService.District = jObject.SelectToken("districtOid").Value<string>();
+                    OrgeService.SubDistrict = jObject.SelectToken("subDistrictOid ").Value<string>();
+                    OrgeService.Zipcode = jObject.SelectToken("zipCode").Value<string>();
              
                     DataSet ds = new DataSet();
                     SqlParameter[] prm = new SqlParameter[13]; /// parameter นับได้เท่าไร ใส่เท่านั้น c#

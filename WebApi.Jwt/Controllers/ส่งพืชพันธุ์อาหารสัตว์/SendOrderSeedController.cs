@@ -322,12 +322,13 @@ namespace WebApi.Jwt.Controllers
                         return Request.CreateResponse(HttpStatusCode.NotFound, err);
                     }                  
                 }
+                
                 else {
                     UserError err = new UserError();
                     err.status = "false";
                     err.code = "0";
                     err.message = "กรุณาใส่ข้อมูล RefNo ให้เรียบร้อยก่อน";
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+                    return Request.CreateResponse(HttpStatusCode.BadRequest,err);
                 }
             }
             catch (Exception ex)
