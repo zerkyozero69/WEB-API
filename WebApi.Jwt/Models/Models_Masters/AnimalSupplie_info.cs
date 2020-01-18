@@ -17,9 +17,9 @@ namespace WebApi.Jwt.Models.Models_Masters
 
     public class AnimalSupplieType_Model
     {
-        public string Oid { get; set; }
+        public string AnimalSupplieTypeOid { get; set; }
         public string SupplietypeName { get; set; }
- 
+        public string AnimalSupplie { get; set; }
         public bool IsActive { get; set; }
        // public AnimalSupplie AnimalSupplie { get; set; }
 

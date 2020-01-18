@@ -44,7 +44,6 @@ namespace WebApi.Jwt.Controllers
 
                 IList<StockSeedInfo> collection = ObjectSpace.GetObjects<StockSeedInfo>(CriteriaOperator.Parse(" GCRecord is null and StockType = 1 and OrganizationOid=? and FinanceYearOid = ?", OrganizationOid, FinanceYearOid));
 
-
                 foreach (StockSeedInfo row in collection)
                 {
                     StockSeedInfo_Model stock = new StockSeedInfo_Model();
@@ -115,7 +114,7 @@ namespace WebApi.Jwt.Controllers
                 XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
 
-                IList<ManageAnimalSupplier> collection = ObjectSpace.GetObjects<ManageAnimalSupplier>(CriteriaOperator.Parse(" GCRecord is null and Status = 1 and OrgZoneOid.=? ", OrganizationOid, FinanceYearOid));
+                IList<ManageAnimalSupplier> collection = ObjectSpace.GetObjects<ManageAnimalSupplier>(CriteriaOperator.Parse(" GCRecord is null and Status = 1 and OrgZoneOid=? and FinanceYearOid=?  ", OrganizationOid, FinanceYearOid));
                 double Weight = 0;
                 if (collection.Count > 0)
                 {
@@ -124,6 +123,7 @@ namespace WebApi.Jwt.Controllers
                         ManageAnimalSupplier_Model ManageAnimal = new ManageAnimalSupplier_Model();
                         ManageAnimal.Oid = row.Oid.ToString();
                         ManageAnimal.OrgZoneOid = row.OrgZoneOid.Oid.ToString();
+                        ManageAnimal.OrgZone = row.OrgZoneOid.OrganizeNameTH;
                         ManageAnimal.OrganizationOid = row.OrganizationOid.Oid.ToString();
                         ManageAnimal.Organization = row.OrganizationOid.SubOrganizeName;
                         ManageAnimal.FinanceYearOid = row.FinanceYearOid.Oid.ToString();
@@ -136,12 +136,18 @@ namespace WebApi.Jwt.Controllers
                         ManageAnimal.OfficeGAPQTY = row.OfficeGAPQTY;
                         ManageAnimal.OfficeBeanQTY = row.OfficeBeanQTY;
 
-                        List<ManageSubAnimalSupplier_Model> item = new List<ManageSubAnimalSupplier_Model>();
+                        List<ManageSubAnimalSupplier_Model> detail = new List<ManageSubAnimalSupplier_Model>();
                         foreach (ManageSubAnimalSupplier row2 in row.ManageSubAnimalSuppliers)
                         {
+                            ManageSubAnimalSupplier_Model item = new ManageSubAnimalSupplier_Model();
+                            item.ProvinceQTY = row2.ProvinceQTY;
 
+
+                       
+                            item.Province = row2.ProvinceOid.ProvinceNameTH;
+                            detail.Add(item);
                         }
-
+                        ManageAnimal.Detail = detail;
                         ManageAnimal.SumProvinceQTY = row.SumProvinceQTY.Value;
 
                         list_detail.Add(ManageAnimal);

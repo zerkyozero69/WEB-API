@@ -32,7 +32,8 @@ namespace WebApi.Jwt.Models
         public double SortID { get; set; }
 
     }
-    public   class ManageSubAnimalSupplier_Model
+    public  class ManageSubAnimalSupplier_Model
+
     {
         public string Oid { get; set; }
         public string ProvinceOid { get; set; }

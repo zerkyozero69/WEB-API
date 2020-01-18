@@ -109,7 +109,6 @@ namespace WebApi.Jwt.Controllers
                         send_Detail.AnimalSeedLevel = row.AnimalSeedLevel;
                         send_Detail.AnimalSeedName = row.AnimalSeeName;
                         send_Detail.BudgetSource = row.BudgetSourceOid.BudgetName;
-
                         send_Detail.Weight = row.Weight.ToString();
                         send_Detail.Used = row.Used.ToString();
                         send_Detail.SendOrderSeed = row.SendOrderSeed.SendNo;
@@ -124,7 +123,9 @@ namespace WebApi.Jwt.Controllers
                     }
                     sendDetail.Weight_All = sum.ToString() + " " + "กิโลกรัม";
                     sendDetail.objSeed = list_detail;
+                    
                     return Ok(sendDetail);
+
                 }
                 else
                 {
@@ -237,7 +238,7 @@ namespace WebApi.Jwt.Controllers
                         ObjStockSeedInfoInfo.ReferanceCode = objSupplierProduct.LotNumber;
                         ObjectSpace.CommitChanges();
                     }
-                    ObjMaster.SendStatus = EnumSendOrderSeedStatus.SendApprove;
+                    ObjMaster.SendStatus = EnumSendOrderSeedStatus.Approve;
                     ObjectSpace.CommitChanges();
                     return Ok(true);
 

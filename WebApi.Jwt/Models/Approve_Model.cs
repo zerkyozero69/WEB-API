@@ -120,6 +120,7 @@ namespace WebApi.Jwt.Models
         public string Weight { get; set; }
         public int ServiceCount { get; set; }
         public string TotalAmout { get; set; }
+        public string TotalPrice { get; set; }
 
         public List<SupplierUseProductDetail_Model> Detail;
         public List<SupplierUseProductDetail_Model2> objDetail;
@@ -165,7 +166,8 @@ namespace WebApi.Jwt.Models
     {
 
         public string Oid { get; set; }
-        public string SupplierUseAnimalProductOid { get; set; }
+        public string SupplierUseProductOid { get; set; }
+    
         public double PerPrice { get; set; }
 
         public double Amount { get; set; }
@@ -294,6 +296,7 @@ namespace WebApi.Jwt.Models
         public string Refno { get; set; }
         public string Weight { get; set; }
         public int ServiceCount { get; set; }
+        public string TotalPrice{ get; set; }
         public string TotalAmout { get; set; }
         public List<SupplierUseAnimalDetail_Model> details { get; set; }
             }
@@ -330,7 +333,7 @@ namespace WebApi.Jwt.Models
         public string OrgeServiceOid { get; set; }
         public string OrgeServiceName { get; set; }
         public string OrgeServiceAddress { get; set; }
-
+        public string PickUp_Type { get; set; }
         public string Weight { get; set; }
         public int ServiceCount { get; set; }
       

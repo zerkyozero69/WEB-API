@@ -71,7 +71,7 @@ namespace WebApi.Jwt.Controllers
 
                         //Customer_Info.OrganizationOid = row.OrganizationOid.OrganizeNameTH;
 
-                        Customer_Info.OrgeService_Oid = row.Oid.ToString();
+                        Customer_Info.OrgeServiceOid = row.Oid.ToString();
                         Customer_Info.OrgeServiceName = row.OrgeServiceName;
                         
                         if (row.Tel != null)

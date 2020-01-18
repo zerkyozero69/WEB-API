@@ -80,7 +80,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                     XafTypesInfo.Instance.RegisterEntity(typeof(SendOrderSupplierAnimal));
 
                     List<SendOrderSupplierType> SendItems = new List<SendOrderSupplierType>();
-                    List<SendOrderSupplierType> ReceiveItems = new List<SendOrderSupplierType>();
+                    List<ReceiveOrderSupplierType> ReceiveItems = new List<ReceiveOrderSupplierType>();
                     SendOrderSupplierModel lists = new SendOrderSupplierModel();
                     lists.org_oid = org_oid;
 
@@ -90,7 +90,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                     if (type == "2")
                     {  //ส่ง
 
-                        IList<SendOrderSupplierAnimal> collection = ObjectSpace.GetObjects<SendOrderSupplierAnimal>(CriteriaOperator.Parse("GCRecord is null and SendStatus=2 and SendOrgOid.Oid='" + org_oid + "'", null));
+                        IList<SendOrderSupplierAnimal> collection = ObjectSpace.GetObjects<SendOrderSupplierAnimal>(CriteriaOperator.Parse("GCRecord is null and SendStatus=1 and SendOrgOid.Oid='" + org_oid + "'", null));
                         if (collection.Count > 0)
                         {
                             foreach (SendOrderSupplierAnimal row in collection)
@@ -121,19 +121,19 @@ namespace WebApi.Jwt.Controllers.MasterData
                     else if (type == "1")
                     {  //รับ
 
-                        IList<SendOrderSupplierAnimal> collection2 = ObjectSpace.GetObjects<SendOrderSupplierAnimal>(CriteriaOperator.Parse("GCRecord is null and SendStatus=5 and ReceiveOrgOid.Oid='" + org_oid + "'", null));
+                         IList<SendOrderSupplierAnimal> collection2 = ObjectSpace.GetObjects<SendOrderSupplierAnimal>(CriteriaOperator.Parse("GCRecord is null and SendStatus = 2 and  ReceiveStatus=1 and ReceiveOrgOid.Oid='" + org_oid + "'", null));
                         if (collection2.Count > 0)
                         {
                             foreach (SendOrderSupplierAnimal row in collection2)
                             {
-                                SendOrderSupplierType item = new SendOrderSupplierType();
+                                ReceiveOrderSupplierType item = new ReceiveOrderSupplierType();
                                 item.SendNo = row.SendNo;
                                 item.SendDate = row.SendDate.ToString("dd/MM/yyyy");
                                 item.SendOrgOid = row.SendOrgOid.Oid.ToString();
                                 item.SendOrgName = row.SendOrgOid.SubOrganizeName;
                                 item.SendOrgFullName = row.SendOrgOid.OrganizeNameTH;
                                 item.Remark = row.Remark;
-                                item.SendStatus = row.SendStatus.ToString();
+                                item.ReceiveStatus = row.SendStatus.ToString();
                                 item.FinanceYear = row.FinanceYearOid.YearName;
                                 item.CancelMsg = row.CancelMsg;
                                 item.ReceiveOrgOid = row.ReceiveOrgOid.Oid.ToString();
@@ -244,13 +244,13 @@ namespace WebApi.Jwt.Controllers.MasterData
                             item.ObjectTypeName = row.ObjectTypeOid.ObjectTypeName.ToString();
                         }
                        
-                        if (row.QuotaTypeOid == null)
+                        if (row. QuotaTypeOid == null)
                         {
                             item.QuotaTypeName = "ไม่พบข้อมูลโควตาศูนย์";
                         }
                         else
                         {
-                            item.QuotaTypeName = row.QuotaTypeOid.QuotaName.ToString();
+                            item.QuotaTypeName = row.QuotaTypeOid.QuotaName;
                         }
                         if (row.StockLimit.ToString() != "")
                         {
@@ -275,7 +275,11 @@ namespace WebApi.Jwt.Controllers.MasterData
                             item.UnitName = row.UnitOid.UnitName;
                         }
 
-                        item.AnimalSeedName = row.AnimalSeedOid.SeedName;
+                        if (row.AnimalSeedOid != null)
+                        {
+                            item.AnimalSeedName = row.AnimalSeedOid.SeedName;
+                        }
+                    
                         item.AnimalSupplieTypeName = row.AnimalSupplieTypeOid.SupplietypeName.ToString();
                         item.PackageName = row.PackageOid.PackageName;
                         item.PerUnit = row.PerUnit.ToString();
@@ -303,7 +307,11 @@ namespace WebApi.Jwt.Controllers.MasterData
                                 itemD.AnimalSupplieName = row2.AnimalSupplieOid.AnimalSupplieName;
                             }
                             itemD.BudgetSourceName = row2.BudgetSourceOid.BudgetName.ToString();
-                            itemD.AnimalSeedName = row2.AnimalSeedOid.SeedName.ToString();
+                            if (row2.AnimalSeedOid != null)
+                            {
+                                itemD.AnimalSeedName = row2.AnimalSeedOid.SeedName.ToString();
+                            }
+                           
                             itemD.PackageName = row2.PackageOid.PackageName;
                             itemD.TotalWeight = row2.QTY.ToString();
                             itemD.QTY = row2.QTY.ToString();
@@ -362,38 +370,42 @@ namespace WebApi.Jwt.Controllers.MasterData
                     string _type = arr[2]; //ประเภทส่ง(2)-รับ(1)
 
                     XpoTypesInfoHelper.GetXpoTypeInfoSource();
-                    XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.SendOrderSeed));
+                    XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.SendOrderSupplierAnimal));
                     List<SendOrderSeed> list = new List<SendOrderSeed>();
                     XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
-                    IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+                     IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
 
-                    SendOrderSeed objSupplierProduct = ObjectSpace.FindObject<SendOrderSeed>(CriteriaOperator.Parse("SendNo=?", _refno));
+                    SendOrderSupplierAnimal objSupplierProduct = ObjectSpace.FindObject<SendOrderSupplierAnimal>(CriteriaOperator.Parse("SendNo=?", _refno));
                     if (objSupplierProduct != null)
                     {
                         if (_type == "1") //รับ
                         {
                             if (Status == "1")
                             { //Approve
-                                objSupplierProduct.SendStatus = EnumSendOrderSeedStatus.Accept; //3
+                                objSupplierProduct.ReceiveStatus = EnumReceiveOrderAnimalStatus.Approve; //2
+                                objSupplierProduct.Remark = CancelMsg;
                                 ObjectSpace.CommitChanges();
                             }
                             else if (Status == "2")
                             { //Reject
-                                objSupplierProduct.SendStatus = EnumSendOrderSeedStatus.Eject; //8
+                                objSupplierProduct.SendStatus = EnumSendOrderAnimalStatus.Eject;
+                                objSupplierProduct.ReceiveStatus = EnumReceiveOrderAnimalStatus.Eject;//4
                                 objSupplierProduct.CancelMsg = CancelMsg;
                                 ObjectSpace.CommitChanges();
                             }
                         }
-                        else if (_type == "2") //ส่ง
+                        else if (_type == "2") //หน่วยส่ง
                         {
                             if (Status == "1")
                             { //Approve
-                                objSupplierProduct.SendStatus = EnumSendOrderSeedStatus.SendApprove; //6
+                                objSupplierProduct.SendStatus = EnumSendOrderAnimalStatus.Approve; //2
+                                objSupplierProduct.ReceiveStatus = EnumReceiveOrderAnimalStatus.InProgess;
+                                objSupplierProduct.Remark = CancelMsg;
                                 ObjectSpace.CommitChanges();
                             }
                             else if (Status == "2")
                             { //Reject
-                                objSupplierProduct.SendStatus = EnumSendOrderSeedStatus.SendEject; //9
+                                objSupplierProduct.SendStatus = EnumSendOrderAnimalStatus.Eject; //4
                                 objSupplierProduct.CancelMsg = CancelMsg;
                                 ObjectSpace.CommitChanges();
                             }
@@ -445,7 +457,8 @@ namespace WebApi.Jwt.Controllers.MasterData
             {
                 string RefNo = HttpContext.Current.Request.Form["RefNo"].ToString(); //ข้อมูลเลขที่อ้างอิง
                 string Status = HttpContext.Current.Request.Form["Status"].ToString(); //สถานะ
-                
+                string Remark = HttpContext.Current.Request.Form["Remark"].ToString();
+
 
                 if (RefNo != "" && Status != "")
                 {
@@ -467,12 +480,13 @@ namespace WebApi.Jwt.Controllers.MasterData
                         if (Status == "1")
                         { //อนุมัติ
                             objSupplierUseProduct.Stauts = EnumRodBreedProductSeedStatus.Approve; //2
+                            objSupplierUseProduct.Remark = Remark;
                             ObjectSpace.CommitChanges();
                         }
                         else if (Status == "2")
                         { //ไม่อนุมัติ
-                            objSupplierUseProduct.Stauts = EnumRodBreedProductSeedStatus.NoApprove; //4
-
+                            objSupplierUseProduct.Stauts = EnumRodBreedProductSeedStatus.Eject; //4
+                            objSupplierUseProduct.Remark = Remark;
                             ObjectSpace.CommitChanges();
                         }
 

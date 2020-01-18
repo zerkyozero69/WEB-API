@@ -414,29 +414,8 @@ namespace WebApi.Jwt.Controllers
                 //  Return resual
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
-            //ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieUpdateFarmer"
-            //        , new SqlParameter("@Oid", Updatefarmer.Oid)
-            //        , new SqlParameter("@OrganizationOid", Updatefarmer.OrganizationOid)
-            //         , new SqlParameter("@Citizen_ID", Updatefarmer.CitizenID)
-            //         , new SqlParameter("@TitleOid", Updatefarmer.TitleOid)
-            //         , new SqlParameter("@FirstName_TH", Updatefarmer.FirstNameTH)
-            //         , new SqlParameter("@LastName_TH", Updatefarmer.LastNameTH)
-            //        , new SqlParameter("@Birthdate", Updatefarmer.BirthDay)
-            //        , new SqlParameter("@Gender", Updatefarmer.Gender)
-            //         , new SqlParameter("@Tel", Updatefarmer.Tel)
-            //         , new SqlParameter("@Email", Updatefarmer.Email)
-            //       , new SqlParameter("@Address_No", Updatefarmer.Address_No)
-            //       , new SqlParameter("@Address_buildingName", Updatefarmer.Address_buildingName)
-            //       , new SqlParameter("@Address_moo", Updatefarmer.Address_moo)
-            //       , new SqlParameter("@Address_Soi", Updatefarmer.Address_Soi)
-            //       , new SqlParameter("@Address_Road", Updatefarmer.Address_Road)
-            //       , new SqlParameter("@Address_provinces", Updatefarmer.Address_provinces)
-            //       , new SqlParameter("@Address_districts", Updatefarmer.Address_districts)
-            //       , new SqlParameter("@Address_subdistricts", Updatefarmer.Address_subdistricts)
-            //        , new SqlParameter("@ZipCode", Updatefarmer.ZipCode)
-            //       , new SqlParameter("@animalSupplie", Updatefarmer.AnimalSupplie)
-            //       , new SqlParameter("@Latitude", Updatefarmer.Latitude)
-            //       , new SqlParameter("@Longitude", Updatefarmer.Longitude));
+      
+
 
         }
 
@@ -580,8 +559,6 @@ namespace WebApi.Jwt.Controllers
                 if (ds.Tables[0].Rows.Count > 0)
                 {
 
-
-
                     DataTable dt = new DataTable();
                     dt = ds.Tables[0];
 
@@ -597,9 +574,12 @@ namespace WebApi.Jwt.Controllers
                             row.Add(col.ColumnName, dr[col]);
                         }
                         rows.Add(row);
+
                     }
+
                     return Request.CreateResponse(HttpStatusCode.OK, rows);
                 }
+            
                 else if (ds.Tables[0].Rows.Count == 0)
                 {
                     string param = "username=regislive01&password=password&grant_type=password";//เพื่อทำการขอ access_token 
@@ -659,10 +639,19 @@ namespace WebApi.Jwt.Controllers
                     return Request.CreateResponse(HttpStatusCode.OK, farmerCitizenList);
                 }
                 else
-                {
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, "ไม่มีเลขบัตรประชาชน");
+                {   
+                
+                        UserError err = new UserError();
+                        err.status = "ไม่พบเลขบัตรประชาชน กรุณาลงทะเบียน";
+                        err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+
+
+                    //  Return resual
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, err);
 
                 }
+
+           
             }
             catch (Exception ex)
             {
@@ -676,7 +665,7 @@ namespace WebApi.Jwt.Controllers
             }
 
         }
-
+        #region ทดสอบ RAW
         //[AllowAnonymous]
         //[HttpGet]
         //[Route("RAW/TestPostMethod")]
@@ -713,6 +702,8 @@ namespace WebApi.Jwt.Controllers
         ///  CitizenID ใช้ในการลบ farmer
         /// </summary>
         /// <returns></returns>
+        /// 
+        #endregion จบการทดสอบ
         [AllowAnonymous]
         [HttpDelete]
         [Route("Delete/FarmerOid")]

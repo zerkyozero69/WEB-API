@@ -58,7 +58,7 @@ namespace WebApi.Jwt.Controllers
                     XafTypesInfo.Instance.RegisterEntity(typeof(SendOrderSeed));
 
                     List<SendOrderSeedType> SendItems = new List<SendOrderSeedType>();
-                    List<SendOrderSeedType> ReceiveItems = new List<SendOrderSeedType>();
+                    List<ReceiveOrderSeedType> ReceiveItems = new List<ReceiveOrderSeedType>();
                     SendOrderSeedModel lists = new SendOrderSeedModel();
                     lists.org_oid = org_oid;
 
@@ -68,7 +68,7 @@ namespace WebApi.Jwt.Controllers
                     if (type == "2")
                     {  //ส่ง
 
-                        IList<SendOrderSeed> collection = ObjectSpace.GetObjects<SendOrderSeed>(CriteriaOperator.Parse("GCRecord is null and SendStatus=2 and SendOrgOid.Oid='" + org_oid + "'", null));
+                        IList<SendOrderSeed> collection = ObjectSpace.GetObjects<SendOrderSeed>(CriteriaOperator.Parse("GCRecord is null and SendStatus=1 and [SendOrgOid.Oid]='" + org_oid + "'", null));
                         if (collection.Count > 0)
                         {
                             foreach (SendOrderSeed row in collection)
@@ -98,19 +98,19 @@ namespace WebApi.Jwt.Controllers
                     else if (type == "1")
                     {  //รับ
 
-                        IList<SendOrderSeed> collection2 = ObjectSpace.GetObjects<SendOrderSeed>(CriteriaOperator.Parse("GCRecord is null and SendStatus=5 and ReceiveOrgOid.Oid='" + org_oid + "'", null));
+                        IList<SendOrderSeed> collection2 = ObjectSpace.GetObjects<SendOrderSeed>(CriteriaOperator.Parse("GCRecord is null and SendStatus = 2 and  ReceiveStatus=1 and ReceiveOrgOid.Oid='" + org_oid + "'", null));
                         if (collection2.Count > 0)
                         {
                             foreach (SendOrderSeed row in collection2)
                             {
-                                SendOrderSeedType item = new SendOrderSeedType();
+                                ReceiveOrderSeedType item = new ReceiveOrderSeedType();
                                 item.SendNo = row.SendNo;
                                 item.SendDate = row.SendDate.ToString("dd/MM/yyyy");
                                 item.SendOrgOid = row.SendOrgOid.Oid.ToString();
                                 item.SendOrgName = row.SendOrgOid.SubOrganizeName;
                                 item.SendOrgFullName = row.SendOrgOid.OrganizeNameTH;
                                 item.Remark = row.Remark;
-                                item.SendStatus = row.SendStatus.ToString();
+                                item.ReceiveOrderStatus = row.SendStatus.ToString();
                                 item.FinanceYear = row.FinanceYearOid.YearName;
                                 item.CancelMsg = row.CancelMsg;
                                 item.ReceiveOrgOid = row.ReceiveOrgOid.Oid.ToString();
@@ -129,15 +129,16 @@ namespace WebApi.Jwt.Controllers
                     UserError err = new UserError();
                     err.status = "false";
                     err.code = "0";
-                    err.message = "กรุณาใส่ข้อมูล Org_Oid และ type (1=รับ/2=ส่ง) ให้เรียบร้อยก่อน";
+                    err.message = "กรุณาใส่ข้อมูล Org_Oid และ type ให้เรียบร้อยก่อน";
                     return Request.CreateResponse(HttpStatusCode.BadRequest, err);
 
                 }
-                else {
+                else
+                {
                     UserError err = new UserError();                                                                                                                                                    
                     err.status = "false";
                     err.code = "0";
-                    err.message = "กรุณาใส่ข้อมูล Org_Oid และ type (1=รับ/2=ส่ง) ให้เรียบร้อยก่อน";
+                    err.message = "กรุณาใส่ข้อมูล Org_Oid ให้เรียบร้อยก่อน";
                     return Request.CreateResponse(HttpStatusCode.BadRequest, err);
                 }
             }
@@ -276,60 +277,97 @@ namespace WebApi.Jwt.Controllers
                     XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                     IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
 
-                    SendOrderSeed objSupplierProduct = ObjectSpace.FindObject<SendOrderSeed>(CriteriaOperator.Parse("SendNo=?", _refno));
-                    if (objSupplierProduct != null)
+                    SendOrderSeed objSendOrderSeed = ObjectSpace.FindObject<SendOrderSeed>(CriteriaOperator.Parse("SendNo=?", _refno));
+                    if (objSendOrderSeed != null)
                     {
                         if (_type == "1") //รับ
-                        { 
+                        {
                             if (Status == "1")
                             { //Approve
-                                objSupplierProduct.SendStatus = EnumSendOrderSeedStatus.Approve; //3
+                              //foreach (SendOrderSeedDetail row in objSendOrderSeed.SendOrderSeedDetails)
+                              //{
+
+                                //    SupplierProductModifyDetail obSupplierProductModifyDetail = ObjectSpace.FindObject<SupplierProductModifyDetail>(CriteriaOperator.Parse("Oid=?", row.LotNumber.Oid));
+                                //    if (obSupplierProductModifyDetail != null)
+                                //    {
+                                //        var objStockSeedInfo = ObjectSpace.GetObjects<StockSeedInfo>(CriteriaOperator.Parse("OrganizationOid= ? and FinanceYearOid=? and BudgetSourceOid=? and AnimalSeedOid=? and AnimalSeedLevelOid=? and StockType=1 and ReferanceCode=? ", objSendOrderSeed.ReceiveOrgOid.Oid, objSendOrderSeed.FinanceYearOid.Oid, obSupplierProductModifyDetail.BudgetSourceOid, obSupplierProductModifyDetail.AnimalSeedOid.Oid, obSupplierProductModifyDetail.AnimalSeedLevelOid.Oid, row.LotNumber.LotNumberFactory));
+                                //        if (objStockSeedInfo.Count > 0)
+                                //        {
+                                //            var ObjSubStockCardSource = from Item in objStockSeedInfo orderby Item.StockDate descending select Item;
+                                //            var ObjStockSeedInfoInfo = ObjectSpace.CreateObject<StockSeedInfo>();
+
+                                //            ObjStockSeedInfoInfo.StockDate = DateTime.Now;
+                                //            ObjStockSeedInfoInfo.OrganizationOid = objSendOrderSeed.ReceiveOrgOid;
+                                //            ObjStockSeedInfoInfo.FinanceYearOid = objSendOrderSeed.FinanceYearOid;
+                                //            ObjStockSeedInfoInfo.BudgetSourceOid = obSupplierProductModifyDetail.BudgetSourceOid;
+                                //            ObjStockSeedInfoInfo.AnimalSeedOid = obSupplierProductModifyDetail.AnimalSeedOid;
+                                //            ObjStockSeedInfoInfo.AnimalSeedLevelOid = obSupplierProductModifyDetail.AnimalSeedLevelOid;
+                                //            ObjStockSeedInfoInfo.StockDetail = "รับเมล็ดพันธุ์ Lot Number: " + row.LotNumber.LotNumberFactory;
+                                //            ObjStockSeedInfoInfo.TotalForward = ObjSubStockCardSource.FirstOrDefault().TotalWeight; //ObjSubStockCardSource(0).TotalWeight;
+                                //            ObjStockSeedInfoInfo.TotalChange = row.Weight;
+                                //            ObjStockSeedInfoInfo.StockType = EnumStockType.ReceiveProduct;
+                                //            ObjStockSeedInfoInfo.SeedTypeOid = obSupplierProductModifyDetail.SeedTypeOid;
+                                //            ObjStockSeedInfoInfo.ReferanceCode = row.LotNumber.LotNumberFactory;
+                                //            ObjectSpace.Rollback();
+                                //            //ObjectSpace.CommitChanges();
+                                //        }
+                                //    }
+                                //}
+
+                                objSendOrderSeed.ReceiveStatus = EnumReceiveOrderSeedStatus.Approve; //2
+                                objSendOrderSeed.Remark = CancelMsg;
+
                                 ObjectSpace.CommitChanges();
                             }
                             else if (Status == "2")
                             { //Reject
-                                objSupplierProduct.SendStatus = EnumSendOrderSeedStatus.Eject; //8
-                                objSupplierProduct.CancelMsg = CancelMsg;
+                                objSendOrderSeed.SendStatus = EnumSendOrderSeedStatus.Eject; //4
+                                objSendOrderSeed.ReceiveStatus = EnumReceiveOrderSeedStatus.Eject;//4
+                                objSendOrderSeed.CancelMsg = CancelMsg;
                                 ObjectSpace.CommitChanges();
                             }
                         }
                         else if (_type == "2") //ส่ง
-                        { 
+                        {
                             if (Status == "1")
                             { //Approve
-                                objSupplierProduct.SendStatus = EnumSendOrderSeedStatus.SendApprove; //6
+                                objSendOrderSeed.SendStatus = EnumSendOrderSeedStatus.Approve; //2
+                                objSendOrderSeed.ReceiveStatus = EnumReceiveOrderSeedStatus.InProgess;//1
+                                objSendOrderSeed.Remark = CancelMsg;
                                 ObjectSpace.CommitChanges();
                             }
                             else if (Status == "2")
                             { //Reject
-                                objSupplierProduct.SendStatus = EnumSendOrderSeedStatus.SendEject; //9
-                                objSupplierProduct.CancelMsg = CancelMsg;
+                                objSendOrderSeed.SendStatus = EnumSendOrderSeedStatus.Eject; //4
+                                objSendOrderSeed.CancelMsg = CancelMsg;
                                 ObjectSpace.CommitChanges();
                             }
                         }
+                    }    
+                    UpdateResult ret = new UpdateResult();
+                    ret.status = "true";
+                    ret.message = "บันทึกข้อมูลเสร็จเรียบร้อยแล้ว";
+                    return Request.CreateResponse(HttpStatusCode.OK, ret);
 
-                        UpdateResult ret = new UpdateResult();
-                        ret.status = "true";
-                        ret.message = "บันทึกข้อมูลเสร็จเรียบร้อยแล้ว";
-                        return Request.CreateResponse(HttpStatusCode.OK, ret);
-
-                    }
-                    else {
-                        UserError err = new UserError();
-                        err.status = "false";
-                        err.code = "-1";
-                        err.message = "ไม่พบข้อมูล";
-                        return Request.CreateResponse(HttpStatusCode.NotFound, err);
-                    }                  
                 }
-                
-                else {
+                else
+                {
                     UserError err = new UserError();
                     err.status = "false";
-                    err.code = "0";
-                    err.message = "กรุณาใส่ข้อมูล RefNo ให้เรียบร้อยก่อน";
-                    return Request.CreateResponse(HttpStatusCode.BadRequest,err);
+                    err.code = "-1";
+                    err.message = "ไม่พบข้อมูล";
+                    return Request.CreateResponse(HttpStatusCode.NotFound, err);
                 }
+            //}
+            
+                
+                //else {
+                //    UserError err = new UserError();
+                //    err.status = "false";
+                //    err.code = "0";
+                //    err.message = "กรุณาใส่ข้อมูล RefNo ให้เรียบร้อยก่อน";
+                //    return Request.CreateResponse(HttpStatusCode.BadRequest,err);
+                //}
             }
             catch (Exception ex)
             {

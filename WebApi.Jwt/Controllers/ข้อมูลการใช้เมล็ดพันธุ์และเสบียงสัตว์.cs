@@ -480,7 +480,6 @@ namespace WebApi.Jwt.Controllers
                                 TempSubDistrict + " " + row.OrgeServiceOid.SubDistrictOid.SubDistrictNameTH + " " + TempDistrict + row.OrgeServiceOid.DistrictOid.DistrictNameTH + " " +
                                 "จังหวัด" + row.OrgeServiceOid.ProvinceOid.ProvinceNameTH + " รหัสไปรษณีย์ " + row.OrgeServiceOid.DistrictOid.PostCode;
                             }
-
                             Supplier_.FinanceYearOid = row.FinanceYearOid.Oid.ToString();
                             Supplier_.OrganizationOid = row.OrganizationOid.Oid.ToString();
                             Supplier_.ActivityNameOid = row.ActivityOid.Oid.ToString();
@@ -522,7 +521,8 @@ namespace WebApi.Jwt.Controllers
                                 Supplier_.SubActivityName = row.SubActivityOid.ActivityName.ToString();
                             }
                             string BudgetSourceName = null;
-                            string Amount = "0";
+                            double Amount = 0;
+                            double Price = 0;
                             //ค้นหา Role Detail
                             List<SupplierUseAnimalDetail_Model> listD = new List<SupplierUseAnimalDetail_Model>();
                             foreach (SupplierUseAnimalProductDetail row2 in row.SupplierUseAnimalProductDetails)
@@ -567,7 +567,8 @@ namespace WebApi.Jwt.Controllers
                                 item2.QuotaQTY = row2.QuotaQTY;
 
                                 item2.Amount = row2.Amount;
-                                Amount = Amount + item2.Amount.ToString();
+                                Price = Price + item2.Price;
+                                Amount = Amount + item2.Amount;
                                 BudgetSourceName = item2.BudgetSourceName;
                                 listD.Add(item2);
 
@@ -578,13 +579,12 @@ namespace WebApi.Jwt.Controllers
                             Supplier_.ReceiptNo = row.ReceiptNo;
 
                             Supplier_.ServiceCount = row.ServiceCount;
+                            Supplier_.TotalPrice =Price.ToString()+" "+"บาท" ;
                             Supplier_.TotalAmout = Amount.ToString();
 
                             Supplier_.Refno = RefNo;
                             Supplier_.details = listD;
                             list_detail.Add(Supplier_);
-
-
 
                         }
 
@@ -937,8 +937,6 @@ namespace WebApi.Jwt.Controllers
                 string QuotaQTY = HttpContext.Current.Request.Form["QuotaQTY"].ToString();
                 string StockLimit = HttpContext.Current.Request.Form["StockLimit"].ToString();
                 string Weight = HttpContext.Current.Request.Form["Weight"].ToString();
-
-
                 if (BudgetSourceOid != "")
                 {
                     DataSet ds;
@@ -971,7 +969,6 @@ namespace WebApi.Jwt.Controllers
                     return Request.CreateResponse(HttpStatusCode.BadRequest, ret);
                 }
 
-
             }
             catch (Exception ex)
             {
@@ -998,8 +995,6 @@ namespace WebApi.Jwt.Controllers
             {
                 string org_oid = HttpContext.Current.Request.Form["Org_Oid"].ToString();
                 string type = HttpContext.Current.Request.Form["type"].ToString(); //การแจกจ่าย=1/การจำหน่าย=2/ภัยพิบัติ=3
-
-
                 if (org_oid != "" && type != "")
                 {
                     XpoTypesInfoHelper.GetXpoTypeInfoSource();
@@ -1015,7 +1010,7 @@ namespace WebApi.Jwt.Controllers
                     XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                     IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
                     // อาจต้องแก้ไข ในอนาคต
-                    if (type == "1")
+                    if (type == "4")
                     {  //เพื่อใช้ในกิจกรรมกรมปศุสัตว์
                         string ActivityOid = "069CB598-B40E-472A-A386-4F8056FB78D2";
                         IList<SupplierUseAnimalProduct> collection = ObjectSpace.GetObjects<SupplierUseAnimalProduct>(CriteriaOperator.Parse("GCRecord is null and Stauts = 1 and OrganizationOid='" + org_oid + "' and  ActivityOid = '" + ActivityOid + "' ", null));
@@ -1252,7 +1247,7 @@ namespace WebApi.Jwt.Controllers
                             return Request.CreateResponse(HttpStatusCode.OK, UseACT3);
                         }
                     }
-                    else if (type == "4")
+                    else if (type == "1")
                     {
                         //เพื่อการแจกจ่าย (สนับสนุนเกษตรกร)
                         string ActivityOid = "A29D77A9-4BCB-4774-9744-FF97A373353E";
@@ -1329,7 +1324,7 @@ namespace WebApi.Jwt.Controllers
                                     Supplier_4.ReceiptNo = row.ReceiptNo.ToString();
                                 }
 
-                                Supplier_4.Refno = row.UseNo + "|" + row.OrganizationOid.Oid.ToString() + "|4";
+                                Supplier_4.Refno = row.UseNo + "|" + row.OrganizationOid.Oid.ToString() + "|1";
                                 if (row.SupplierUseAnimalProductDetails != null)
                                 {
                                     Supplier_4.Weight = row.SupplierUseAnimalProductDetails.Sum((c => c.Weight)).ToString() + " " + "กิโลกรัม";
@@ -1344,7 +1339,7 @@ namespace WebApi.Jwt.Controllers
                     UserError err = new UserError();
                     err.status = "false";
                     err.code = "0";
-                    err.message = "กรุณาใส่ข้อมูล type (type 1 เพื่อใช้ในกิจกรรม/ 2 การจำหน่าย /3 ภัยพิบัติ/4 เพื่อการแจกจ่าย (สนับสนุนเกษตรกร)) ให้เรียบร้อยก่อน";
+                    err.message = "กรุณาใส่ข้อมูล  type (type 1 เพื่อการแจกจ่าย (สนับสนุนเกษตรกร)/2 การจำหน่าย /3 ภัยพิบัติ/)  ให้เรียบร้อยก่อน";
                     return Request.CreateResponse(HttpStatusCode.BadRequest, err);
 
                 }
@@ -1353,7 +1348,7 @@ namespace WebApi.Jwt.Controllers
                     UserError err = new UserError();
                     err.status = "false";
                     err.code = "0";
-                    err.message = "กรุณาใส่ข้อมูล Org_Oid และ type (type 1 เพื่อใช้ในกิจกรรม/ 2 การจำหน่าย 3/ ภัยพิบัติ/4 เพื่อการแจกจ่าย (สนับสนุนเกษตรกร)) ให้เรียบร้อยก่อน";
+                    err.message = " กรุณาใส่ข้อมูล  oid และ type (type 1 เพื่อการแจกจ่าย (สนับสนุนเกษตรกร)/2 การจำหน่าย /3 ภัยพิบัติ/)  ให้เรียบร้อยก่อน";
                     return Request.CreateResponse(HttpStatusCode.BadRequest, err);
                 }
             }
@@ -1367,7 +1362,10 @@ namespace WebApi.Jwt.Controllers
             }
         }
      
-
+        /// <summary>
+        /// การใช้กิจกรรม เมล้ดพันธุ์
+        /// </summary>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
         [Route("SupplierUseProduct/List")]
@@ -1393,10 +1391,10 @@ namespace WebApi.Jwt.Controllers
                     XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                     IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
 
-                    if (type == "1")
-                    {  //เพื่อใช้ในกิจกรรม 
-
-                        IList<SupplierUseProduct> collection = ObjectSpace.GetObjects<SupplierUseProduct>(CriteriaOperator.Parse("GCRecord is null and SendStatus=1 and OrganizationOid='" + org_oid + "'", null));
+                    if (type == "4")
+                    {  //เพื่อใช้ในกิจกรรมกรมปศุสัตว์
+                        string ActivityOid = "069CB598-B40E-472A-A386-4F8056FB78D2";
+                        IList<SupplierUseProduct> collection = ObjectSpace.GetObjects<SupplierUseProduct>(CriteriaOperator.Parse("GCRecord is null and Stauts=1 and OrganizationOid='" + org_oid + "'and ActivityOid = '" + ActivityOid + "' ", null));
                         if (collection.Count > 0)
                         {
                             foreach (SupplierUseProduct row in collection)
@@ -1622,7 +1620,7 @@ namespace WebApi.Jwt.Controllers
                             return Request.CreateResponse(HttpStatusCode.OK, UserACT3);
                         }
                     }
-                    else if (type == "4")
+                    else if (type == "1")
                     {
                         //เพื่อการแจกจ่าย (สนับสนุนเกษตรกร)
                         string ActivityOid = "A29D77A9-4BCB-4774-9744-FF97A373353E";
@@ -1697,7 +1695,7 @@ namespace WebApi.Jwt.Controllers
                                     Supplier_4.ReceiptNo = row.ReceiptNo;
                                 }
 
-                                Supplier_4.Refno = row.UseNo + "|" + row.OrganizationOid.Oid.ToString() + "|4";
+                                Supplier_4.Refno = row.UseNo + "|" + row.OrganizationOid.Oid.ToString() + "|1";
                                 Supplier_4.Weight = row.SupplierUseProductDetails.Sum((c => c.Weight)).ToString() + " " + "กิโลกรัม";
                                 UserACT4.Add(Supplier_4);
                             }
@@ -1710,7 +1708,7 @@ namespace WebApi.Jwt.Controllers
                     UserError err = new UserError();
                     err.status = "false";
                     err.code = "0";
-                    err.message = "กรุณาใส่ข้อมูล  type (type 1 เพื่อใช้ในกิจกรรม/2 การจำหน่าย /3 ภัยพิบัติ/4 เพื่อการแจกจ่าย (สนับสนุนเกษตรกร))  ให้เรียบร้อยก่อน";
+                    err.message = "กรุณาใส่ข้อมูล  type (type 1 เพื่อการแจกจ่าย (สนับสนุนเกษตรกร)/2 การจำหน่าย /3 ภัยพิบัติ/)  ให้เรียบร้อยก่อน";
                     return Request.CreateResponse(HttpStatusCode.BadRequest, err);
 
                 }
@@ -1719,7 +1717,7 @@ namespace WebApi.Jwt.Controllers
                     UserError err = new UserError();
                     err.status = "false";
                     err.code = "0";
-                    err.message = "กรุณาใส่ข้อมูล Org_Oid และ type (type 1 เพื่อใช้ในกิจกรรม/2 การจำหน่าย /3 ภัยพิบัติ/4 เพื่อการแจกจ่าย (สนับสนุนเกษตรกร))  ให้เรียบร้อยก่อน";
+                    err.message = "กรุณาใส่ข้อมูล Oid และ type (type 1 เพื่อการแจกจ่าย (สนับสนุนเกษตรกร)/2 การจำหน่าย /3 ภัยพิบัติ/)  ให้เรียบร้อยก่อน";
                     return Request.CreateResponse(HttpStatusCode.BadRequest, err);
                 }
             }
@@ -1875,13 +1873,11 @@ namespace WebApi.Jwt.Controllers
                     string _refno = arr[0]; //เลขที่อ้างอิง
                     string _org_oid = arr[1]; //oid หน่วยงาน
                     string _type = arr[2]; //ประเภทส่ง(2)-รับ(1)
-
-
                     XpoTypesInfoHelper.GetXpoTypeInfoSource();
                     XafTypesInfo.Instance.RegisterEntity(typeof(SupplierUseProduct));
 
                     List<SupplierProductUser> list_detail = new List<SupplierProductUser>();
-
+                    List<SupplierUseProductDetail_Model> detail = new List<SupplierUseProductDetail_Model>();
                     XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                     IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
 
@@ -1928,11 +1924,9 @@ namespace WebApi.Jwt.Controllers
                                 else { TempDistrict = "อำเภอ"; };
                                 item.RegisCusServiceOid = row.RegisCusServiceOid.Oid.ToString();
                                 item.RegisCusServiceName = row.RegisCusServiceOid.FirstNameTH + " " + row.RegisCusServiceOid.LastNameTH;
-                                item.RegisCusServiceAddress = "เลขที่" +" "+ row.RegisCusServiceOid.Address + " หมู่ที่" + " " + checknull(row.RegisCusServiceOid.Moo) + " ถนน" + " "+ checknull(row.RegisCusServiceOid.Road) 
-                               +" "+ TempSubDistrict + " " + row.RegisCusServiceOid.SubDistrictOid.SubDistrictNameTH + " " + TempDistrict + row.RegisCusServiceOid.DistrictOid.DistrictNameTH + " " +
+                                item.RegisCusServiceAddress = "เลขที่" + " " + row.RegisCusServiceOid.Address + " หมู่ที่" + " " + checknull(row.RegisCusServiceOid.Moo) + " ถนน" + " " + checknull(row.RegisCusServiceOid.Road)
+                               + " " + TempSubDistrict + " " + row.RegisCusServiceOid.SubDistrictOid.SubDistrictNameTH + " " + TempDistrict + row.RegisCusServiceOid.DistrictOid.DistrictNameTH + " " +
                                 "จังหวัด" + row.RegisCusServiceOid.ProvinceOid.ProvinceNameTH + " รหัสไปรษณีย์ " + row.RegisCusServiceOid.DistrictOid.PostCode;
-
-
                             }
 
                             if (row.OrgeServiceOid == null)
@@ -1955,17 +1949,14 @@ namespace WebApi.Jwt.Controllers
                                 item.OrgeServiceOid = row.OrgeServiceOid.Oid.ToString();
                                 item.OrgeServiceName = row.OrgeServiceOid.OrgeServiceName;
 
-                                item.OrgeServiceAddress = "เลขที่" +  " "+row.OrgeServiceOid.Address + " หมู่ที่" + " "+checknull(row.OrgeServiceOid.Moo) + " ถนน" + checknull(row.OrgeServiceOid.Road) 
-                                +" "+TempSubDistrict + " " + row.OrgeServiceOid.SubDistrictOid.SubDistrictNameTH + " " + TempDistrict + row.OrgeServiceOid.DistrictOid.DistrictNameTH + " " +
+                                item.OrgeServiceAddress = "เลขที่" + " " + row.OrgeServiceOid.Address + " หมู่ที่" + " " + checknull(row.OrgeServiceOid.Moo) + " ถนน" + checknull(row.OrgeServiceOid.Road)
+                                + " " + TempSubDistrict + " " + row.OrgeServiceOid.SubDistrictOid.SubDistrictNameTH + " " + TempDistrict + row.OrgeServiceOid.DistrictOid.DistrictNameTH + " " +
                                 "จังหวัด" + row.OrgeServiceOid.ProvinceOid.ProvinceNameTH + " รหัสไปรษณีย์ " + row.OrgeServiceOid.DistrictOid.PostCode;
-
-
                             }
                             if (row.ApproveDate != null)
                             {
                                 item.ApproveDate = row.ApproveDate.ToString("dd/MM/yyyy");
                             }
-
 
                             item.FinanceYearOid = row.FinanceYearOid.Oid.ToString();
                             item.OrganizationOid = row.OrganizationOid.Oid.ToString();
@@ -1994,48 +1985,79 @@ namespace WebApi.Jwt.Controllers
                             }
                             string BudgetSourceName = null;
                             item.Stauts = row.Stauts.ToString();
+                            double Amount = 0;
+                            double Price = 0;
+                            double Weight = 0;
                             List<SupplierUseProductDetail_Model> item2 = new List<SupplierUseProductDetail_Model>();
                             foreach (SupplierUseProductDetail row2 in row.SupplierUseProductDetails)
                             {
-
                                 SupplierUseProductDetail_Model D2 = new SupplierUseProductDetail_Model();
-                                D2.SupplierUseAnimalProductOid = item.Oid.ToString();
+                                D2.SupplierUseProductOid = item.Oid.ToString();
                                 D2.Oid = row2.Oid.ToString();
-                                D2.AnimalSeedLevelOid = row2.AnimalSeedLevelOid.Oid.ToString();
-                                D2.AnimalSeedLevelName = row2.AnimalSeedLevelOid.SeedLevelName;
-                                D2.AnimalSeedLevelSubName = row2.AnimalSeedLevelOid.SeedLevelCode;
-                                D2.AnimalSupplieTypeOid = row2.SeedTypeOid.Oid.ToString();
-                                D2.AnimalSupplieTypeName = row2.SeedTypeOid.SeedTypeName;
-                                D2.PerPrice = row2.PerPrice;
-                                D2.Price = row2.Price;
-                                D2.BudgetSourceName = row2.BudgetSourceOid.BudgetName;
-                                D2.AnimalSeedName = row2.AnimalSeedOid.SeedName;
+                                D2.SupplierUseProductOid = row2.SupplierUseProduct.Oid.ToString();
+
                                 D2.Weight = row2.Weight;
-                                WeightAll = WeightAll + row2.Weight;
-                                Amout = Amout + D2.Price;
+                                if (row2.Weight == 0)
+                                {
+                                    Weight = 0;
+                                }
+                                else
+                                {
+                                    Weight = Weight + row2.Weight;
+                                }
+
+                                if (row2.AnimalSeedOid != null)
+                                {
+                                    D2.AnimalSeedName = row2.AnimalSeedOid.SeedName;
+                                }
+
+                                if (row2.BudgetSourceOid != null)
+                                {
+                                    D2.BudgetSourceName = row2.BudgetSourceOid.BudgetName;
+                                }
+
+                                D2.Price = row2.Price;
+                                D2.PerPrice = row2.PerPrice;
+                                D2.StockUsed = row2.StockLimit;
+                                D2.StockLimit = row2.StockLimit;
+                                D2.AnimalSupplieName = D2.AnimalSupplieName;
+                                D2.Amount = D2.Amount;
+                                Price = Price + D2.Price;
+                                Amount = Amount + D2.Amount;
                                 BudgetSourceName = D2.BudgetSourceName;
-                                item2.Add(D2);
+                                detail.Add(D2);
+
                             }
                             item.BudgetSourceName = BudgetSourceName;
-                            item.Remark = row.Remark;
-                            item.Weight = WeightAll.ToString() + " " + "กิโลกรัม";
-                            item.TotalAmout = Amout.ToString();
-                            item.Detail = item2;
+                            item.Weight = Weight + " " + "กิโลกรัม";
+                            item.ReceiptNo = row.ReceiptNo;
+
+                            item.ServiceCount = row.ServiceCount;
+                            item.TotalPrice = Price.ToString() +" "+ "บาท";
+                            item.TotalAmout = Amount.ToString();
+
+                            item.Refno = RefNo;
+                            item.Detail = detail;
                             list_detail.Add(item);
+
                         }
+
+
                     }
                     return Request.CreateResponse(HttpStatusCode.OK, list_detail);
+                  }
+                    else
+                    {
+                        UserError err = new UserError();
+                        err.status = "false";
+                        err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                        err.message = "โปรดระบุ RefNo";
+                        return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+                    }
                 }
-                else
-                {
-                    UserError err = new UserError();
-                    err.status = "false";
-                    err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-                    err.message = "กรุณาใส่เลข RefNo";
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, err);
-                }
-
-            }
+        
+            
+            
             catch (Exception ex)
             {
                 UserError err = new UserError();
@@ -2169,7 +2191,7 @@ namespace WebApi.Jwt.Controllers
                         objSotockSeedInfoNew.ReferanceCode = objSupplierProduct.LotNumberFactory;
                         ObjectSpace.CommitChanges();
                     }
-                    ObjMaster.SendStatus = EnumSendOrderSeedStatus.SendApprove;
+                    ObjMaster.SendStatus = EnumSendOrderSeedStatus.Approve;
                     ObjectSpace.CommitChanges();
                     return Ok(true);
 

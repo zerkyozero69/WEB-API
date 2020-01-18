@@ -196,7 +196,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                 foreach (AnimalSupplieType row in collection)
                 {
                     AnimalSupplieType_Model model = new AnimalSupplieType_Model();
-                    model.Oid = row.Oid.ToString();
+                    model.AnimalSupplieTypeOid = row.Oid.ToString();
                     model.SupplietypeName = row.SupplietypeName;
                     model.SalePrice = row.SalePrice;
                     model.IsActive = row.IsActive;

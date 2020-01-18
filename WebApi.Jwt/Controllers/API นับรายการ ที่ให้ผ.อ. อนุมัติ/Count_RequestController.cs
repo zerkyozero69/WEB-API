@@ -41,15 +41,28 @@ namespace WebApi.Jwt.Controllers.API_นับรายการ_ที่ให
                 List<Titile_Group> titile_Groups = new List<Titile_Group>();
                 Titile_Group Group_ = new Titile_Group();
                 List<Status_count> status = new List<Status_count>();
-
+                int idApp = 0;
                 if (ds.Tables[0].Rows.Count > 0)
                 {
+                    int number = 0;
                     string Temp_Group_Name = "";
+              
                     foreach (DataRow dr in ds.Tables[0].Rows)
                     {
+                      
                         if (Temp_Group_Name == dr["GroupName"].ToString())
                         {
+                            Group_.No = number;
                             Status_count item = new Status_count();
+                            if (idApp == 1)
+                            {
+                                item.IconImage = "approve1get.png";
+                            }
+                            else
+                            {
+                                item.IconImage = "approve2send.png";
+                            }
+                            item.SubNo = Convert.ToInt16(dr["Number"]);
                             item.ActivityName = dr["StatusName"].ToString();
                             item.CountActivityName = dr["CountStatus"].ToString();
                             //status.Add(item);
@@ -57,12 +70,23 @@ namespace WebApi.Jwt.Controllers.API_นับรายการ_ที่ให
                         }
                         else
                         {
+
                             Temp_Group_Name = dr["GroupName"].ToString();
+                            Group_.No = number;
                             Group_ = new Titile_Group();
                             Group_.GroupName = dr["GroupName"].ToString();
+                            number = number + 1;
                             Status_count item = new Status_count();
+                            item.SubNo = Convert.ToInt16(dr["Number"]);
+                            if (idApp == 1)
+                            {
+                                item.IconImage = "approve1get.png";
+                            }
+                            else
+                            {
+                                item.IconImage = "approve2send.png";
+                            }
                             item.ActivityName = dr["StatusName"].ToString();
-
                             item.CountActivityName = dr["CountStatus"].ToString();
                             //status.Add(item);
                             //Group_.Status_List = status;
@@ -87,7 +111,7 @@ namespace WebApi.Jwt.Controllers.API_นับรายการ_ที่ให
             }
             catch (Exception ex)
             {
-                UserError err = new UserError();
+                    UserError err = new UserError();
                 err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
                 err.message = ex.Message;
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);

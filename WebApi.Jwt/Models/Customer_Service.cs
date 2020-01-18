@@ -8,7 +8,7 @@ namespace WebApi.Jwt.Models
     public class OrgeService_info
     {
 
-        public string OrgeService_Oid { get; set; }
+        public string OrgeServiceOid { get; set; }
         public string OrganizationOid { get; set; }
         public string OrgeServiceID { get; set; }
         public string OrgeServiceName { get; set; }

@@ -118,7 +118,7 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
 
                                 ObjectSpace.CommitChanges();
                             }
-                            objSupplierUseProduct.Stauts = EnumSupplierUseStatus.Approved; //4
+                            objSupplierUseProduct.Stauts = EnumSupplierUseStatus.Approve; //4
 
                             ObjectSpace.CommitChanges();
                         }
@@ -130,7 +130,7 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                             {
                                 objSupplierUseProduct.Remark = Remark;
                             }
-                            objSupplierUseProduct.Stauts = EnumSupplierUseStatus.Approved; //4
+                            objSupplierUseProduct.Stauts = EnumSupplierUseStatus.Approve; //4
                             ObjectSpace.CommitChanges();
                         }
 
@@ -344,13 +344,13 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                     productUser.Remark = jObject.SelectToken("Remark").Value<string>();
                     productUser.ActivityNameOid = jObject.SelectToken("ActivityNameOid").Value<string>();
                     productUser.CitizenID = jObject.SelectToken("CitizenID").Value<string>();
-                    productUser.YearName = jObject.SelectToken("YearName").Value<string>(); ///ใช้สำหรับเจนเลข ออโต้
+                    productUser.YearName = jObject.SelectToken("FinanceYear").Value<string>(); ///ใช้สำหรับเจนเลข ออโต้
                     if (jObject.SelectToken("SubActivityOid") != null)
                     {
                         productUser.SubActivityOid = jObject.SelectToken("SubActivityOid").Value<string>();
                     }
-                    if (jObject.SelectToken("SubActivityLevelName") != null)
-                    { productUser.SubActivityLevelName = jObject.SelectToken("SubActivityLevelName").Value<string>(); }
+                    if (jObject.SelectToken("SubActivityLevelOid") != null)
+                    { productUser.SubActivityLevelName = jObject.SelectToken("SubActivityLevelOid").Value<string>(); }
 
                     if (jObject.SelectToken("RegisCusServiceOid") != null)
                     {
@@ -362,6 +362,8 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                     }
 
                     productUser.ServiceCount = jObject.SelectToken("ServiceCount").Value<int>();
+
+                    productUser.PickUp_Type = jObject.SelectToken("PickUpType").Value<string>();
 
 
                     if (productUser.UseNo == "")
@@ -414,9 +416,7 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                     }
 
                     DataSet ds;
-                    SqlParameter[] prm = new SqlParameter[11];
-                    if (productUser.OrgeServiceOid == null)
-                    {
+                    SqlParameter[] prm = new SqlParameter[13];
                         prm[0] = new SqlParameter("@UseNo", productUser.UseNo);
                         prm[1] = new SqlParameter("@UseDate", productUser.UseDate);
                         prm[2] = new SqlParameter("@YearName", productUser.YearName);
@@ -428,28 +428,11 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                         prm[8] = new SqlParameter("@ServiceCount", productUser.ServiceCount);
                         prm[9] = new SqlParameter("@CitizenID", productUser.CitizenID);
                         prm[10] = new SqlParameter("@SubActivityOid", productUser.SubActivityOid);
-                    }
-                    else if (productUser.OrgeServiceOid != null)
-                    {
-               
-                        prm[0] = new SqlParameter("@UseNo", productUser.UseNo);
-                        prm[1] = new SqlParameter("@UseDate", productUser.UseDate);
-                        prm[2] = new SqlParameter("@YearName", productUser.YearName);
-                        prm[3] = new SqlParameter("@OrganizationOid", productUser.OrganizationOid);
-                        prm[4] = new SqlParameter("@Remark", "เป็นตัวแทนของ"+productUser.Remark);
-                        prm[5] = new SqlParameter("@ActivityOid", productUser.ActivityNameOid);
-                        prm[6] = new SqlParameter("@RegisCusServiceOid", productUser.RegisCusServiceOid);
-                        prm[7] = new SqlParameter("@OrgeServiceOid", productUser.OrgeServiceOid);
-                        prm[8] = new SqlParameter("@ServiceCount", productUser.ServiceCount);
-                        prm[9] = new SqlParameter("@CitizenID", productUser.CitizenID);
-                        prm[10] = new SqlParameter("@SubActivityOid", productUser.SubActivityOid);
-                    }
+                       prm[11] = new SqlParameter("@SubActivityLevelOid", productUser.SubActivityLevelName);
+                        prm[12] = new SqlParameter("@PickUp_Type", productUser.PickUp_Type);
                         ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieInserts_Calamity_SupplierUseAnimalProduct", prm);
                     DataTable dt = new DataTable();
-                    dt = ds.Tables[0];
-
-                    //    using (DataSet ds = SqlHelper.ExecuteDataset(scc, "spt_Moblieinsert_RegisterFarmer", ))
-
+                           
                     if (ds.Tables[0].Rows.Count > 0)
                     {
 
@@ -507,7 +490,7 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
-        [Route("ApprovalDisasterSupplierUseAnimalProduct/Update")]
+        [Route("ApprovalDisasterSupplierUseAnimalProduct/Update")]/// ใช้สร้างใหม่
         public HttpResponseMessage UpdateDisasterSupplierUseAnimalProduct()  ///SupplierUseAnimalProduct/Update
         {
             _Registerfarmer Registerfarmer = new _Registerfarmer();
@@ -536,9 +519,9 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
 
                             if (Status == "1")
                             { //อนุมัติ                      
-                            objSupplierUseAnimalProduct.UseNo = objSupplierUseAnimalProduct.UseNo;
+                            objSupplierUseAnimalProduct.UseNo = UseNo;
 
-                                objSupplierUseAnimalProduct.Stauts = EnumRodBreedProductSeedStatus.Accept; //1
+                                objSupplierUseAnimalProduct.Stauts = EnumRodBreedProductSeedStatus.Accepet; //1
                                 if (Remark != "")
                                 {
                                     objSupplierUseAnimalProduct.Remark = Remark;
@@ -552,7 +535,7 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                         }
                             else if (Status == "2")
                             { // อนุมัติให้ ผ.อ.
-                            objSupplierUseAnimalProduct.UseNo = objSupplierUseAnimalProduct.UseNo;
+                            objSupplierUseAnimalProduct.UseNo = UseNo;
                             objSupplierUseAnimalProduct.Stauts = EnumRodBreedProductSeedStatus.Approve; //2
                                 if (Remark != "")
                                 {
@@ -606,13 +589,22 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
             _Registerfarmer Registerfarmer = new _Registerfarmer();
             try
             {
+                string CancelMsg = "";
                 string Remark = "";
                 string RefNo = HttpContext.Current.Request.Form["RefNo"].ToString(); //ข้อมูลเลขที่อ้างอิง
                 string Status = HttpContext.Current.Request.Form["Status"].ToString(); //สถานะ
-                Remark = HttpContext.Current.Request.Form["Remark"].ToString(); //หมายเหตุ
-                string activityNameOid = HttpContext.Current.Request.Form["activityNameOid"].ToString();
+                if (CancelMsg != null)
+                {
+                    CancelMsg = HttpContext.Current.Request.Form["Remark"].ToString(); //หมายเหตุ
+                }
+                else if (Remark != null)
+                {
+                    CancelMsg = HttpContext.Current.Request.Form["Remark"].ToString(); //หมายเหตุ
 
-                if (RefNo != "" && Status != "" && activityNameOid != "")
+                }
+
+
+                if (RefNo != "" && Status != "" )
                 {
                     string[] arr = RefNo.Split('|');
                     string _refno = arr[0]; //เลขที่อ้างอิง
@@ -625,20 +617,22 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                     XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                     IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
 
-                    SupplierUseAnimalProduct objSupplierUseAnimalProduct = ObjectSpace.FindObject<SupplierUseAnimalProduct>(CriteriaOperator.Parse("UseNo=? and ActivityOid= ? ", _refno, activityNameOid));
+                    SupplierUseAnimalProduct objSupplierUseAnimalProduct = ObjectSpace.FindObject<SupplierUseAnimalProduct>(CriteriaOperator.Parse("UseNo=?  ", _refno));
 
                     if (objSupplierUseAnimalProduct != null)
                     {
 
                         if (Status == "1")
                         {
-                            objSupplierUseAnimalProduct.Stauts = EnumRodBreedProductSeedStatus.Approve;
-                            objSupplierUseAnimalProduct.Remark = Remark;
+                            objSupplierUseAnimalProduct.Stauts = EnumRodBreedProductSeedStatus.Approve;//2
+                            objSupplierUseAnimalProduct.Remark = CancelMsg;
+                            ObjectSpace.CommitChanges();
                         }
                         else
                         {
-                            objSupplierUseAnimalProduct.Stauts = EnumRodBreedProductSeedStatus.NoApprove;
-                            objSupplierUseAnimalProduct.Remark = Remark;
+                            objSupplierUseAnimalProduct.Stauts = EnumRodBreedProductSeedStatus.Eject;//4
+                            objSupplierUseAnimalProduct.CancelMsg = CancelMsg;
+                            ObjectSpace.CommitChanges();
                         }
 
                         ObjectSpace.CommitChanges();
@@ -682,7 +676,7 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
         {
             try
             {
-                string Remark = HttpContext.Current.Request.Form["Remark"].ToString();
+                string CancelMsg = HttpContext.Current.Request.Form["CancelMsg"].ToString();
                 string RefNo = HttpContext.Current.Request.Form["RefNo"].ToString(); //ข้อมูลเลขที่อ้างอิง
                 string Status = HttpContext.Current.Request.Form["Status"].ToString(); //สถานะ
 
@@ -706,8 +700,8 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
 
                         if (Status == "1")
                         { //อนุมัติ
-                            objSupplierUseProduct.Stauts = EnumSupplierUseStatus.Approved; //2
-                            objSupplierUseProduct.Remark = Remark;
+                            objSupplierUseProduct.Stauts = EnumSupplierUseStatus.Approve; //2
+                            objSupplierUseProduct.Remark = CancelMsg;
                             ObjectSpace.CommitChanges();
                         }
                         else if (Status == "2")
@@ -715,7 +709,7 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                             objSupplierUseProduct.Stauts = EnumSupplierUseStatus.Eject; //4
                            //if( Remark != " ")
                            // {
-                                objSupplierUseProduct.Remark = Remark;
+                                objSupplierUseProduct.Remark = CancelMsg;
                             //}
                           
                             ObjectSpace.CommitChanges();
@@ -764,8 +758,8 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
         {
             try
             {
-                string Remark = "";
-                Remark = HttpContext.Current.Request.Form["Remark"].ToString();
+                string CancelMsg = "";
+                CancelMsg = HttpContext.Current.Request.Form["CancelMsg"].ToString();
                 string RefNo = HttpContext.Current.Request.Form["RefNo"].ToString(); //ข้อมูลเลขที่อ้างอิง
                 string Status = HttpContext.Current.Request.Form["Status"].ToString(); //สถานะ
 
@@ -790,13 +784,13 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                         if (Status == "1")
                         { //อนุมัติ
                             objSupplierUseProduct.Stauts = EnumRodBreedProductSeedStatus.Approve; //2
-                            objSupplierUseProduct.Remark = Remark.ToString();
+                            objSupplierUseProduct.Remark = CancelMsg.ToString();
                             ObjectSpace.CommitChanges();
                         }
                         else if (Status == "2")
                         { //ไม่อนุมัติ
-                            objSupplierUseProduct.Stauts = EnumRodBreedProductSeedStatus.NoApprove; //4
-                            objSupplierUseProduct.Remark = Remark.ToString();
+                            objSupplierUseProduct.Stauts = EnumRodBreedProductSeedStatus.Eject; //4
+                            objSupplierUseProduct.Remark = CancelMsg.ToString();
                             ObjectSpace.CommitChanges();
                         }
 

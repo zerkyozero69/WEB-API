@@ -17,6 +17,7 @@ namespace WebApi.Jwt.Models.นับจำนวนกิจกรรม
     }
     public class Titile_Group
     {
+        public int No { get; set; }
         public Titile_Group()
         {
             Status_List = new List<Status_count>();
@@ -27,8 +28,13 @@ namespace WebApi.Jwt.Models.นับจำนวนกิจกรรม
     }
     public class Status_count
     {
+        public int SubNo { get; set; }
+        public string IconImage { get; set; }
         public string ActivityName { get; set; }
         public string CountActivityName { get; set; }
+
+        //new DataApp{ Tilte = "อนุมัติการรับเมล็ดพันธุ์", IconImage = "approve1get.png" , idApp = 1},
+        //   new DataApp{ Tilte = "อนุมัติการส่งเมล็ดพันธุ์" , IconImage = "approve2send.png" , idApp = 2},
     }
 
     //PhonesList.Add(new PhoneGroup("", new[]{ new Phone

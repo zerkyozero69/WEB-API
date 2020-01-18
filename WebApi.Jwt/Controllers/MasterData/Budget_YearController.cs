@@ -93,7 +93,10 @@ namespace WebApi.Jwt.Controllers.MasterData
 }
 
 
-
+        /// <summary>
+        /// รายละเอียด งบประมาณ
+        /// </summary>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpPost   ]
         [Route("Budget/info")]

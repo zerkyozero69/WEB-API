@@ -15,7 +15,7 @@ namespace WebApi.Jwt.Models
         /// <summary>
         /// รายการข้อมูลที่รับ
         /// </summary>
-        public List<SendOrderSeedType> Receive { get; set; }
+        public List<ReceiveOrderSeedType> Receive { get; set; }
     }
 
     public class SendOrderSeedType
@@ -31,6 +31,24 @@ namespace WebApi.Jwt.Models
         public string ReceiveOrgFullName { get; set; }
         public string Remark { get; set; } 
         public string SendStatus { get; set; }
+        public string CancelMsg { get; set; }
+        public string TotalWeight { get; set; }
+        public string RefNo { get; set; } //รหัสอ้างอิงสำหรับแสดงรายละเอียด
+        public List<SendOrderSeedDetailType> Details { get; set; }
+    }
+    public class ReceiveOrderSeedType
+    {
+        public string SendNo { get; set; }
+        public string SendDate { get; set; }
+        public string FinanceYear { get; set; }
+        public string SendOrgOid { get; set; }
+        public string SendOrgName { get; set; }
+        public string SendOrgFullName { get; set; }
+        public string ReceiveOrgOid { get; set; }
+        public string ReceiveOrgName { get; set; }
+        public string ReceiveOrgFullName { get; set; }
+        public string Remark { get; set; }
+        public string ReceiveOrderStatus { get; set; }
         public string CancelMsg { get; set; }
         public string TotalWeight { get; set; }
         public string RefNo { get; set; } //รหัสอ้างอิงสำหรับแสดงรายละเอียด
