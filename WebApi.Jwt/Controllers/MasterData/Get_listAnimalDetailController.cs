@@ -133,10 +133,10 @@ namespace WebApi.Jwt.Controllers.MasterData
             AnimalProductDetail animal = new AnimalProductDetail();
             try
             {
-                string QuotaName = HttpContext.Current.Request.Form["QuotaName"].ToString();
+            //    string QuotaName = HttpContext.Current.Request.Form["QuotaName"].ToString();
                 string OrganizationOid = HttpContext.Current.Request.Form["OrganizationOid"].ToString();
-                string AnimalSupplieOid = HttpContext.Current.Request.Form["AnimalSupplieOid"].ToString();
-                string AnimalSupplieTypeOid = HttpContext.Current.Request.Form["AnimalSupplieTypeOid"].ToString(); 
+                //string AnimalSupplieOid = HttpContext.Current.Request.Form["AnimalSupplieOid"].ToString();
+                //string AnimalSupplieTypeOid = HttpContext.Current.Request.Form["AnimalSupplieTypeOid"].ToString(); 
                 string QuotaTypeOid = HttpContext.Current.Request.Form["QuotaTypeOid"].ToString();
 
                 List<QuotaType_Model> listquo = new List<QuotaType_Model>();
@@ -150,7 +150,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
                 QuotaType quotaType;
                 //  var ManageSubAnimalSupplierOid = null;
-                quotaType = ObjectSpace.FindObject<QuotaType>(CriteriaOperator.Parse("GCRecord is null and IsActive = 1 and QuotaName  = '" + QuotaName + "' ", null));
+                quotaType = ObjectSpace.FindObject<QuotaType>(CriteriaOperator.Parse("GCRecord is null and IsActive = 1 and Oid  = '" + QuotaTypeOid + "' ", null));
                 if (quotaType.QuotaName != "โควตาปศุสัตว์จังหวัด")
                 {
                     ManageAnimalSupplier ObjManageAnimalSupplier = ObjectSpace.FindObject<ManageAnimalSupplier>(CriteriaOperator.Parse("[OrganizationOid]=? and Status=1", OrganizationOid));
@@ -191,17 +191,18 @@ namespace WebApi.Jwt.Controllers.MasterData
                                 //    default: return animalDatail.QuotaName;                   
                         }
                         XPCollection<StockAnimalUseInfo> objStockAnimalUseInfo = new XPCollection<StockAnimalUseInfo>();
-                        //var objOrganizationOid = ObjectSpace.FindObject<Organization>(CriteriaOperator.Parse("Oid=?", OrganizationOid));
+                        var objOrganizationOid = ObjectSpace.FindObject<Organization>(CriteriaOperator.Parse("Oid=?", OrganizationOid));
                         //var objAnimalSupplieOid = AnimalSupplieOid;
                         //var objAnimalSupplieTypeOid = AnimalSupplieTypeOid;
-                        //var objQuotaTypeOid = QuotaTypeOid;
+                        var objQuotaTypeOid = QuotaTypeOid;
                         //if (quotaType.Oid != null)
                         //{
                         //    objStockAnimalUseInfo.Criteria = CriteriaOperator.Parse("OrganizationOid=? and AnimalSupplieOid=? and AnimalSupplieTypeOid=? and QuotaTypeOid=? and BudgetSourceOid=?", objOrganizationOid.Oid, objAnimalSupplieOid, objAnimalSupplieTypeOid, objQuotaTypeOid, BudgetSourceOid);
                         //}
+
                         //else
                         //{
-                        //    objStockAnimalUseInfo.Criteria = CriteriaOperator.Parse("OrganizationOid=? and AnimalSupplieOid=? and AnimalSupplieTypeOid=? and BudgetSourceOid=?", objOrganizationOid.Oid, objAnimalSupplieOid, objAnimalSupplieTypeOid, BudgetSourceOid.Oid);
+                        //    objStockAnimalUseInfo.Criteria = CriteriaOperator.Parse("OrganizationOid=? and AnimalSupplieOid=? and AnimalSupplieTypeOid=? and BudgetSourceOid=?", objOrganizationOid.Oid, objAnimalSupplieOid, objAnimalSupplieTypeOid, BudgetSourceOid);
                         //}
                         //List<GetBlance> GetStockRodBreedInfo = objStockAnimalUseInfo.GroupBy(Filed => Filed.AnimalSupplieOid).Select(TmpStockRodBreedInfo => new GetBlance() { Name = TmpStockRodBreedInfo.First().AnimalSupplieOid.AnimalSupplieName, Total = TmpStockRodBreedInfo.Sum(c => c.Weight).ToString() }).ToList();
                         if (quotaType.QuotaName == "โควตาสำนัก")
@@ -267,14 +268,41 @@ namespace WebApi.Jwt.Controllers.MasterData
 
 
                 }
-                else
+                else 
                 {
-                    UserError err2 = new UserError();
-                    err2.code = "2"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-                    err2.message = "กรุณาระบุโควตา";
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, err2);
+                    ManageAnimalSupplier ObjManageAnimalSupplier = ObjectSpace.FindObject<ManageAnimalSupplier>(CriteriaOperator.Parse("[OrganizationOid]=? and Status=1", OrganizationOid));
+                    if (ObjManageAnimalSupplier != null)
+                    {
+                        List<ManageSubAnimalSupplier_Province> Detail2 = new List<ManageSubAnimalSupplier_Province>();
+                        IList<ManageSubAnimalSupplier> objmanageSubAnimalSupplier = ObjectSpace.GetObjects<ManageSubAnimalSupplier>(CriteriaOperator.Parse("[ManageAnimalSupplierOid]= '" + ObjManageAnimalSupplier.Oid + "' ", null));
+                        if (objmanageSubAnimalSupplier.Count > 0)
+                        {
+                            foreach (ManageSubAnimalSupplier row2 in objmanageSubAnimalSupplier)
+                            {
+                                ManageSubAnimalSupplier_Province subanimal = new ManageSubAnimalSupplier_Province();
+                                subanimal.ManageSubAnimalSupplierOid = row2.ManageAnimalSupplierOid.Oid.ToString();
+                                subanimal.ProvinceName = row2.ProvinceOid.ProvinceNameTH;
+                                Detail2.Add(subanimal);
+ 
+
+                            }
+                            return Request.CreateResponse(HttpStatusCode.OK, Detail2);
+                        }
+
+
+
+
+
+                    }
+
+
+                    //UserError err2 = new UserError();
+                    //err2.code = "2"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                    //err2.message = "กรุณาระบุโควตา";
+                    //return Request.CreateResponse(HttpStatusCode.BadRequest, err2);
 
                 }
+                return Request.CreateResponse(HttpStatusCode.OK, "");
             }
 
             catch (Exception ex)
@@ -287,18 +315,50 @@ namespace WebApi.Jwt.Controllers.MasterData
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
         }
-        //public void  GetStockUsed()
-        //{
-        //    XPCollection<StockAnimalUseInfo> objStockAnimalUseInfo = new XPCollection<StockAnimalUseInfo>();
-        //    XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
-        //    IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-        //    var objOrganizationOid = ObjectSpace.FindObject<Organization>(CriteriaOperator.Parse("[OrganizationOid] = ? ", OrganizationOid));
-        //    var objAnimalSupplieOid = objAnimalSupplieOid;
-        //    var objAnimalSupplieTypeOid = AnimalSupplieTypeOid;
-        //    var objQuotaTypeOid = QuotaTypeOid;
-        //    var objManageSubAnimalSupplierOid = ManageSubAnimalSupplierOid;
-        //    return objgetStockUsed;
-        //}
+        public static double GetStockUsed(string OrganizationOid, string ManageSubAnimalSupplierOid, string QuotaTypeOid, string BudgetSourceOid)
+        {
+            string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
+            XpoTypesInfoHelper.GetXpoTypeInfoSource();
+            XafTypesInfo.Instance.RegisterEntity(typeof(QuotaType));
+            XpoTypesInfoHelper.GetXpoTypeInfoSource();
+            XafTypesInfo.Instance.RegisterEntity(typeof(Organization));
+            XpoTypesInfoHelper.GetXpoTypeInfoSource();
+            XafTypesInfo.Instance.RegisterEntity(typeof(StockAnimalUseInfo));
+            //  string OrganizationOid = HttpContext.Current.Request.Form["OrganizationOid"].ToString();
+            XPCollection<StockAnimalUseInfo> objStockAnimalUseInfo = new XPCollection<StockAnimalUseInfo>();
+            XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+            IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+            QuotaType objQuotaType = ObjectSpace.FindObject<QuotaType>(CriteriaOperator.Parse("Oid = ?", QuotaTypeOid));
+            var objOrganizationOid = ObjectSpace.FindObject<Organization>(CriteriaOperator.Parse("[OrganizationOid] = ? ", OrganizationOid));
+            //var objAnimalSupplieOid = objAnimalSupplieOid;
+            //var objAnimalSupplieTypeOid = AnimalSupplieTypeOid;
+            var objQuotaTypeOid = QuotaTypeOid;
+            var objManageSubAnimalSupplierOid = ManageSubAnimalSupplierOid;
+            var StockUsed = 0.0 ;
+            if (QuotaTypeOid != null)
+            {
+                if (objQuotaType.QuotaName == "โควตาปศุสัตว์จังหวัด")
+                {
+                    objStockAnimalUseInfo.Criteria = CriteriaOperator.Parse("OrganizationOid=? and QuotaTypeOid=? and ManageSubAnimalSupplierOid=? and BudgetSourceOid=?", objOrganizationOid.Oid, objQuotaTypeOid, objManageSubAnimalSupplierOid, BudgetSourceOid);
+                }
+                else
+                {
+                    objStockAnimalUseInfo.Criteria = CriteriaOperator.Parse("OrganizationOid=? and QuotaTypeOid=? and BudgetSourceOid=?", objOrganizationOid.Oid, objQuotaTypeOid, BudgetSourceOid);
+                }
+                List<GetBlance> GetStockRodBreedInfo = objStockAnimalUseInfo.GroupBy(Filed => Filed.AnimalSupplieOid).Select(TmpStockRodBreedInfo => new GetBlance()
+                {
+                    Name = TmpStockRodBreedInfo.First().AnimalSupplieOid.AnimalSupplieName,
+                    Total = TmpStockRodBreedInfo.Sum(c => c.Weight),
+                }).ToList();
+                if (GetStockRodBreedInfo.Count > 0)
+                {
+                    StockUsed = GetStockRodBreedInfo[0].Total;
+                }
+
+            }
+            return StockUsed;
+
+        }
         #endregion
         public class GetBlance
         {
@@ -306,9 +366,64 @@ namespace WebApi.Jwt.Controllers.MasterData
             {
             }
 
-            public decimal Total { get; set; }
+            public double Total { get; set; }
             public string Name { get; set; }
         }
 
-    }
-}
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("ManageSubAnimalSupplierList_Quantity")]
+        public HttpResponseMessage ManageAnimalSupplierList_Quantity()
+        {
+            try
+            {
+                string orgOid = HttpContext.Current.Request.Form["orgoid"].ToString();
+                string managesuboid = HttpContext.Current.Request.Form["managesuboid"].ToString();
+                string quotatypeoid = HttpContext.Current.Request.Form["quotatypeoid"].ToString();
+                string budgetsourceoid = HttpContext.Current.Request.Form["budgetsourceoid"].ToString();
+                //ManageSubAnimalSupplierOid, string QuotaTypeOid, string BudgetSourceOid
+                XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                XafTypesInfo.Instance.RegisterEntity(typeof(ManageSubAnimalSupplier));
+                List<ManageAnimalSupplier_Model2> list = new List<ManageAnimalSupplier_Model2>();
+
+                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+                ManageSubAnimalSupplier collection = ObjectSpace.FindObject<ManageSubAnimalSupplier>(CriteriaOperator.Parse("[Oid]=?", managesuboid));
+                if (collection != null)
+                {
+                    ManageQuantity item = new ManageQuantity();
+                    var stockused = 0.0;
+                    stockused = collection.ProvinceQTY - GetStockUsed(orgOid, managesuboid, quotatypeoid, budgetsourceoid);
+                    item.ProvinceQTY = collection.ProvinceQTY + " " + "กิโลกรัม";
+                    item.Curren_ProvinceQTY = stockused.ToString() + " " + "กิโลกรัม"; ;
+
+                  
+
+                    UserError err = new UserError();
+                    err.code = ""; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                    err.message = "OK";
+                    return Request.CreateResponse(HttpStatusCode.OK, item);
+                }
+                else
+                {
+                    UpdateResult ret = new UpdateResult();
+                    ret.status = "False";
+                    ret.message = "ไม่พบข้อมูล";
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, ret);
+                }
+           
+                    }
+            catch (Exception ex)
+            {
+                UserError err = new UserError();
+                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                err.message = ex.Message;
+                return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+            }
+        }
+            }
+        }
+
+
+    
+

@@ -41,49 +41,7 @@ namespace WebApi.Jwt.Controllers.MasterData
         /// ประเภทผู้รับบริการ
         /// </summary>
         /// <returns></returns>
-        [AllowAnonymous]
-        // [JwtAuthentication]
-        [HttpGet]
-        [Route("GetCustomerList")]
-        public HttpResponseMessage GetCustomerType()
-        {
-          
-            try
-
-
-            {
-                XpoTypesInfoHelper.GetXpoTypeInfoSource();
-                XafTypesInfo.Instance.RegisterEntity(typeof(CustomerType));            
-                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc);
-                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-           
-                IList<CustomerType> collection = ObjectSpace.GetObjects<CustomerType>(CriteriaOperator.Parse(" IsActive = 1 and GCRecord is null", null));
-                List<_CustomerType> list = new List<_CustomerType>();
-                foreach (CustomerType row in collection)
-                {
-                    _CustomerType customerType = new _CustomerType();
-                    customerType.Oid = row.Oid;
-                    customerType.TypeName = row.TypeName;                         
-                    customerType.Remark = row.Remark;
-                    customerType.Message = "แสดงรายละเอียดผู้รับบริการ";
-                    customerType.IsActive = row.IsActive;
-
-                    list.Add(customerType);
-                }
-                return Request.CreateResponse(HttpStatusCode.OK, list);
-
-
-            }
-            catch (Exception ex)
-            {
-                UserError err = new UserError();
-                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-                err.message = ex.Message;
-                //  Return resual
-                return Request.CreateResponse(HttpStatusCode.BadRequest, err);
-            }
-
-        }
+     
         [AllowAnonymous]
         // [JwtAuthentication]
         [HttpGet    ]

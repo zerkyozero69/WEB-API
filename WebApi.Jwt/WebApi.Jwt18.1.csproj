@@ -231,6 +231,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\API นับรายการ ที่ให้ผ.อ. อนุมัติ\Count_RequestController.cs" />
     <Compile Include="Controllers\Approval_SendSeedController.cs" />
+    <Compile Include="Controllers\พี่เขียว\LoadReportByRIdController.cs" />
     <Compile Include="Controllers\ManageAnimalSupplierController.cs" />
     <Compile Include="Controllers\MasterData\ActivityController.cs" />
     <Compile Include="Controllers\MasterData\Get_listAnimalDetailController.cs" />
@@ -241,6 +242,7 @@
     <Compile Include="Controllers\พี่เขียว\RepostCategoriesController.cs" />
     <Compile Include="Controllers\พี่เขียว\ResponceMessage.cs" />
     <Compile Include="Controllers\พี่เขียว\RoleController.cs" />
+    <Compile Include="Controllers\พี่เขียว\_DeleteReportsController.cs" />
     <Compile Include="Controllers\แผนการผลิต จำนวนคงเหลือ\Stock_SeedINFOController.cs" />
     <Compile Include="Models\Class1.cs" />
     <Compile Include="Models\Models_Masters\Activity_Model.cs" />

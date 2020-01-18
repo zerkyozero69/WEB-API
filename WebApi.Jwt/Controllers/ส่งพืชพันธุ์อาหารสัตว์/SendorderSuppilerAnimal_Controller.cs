@@ -275,11 +275,8 @@ namespace WebApi.Jwt.Controllers.MasterData
                             item.UnitName = row.UnitOid.UnitName;
                         }
 
-                        if (row.AnimalSeedOid != null)
-                        {
-                            item.AnimalSeedName = row.AnimalSeedOid.SeedName;
-                        }
-                    
+                        item.AnimalSeedName = "";
+                   
                         item.AnimalSupplieTypeName = row.AnimalSupplieTypeOid.SupplietypeName.ToString();
                         item.PackageName = row.PackageOid.PackageName;
                         item.PerUnit = row.PerUnit.ToString();
@@ -307,11 +304,8 @@ namespace WebApi.Jwt.Controllers.MasterData
                                 itemD.AnimalSupplieName = row2.AnimalSupplieOid.AnimalSupplieName;
                             }
                             itemD.BudgetSourceName = row2.BudgetSourceOid.BudgetName.ToString();
-                            if (row2.AnimalSeedOid != null)
-                            {
-                                itemD.AnimalSeedName = row2.AnimalSeedOid.SeedName.ToString();
-                            }
-                           
+                            itemD.AnimalSeedName = "";
+
                             itemD.PackageName = row2.PackageOid.PackageName;
                             itemD.TotalWeight = row2.QTY.ToString();
                             itemD.QTY = row2.QTY.ToString();

@@ -545,10 +545,8 @@ namespace WebApi.Jwt.Controllers
                                 {
                                     item2.AnimalSupplieTypeName = row2.AnimalSupplieTypeOid.SupplietypeName;
                                 }
-                                if (row2.AnimalSeedOid != null)
-                                {
-                                    item2.AnimalSeedName = row2.AnimalSeedOid.SeedName;
-                                }
+
+                                item2.AnimalSeedName = "";
 
                                 if (row2.BudgetSourceOid != null)
                                 {
@@ -795,10 +793,7 @@ namespace WebApi.Jwt.Controllers
                                 {
                                     item2.AnimalSupplieTypeName = row2.AnimalSupplieTypeOid.SupplietypeName;
                                 }
-                                if (row2.AnimalSeedOid != null)
-                                {
-                                    item2.AnimalSeedName = row2.AnimalSeedOid.SeedName;
-                                }
+                                item2.AnimalSeedName = "";
 
                                 if (row2.BudgetSourceOid != null)
                                 {
@@ -1011,7 +1006,7 @@ namespace WebApi.Jwt.Controllers
                     IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
                     // อาจต้องแก้ไข ในอนาคต
                     if (type == "4")
-                    {  //เพื่อใช้ในกิจกรรมกรมปศุสัตว์
+                    {  //เพื่อใช้ในกิจกรรมกรมปศุสัตว์ 
                         string ActivityOid = "069CB598-B40E-472A-A386-4F8056FB78D2";
                         IList<SupplierUseAnimalProduct> collection = ObjectSpace.GetObjects<SupplierUseAnimalProduct>(CriteriaOperator.Parse("GCRecord is null and Stauts = 1 and OrganizationOid='" + org_oid + "' and  ActivityOid = '" + ActivityOid + "' ", null));
                         if (collection.Count > 0)
@@ -1391,8 +1386,8 @@ namespace WebApi.Jwt.Controllers
                     XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                     IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
 
-                    if (type == "4")
-                    {  //เพื่อใช้ในกิจกรรมกรมปศุสัตว์
+                    if (type == "1")
+                    {  //เพื่อใช้ในกิจกรรมกรมปศุสัตว์ 
                         string ActivityOid = "069CB598-B40E-472A-A386-4F8056FB78D2";
                         IList<SupplierUseProduct> collection = ObjectSpace.GetObjects<SupplierUseProduct>(CriteriaOperator.Parse("GCRecord is null and Stauts=1 and OrganizationOid='" + org_oid + "'and ActivityOid = '" + ActivityOid + "' ", null));
                         if (collection.Count > 0)
@@ -1620,7 +1615,7 @@ namespace WebApi.Jwt.Controllers
                             return Request.CreateResponse(HttpStatusCode.OK, UserACT3);
                         }
                     }
-                    else if (type == "1")
+                    else if (type == "4")
                     {
                         //เพื่อการแจกจ่าย (สนับสนุนเกษตรกร)
                         string ActivityOid = "A29D77A9-4BCB-4774-9744-FF97A373353E";

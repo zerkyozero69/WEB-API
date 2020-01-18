@@ -38,39 +38,7 @@ namespace WebApi.Jwt.Controllers.MasterData
     public class Address_infoController : ApiController
     {
         string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("Addressinfo")]
-        public HttpResponseMessage GetAddressinfo()
-        {
-            try
-            {
-                XpoTypesInfoHelper.GetXpoTypeInfoSource();
-                XafTypesInfo.Instance.RegisterEntity(typeof(AddressType));
-                List<AddressType_Model> list = new List<AddressType_Model>();
-                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
-                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-                IList<AddressType> collection = ObjectSpace.GetObjects<AddressType>(CriteriaOperator.Parse("  GCRecord is null and IsActive = 1 ", null));
-                foreach (AddressType row in collection)
-                {
-                    AddressType_Model model = new AddressType_Model();
-                    model.AddressTypeName = row.AddressTypeName;
-                    model.IsActive = row.IsActive;
-                    list.Add(model);
-                }
-                    return Request.CreateResponse(HttpStatusCode.OK, list);
-            }
-            catch (Exception ex)
-            { //Error case เกิดข้อผิดพลาด
-                UserError err = new UserError();
-                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-
-                err.message = ex.Message;
-                //  Return resual
-                return Request.CreateResponse(HttpStatusCode.BadRequest, err);
-            }
-
-        }
+      
 
     }
 }

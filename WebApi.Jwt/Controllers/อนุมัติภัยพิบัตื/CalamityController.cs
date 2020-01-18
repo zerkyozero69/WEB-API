@@ -597,11 +597,7 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                 {
                     CancelMsg = HttpContext.Current.Request.Form["Remark"].ToString(); //หมายเหตุ
                 }
-                else if (Remark != null)
-                {
-                    CancelMsg = HttpContext.Current.Request.Form["Remark"].ToString(); //หมายเหตุ
-
-                }
+        
 
 
                 if (RefNo != "" && Status != "" )
@@ -676,7 +672,7 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
         {
             try
             {
-                string CancelMsg = HttpContext.Current.Request.Form["CancelMsg"].ToString();
+                string CancelMsg = HttpContext.Current.Request.Form["Remark"].ToString();
                 string RefNo = HttpContext.Current.Request.Form["RefNo"].ToString(); //ข้อมูลเลขที่อ้างอิง
                 string Status = HttpContext.Current.Request.Form["Status"].ToString(); //สถานะ
 
