@@ -110,7 +110,7 @@ namespace WebApi.Jwt.Controllers
                         supplier.Weight = Convert.ToDouble(row.Weight);
                         supplier.UnitOid = row.UnitOid.UnitName;
                         supplier.LastCleansingDate = row.LastCleansingDate;
-                        supplier.Stauts = row.Stauts.ToString();
+                        supplier.Stauts = row.Status.ToString();
                         supplier.Used = row.Used;
                         supplier.ReferanceUsed = row.ReferanceUsed;
                         supplier.PlotInfoOidOid = row.PlotInfoOidOid.PlotName;

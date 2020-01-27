@@ -93,12 +93,12 @@ namespace WebApi.Jwt.Models
         public string TypeMoblie { get; set; }
         public string Refno { get; set; }
         public string Oid { get; set; }
-        
+
         public string UseDate { get; set; }
         public string UseNo { get; set; }
         public string FinanceYearOid { get; set; }
         public string FinanceYear { get; set; }
-        public string  BudgetSourceName { get; set; }
+        public string BudgetSourceName { get; set; }
         public string OrganizationOid { get; set; }
         public string OrganizationName { get; set; }
         public string EmployeeName { get; set; }
@@ -116,7 +116,7 @@ namespace WebApi.Jwt.Models
         public string OrgeServiceOid { get; set; }
         public string OrgeServiceName { get; set; }
         public string OrgeServiceAddress { get; set; }
-       
+
         public string Weight { get; set; }
         public int ServiceCount { get; set; }
         public string TotalAmout { get; set; }
@@ -167,7 +167,7 @@ namespace WebApi.Jwt.Models
 
         public string Oid { get; set; }
         public string SupplierUseProductOid { get; set; }
-    
+
         public double PerPrice { get; set; }
 
         public double Amount { get; set; }
@@ -236,7 +236,7 @@ namespace WebApi.Jwt.Models
         public double StockLimit { get; set; }
         public double StockUsed { get; set; }
         public double Weight { get; set; }
-      public string QTYPlan { get; set; }  // หญ้าแห้ง
+        public string QTYPlan { get; set; }  // หญ้าแห้ง
         public double Amount { get; set; }
         public string QuotaTypeOid { get; set; }
         public string QuotaTypeName { get; set; }
@@ -244,8 +244,8 @@ namespace WebApi.Jwt.Models
         public double Price { get; set; }
 
         public double PerPrice { get; set; }
-  
-    
+
+
 
     }
     public class sendSeed_info
@@ -296,26 +296,26 @@ namespace WebApi.Jwt.Models
         public string Refno { get; set; }
         public string Weight { get; set; }
         public int ServiceCount { get; set; }
-        public string TotalPrice{ get; set; }
+        public string TotalPrice { get; set; }
         public string TotalAmout { get; set; }
         public List<SupplierUseAnimalDetail_Model> details { get; set; }
-            }
-        public class data_info
-        {
-            public List<sendSeed_info> sendSS { get; set; }
-        }
+    }
+    public class data_info
+    {
+        public List<sendSeed_info> sendSS { get; set; }
+    }
     public class SupplierProductUser_Model2
     {
         /// <summary>
         /// ใช้เมล็ดพันธุ์ SP
         /// </summary>
-     
 
-        public string Oid { get; set; }
+
+        public string SupplierUseAnimalProductOid { get; set; }
 
         public string UseDate { get; set; }
         public string UseNo { get; set; }
-         public string CitizenID { get; set; }
+        public string CitizenID { get; set; }
         public string YearName { get; set; }
         public string FinanceYearOid { get; set; }
         public string FinanceYear { get; set; }
@@ -336,7 +336,17 @@ namespace WebApi.Jwt.Models
         public string PickUp_Type { get; set; }
         public string Weight { get; set; }
         public int ServiceCount { get; set; }
-      
+
+    }
+    public class return_OidSupplierUseAnimalProductOid
+    {
+        public string supplieruseanimalproductoid { get; set; }
+        public string useno { get; set; }
+
+    }
+    public class GenOidcalamity
+    {
+        public string SupplierUseAnimalProductOid { get; set; }
     }
         public enum APPROVE
         {

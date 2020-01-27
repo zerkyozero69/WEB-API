@@ -116,7 +116,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                     foreach (BudgetSource row in collection)
                     {
                         BudgetSourceModel budget_type = new BudgetSourceModel();
-                        budget_type.Oid = row.Oid;
+                        budget_type.BudgetSourceOid = row.Oid;
                         budget_type.BudgetName = row.BudgetName;
                         list.Add(budget_type);
                     }

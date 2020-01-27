@@ -243,6 +243,8 @@
     <Compile Include="Controllers\พี่เขียว\ResponceMessage.cs" />
     <Compile Include="Controllers\พี่เขียว\RoleController.cs" />
     <Compile Include="Controllers\พี่เขียว\_DeleteReportsController.cs" />
+    <Compile Include="Controllers\เทส\ContentResult.cs" />
+    <Compile Include="Controllers\เทส\HttpGetController.cs" />
     <Compile Include="Controllers\แผนการผลิต จำนวนคงเหลือ\Stock_SeedINFOController.cs" />
     <Compile Include="Models\Class1.cs" />
     <Compile Include="Models\Models_Masters\Activity_Model.cs" />
@@ -293,7 +295,10 @@
     <Compile Include="Models\AddSubscriber_User.cs" />
     <Compile Include="Models\Approve_Model.cs" />
     <Compile Include="Models\Customer_Service.cs" />
-    <Compile Include="Models\Disaster assistance.cs" />
+    <Compile Include="Models\ต่อดาต้าเบส\ConnectDB.cs" />
+    <Compile Include="Models\พี่เขียว\non_xAF.cs" />
+    <Compile Include="Models\ภัยภิบัติ\inserts_suppile.cs" />
+    <Compile Include="Models\แผนการผลิตโมเดล\SupplieUseAnimalInfo.cs" />
     <Compile Include="Models\FarmerCitizen.cs" />
     <Compile Include="Models\ManageAnimalSupplier.cs" />
     <Compile Include="Models\Models_Masters\AddressType.cs" />

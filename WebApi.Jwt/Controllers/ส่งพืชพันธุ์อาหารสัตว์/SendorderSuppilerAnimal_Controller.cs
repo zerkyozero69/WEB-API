@@ -473,13 +473,13 @@ namespace WebApi.Jwt.Controllers.MasterData
 
                         if (Status == "1")
                         { //อนุมัติ
-                            objSupplierUseProduct.Stauts = EnumRodBreedProductSeedStatus.Approve; //2
+                            objSupplierUseProduct.Status = EnumRodBreedProductSeedStatus.Approve; //2
                             objSupplierUseProduct.Remark = Remark;
                             ObjectSpace.CommitChanges();
                         }
                         else if (Status == "2")
                         { //ไม่อนุมัติ
-                            objSupplierUseProduct.Stauts = EnumRodBreedProductSeedStatus.Eject; //4
+                            objSupplierUseProduct.Status = EnumRodBreedProductSeedStatus.Eject; //4
                             objSupplierUseProduct.Remark = Remark;
                             ObjectSpace.CommitChanges();
                         }

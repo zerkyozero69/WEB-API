@@ -111,7 +111,11 @@ namespace WebApi.Jwt.Controllers
                         send_Detail.BudgetSource = row.BudgetSourceOid.BudgetName;
                         send_Detail.Weight = row.Weight.ToString();
                         send_Detail.Used = row.Used.ToString();
-                        send_Detail.SendOrderSeed = row.SendOrderSeed.SendNo;
+                        if (row.SendOrderSeed != null)
+                        {
+                            send_Detail.SendOrderSeed = row.SendOrderSeed.SendNo;
+                        }
+                    
                         send_Detail.AnimalSeedOid = row.AnimalSeedOid.SeedName;
                         send_Detail.AnimalSeedLevelOid = row.AnimalSeedLevelOid.SeedLevelName;
                         send_Detail.SeedTypeOid = row.SeedTypeOid.SeedTypeName;

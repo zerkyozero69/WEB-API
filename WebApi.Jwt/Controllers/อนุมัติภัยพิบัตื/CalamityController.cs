@@ -41,14 +41,14 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
 
                 string requestString = Request.Content.ReadAsStringAsync().Result;
                 JObject jObject = (JObject)JsonConvert.DeserializeObject(requestString);
-                
+
                 string RefNo = jObject.SelectToken("RefNo").Value<string>();//ข้อมูลเลขที่อ้างอิง
                 string Status = jObject.SelectToken("Status").Value<string>(); //สถานะ 1 บันทึกการส่งแต่ไม่เปลี่ยนสถานนะ/ 2 ยืนยันการส่ง
                 string Remark = jObject.SelectToken("Remark").Value<string>(); //หมายเหตุ
                 string Type = jObject.SelectToken("Type").Value<string>(); //1 รายเดี่ยว /2 รายกลุ่ม
                 string activityNameOid = jObject.SelectToken("activityNameOid").Value<string>();
 
-                
+
                 int ServiceCount = jObject.SelectToken("ServiceCount").Value<int>();
 
                 if (RefNo != "" && Status != "" && activityNameOid != "")
@@ -69,7 +69,7 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
 
                     //nutrition.Module.SupplierUseProduct SupplierUseProduct_inserts = new SupplierUseProduct(Session.DefaultSession) ;
                     //XafTypesInfo.Instance.RegisterEntity(typeof(SupplierUseProduct_inserts));
-                  //  SupplierUseProduct_inserts = ObjectSpace.FindObject<SupplierUseProduct>(CriteriaOperator.Parse("CitizenID=? and GCRecord is null ", CitizenID));
+                    //  SupplierUseProduct_inserts = ObjectSpace.FindObject<SupplierUseProduct>(CriteriaOperator.Parse("CitizenID=? and GCRecord is null ", CitizenID));
 
                     //
 
@@ -108,7 +108,7 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                             if (Type == "1") //หน่วยงาน OrgeService
                             {
                                 //   OrgeServiceOid = Session.FindObject<OrgeService>(CriteriaOperator.Parse("Oid=?", OrgeServiceOid))
-                              //  objSupplierUseProduct = ObjectSpace.CreateObject<SupplierUseProduct>();
+                                //  objSupplierUseProduct = ObjectSpace.CreateObject<SupplierUseProduct>();
 
                                 objSupplierUseProduct.ServiceCount = ServiceCount;
                                 if (Remark != "")
@@ -118,19 +118,19 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
 
                                 ObjectSpace.CommitChanges();
                             }
-                            objSupplierUseProduct.Stauts = EnumSupplierUseStatus.Approve; //4
+                            objSupplierUseProduct.Status = EnumSupplierUseStatus.Approve; //4
 
                             ObjectSpace.CommitChanges();
                         }
                         else if (Type == "2")
                         {
-                           // objSupplierUseProduct = ObjectSpace.CreateObject<SupplierUseProduct>();
+                            // objSupplierUseProduct = ObjectSpace.CreateObject<SupplierUseProduct>();
                             objSupplierUseProduct.ServiceCount = ServiceCount;
                             if (Remark != "")
                             {
                                 objSupplierUseProduct.Remark = Remark;
                             }
-                            objSupplierUseProduct.Stauts = EnumSupplierUseStatus.Approve; //4
+                            objSupplierUseProduct.Status = EnumSupplierUseStatus.Approve; //4
                             ObjectSpace.CommitChanges();
                         }
 
@@ -183,13 +183,13 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
 
             try
             {
-               
+
                 string requestString = Request.Content.ReadAsStringAsync().Result;
                 JObject jObject = (JObject)JsonConvert.DeserializeObject(requestString);
                 string TempForageType = string.Empty;
                 if (jObject != null)
                 {
-                   
+
                     //string[] arr = RefNo.Split('|');
                     //string _refno = arr[0]; //เลขที่อ้างอิง
                     //string _org_oid = arr[1]; //oid หน่วยงาน
@@ -204,17 +204,17 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                     productUser.Remark = jObject.SelectToken("Remark").Value<string>();
                     productUser.ActivityNameOid = jObject.SelectToken("ActivityNameOid").Value<string>();
                     productUser.CitizenID = jObject.SelectToken("CitizenID").Value<string>();
-                   
-       
+
+
                     productUser.YearName = jObject.SelectToken("YearName").Value<string>();
 
                     if (jObject.SelectToken("SubActivityOid") != null)
                     {
                         productUser.SubActivityOid = jObject.SelectToken("SubActivityOid").Value<string>();
                     }
-                        if (jObject.SelectToken("SubActivityLevelName") != null)
+                    if (jObject.SelectToken("SubActivityLevelName") != null)
                     { productUser.SubActivityLevelName = jObject.SelectToken("SubActivityLevelName").Value<string>(); }
-         
+
                     if (jObject.SelectToken("RegisCusServiceOid ") != null)
                     {
                         productUser.RegisCusServiceOid = jObject.SelectToken("RegisCusServiceOid ").Value<string>();
@@ -261,21 +261,21 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                             productUser.UseNo = objORG.OrganizationCode + "-" + productUser.YearName.Substring(productUser.YearName.Length - 2, 2).PadLeft(2, '0') + "-000001";
                         }
                     }
-                  
+
                     DataSet ds;
                     SqlParameter[] prm = new SqlParameter[10];
 
                     prm[0] = new SqlParameter("@UseNo", productUser.UseNo);
-                    prm[1] = new SqlParameter("@UseDate", productUser.UseDate);  
+                    prm[1] = new SqlParameter("@UseDate", productUser.UseDate);
                     prm[2] = new SqlParameter("@YearName", productUser.YearName);
                     prm[3] = new SqlParameter("@OrganizationOid", productUser.OrganizationOid);
                     prm[4] = new SqlParameter("@Remark", productUser.Remark);
                     prm[5] = new SqlParameter("@ActivityOid", productUser.ActivityNameOid);
                     prm[6] = new SqlParameter("@RegisCusServiceOid", productUser.RegisCusServiceOid);
                     prm[7] = new SqlParameter("@OrgeServiceOid", productUser.OrgeServiceOid);
-                    prm[8] = new SqlParameter("@ServiceCount", productUser.ServiceCount);       
-                    prm[9] = new SqlParameter("@CitizenID",productUser.CitizenID);
-                    
+                    prm[8] = new SqlParameter("@ServiceCount", productUser.ServiceCount);
+                    prm[9] = new SqlParameter("@CitizenID", productUser.CitizenID);
+
 
                     ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieInserts_Calamity_SupplierUseProduct", prm);
                     DataTable dt = new DataTable();
@@ -285,20 +285,20 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
 
                     if (ds.Tables[0].Rows.Count > 0)
                     {
-                        
+
                         //return Request.CreateResponse(HttpStatusCode.OK);
-                      return Request.CreateResponse(HttpStatusCode.OK, productUser);
+                        return Request.CreateResponse(HttpStatusCode.OK, productUser);
                     }
                     else
                     {
-                        return Request.CreateResponse(HttpStatusCode.BadRequest,productUser);
+                        return Request.CreateResponse(HttpStatusCode.BadRequest, productUser);
                     }
                 }
                 else
                 {
-                    return Request.CreateResponse(HttpStatusCode.BadRequest,"NoData");
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, "NoData");
                 }
-                
+
             }
 
             catch (Exception ex)
@@ -311,6 +311,43 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
 
         }
         /// <summary>
+        /// เจนเลข oid ใบลงทะเบียน
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("getOid/SupplierUseAnimalProduct")]
+        public HttpResponseMessage GetList_cataclysm()
+            {
+            GenOidcalamity genOid = new GenOidcalamity();
+            string OrganizationOid = HttpContext.Current.Request.Form["Organizationoid"].ToString();
+            try
+            {
+                DataSet ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "GenOidSupplierUseAnimalProduc",new SqlParameter("@OrganizationOid", OrganizationOid));
+                DataTable Dt = ds.Tables[0];
+                if (Dt.Rows.Count > 0)
+                {
+                    foreach (DataRow obj in Dt.Rows)
+
+                        genOid.SupplierUseAnimalProductOid = obj["Oid"].ToString();
+                }
+                else
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest);
+                }
+                return Request.CreateResponse(HttpStatusCode.OK, genOid);
+            }
+            catch (Exception ex)
+            {
+                UserError err = new UserError();
+                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                err.message = ex.Message;
+                return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+            }
+              }
+
+
+        /// <summary>
         /// อัพเดทภัยพิบัติ เสบียงสัตว์
         /// </summary>
         /// <returns></returns>
@@ -319,6 +356,7 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
         [Route("insertsCalamity/SupplierUseAnimalProduct")]
         public HttpResponseMessage inserts_Calamity_SupplierUseAnimalProductt()
         {
+            return_OidSupplierUseAnimalProductOid item = new return_OidSupplierUseAnimalProductOid();
             SupplierProductUser_Model2 productUser = new SupplierProductUser_Model2();
 
             try
@@ -335,8 +373,13 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                     //string _org_oid = arr[1]; //oid หน่วยงาน
                     //string _type = arr[2]; //ประเภทส่ง(2)-รับ(1)
 
-                    string iDate = jObject.SelectToken("UseDate").Value<string>();
+                             string iDate = jObject.SelectToken("UseDate").Value<string>();
                     DateTime oDate = Convert.ToDateTime(iDate);
+                    if (jObject.SelectToken("SubActivityOid") != null)
+                    {
+                        productUser.SubActivityOid = jObject.SelectToken("SubActivityOid").Value<string>();
+                    }
+
                     productUser.UseNo = "";
                     productUser.UseDate = oDate.Year + "-" + oDate.Month + "-" + oDate.Day;
                     productUser.FinanceYearOid = jObject.SelectToken("FinanceYearOid").Value<string>();
@@ -345,17 +388,14 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                     productUser.ActivityNameOid = jObject.SelectToken("ActivityNameOid").Value<string>();
                     productUser.CitizenID = jObject.SelectToken("CitizenID").Value<string>();
                     productUser.YearName = jObject.SelectToken("FinanceYear").Value<string>(); ///ใช้สำหรับเจนเลข ออโต้
-                    if (jObject.SelectToken("SubActivityOid") != null)
-                    {
-                        productUser.SubActivityOid = jObject.SelectToken("SubActivityOid").Value<string>();
-                    }
+           
                     if (jObject.SelectToken("SubActivityLevelOid") != null)
                     { productUser.SubActivityLevelName = jObject.SelectToken("SubActivityLevelOid").Value<string>(); }
 
                     if (jObject.SelectToken("RegisCusServiceOid") != null)
                     {
                         productUser.RegisCusServiceOid = jObject.SelectToken("RegisCusServiceOid").Value<string>();
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  }
+                    }
                     if (jObject.SelectToken("OrgeServiceOid") != null)
                     {
                         productUser.OrgeServiceOid = jObject.SelectToken("OrgeServiceOid").Value<string>();
@@ -385,7 +425,7 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                             string Postfix = "000" + numberfix;
                             var FullNumber = objORG.OrganizationCode + "-" + productUser.YearName.Substring(productUser.YearName.Length - 2, 2).PadLeft(2, '0') + "-" + (runningNumber.LastNumber + 1).ToString().PadLeft(6, '0');
 
-                            productUser.UseNo = FullNumber;                  
+                            productUser.UseNo = FullNumber;
                             SqlParameter[] prm2 = new SqlParameter[5];
 
                             prm2[0] = new SqlParameter("@orgcode", objORG.OrganizationCode);
@@ -394,7 +434,7 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                             prm2[3] = new SqlParameter("@FormType", "UseProduct");
                             prm2[4] = new SqlParameter("@Type", 1);
 
-                             SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "Insert_RuningNumber", prm2);
+                            SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "Insert_RuningNumber", prm2);
 
                         }
                         else
@@ -417,27 +457,183 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
 
                     DataSet ds;
                     SqlParameter[] prm = new SqlParameter[13];
-                        prm[0] = new SqlParameter("@UseNo", productUser.UseNo);
-                        prm[1] = new SqlParameter("@UseDate", productUser.UseDate);
-                        prm[2] = new SqlParameter("@YearName", productUser.YearName);
-                        prm[3] = new SqlParameter("@OrganizationOid", productUser.OrganizationOid);
-                        prm[4] = new SqlParameter("@Remark", productUser.Remark);
-                        prm[5] = new SqlParameter("@ActivityOid", productUser.ActivityNameOid);
-                        prm[6] = new SqlParameter("@RegisCusServiceOid", productUser.RegisCusServiceOid);
-                        prm[7] = new SqlParameter("@OrgeServiceOid", productUser.OrgeServiceOid);
-                        prm[8] = new SqlParameter("@ServiceCount", productUser.ServiceCount);
-                        prm[9] = new SqlParameter("@CitizenID", productUser.CitizenID);
-                        prm[10] = new SqlParameter("@SubActivityOid", productUser.SubActivityOid);
-                       prm[11] = new SqlParameter("@SubActivityLevelOid", productUser.SubActivityLevelName);
-                        prm[12] = new SqlParameter("@PickUp_Type", productUser.PickUp_Type);
-                        ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieInserts_Calamity_SupplierUseAnimalProduct", prm);
+                    prm[0] = new SqlParameter("@UseNo", productUser.UseNo);
+                    prm[1] = new SqlParameter("@UseDate", productUser.UseDate);
+                    prm[2] = new SqlParameter("@YearName", productUser.YearName);
+                    prm[3] = new SqlParameter("@OrganizationOid", productUser.OrganizationOid);
+                    prm[4] = new SqlParameter("@Remark", productUser.Remark);
+                    prm[5] = new SqlParameter("@ActivityOid", productUser.ActivityNameOid);
+                    prm[6] = new SqlParameter("@RegisCusServiceOid", productUser.RegisCusServiceOid);
+                    prm[7] = new SqlParameter("@OrgeServiceOid", productUser.OrgeServiceOid);
+                    prm[8] = new SqlParameter("@ServiceCount", productUser.ServiceCount);
+                    prm[9] = new SqlParameter("@CitizenID", productUser.CitizenID);
+                    prm[10] = new SqlParameter("@SubActivityOid", productUser.SubActivityOid);
+                    prm[11] = new SqlParameter("@SubActivityLevelOid", productUser.SubActivityLevelName);
+                    prm[12] = new SqlParameter("@PickUp_Type", productUser.PickUp_Type);
+                    ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieInserts_Calamity_SupplierUseAnimalProduct", prm);
                     DataTable dt = new DataTable();
-                           
+
                     if (ds.Tables[0].Rows.Count > 0)
                     {
-
+                        //productUser.SupplierUseAnimalProductOid ;
+                        item.supplieruseanimalproductoid = ds.Tables[1].Rows[0]["oid"].ToString();
+                        item.useno = ds.Tables[1].Rows[0]["UseNo"].ToString();
+                        productUser.UseNo = productUser.UseNo;
                         //return Request.CreateResponse(HttpStatusCode.OK);
-                        return Request.CreateResponse(HttpStatusCode.OK, productUser);
+                        return Request.CreateResponse(HttpStatusCode.OK, item);
+                    }
+                    else
+                    {
+                        return Request.CreateResponse(HttpStatusCode.BadRequest, productUser);
+                    }
+                }
+                else
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, "NoData");
+                }
+
+            }
+
+            catch (Exception ex)
+            {
+                UserError err = new UserError();
+                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                err.message = ex.Message;
+                return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("UpdateCalamity/SupplierUseAnimalProduct")]
+        public HttpResponseMessage Update_Calamity_SupplierUseAnimalProduct()
+        {
+            return_OidSupplierUseAnimalProductOid item = new return_OidSupplierUseAnimalProductOid();
+            SupplierProductUser_Model2 productUser = new SupplierProductUser_Model2();
+
+            try
+            {
+
+                string requestString = Request.Content.ReadAsStringAsync().Result;
+                JObject jObject = (JObject)JsonConvert.DeserializeObject(requestString);
+                string TempForageType = string.Empty;
+                if (jObject != null)
+                {
+
+                    //string[] arr = RefNo.Split('|');
+                    //string _refno = arr[0]; //เลขที่อ้างอิง
+                    //string _org_oid = arr[1]; //oid หน่วยงาน
+                    //string _type = arr[2]; //ประเภทส่ง(2)-รับ(1)
+
+                    string iDate = jObject.SelectToken("UseDate").Value<string>();
+                    DateTime oDate = Convert.ToDateTime(iDate);
+                    if (jObject.SelectToken("SubActivityOid") != null)
+                    {
+                        productUser.SubActivityOid = jObject.SelectToken("SubActivityOid").Value<string>();
+                    }
+                    productUser.SupplierUseAnimalProductOid = jObject.SelectToken("supplieruseanimalproductOid").Value<string>(); 
+                    productUser.UseNo = "";
+                    productUser.UseDate = oDate.Year + "-" + oDate.Month + "-" + oDate.Day;
+                    productUser.FinanceYearOid = jObject.SelectToken("FinanceYearOid").Value<string>();
+                    productUser.OrganizationOid = jObject.SelectToken("OrganizationOid").Value<string>();
+                    productUser.Remark = jObject.SelectToken("Remark").Value<string>();
+                    productUser.ActivityNameOid = jObject.SelectToken("ActivityNameOid").Value<string>();
+                    productUser.CitizenID = jObject.SelectToken("CitizenID").Value<string>();
+                    productUser.YearName = jObject.SelectToken("FinanceYear").Value<string>(); ///ใช้สำหรับเจนเลข ออโต้
+
+                    if (jObject.SelectToken("SubActivityLevelOid") != null)
+                    { productUser.SubActivityLevelName = jObject.SelectToken("SubActivityLevelOid").Value<string>(); }
+
+                    if (jObject.SelectToken("RegisCusServiceOid") != null)
+                    {
+                        productUser.RegisCusServiceOid = jObject.SelectToken("RegisCusServiceOid").Value<string>();
+                    }
+                    if (jObject.SelectToken("OrgeServiceOid") != null)
+                    {
+                        productUser.OrgeServiceOid = jObject.SelectToken("OrgeServiceOid").Value<string>();
+                    }
+
+                    productUser.ServiceCount = jObject.SelectToken("ServiceCount").Value<int>();
+
+                    productUser.PickUp_Type = jObject.SelectToken("PickUpType").Value<string>();
+
+
+                    if (productUser.UseNo == "")
+                    {
+                        XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                        XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.RunNumber));
+                        XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.Organization));
+
+                        XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                        IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+                        Organization objORG = ObjectSpace.FindObject<Organization>(CriteriaOperator.Parse("Oid=?", productUser.OrganizationOid));
+                        //SendOrderSeed objSupplierProduct = ObjectSpace.FindObject<SendOrderSeed>(CriteriaOperator.Parse("SendNo=?", _refno));
+                        /// รอเปลี่ยน
+                        RunNumber runningNumber = ObjectSpace.FindObject<RunNumber>(CriteriaOperator.Parse("FormType ='UseProduct' and BudgetYear =? and OrgCode=? ", productUser.YearName, objORG.OrganizationCode));
+                        if (runningNumber != null)
+                        {
+                            string customerNumberFormat = string.Empty;
+                            int numberfix = Convert.ToInt32(runningNumber.LastNumber) + 1;
+                            string Postfix = "000" + numberfix;
+                            var FullNumber = objORG.OrganizationCode + "-" + productUser.YearName.Substring(productUser.YearName.Length - 2, 2).PadLeft(2, '0') + "-" + (runningNumber.LastNumber + 1).ToString().PadLeft(6, '0');
+
+                            productUser.UseNo = FullNumber;
+                            SqlParameter[] prm2 = new SqlParameter[5];
+
+                            prm2[0] = new SqlParameter("@orgcode", objORG.OrganizationCode);
+                            prm2[1] = new SqlParameter("@BudgetYear", productUser.YearName);
+                            prm2[2] = new SqlParameter("@LastNumber", numberfix);
+                            prm2[3] = new SqlParameter("@FormType", "UseProduct");
+                            prm2[4] = new SqlParameter("@Type", 1);
+
+                            SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "Insert_RuningNumber", prm2);
+
+                        }
+                        else
+                        {
+                            DataSet ds2;
+                            SqlParameter[] prm2 = new SqlParameter[5];
+
+                            prm2[0] = new SqlParameter("@orgcode", objORG.OrganizationCode);
+                            prm2[1] = new SqlParameter("@BudgetYear", productUser.YearName);
+                            prm2[2] = new SqlParameter("@LastNumber", 1);
+                            prm2[3] = new SqlParameter("@FormType", "UseProduct");
+                            prm2[4] = new SqlParameter("@Type", 0);
+
+                            ds2 = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "Insert_RuningNumber", prm2);
+
+
+                            productUser.UseNo = objORG.OrganizationCode + "-" + productUser.YearName.Substring(productUser.YearName.Length - 2, 2).PadLeft(2, '0') + "-000001";
+                        }
+                    }
+
+                    DataSet ds;
+                    SqlParameter[] prm = new SqlParameter[13];
+                    prm[0] = new SqlParameter("@UseNo", productUser.UseNo);
+                    prm[1] = new SqlParameter("@UseDate", productUser.UseDate);
+                    prm[2] = new SqlParameter("@YearName", productUser.YearName);
+                    prm[3] = new SqlParameter("@OrganizationOid", productUser.OrganizationOid);
+                    prm[4] = new SqlParameter("@Remark", productUser.Remark);
+                    prm[5] = new SqlParameter("@ActivityOid", productUser.ActivityNameOid);
+                    prm[6] = new SqlParameter("@RegisCusServiceOid", productUser.RegisCusServiceOid);
+                    prm[7] = new SqlParameter("@OrgeServiceOid", productUser.OrgeServiceOid);
+                    prm[8] = new SqlParameter("@ServiceCount", productUser.ServiceCount);
+                    prm[9] = new SqlParameter("@CitizenID", productUser.CitizenID);
+                    prm[10] = new SqlParameter("@SubActivityOid", productUser.SubActivityOid);
+                    prm[11] = new SqlParameter("@SubActivityLevelOid", productUser.SubActivityLevelName);
+                    prm[12] = new SqlParameter("@PickUp_Type", productUser.PickUp_Type);
+                    prm[13] = new SqlParameter("@oid", productUser.SupplierUseAnimalProductOid);
+                    ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieUpdate_Calamity_SupplierUseAnimalProduct2", prm);
+                    DataTable dt = new DataTable();
+
+                    if (ds.Tables[0].Rows.Count > 0)
+                    {
+                        //productUser.SupplierUseAnimalProductOid ;
+                        item.supplieruseanimalproductoid = prm[13].ToString();
+                        item.useno = ds.Tables[1].Rows[0]["UseNo"].ToString();
+                        productUser.UseNo = productUser.UseNo;
+                        //return Request.CreateResponse(HttpStatusCode.OK);
+                        return Request.CreateResponse(HttpStatusCode.OK, item);
                     }
                     else
                     {
@@ -496,79 +692,83 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
             _Registerfarmer Registerfarmer = new _Registerfarmer();
             try
             {
-                
-                    string UseNo = HttpContext.Current.Request.Form["UseNo"].ToString(); //ข้อมูลเลขที่อ้างอิง
-                    string Status = HttpContext.Current.Request.Form["Status"].ToString(); //สถานะ
-                    string Remark = HttpContext.Current.Request.Form["Remark"].ToString(); //หมายเหตุ
-                    string activityNameOid = HttpContext.Current.Request.Form["activityNameOid"].ToString();
+                string SupplierUseAnimalProductOid = HttpContext.Current.Request.Form["supplieruseanimalproductoid"].ToString();
+                string UseNo = HttpContext.Current.Request.Form["UseNo"].ToString(); //ข้อมูลเลขที่อ้างอิง
+                string Status = HttpContext.Current.Request.Form["Status"].ToString(); //สถานะ
+                string Remark = HttpContext.Current.Request.Form["Remark"].ToString(); //หมายเหตุ
+                string activityNameOid = HttpContext.Current.Request.Form["activityNameOid"].ToString();
 
-                    if (UseNo != "" && Status != "" && activityNameOid != "")
+                if (UseNo != "" && Status != "" && activityNameOid != "")
+                {
+
+
+                    XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                    XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.SupplierUseAnimalProduct));
+                    XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.SupplierUseProductDetail));
+
+                    XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                    IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+
+                    SupplierUseAnimalProduct objSupplierUseAnimalProduct = ObjectSpace.FindObject<SupplierUseAnimalProduct>(CriteriaOperator.Parse(" GCRecord is null  and Stauts = 1 and UseNo=? and ActivityOid= ? ", UseNo, activityNameOid));
+                    //SupplierUseProductDetail objSupplierUseProductDetail;
+                    SupplierUseProductDetail objSupplierUseProductDetail    = ObjectSpace.FindObject<SupplierUseProductDetail>(CriteriaOperator.Parse(" GCRecord is null  and Stauts = 1  ", null));
+
+                    ///    spt_UpdateOidSupplierUseProductDetail
+                    if (objSupplierUseAnimalProduct.Oid != null)
                     {
-                       
-
-                        XpoTypesInfoHelper.GetXpoTypeInfoSource();
-                        XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.SupplierUseAnimalProduct));
-
-                        XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
-                        IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-
-                        SupplierUseAnimalProduct objSupplierUseAnimalProduct = ObjectSpace.FindObject<SupplierUseAnimalProduct>(CriteriaOperator.Parse(" GCRecord is null  and Stauts = 1 and UseNo=? and ActivityOid= ? ", UseNo, activityNameOid));
-
-                        if (objSupplierUseAnimalProduct != null)
-                        {
-
-                            if (Status == "1")
-                            { //อนุมัติ                      
+  
+                        if (Status == "1")
+                        { //รอการตรวจสอบ                    
                             objSupplierUseAnimalProduct.UseNo = UseNo;
-
-                                objSupplierUseAnimalProduct.Stauts = EnumRodBreedProductSeedStatus.Accepet; //1
-                                if (Remark != "")
-                                {
-                                    objSupplierUseAnimalProduct.Remark = Remark;
-                                }
-                                ObjectSpace.CommitChanges();
+                            //objSupplierUseProductDetail.SupplierUseProduct = ;
+                            objSupplierUseAnimalProduct.Status = EnumRodBreedProductSeedStatus.Accepet; //1
+                            if (Remark != "")
+                            {
+                                objSupplierUseAnimalProduct.Remark = Remark;
+                            }
+                            ObjectSpace.CommitChanges();
 
                             UpdateResult Accept = new UpdateResult();
                             Accept.status = "true";
                             Accept.message = "บันทึกข้อมูลเสร็จเรียบร้อยแล้ว";
                             return Request.CreateResponse(HttpStatusCode.OK, Accept);
                         }
-                            else if (Status == "2")
-                            { // อนุมัติให้ ผ.อ.
+                        else if (Status == "2")
+                        { // อนุมัติให้ ผ.อ.
                             objSupplierUseAnimalProduct.UseNo = UseNo;
-                            objSupplierUseAnimalProduct.Stauts = EnumRodBreedProductSeedStatus.Approve; //2
-                                if (Remark != "")
-                                {
-                                    objSupplierUseAnimalProduct.Remark = Remark;
-                                }
-                                ObjectSpace.CommitChanges();
+                            objSupplierUseAnimalProduct.Status = EnumRodBreedProductSeedStatus.Approve; //2
+                            if (Remark != "")
+                            {
+                                objSupplierUseAnimalProduct.Remark = Remark;
                             }
-
-                            UpdateResult ret = new UpdateResult();
-                            ret.status = "true";
-                            ret.message = "ยืนยันการส่งให้ ผอ.อนุมัติเรียบร้อยแล้ว";
-                            return Request.CreateResponse(HttpStatusCode.OK, ret);
-
+                            ObjectSpace.CommitChanges();
                         }
-                        else
-                        {
-                            UserError err = new UserError();
-                            err.status = "false";
-                            err.code = "-1";
-                            err.message = "ไม่พบข้อมูล";
-                            return Request.CreateResponse(HttpStatusCode.NotFound, err);
-                        }
+
+                        UpdateResult ret = new UpdateResult();
+                        ret.status = "true";
+                        ret.message = "ยืนยันการส่งให้ ผอ.อนุมัติเรียบร้อยแล้ว";
+                        return Request.CreateResponse(HttpStatusCode.OK, ret);
+
                     }
                     else
                     {
                         UserError err = new UserError();
                         err.status = "false";
-                        err.code = "0";
-                        err.message = "กรุณาใส่ข้อมูล RefNo ให้เรียบร้อยก่อน";
-                        return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+                        err.code = "-1";
+                        err.message = "ไม่พบข้อมูล";
+                        return Request.CreateResponse(HttpStatusCode.NotFound, err);
                     }
                 }
-            
+                else
+                {
+                    UserError err = new UserError();
+                    err.status = "false";
+                    err.code = "0";
+                    err.message = "กรุณาใส่ข้อมูล RefNo ให้เรียบร้อยก่อน";
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+                }
+            }
+
             catch (Exception ex)
             {
                 UserError err = new UserError();
@@ -597,10 +797,10 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                 {
                     CancelMsg = HttpContext.Current.Request.Form["Remark"].ToString(); //หมายเหตุ
                 }
-        
 
 
-                if (RefNo != "" && Status != "" )
+
+                if (RefNo != "" && Status != "")
                 {
                     string[] arr = RefNo.Split('|');
                     string _refno = arr[0]; //เลขที่อ้างอิง
@@ -620,13 +820,13 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
 
                         if (Status == "1")
                         {
-                            objSupplierUseAnimalProduct.Stauts = EnumRodBreedProductSeedStatus.Approve;//2
+                            objSupplierUseAnimalProduct.Status = EnumRodBreedProductSeedStatus.Approve;//2
                             objSupplierUseAnimalProduct.Remark = CancelMsg;
                             ObjectSpace.CommitChanges();
                         }
                         else
                         {
-                            objSupplierUseAnimalProduct.Stauts = EnumRodBreedProductSeedStatus.Eject;//4
+                            objSupplierUseAnimalProduct.Status = EnumRodBreedProductSeedStatus.Eject;//4
                             objSupplierUseAnimalProduct.CancelMsg = CancelMsg;
                             ObjectSpace.CommitChanges();
                         }
@@ -645,7 +845,8 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                         return Request.CreateResponse(HttpStatusCode.BadRequest, ret);
                     }
                 }
-                else {
+                else
+                {
                     UpdateResult ret = new UpdateResult();
                     ret.status = "False";
                     ret.message = "กรุณากรอก RefNo";
@@ -696,18 +897,18 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
 
                         if (Status == "1")
                         { //อนุมัติ
-                            objSupplierUseProduct.Stauts = EnumSupplierUseStatus.Approve; //2
+                            objSupplierUseProduct.Status = EnumSupplierUseStatus.Approve; //2
                             objSupplierUseProduct.Remark = CancelMsg;
                             ObjectSpace.CommitChanges();
                         }
                         else if (Status == "2")
                         { //ไม่อนุมัติ
-                            objSupplierUseProduct.Stauts = EnumSupplierUseStatus.Eject; //4
-                           //if( Remark != " ")
-                           // {
-                                objSupplierUseProduct.Remark = CancelMsg;
+                            objSupplierUseProduct.Status = EnumSupplierUseStatus.Eject; //4
+                                                                                        //if( Remark != " ")
+                                                                                        // {
+                            objSupplierUseProduct.Remark = CancelMsg;
                             //}
-                          
+
                             ObjectSpace.CommitChanges();
                         }
 
@@ -779,13 +980,13 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
 
                         if (Status == "1")
                         { //อนุมัติ
-                            objSupplierUseProduct.Stauts = EnumRodBreedProductSeedStatus.Approve; //2
+                            objSupplierUseProduct.Status = EnumRodBreedProductSeedStatus.Approve; //2
                             objSupplierUseProduct.Remark = CancelMsg.ToString();
                             ObjectSpace.CommitChanges();
                         }
                         else if (Status == "2")
                         { //ไม่อนุมัติ
-                            objSupplierUseProduct.Stauts = EnumRodBreedProductSeedStatus.Eject; //4
+                            objSupplierUseProduct.Status = EnumRodBreedProductSeedStatus.Eject; //4
                             objSupplierUseProduct.Remark = CancelMsg.ToString();
                             ObjectSpace.CommitChanges();
                         }
@@ -822,6 +1023,85 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("SupplierUseProductDetail/List")] //SupplierUseProductDetail
+        public HttpResponseMessage SupplierUseAnimalProduct_Detail()  ///SupplierUseAnimalProduct/Update
+        {
+            _Registerfarmer Registerfarmer = new _Registerfarmer();
+            try
+            {
+
+                string SupplierUseAnimalProductOid = HttpContext.Current.Request.Form["supplieruseanimalproductoid"].ToString(); //ข้อมูลเลขที่อ้างอิง
+
+
+                if (SupplierUseAnimalProductOid != null)
+                {
+
+
+                    XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                    XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.SupplierUseProductDetail));
+
+                    XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                    IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+
+                    SupplierUseProductDetail objSupplierUseAnimalProduct = ObjectSpace.FindObject<SupplierUseProductDetail>(CriteriaOperator.Parse("oid=?  ", SupplierUseAnimalProductOid));
+
+                    if (objSupplierUseAnimalProduct.Oid != null)
+                    {
+
+                        DetailAnimalin item = new DetailAnimalin();
+                        item.SupplierUseProductDetailOid = objSupplierUseAnimalProduct.Oid.ToString();
+                        item.AnimalSeedOid = objSupplierUseAnimalProduct.AnimalSeedOid.Oid.ToString();
+                        item.AnimalSeedName = objSupplierUseAnimalProduct.AnimalSeedOid.SeedName;
+                        item.AnimalSeedLevelOid = objSupplierUseAnimalProduct.AnimalSeedLevelOid.Oid.ToString();
+                        item.AnimalSeedLevelname = objSupplierUseAnimalProduct.AnimalSeedLevelOid.SeedLevelName;
+                        item.StockLimit = objSupplierUseAnimalProduct.StockLimit;
+                        item.WeightUnitOid = objSupplierUseAnimalProduct.WeightUnitOid.Oid.ToString();
+                        item.Weight = objSupplierUseAnimalProduct.WeightUnitOid.UnitName;
+                        item.BudgetSourceOid = objSupplierUseAnimalProduct.BudgetSourceOid.Oid.ToString();
+                        item.BudgetSourceName = objSupplierUseAnimalProduct.BudgetSourceOid.BudgetName;
+                        item.LotNumber = objSupplierUseAnimalProduct.LotNumber.LotNumber;
+                        item.SeedTypeOid = objSupplierUseAnimalProduct.SeedTypeOid.Oid.ToString();
+                        item.SeedTypename = objSupplierUseAnimalProduct.SeedTypeOid.SeedTypeName;
+                        item.PerPrice = objSupplierUseAnimalProduct.PerPrice;
+                        item.Price = objSupplierUseAnimalProduct.Price;
+
+                        UpdateResult ret = new UpdateResult();
+                        ret.status = "true";
+                        ret.message = "บันทึกข้อมูลเสร็จเรียบร้อยแล้ว";
+                        return Request.CreateResponse(HttpStatusCode.OK, item);
+                    }
+                    else
+                    {
+                        UpdateResult ret = new UpdateResult();
+                        ret.status = "False";
+                        ret.message = "ไม่พบข้อมูล";
+                        return Request.CreateResponse(HttpStatusCode.BadRequest, ret);
+                    }
+                }
+                else
+                {
+                    UpdateResult ret = new UpdateResult();
+                    ret.status = "False";
+                    ret.message = "กรุณากรอก RefNo";
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, ret);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                UserError err = new UserError();
+                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                err.message = ex.Message;
+                return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+            }
+        }
+
 
     }
 }

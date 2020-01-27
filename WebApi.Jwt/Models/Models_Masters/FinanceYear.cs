@@ -13,7 +13,7 @@ namespace WebApi.Jwt.Models
     }
     public class BudgetSourceModel
     {
-        public object Oid { get; set; }
+        public object BudgetSourceOid { get; set; }
         public string BudgetName { get; set; }
        // public List<BudgetSourceModel> BudgetSourcelist;
     }

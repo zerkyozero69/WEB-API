@@ -7,7 +7,7 @@ namespace WebApi.Jwt.Models.Models_Masters
 {
     public class AnimalSupplie_Model
     {
-        public string Oid { get; set; }
+        public string AnimalSupplieOid { get; set; }
         public string AnimalSupplieName { get; set; }
       
         public bool IsActive { get; set; }
@@ -19,11 +19,17 @@ namespace WebApi.Jwt.Models.Models_Masters
     {
         public string AnimalSupplieTypeOid { get; set; }
         public string SupplietypeName { get; set; }
-        public string AnimalSupplie { get; set; }
+        public string AnimalSupplieName { get; set; }
         public bool IsActive { get; set; }
-       // public AnimalSupplie AnimalSupplie { get; set; }
+        public string animalsupplieoid { get; set; }
+        public double ProvinceQTY { get; set; }
+        public double Current_ProvinceQTY { get; set; }
+        public double StockLimit { get; set; }
+
+        // public AnimalSupplie AnimalSupplie { get; set; }
 
         public double SalePrice { get; set; }
+         
     }
     public class AnimalSeed_Model
     {
@@ -58,7 +64,7 @@ namespace WebApi.Jwt.Models.Models_Masters
     }
     public class SeedType_Model
     {
-        public string Oid { get; set; }
+        public string SeedTypeOid { get; set; }
         public string SeedTypeName { get; set; }
        
         public bool IsActive { get; set; }

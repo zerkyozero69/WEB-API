@@ -86,19 +86,19 @@ namespace WebApi.Jwt.Controllers
                 prm[4] = new SqlParameter("@Email", user.Email);
                 prm[5] = new SqlParameter("@LogID", "2");
                 prm[6] = new SqlParameter("@IPAddress", GetClientIp(Request));
-                prm[7] = new SqlParameter("@Description", user.Description);
+                prm[7] = new SqlParameter("@Description", user.Message);
 
                 if (user.Status == 1)
                 {
                     user.Message = "เข้าสู่ระบบสำเร็จ";
-                    prm[8] = new SqlParameter("@EventName", user.Message);
+                    prm[8] = new SqlParameter("@EventName", user.Description);
                     SqlHelper.ExecuteNonQuery(scc, CommandType.StoredProcedure, "insert_EventLog", prm);
                     return Request.CreateResponse(HttpStatusCode.OK, user);
                 }
                 else if (user.Status == 0 || user.Status == 6)
                 {
                     user.Message = "เข้าสู่ระบบไม่สำเร็จ";
-                    prm[8] = new SqlParameter("@EventName", user.Message);
+                    prm[8] = new SqlParameter("@EventName", user.Description);
                     SqlHelper.ExecuteNonQuery(scc, CommandType.StoredProcedure, "insert_EventLog", prm);
                     return Request.CreateResponse(HttpStatusCode.BadRequest, user);
                 }

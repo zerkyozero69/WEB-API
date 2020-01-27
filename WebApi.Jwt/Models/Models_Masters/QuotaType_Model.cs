@@ -94,11 +94,28 @@ namespace WebApi.Jwt.Models.Models_Masters
     }
     public class ManageQuantity
     {
-         public string ProvinceQTY { get; set; }
-        public string Curren_ProvinceQTY { get; set; }
+        public string QuotaName { get; set; }
+        public string Provincename { get; set; }
+         public double QuotaQTY { get; set; }
+        public double balancQuotaQTY { get; set; }
+        public double balanceQTY { get; set; }  //คงเหลือตามจริง
+        public double StockUsed { get; set; }
+
+    }
+       public class ManageQuantityProductDetail
+    {
+        public string QuotaName { get; set; }
+        public string Provincename { get; set; }
+        public string ManageSubAnimalSupplierOid { get; set; }
+        public double QuotaQTY { get; set; }
+        public double stockuse { get; set; }
+        public double stocklimit { get; set; }
+        public double balancQuotaQTY { get; set; }
+        public double balanceQTY { get; set; }  //คงเหลือตามจริง
+
     }
 
 
-    }
+}
     
 

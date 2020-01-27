@@ -46,4 +46,16 @@ namespace WebApi.Jwt.Models
         public string Unit { get; set; }
 
     }
+    public class ManageAnimalSupplier_Modelinfo2
+    {
+       public string QuotaName { get; set; }
+
+      public  List<objManageAnimalSupplier> detail { get; set; }
+        
+    }
+    public class objManageAnimalSupplier
+    {
+        public string ProvinceOid { get; set; }
+        public string Provincename { get; set; }
+    }
 }

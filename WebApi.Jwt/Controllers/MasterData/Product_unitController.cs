@@ -52,13 +52,14 @@ namespace WebApi.Jwt.Controllers.MasterData
             {
                 XpoTypesInfoHelper.GetXpoTypeInfoSource();
                 XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.Unit));
-                List<Unit_Modle> list = new List<Unit_Modle>();
+                List<Unit_Model> list = new List<Unit_Model>();
                 XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
                 IList<Unit> collection = ObjectSpace.GetObjects<Unit>(CriteriaOperator.Parse("  GCRecord is null and IsActive = 1 ", null));
                 foreach (Unit row in collection)
                 {
-                    Unit_Modle model = new Unit_Modle();
+                    Unit_Model model = new Unit_Model();
+                    model.UnitOid = row.Oid.ToString();
                     model.UnitCode = row.UnitCode;
                     model.UnitName = row.UnitName;
                     model.IsActive = row.IsActive;
@@ -83,7 +84,7 @@ namespace WebApi.Jwt.Controllers.MasterData
 
         [AllowAnonymous]
         [HttpGet]
-        [Route("Package_Info")]
+        [Route("Package_List")]
         public HttpResponseMessage loadPackage_Info() ///ข้อมูลบรรจุภัณท์
         {
             try
@@ -97,6 +98,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                     foreach (Package row in collection)
                     {
                     Package_Model model = new Package_Model();
+                       model.PackageOid = row.Oid.ToString();
                         model.PackageName = row.PackageName;     
                         model.IsActive = row.IsActive;
                         list.Add(model);

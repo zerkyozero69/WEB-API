@@ -31,11 +31,11 @@ using System.IO;
 
 namespace WebApi.Jwt.Controllers.MasterData
 {
-    public class OrganizationController : ApiController  
+    public class OrganizationController : ApiController
 
     {
         string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
-     
+
         /// <summary>
         /// 
         /// </summary>
@@ -44,13 +44,13 @@ namespace WebApi.Jwt.Controllers.MasterData
         // [JwtAuthentication]
         [HttpPost]
         [Route("Organization_info")]
-        public HttpResponseMessage get_Organization(string Oid= null)
+        public HttpResponseMessage get_Organization(string Oid = null)
         {
             try
             {
 
                 DataSet ds = new DataSet();
-                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_GetOrganization", new SqlParameter("@Oid",Oid));
+                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_GetOrganization", new SqlParameter("@Oid", Oid));
                 DataTable dt = new DataTable();
                 dt = ds.Tables[0];
 
@@ -84,7 +84,31 @@ namespace WebApi.Jwt.Controllers.MasterData
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
 
-
         }
+    
+
+        //[AllowAnonymous]
+        //// [JwtAuthentication]
+        //[HttpPost]
+        //[Route("Organization_info")]
+        //public  HttpResponseMessage getquotaOrganization()
+        //{
+        //    try
+        //    {
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        //Error case เกิดข้อผิดพลาด
+        //        UserError err = new UserError();
+        //        err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+
+        //        err.message = ex.Message;
+        //        //  Return resual
+        //        return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+        //    }
+
+
+        //}
     }
 }

@@ -110,7 +110,7 @@ namespace WebApi.Jwt.Controllers
                                 item.SendOrgName = row.SendOrgOid.SubOrganizeName;
                                 item.SendOrgFullName = row.SendOrgOid.OrganizeNameTH;
                                 item.Remark = row.Remark;
-                                item.ReceiveOrderStatus = row.SendStatus.ToString();
+                                item.ReceiveOrderStatus = row.ReceiveStatus.ToString();
                                 item.FinanceYear = row.FinanceYearOid.YearName;
                                 item.CancelMsg = row.CancelMsg;
                                 item.ReceiveOrgOid = row.ReceiveOrgOid.Oid.ToString();
@@ -199,11 +199,12 @@ namespace WebApi.Jwt.Controllers
                         item.TotalWeight = row.SendOrderSeedDetails.Sum((c => c.Weight)).ToString();
 
                         List<SendOrderSeedDetailType> details = new List<SendOrderSeedDetailType>();
-                        SendOrderSeedDetailType _dt = null; 
+                        SendOrderSeedDetailType _dt = null;
 
                         foreach (SendOrderSeedDetail rw in row.SendOrderSeedDetails)
                         {
                             _dt = new SendOrderSeedDetailType();
+                      
                             _dt.LotNumber = rw.LotNumber.LotNumber;
                             _dt.Amount = rw.Amount;
                             _dt.Weight = rw.Weight;
