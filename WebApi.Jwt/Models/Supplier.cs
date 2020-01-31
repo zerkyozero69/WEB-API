@@ -29,7 +29,7 @@ namespace WebApi.Jwt.Models
             public string AnimalSeedOid { get; set; }
             public string AnimalSeedLevelOid { get; set; }
             public string PlotHeaderOid { get; set; }
-            public string Stauts { get; set; }
+            public string Status { get; set; }
             public double Weight { get; set; }
             public string UnitOid { get; set; }
             public DateTime LastCleansingDate { get; set; }
@@ -74,7 +74,7 @@ namespace WebApi.Jwt.Models
             public string SubActivityOid { get; set; }
             public string SubActivityName { get; set; }
             public string Remark { get; set; }
-            public string Stauts { get; set; }
+            public string Status { get; set; }
             public string ApproveDate { get; set; }
             public string ReceiptNo { get; set; }
             public string RegisCusServiceOid { get; set; }

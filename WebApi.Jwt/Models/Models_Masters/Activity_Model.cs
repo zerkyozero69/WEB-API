@@ -26,9 +26,6 @@ namespace WebApi.Jwt.Models.Models_Masters
 
         public string SubActivityLevelName { get; set; }
 
-        public string ObjectTypeOid { get; set; }
-
-        public string ObjectTypeName { get; set; }
 
     
 

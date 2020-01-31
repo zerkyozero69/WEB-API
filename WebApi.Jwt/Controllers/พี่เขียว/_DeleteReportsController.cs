@@ -78,7 +78,7 @@ namespace WebApi.Jwt.Controllers.พี่เขียว
         }
         [AllowAnonymous]
         // GET: api/ReportCategories
-        [Route("LoadReportByRoleId")]
+        [Route("LoadReportBy/RoleId")]
         [HttpGet]
         public HttpResponseMessage LoadReportByRoleId()  // IEnumerable(Of String)
         {
@@ -123,7 +123,7 @@ namespace WebApi.Jwt.Controllers.พี่เขียว
         }
         [AllowAnonymous]
         // GET: api/ReportCategories
-        [Route("LoadReportByRoleId")]
+        [Route("LoadReportAllRoleId")]
         [HttpGet]
         public HttpResponseMessage LoadReportAllRole()  // IEnumerable(Of String)
         {

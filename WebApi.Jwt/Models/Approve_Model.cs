@@ -103,7 +103,7 @@ namespace WebApi.Jwt.Models
         public string OrganizationName { get; set; }
         public string EmployeeName { get; set; }
         public string Remark { get; set; }
-        public string Stauts { get; set; }
+        public string Status { get; set; }
         public string ApproveDate { get; set; }
         public string ActivityNameOid { get; set; }
         public string ActivityName { get; set; }
@@ -112,11 +112,9 @@ namespace WebApi.Jwt.Models
         public string SubActivityLevelName { get; set; }
         public string RegisCusServiceOid { get; set; }
         public string RegisCusServiceName { get; set; }
-        public string RegisCusServiceAddress { get; set; }
+        public string FullAddress { get; set; }
         public string OrgeServiceOid { get; set; }
         public string OrgeServiceName { get; set; }
-        public string OrgeServiceAddress { get; set; }
-
         public string Weight { get; set; }
         public int ServiceCount { get; set; }
         public string TotalAmout { get; set; }
@@ -244,6 +242,11 @@ namespace WebApi.Jwt.Models
         public double Price { get; set; }
 
         public double PerPrice { get; set; }
+        public string PackageOid { get; set; }
+        public string PackageName { get; set; }
+
+
+        public double PerUnit { get; set; }
 
 
 
@@ -270,7 +273,6 @@ namespace WebApi.Jwt.Models
         /// </summary>
         public string TypeMoblie { get; set; }
         public string Oid { get; set; }
-        public string RegisCusService { get; set; }
         public string UseDate { get; set; }
         public string UseNo { get; set; }
         public string FinanceYearOid { get; set; }
@@ -280,19 +282,25 @@ namespace WebApi.Jwt.Models
         public string OrganizationName { get; set; }
         public string EmployeeName { get; set; }
         public string Remark { get; set; }
-        public string Stauts { get; set; }
+        public string Status { get; set; }
         public string ApproveDate { get; set; }
         public string ActivityNameOid { get; set; }
         public string ActivityName { get; set; }
+        public string SubActivityOid { get; set; }
         public string SubActivityName { get; set; }
+        public string SubActivityLevelOid { get; set; }
         public string SubActivityLevelName { get; set; }
         public string ReceiptNo { get; set; }
         public string RegisCusServiceOid { get; set; }
         public string RegisCusServiceName { get; set; }
-        public string RegisCusServiceAddress { get; set; }
         public string OrgeServiceOid { get; set; }
         public string OrgeServiceName { get; set; }
-        public string OrgeServicAddress { get; set; }
+        public string FullAddress { get; set; }
+        public string ReceiverCitizenID { get; set; }
+        public string ReceiverName { get; set; }
+        public string ReceiverAddress { get; set; }
+        public string ReceiverNumber { get; set; }
+        public string ReceiverRemark { get; set; }
         public string Refno { get; set; }
         public string Weight { get; set; }
         public int ServiceCount { get; set; }
@@ -336,6 +344,10 @@ namespace WebApi.Jwt.Models
         public string PickUp_Type { get; set; }
         public string Weight { get; set; }
         public int ServiceCount { get; set; }
+        public string ReceiverName { get; set; }
+        public string ReceiverAddress { get; set; }
+        public string ReceiverNumber { get; set; }
+        public string ReceiverRemark { get; set; }
 
     }
     public class return_OidSupplierUseAnimalProductOid
@@ -343,6 +355,50 @@ namespace WebApi.Jwt.Models
         public string supplieruseanimalproductoid { get; set; }
         public string useno { get; set; }
 
+    }
+
+    public class SupplierAnimalUsecalarity_Model
+    {
+        /// <summary>
+        /// แจกเมล็ดพันธุ์
+        /// </summary>
+        public string TypeMoblie { get; set; }
+        public string SupplierUseAnimalProductOid { get; set; }
+        public string UseDate { get; set; }
+        public string UseNo { get; set; }
+        public string FinanceYearOid { get; set; }
+        public string FinanceYear { get; set; }
+        public string BudgetSourceName { get; set; }
+        public string OrganizationOid { get; set; }
+        public string OrganizationName { get; set; }
+        public string EmployeeName { get; set; }
+        public string Remark { get; set; }
+        public string Status { get; set; }
+        public string ApproveDate { get; set; }
+        public string ActivityNameOid { get; set; }
+        public string ActivityName { get; set; }
+        public string SubActivityOid { get; set; }
+        public string SubActivityName { get; set; }
+        public string SubActivityLevelOid { get; set; }
+        public string SubActivityLevelName { get; set; }
+        public string ReceiptNo { get; set; }
+        public string RegisCusServiceOid { get; set; }
+        public string RegisCusServiceName { get; set; }
+        public string OrgeServiceOid { get; set; }
+        public string OrgeServiceName { get; set; }
+        public string FullAddress { get; set; }
+        public string ReceiverCitizenID { get; set; }
+        public string ReceiverName { get; set; }
+        public string ReceiverAddress { get; set; }
+        public string ReceiverNumber { get; set; }
+        public string ReceiverRemark { get; set; }
+        public string Refno { get; set; }
+        public string Weight { get; set; }
+        public int ServiceCount { get; set; }
+        public string TotalPrice { get; set; }
+        public string TotalAmout { get; set; }
+        public string PickupType { get; set; }
+        public List<SupplierUseAnimalDetail_Model> details { get; set; }
     }
     public class GenOidcalamity
     {

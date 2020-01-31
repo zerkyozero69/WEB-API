@@ -44,7 +44,7 @@ namespace Controllers
                     Lis.CategoryId = obj["CategoryId"].ToString();
 
                     Lis.CategoryName = obj["CategoryName"].ToString();
-                    Lis.CategoryParent = obj["CategoryParent"].ToString();
+                  //  Lis.CategoryParent = obj["CategoryParent"].ToString();
                     objCat.Add(Lis);
                 }
 

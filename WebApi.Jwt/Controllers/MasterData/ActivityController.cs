@@ -112,8 +112,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                             activitySub_Model Item = new activitySub_Model();
                             Item.SubActivityLevelOid = row.Oid.ToString();
                             Item.SubActivityLevelName = row.ActivityName;
-                            Item.ObjectTypeOid = row.ObjectTypeOid.Oid.ToString();
-                            Item.ObjectTypeName = row.ObjectTypeOid.ObjectTypeName;
+   
                             list.Add(Item);
 
                         }

@@ -243,6 +243,7 @@
     <Compile Include="Controllers\พี่เขียว\ResponceMessage.cs" />
     <Compile Include="Controllers\พี่เขียว\RoleController.cs" />
     <Compile Include="Controllers\พี่เขียว\_DeleteReportsController.cs" />
+    <Compile Include="Controllers\สร้างข่าว\loadNewsController.cs" />
     <Compile Include="Controllers\เทส\ContentResult.cs" />
     <Compile Include="Controllers\เทส\HttpGetController.cs" />
     <Compile Include="Controllers\แผนการผลิต จำนวนคงเหลือ\Stock_SeedINFOController.cs" />
@@ -298,6 +299,7 @@
     <Compile Include="Models\ต่อดาต้าเบส\ConnectDB.cs" />
     <Compile Include="Models\พี่เขียว\non_xAF.cs" />
     <Compile Include="Models\ภัยภิบัติ\inserts_suppile.cs" />
+    <Compile Include="Models\สร้างข่าว\newsmodel.cs" />
     <Compile Include="Models\แผนการผลิตโมเดล\SupplieUseAnimalInfo.cs" />
     <Compile Include="Models\FarmerCitizen.cs" />
     <Compile Include="Models\ManageAnimalSupplier.cs" />

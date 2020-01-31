@@ -17,7 +17,7 @@ namespace WebApi.Jwt.Models.แผนการผลิตโมเดล
    
             public DateTime ApproveDate { get; set; }
    
-            public string Stauts { get; set; }
+            public string Status { get; set; }
         
             public string Remark { get; set; }
     

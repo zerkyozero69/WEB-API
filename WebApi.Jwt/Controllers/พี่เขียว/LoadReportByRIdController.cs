@@ -17,6 +17,8 @@ using Microsoft.ApplicationBlocks.Data;
 using System.Configuration;
 using System.Data;
 using Controllers;
+using System.Data.SqlClient;
+using System.Web;
 
 namespace WebApi.Jwt.Controllers
 {
@@ -61,12 +63,16 @@ namespace WebApi.Jwt.Controllers
         }
         [AllowAnonymous]
         // GET: api/ReportCategories
-        [Route("LoadReportPermissionBy")]
+        [Route("LoadReportPermissionBy/CategoryId")]
         [HttpGet]
         public HttpResponseMessage LoadReportPermissionBy()  // IEnumerable(Of String)
         {
+            string CategoryId  = HttpContext.Current.Request.Form["CategoryId"].ToString();
+            string RoleId = HttpContext.Current.Request.Form["RoleId"].ToString();
             List<SP_LoadReportByRId_Model> objLoadReport = new List<SP_LoadReportByRId_Model>();
-            DataSet Ds = SqlHelper.ExecuteDataset(strConn, CommandType.StoredProcedure, "SP_LoadReportPermissionBy");
+            DataSet Ds = SqlHelper.ExecuteDataset(strConn, CommandType.StoredProcedure, "SP_LoadReportPermissionBy",
+                new SqlParameter("@CategoryId", CategoryId)
+                ,new SqlParameter("@RoleId",RoleId));
             DataTable Dt = Ds.Tables[0];
             if (Dt.Rows.Count > 0)
             {

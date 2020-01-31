@@ -1,6 +1,7 @@
 ﻿using DevExpress.Data.Filtering;
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Xpo;
+using DevExpress.Xpo;
 using nutrition.Module;
 using System;
 using System.Collections.Generic;
@@ -259,6 +260,7 @@ namespace WebApi.Jwt.Controllers
         [Route("SendOrderSeed/Update")]
         public HttpResponseMessage UpdateSendOrderSeed()
         {
+          
             try
             {
                 string RefNo = HttpContext.Current.Request.Form["RefNo"].ToString(); //ข้อมูลเลขที่อ้างอิง
@@ -277,74 +279,129 @@ namespace WebApi.Jwt.Controllers
                     List<SendOrderSeed> list = new List<SendOrderSeed>();
                     XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                     IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+                    SendOrderSeed ObjMaster;
 
                     SendOrderSeed objSendOrderSeed = ObjectSpace.FindObject<SendOrderSeed>(CriteriaOperator.Parse("SendNo=?", _refno));
-                    if (objSendOrderSeed != null)
+
+                    if (_type == "1") //รับ
                     {
-                        if (_type == "1") //รับ
-                        {
-                            if (Status == "1")
-                            { //Approve
-                              //foreach (SendOrderSeedDetail row in objSendOrderSeed.SendOrderSeedDetails)
-                              //{
+                        if (Status == "1")
+                        { //Approve
 
-                                //    SupplierProductModifyDetail obSupplierProductModifyDetail = ObjectSpace.FindObject<SupplierProductModifyDetail>(CriteriaOperator.Parse("Oid=?", row.LotNumber.Oid));
-                                //    if (obSupplierProductModifyDetail != null)
-                                //    {
-                                //        var objStockSeedInfo = ObjectSpace.GetObjects<StockSeedInfo>(CriteriaOperator.Parse("OrganizationOid= ? and FinanceYearOid=? and BudgetSourceOid=? and AnimalSeedOid=? and AnimalSeedLevelOid=? and StockType=1 and ReferanceCode=? ", objSendOrderSeed.ReceiveOrgOid.Oid, objSendOrderSeed.FinanceYearOid.Oid, obSupplierProductModifyDetail.BudgetSourceOid, obSupplierProductModifyDetail.AnimalSeedOid.Oid, obSupplierProductModifyDetail.AnimalSeedLevelOid.Oid, row.LotNumber.LotNumberFactory));
-                                //        if (objStockSeedInfo.Count > 0)
-                                //        {
-                                //            var ObjSubStockCardSource = from Item in objStockSeedInfo orderby Item.StockDate descending select Item;
-                                //            var ObjStockSeedInfoInfo = ObjectSpace.CreateObject<StockSeedInfo>();
+                            foreach (SendOrderSeedDetail row in objSendOrderSeed.SendOrderSeedDetails)
+                            {
+                             IList<StockSeedInfo>  objStockSeedInfo  ; 
+                                SupplierProductModifyDetail obSupplierProductModifyDetail = ObjectSpace.FindObject<SupplierProductModifyDetail>(CriteriaOperator.Parse("Oid=?", row.LotNumber.Oid));
+                                if (obSupplierProductModifyDetail != null)
+                                {
+                                    if (objSendOrderSeed.SendOrgOid.IsFactory == true)
+                                    {
+                                         objStockSeedInfo = ObjectSpace.GetObjects<StockSeedInfo>(CriteriaOperator.Parse("OrganizationOid= ? and FinanceYearOid=? and BudgetSourceOid=? and AnimalSeedOid=? and AnimalSeedLevelOid=? and StockType=1 and ReferanceCode=? ", objSendOrderSeed.ReceiveOrgOid.Oid, objSendOrderSeed.FinanceYearOid.Oid
+                                            , obSupplierProductModifyDetail.BudgetSourceOid, obSupplierProductModifyDetail.AnimalSeedOid.Oid, obSupplierProductModifyDetail.AnimalSeedLevelOid.Oid, row.LotNumber.LotNumberFactory));
+                                    }
+                                    else
+                                    {
+                                         objStockSeedInfo = ObjectSpace.GetObjects<StockSeedInfo>(CriteriaOperator.Parse("OrganizationOid= ? and FinanceYearOid=? and BudgetSourceOid=? and AnimalSeedOid=? and AnimalSeedLevelOid=? and StockType=1 and ReferanceCode=? ", objSendOrderSeed.SendOrgOid.Oid, objSendOrderSeed.FinanceYearOid.Oid
+                                            , obSupplierProductModifyDetail.BudgetSourceOid, obSupplierProductModifyDetail.AnimalSeedOid.Oid, obSupplierProductModifyDetail.AnimalSeedLevelOid.Oid, row.LotNumber.LotNumberFactory)); ;
+                                    }
+                                    if (objStockSeedInfo.Count == 0)
+                                    {
+                                        var ObjSubStockCardSource = from Item in objStockSeedInfo orderby Item.StockDate descending select Item;
 
-                                //            ObjStockSeedInfoInfo.StockDate = DateTime.Now;
-                                //            ObjStockSeedInfoInfo.OrganizationOid = objSendOrderSeed.ReceiveOrgOid;
-                                //            ObjStockSeedInfoInfo.FinanceYearOid = objSendOrderSeed.FinanceYearOid;
-                                //            ObjStockSeedInfoInfo.BudgetSourceOid = obSupplierProductModifyDetail.BudgetSourceOid;
-                                //            ObjStockSeedInfoInfo.AnimalSeedOid = obSupplierProductModifyDetail.AnimalSeedOid;
-                                //            ObjStockSeedInfoInfo.AnimalSeedLevelOid = obSupplierProductModifyDetail.AnimalSeedLevelOid;
-                                //            ObjStockSeedInfoInfo.StockDetail = "รับเมล็ดพันธุ์ Lot Number: " + row.LotNumber.LotNumberFactory;
-                                //            ObjStockSeedInfoInfo.TotalForward = ObjSubStockCardSource.FirstOrDefault().TotalWeight; //ObjSubStockCardSource(0).TotalWeight;
-                                //            ObjStockSeedInfoInfo.TotalChange = row.Weight;
-                                //            ObjStockSeedInfoInfo.StockType = EnumStockType.ReceiveProduct;
-                                //            ObjStockSeedInfoInfo.SeedTypeOid = obSupplierProductModifyDetail.SeedTypeOid;
-                                //            ObjStockSeedInfoInfo.ReferanceCode = row.LotNumber.LotNumberFactory;
-                                //            ObjectSpace.Rollback();
-                                //            //ObjectSpace.CommitChanges();
-                                //        }
-                                //    }
-                                //}
+                                        var ObjStockSeedInfoInfo = ObjectSpace.CreateObject<StockSeedInfo>();
 
-                                objSendOrderSeed.ReceiveStatus = EnumReceiveOrderSeedStatus.Approve; //2
-                                objSendOrderSeed.Remark = CancelMsg;
+                                        ObjStockSeedInfoInfo.StockDate = DateTime.Now;
+                                        ObjStockSeedInfoInfo.OrganizationOid = objSendOrderSeed.ReceiveOrgOid;
+                                        ObjStockSeedInfoInfo.FinanceYearOid = objSendOrderSeed.FinanceYearOid;
+                                        ObjStockSeedInfoInfo.BudgetSourceOid = obSupplierProductModifyDetail.BudgetSourceOid;
+                                        ObjStockSeedInfoInfo.AnimalSeedOid = obSupplierProductModifyDetail.AnimalSeedOid;
+                                        ObjStockSeedInfoInfo.AnimalSeedLevelOid = obSupplierProductModifyDetail.AnimalSeedLevelOid;
+                                        ObjStockSeedInfoInfo.StockDetail = "รับเมล็ดพันธุ์ Lot Number: " + row.LotNumber.LotNumberFactory;
+                                       // ObjStockSeedInfoInfo.TotalForward = ObjSubStockCardSource(0).TotalWeight(); //ObjSubStockCardSource(0).TotalWeight;
+                                        ObjStockSeedInfoInfo.TotalChange = 0 - row.Weight;
+                                        ObjStockSeedInfoInfo.StockType = EnumStockType.ReceiveProduct;
+                                        ObjStockSeedInfoInfo.SeedTypeOid = obSupplierProductModifyDetail.SeedTypeOid;
+                                        ObjStockSeedInfoInfo.ReferanceCode = row.LotNumber.LotNumberFactory;
 
-                                ObjectSpace.CommitChanges();
+                                    }
+                                    else
+                                    {
+                                        var ObjStockSeedInfoInfo = ObjectSpace.CreateObject<StockSeedInfo>();
+                                        ObjStockSeedInfoInfo.StockDate = DateTime.Now;
+                                        ObjStockSeedInfoInfo.OrganizationOid = objSendOrderSeed.ReceiveOrgOid;
+                                        ObjStockSeedInfoInfo.FinanceYearOid = objSendOrderSeed.FinanceYearOid;
+                                        ObjStockSeedInfoInfo.BudgetSourceOid = obSupplierProductModifyDetail.BudgetSourceOid;
+                                        ObjStockSeedInfoInfo.AnimalSeedOid = obSupplierProductModifyDetail.AnimalSeedOid;
+                                        ObjStockSeedInfoInfo.AnimalSeedLevelOid = obSupplierProductModifyDetail.AnimalSeedLevelOid;
+                                        ObjStockSeedInfoInfo.StockDetail = "รับเมล็ดพันธุ์ Lot Number: " + row.LotNumber.LotNumberFactory;
+                                        ObjStockSeedInfoInfo.TotalForward = 0; //ObjSubStockCardSource(0).TotalWeight;
+                                        ObjStockSeedInfoInfo.TotalChange = 0 - row.Weight;
+                                        ObjStockSeedInfoInfo.StockType = EnumStockType.ReceiveProduct;
+                                        ObjStockSeedInfoInfo.SeedTypeOid = obSupplierProductModifyDetail.SeedTypeOid;
+                                        ObjStockSeedInfoInfo.ReferanceCode = row.LotNumber.LotNumberFactory;
+
+                                    }
+                                    var objQualityAnalysis = ObjectSpace.FindObject<QualityAnalysis>(CriteriaOperator.Parse("[LotNumber]=? and [AnalysisType]=0 and [OrganizationOid]=?", row.LotNumber.LotNumberFactory, row.SendOrderSeed.SendOrgOid));
+                                    if (objQualityAnalysis != null)
+                                    {
+                                        objQualityAnalysis.Weight -= row.Weight;
+                                    }
+                                    else
+                                    {
+                                        var objQualityAnalysisType1 = ObjectSpace.FindObject<QualityAnalysis>(CriteriaOperator.Parse("[LotNumber]=? and [AnalysisType]=0 and [OrganizationOid]=?", row.LotNumber.LotNumberFactory, row.SendOrderSeed.ReceiveOrgOid));
+                                        if (objQualityAnalysisType1 != null)
+                                        {
+                                            objQualityAnalysisType1.Weight += row.Weight;
+                                        }
+                                        else
+                                        {
+                                            var ObjQualityAnalysisInfo = ObjectSpace.CreateObject<QualityAnalysis>();
+                                            SupplierProductModifyDetail objSupplierProductModifyDetail = ObjectSpace.FindObject< SupplierProductModifyDetail>(CriteriaOperator.Parse("LotNumberFactory=?", row.LotNumber.LotNumberFactory));
+                                            ObjQualityAnalysisInfo.AnimalSeedOid =objSupplierProductModifyDetail.AnimalSeedOid;
+                                            ObjQualityAnalysisInfo.AnimalSeedLevelOid = objSupplierProductModifyDetail.AnimalSeedLevelOid;
+                                            ObjQualityAnalysisInfo.SeedTypeOid = objSupplierProductModifyDetail.SeedTypeOid;
+                                            ObjQualityAnalysisInfo.LotNumber = objSupplierProductModifyDetail.LotNumberFactory;
+                                            ObjQualityAnalysisInfo.Weight = row.Weight;
+                                            ObjQualityAnalysisInfo.Moisture = objSupplierProductModifyDetail.Moisture;
+                                            ObjQualityAnalysisInfo.Germination = objSupplierProductModifyDetail.Germination;
+                                            ObjQualityAnalysisInfo.AnalysisType = "1";
+                                            ObjQualityAnalysisInfo.OrganizationOid = objSendOrderSeed.ReceiveOrgOid;
+                                        }
+
+                                    }
+                                }
                             }
-                            else if (Status == "2")
-                            { //Reject
-                                objSendOrderSeed.SendStatus = EnumSendOrderSeedStatus.Eject; //4
-                                objSendOrderSeed.ReceiveStatus = EnumReceiveOrderSeedStatus.Eject;//4
-                                objSendOrderSeed.CancelMsg = CancelMsg;
-                                ObjectSpace.CommitChanges();
-                            }
+
+                            objSendOrderSeed.ReceiveStatus = EnumReceiveOrderSeedStatus.Approve; //2
+                            objSendOrderSeed.Remark = CancelMsg;
+
+                            ObjectSpace.CommitChanges();
                         }
-                        else if (_type == "2") //ส่ง
-                        {
-                            if (Status == "1")
-                            { //Approve
-                                objSendOrderSeed.SendStatus = EnumSendOrderSeedStatus.Approve; //2
-                                objSendOrderSeed.ReceiveStatus = EnumReceiveOrderSeedStatus.InProgess;//1
-                                objSendOrderSeed.Remark = CancelMsg;
-                                ObjectSpace.CommitChanges();
-                            }
-                            else if (Status == "2")
-                            { //Reject
-                                objSendOrderSeed.SendStatus = EnumSendOrderSeedStatus.Eject; //4
-                                objSendOrderSeed.CancelMsg = CancelMsg;
-                                ObjectSpace.CommitChanges();
-                            }
+                        else if (Status == "2")
+                        { //Reject
+                            objSendOrderSeed.SendStatus = EnumSendOrderSeedStatus.Eject; //4
+                            objSendOrderSeed.ReceiveStatus = EnumReceiveOrderSeedStatus.Eject;//4
+                            objSendOrderSeed.CancelMsg = CancelMsg;
+                            ObjectSpace.CommitChanges();
                         }
-                    }    
+                    }
+                    else if (_type == "2") //ส่ง
+                    {
+                        if (Status == "1")
+                        { //Approve
+                            objSendOrderSeed.SendStatus = EnumSendOrderSeedStatus.Approve; //2
+                            objSendOrderSeed.ReceiveStatus = EnumReceiveOrderSeedStatus.InProgess;//1
+                            objSendOrderSeed.Remark = CancelMsg;
+                            ObjectSpace.CommitChanges();
+                        }
+                        else if (Status == "2")
+                        { //Reject
+                            objSendOrderSeed.SendStatus = EnumSendOrderSeedStatus.Eject; //4
+                            objSendOrderSeed.CancelMsg = CancelMsg;
+                            ObjectSpace.CommitChanges();
+                        }
+                    }
+
                     UpdateResult ret = new UpdateResult();
                     ret.status = "true";
                     ret.message = "บันทึกข้อมูลเสร็จเรียบร้อยแล้ว";

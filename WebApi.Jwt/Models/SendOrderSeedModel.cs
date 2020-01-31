@@ -106,13 +106,14 @@ namespace WebApi.Jwt.Models
         public string RegisCusService { get; set; }
         public string UseDate { get; set; }
         public string UseNo { get; set; }
+        public string Refno { get; set; }
         public string FinanceYearOid { get; set; }
         public string FinanceYear { get; set; }
 
         public string OrganizationName { get; set; }
         public string EmployeeName { get; set; }
         public string Remark { get; set; }
-        public string Stauts { get; set; }
+        public string Status { get; set; }
         public string ApproveDate { get; set; }
         public string ActivityNameOid { get; set; }
         public string ActivityName { get; set; }
@@ -124,7 +125,7 @@ namespace WebApi.Jwt.Models
 
         public string RegisCusServiceName { get; set; }
         public string OrgeServiceName { get; set; }
-        public string Refno { get; set; }
+        
         public string Weight { get; set; }
         public int ServiceCount { get; set; }
 
