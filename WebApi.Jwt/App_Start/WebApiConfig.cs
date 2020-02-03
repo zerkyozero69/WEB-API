@@ -24,7 +24,7 @@ namespace WebApi.Jwt
                 defaults: new { id = RouteParameter.Optional }
                 );
             var jsonFormatter = config.Formatters.OfType<JsonMediaTypeFormatter>().First();
-            config.Formatters.JsonFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("text/html"));
+           // config.Formatters.JsonFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("text/html"));
             config.Formatters.JsonFormatter.SerializerSettings.TypeNameHandling = TypeNameHandling.Auto;
             //GlobalConfiguration.Configuration.Formatters.Insert(0, new JsonpFormatter());
             jsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();

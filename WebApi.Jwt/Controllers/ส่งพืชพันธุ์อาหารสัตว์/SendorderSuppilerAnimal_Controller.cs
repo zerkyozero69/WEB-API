@@ -350,12 +350,18 @@ namespace WebApi.Jwt.Controllers.MasterData
         [Route("SendOrderAnimalstock/Update")]
         public HttpResponseMessage UpdateSendOrderAnimalstock()
         {
+            object objStockAnimalInfo = null;
+            HistoryWork ObjHistory = null;
+            string Username = " ";
+
+            IList<StockAnimalInfo_Report> objStockAnimalInfo_Detail = null;
+
             try
             {
                 string RefNo = HttpContext.Current.Request.Form["RefNo"].ToString(); //ข้อมูลเลขที่อ้างอิง
                 string Status = HttpContext.Current.Request.Form["Status"].ToString(); //สถานะ
                 string CancelMsg = HttpContext.Current.Request.Form["CancelMsg"].ToString(); //หมายเหตุ
-
+                Username = HttpContext.Current.Request.Form["Username"].ToString();
                 if (RefNo != "" && Status != "")
                 {
                     string[] arr = RefNo.Split('|');
@@ -365,11 +371,90 @@ namespace WebApi.Jwt.Controllers.MasterData
 
                     XpoTypesInfoHelper.GetXpoTypeInfoSource();
                     XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.SendOrderSupplierAnimal));
+                    XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.StockAnimalInfo));
+                    XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.StockAnimalInfo_Report));
+                    XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.SeedType));
                     List<SendOrderSeed> list = new List<SendOrderSeed>();
                     XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
-                     IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+                    IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
 
                     SendOrderSupplierAnimal objSupplierProduct = ObjectSpace.FindObject<SendOrderSupplierAnimal>(CriteriaOperator.Parse("SendNo=?", _refno));
+
+
+                    if (objSupplierProduct.SeedTypeOid != null)
+                    {
+                        objStockAnimalInfo = ObjectSpace.GetObjects<StockAnimalInfo>(CriteriaOperator.Parse("OrganizationOid= ? and FinanceYearOid=? and BudgetSourceOid=? and SeedTypeOid=? and AnimalSupplieOid=? and AnimalProductNumber=? ", objSupplierProduct.SendOrgOid.Oid, objSupplierProduct.FinanceYearOid.Oid, objSupplierProduct.BudgetSourceOid, objSupplierProduct.SeedTypeOid.Oid, objSupplierProduct.AnimalSupplieOid, objSupplierProduct.SendNo));
+                        // XPCollection<StockAnimalInfo_Report> objStockAnimalInfo_Detail;
+                        objStockAnimalInfo_Detail = ObjectSpace.GetObjects<StockAnimalInfo_Report>(CriteriaOperator.Parse("OrganizationOid= ? and FinanceYearOid=? and BudgetSourceOid=? and SeedTypeOid=? and AnimalSupplieOid=? and AnimalSupplieTypeOid=? ", objSupplierProduct.SendOrgOid.Oid, objSupplierProduct.FinanceYearOid.Oid, objSupplierProduct.BudgetSourceOid, objSupplierProduct.SeedTypeOid.Oid, objSupplierProduct.AnimalSupplieOid, objSupplierProduct.AnimalSupplieTypeOid));
+                    }
+                    else
+                    {
+                        objStockAnimalInfo = ObjectSpace.GetObjects<StockAnimalInfo>(CriteriaOperator.Parse("OrganizationOid= ? and FinanceYearOid=? and BudgetSourceOid=? and SeedTypeOid=? and AnimalSupplieOid=? and AnimalProductNumber=? ", objSupplierProduct.SendOrgOid.Oid, objSupplierProduct.FinanceYearOid.Oid, objSupplierProduct.BudgetSourceOid, objSupplierProduct.SeedTypeOid.Oid, objSupplierProduct.AnimalSupplieOid, objSupplierProduct.SendNo));
+                        // XPCollection<StockAnimalInfo_Report> objStockAnimalInfo_Detail;
+                        objStockAnimalInfo_Detail = ObjectSpace.GetObjects<StockAnimalInfo_Report>(CriteriaOperator.Parse("OrganizationOid= ? and FinanceYearOid=? and BudgetSourceOid=? and SeedTypeOid=? and AnimalSupplieOid=? and AnimalSupplieTypeOid=? ", objSupplierProduct.SendOrgOid.Oid, objSupplierProduct.FinanceYearOid.Oid, objSupplierProduct.BudgetSourceOid, objSupplierProduct.SeedTypeOid.Oid, objSupplierProduct.AnimalSupplieOid, objSupplierProduct.AnimalSupplieTypeOid));
+
+                    }
+                    if (objStockAnimalInfo != null)
+                    {
+                        var ObjStockSeedInfoInfo = ObjectSpace.CreateObject<StockAnimalInfo>();
+                        var withBlock = ObjStockSeedInfoInfo;
+                        withBlock.TransactionDate = DateTime.Now;
+                        withBlock.AnimalProductNumber = objSupplierProduct.SendNo;
+                        withBlock.FinanceYearOid = objSupplierProduct.FinanceYearOid;
+                        withBlock.BudgetSourceOid = objSupplierProduct.BudgetSourceOid;
+                        withBlock.OrganizationOid = objSupplierProduct.SendOrgOid;
+                        withBlock.AnimalSupplieOid = objSupplierProduct.AnimalSupplieOid;
+                        //  '.AnimalSeedOid = ObjMaster.AnimalSeedOid;
+                        withBlock.AnimalSupplieTypeOid = objSupplierProduct.AnimalSupplieTypeOid;
+                        withBlock.Remark = "อนุมัติส่งเสบียงสัตว์ เลขที่: " + "" + objSupplierProduct.SendNo;
+                        withBlock.Weight = 0 - objSupplierProduct.QTY;
+                        withBlock.SeedTypeOid = objSupplierProduct.SeedTypeOid;
+                        withBlock.Description = "ส่งเสบียงสัตว์ให้ : " + "" + objSupplierProduct.ReceiveOrgOid.SubOrganizeName;
+                    }
+                
+                var objStockAnimalInfo_DetailNew = ObjectSpace.CreateObject<StockAnimalInfo_Report>();
+                    if (objStockAnimalInfo_Detail.Count == 0)
+                    {
+                        var withBlock = objStockAnimalInfo_DetailNew;
+                        withBlock.AnimalProductNumber = objSupplierProduct.SendNo;
+                        withBlock.FinanceYearOid = objSupplierProduct.FinanceYearOid;
+                        withBlock.BudgetSourceOid = objSupplierProduct.BudgetSourceOid;
+                        withBlock.OrganizationOid = objSupplierProduct.SendOrgOid;
+                        withBlock.AnimalSupplieOid = objSupplierProduct.AnimalSupplieOid;
+                        //  ' .AnimalSeedOid = ObjMaster.AnimalSeedOid
+                        withBlock.AnimalSupplieTypeOid = objSupplierProduct.AnimalSupplieTypeOid;
+                        //  '.Weight = ObjMaster.Weight
+                        withBlock.TotalForward = 0;
+                        withBlock.TotalChange = 0 - objSupplierProduct.QTY;
+                        withBlock.SeedTypeOid = objSupplierProduct.SeedTypeOid;
+                        withBlock.Description = "ส่งเสบียงสัตว์ให้ : " + "" + objSupplierProduct.ReceiveOrgOid.SubOrganizeName;
+                    }
+                    else
+                    {
+                        var ObjStockAnimalInfo_DetailSource = (from Item in objStockAnimalInfo_Detail orderby Item.TransactionDate descending select Item).First().TotalWeight ;
+                        var withBlock = objStockAnimalInfo_DetailNew;
+                        withBlock.AnimalProductNumber = objSupplierProduct.SendNo;
+                        withBlock.FinanceYearOid = objSupplierProduct.FinanceYearOid;
+                        withBlock.BudgetSourceOid = objSupplierProduct.BudgetSourceOid;
+                        withBlock.OrganizationOid = objSupplierProduct.SendOrgOid;
+                        withBlock.AnimalSupplieOid = objSupplierProduct.AnimalSupplieOid;
+                        //  ' .AnimalSeedOid = ObjMaster.AnimalSeedOid
+                        withBlock.AnimalSupplieTypeOid = objSupplierProduct.AnimalSupplieTypeOid;
+                        //  '.Weight = ObjMaster.Weight
+                        withBlock.TotalForward = ObjStockAnimalInfo_DetailSource;
+                        withBlock.TotalChange = 0 - objSupplierProduct.QTY;
+                        withBlock.SeedTypeOid = objSupplierProduct.SeedTypeOid;
+                        withBlock.Description = "ส่งเสบียงสัตว์ให้ : " + "" + objSupplierProduct.ReceiveOrgOid.SubOrganizeName;
+                    }
+                    ObjHistory = ObjectSpace.CreateObject<HistoryWork>();
+                    ObjHistory.RefOid = objSupplierProduct.Oid.ToString();
+                    ObjHistory.FormName = "เสบียงสัตว์";
+                    ObjHistory.Message = "อนุมัติ (ส่งเสบียงสัตว์ให้หน่วยงานในสังกัด (Mobile Application)) เลขที่ส่ง : " + " "+ objSupplierProduct.SendNo;
+                    ObjHistory.CreateBy = Username;
+                    ObjHistory.CreateDate = DateTime.Now;
+                    ObjectSpace.CommitChanges();
+
+                    
                     if (objSupplierProduct != null)
                     {
                         if (_type == "1") //รับ

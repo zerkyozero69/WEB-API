@@ -1364,7 +1364,7 @@ namespace WebApi.Jwt.Controllers
 
                         ActivityOid.ActivityName = "เพื่อใช้ในกิจกรรมกรมปศุสัตว์";
                     //    string ActivityOid = "069CB598-B40E-472A-A386-4F8056FB78D2";
-                        IList<SupplierUseAnimalProduct> collection = ObjectSpace.GetObjects<SupplierUseAnimalProduct>(CriteriaOperator.Parse("GCRecord is null and (Status in( 0,1)) and OrganizationOid='" + org_oid + "' and  [ActivityOid.ActivityName] = '" + ActivityOid.ActivityName + "' ", null));
+                        IList<SupplierUseAnimalProduct> collection = ObjectSpace.GetObjects<SupplierUseAnimalProduct>(CriteriaOperator.Parse("GCRecord is null and Status = 1 and OrganizationOid='" + org_oid + "' and  [ActivityOid.ActivityName] = '" + ActivityOid.ActivityName + "' ", null));
                         if (collection.Count > 0)
                         {
                             foreach (SupplierUseAnimalProduct row in collection)
@@ -1613,9 +1613,12 @@ namespace WebApi.Jwt.Controllers
                     else if (type == "1")
                     {
                         //เพื่อการแจกจ่าย (สนับสนุนเกษตรกร)
-                        string ActivityOid = "A29D77A9-4BCB-4774-9744-FF97A373353E";
+                        Activity ActivityOid = ObjectSpace.FindObject<Activity>(CriteriaOperator.Parse("GCRecord is null and IsActive = 1  ", null));
 
-                        IList<SupplierUseAnimalProduct> collection4 = ObjectSpace.GetObjects<SupplierUseAnimalProduct>(CriteriaOperator.Parse("GCRecord is null and Status = 1 and OrganizationOid='" + org_oid + "'and ActivityOid = '" + ActivityOid + "' ", null));
+                        ActivityOid.ActivityName = "เพื่อการแจกจ่าย (สนับสนุนเกษตรกร)";
+                       // string ActivityOid = "A29D77A9-4BCB-4774-9744-FF97A373353E";
+
+                        IList<SupplierUseAnimalProduct> collection4 = ObjectSpace.GetObjects<SupplierUseAnimalProduct>(CriteriaOperator.Parse("GCRecord is null and Status = 1 and OrganizationOid='" + org_oid + "'and  [ActivityOid.ActivityName] = '" + ActivityOid.ActivityName + "' ", null));
                         if (collection4.Count > 0)
                         {
                             foreach (SupplierUseAnimalProduct row in collection4)
@@ -1756,8 +1759,13 @@ namespace WebApi.Jwt.Controllers
 
                     if (type == "1")
                     {  //เพื่อใช้ในกิจกรรมกรมปศุสัตว์ 
-                        string ActivityOid = "069CB598-B40E-472A-A386-4F8056FB78D2";
-                        IList<SupplierUseProduct> collection = ObjectSpace.GetObjects<SupplierUseProduct>(CriteriaOperator.Parse("GCRecord is null and Status=1 and OrganizationOid='" + org_oid + "'and ActivityOid = '" + ActivityOid + "' ", null));
+
+                        Activity ActivityOid = ObjectSpace.FindObject<Activity>(CriteriaOperator.Parse("GCRecord is null and IsActive = 1  ", null));
+
+                        ActivityOid.ActivityName = "เพื่อใช้ในกิจกรรมกรมปศุสัตว์";
+
+                       // string ActivityOid = "069CB598-B40E-472A-A386-4F8056FB78D2";
+                        IList<SupplierUseProduct> collection = ObjectSpace.GetObjects<SupplierUseProduct>(CriteriaOperator.Parse("GCRecord is null and Status=1 and OrganizationOid='" + org_oid + "' and  [ActivityOid.ActivityName] = '" + ActivityOid.ActivityName + "' ", null));
                         if (collection.Count > 0)
                         {
                             foreach (SupplierUseProduct row in collection)
@@ -1830,9 +1838,13 @@ namespace WebApi.Jwt.Controllers
                     }
                     else if (type == "2")
                     {  //การจำหน่าย
-                        string ActivityOid = "1B648296-1105-4216-B4C2-ECEEF6859E96";
+                        Activity ActivityOid = ObjectSpace.FindObject<Activity>(CriteriaOperator.Parse("GCRecord is null and IsActive = 1  ", null));
 
-                        IList<SupplierUseProduct> collection2 = ObjectSpace.GetObjects<SupplierUseProduct>(CriteriaOperator.Parse("GCRecord is null and Status = 1 and OrganizationOid='" + org_oid + "'and ActivityOid = '" + ActivityOid + "' ", null));
+                        ActivityOid.ActivityName = "เพื่อการจำหน่าย";
+                      //  string ActivityOid = "1B648296-1105-4216-B4C2-ECEEF6859E96";
+
+                        IList<SupplierUseProduct> collection2 = ObjectSpace.GetObjects<SupplierUseProduct>(CriteriaOperator.Parse("GCRecord is null and Status = 1 and OrganizationOid='" + org_oid + "'" +
+                            "  and   [ActivityOid.ActivityName] = '" + ActivityOid.ActivityName + "' ", null));
                         if (collection2.Count > 0)
                         {
                             foreach (SupplierUseProduct row in collection2)
@@ -1986,9 +1998,13 @@ namespace WebApi.Jwt.Controllers
                     else if (type == "4")
                     {
                         //เพื่อการแจกจ่าย (สนับสนุนเกษตรกร)
-                        string ActivityOid = "A29D77A9-4BCB-4774-9744-FF97A373353E";
+                        Activity ActivityOid = ObjectSpace.FindObject<Activity>(CriteriaOperator.Parse("GCRecord is null and IsActive = 1  ", null));
 
-                        IList<SupplierUseProduct> collection4 = ObjectSpace.GetObjects<SupplierUseProduct>(CriteriaOperator.Parse("GCRecord is null and Status = 1 and OrganizationOid='" + org_oid + "'and ActivityOid = '" + ActivityOid + "' ", null));
+                        ActivityOid.ActivityName = "เพื่อการแจกจ่าย (สนับสนุนเกษตรกร)";
+                       // string ActivityOid = "A29D77A9-4BCB-4774-9744-FF97A373353E";
+
+                        IList<SupplierUseProduct> collection4 = ObjectSpace.GetObjects<SupplierUseProduct>(CriteriaOperator.Parse("GCRecord is null and Status = 1 and OrganizationOid='" + org_oid + "" +
+                            "'and  [ActivityOid.ActivityName] = '" + ActivityOid.ActivityName + "' ", null));
                         if (collection4.Count > 0)
                         {
                             foreach (SupplierUseProduct row in collection4)
