@@ -53,7 +53,7 @@ namespace WebApi.Jwt.Controllers
 
             {
                 //
-            DataSet    ds;
+                DataSet ds;
                 //ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieGetRoles_ByUser", new SqlParameter("@Oid", Oid)); ///อย่าลืมเปลี่ยน คอนเนคชั่นสติง
                 //DataTable dt = new DataTable();
                 //dt = ds.Tables[0];
@@ -88,7 +88,10 @@ namespace WebApi.Jwt.Controllers
                 //  Return resual
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
-
+            finally
+            {
+                Dispose();
+            }
         }
         /// <summary>
         /// 
@@ -133,6 +136,10 @@ namespace WebApi.Jwt.Controllers
                 //  Return resual
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
+            finally
+            {
+                Dispose();
+               }
         }
     }
 }

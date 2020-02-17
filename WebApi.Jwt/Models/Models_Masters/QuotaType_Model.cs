@@ -67,10 +67,12 @@ namespace WebApi.Jwt.Models.Models_Masters
         public string AnimalSeedOid { get; set; }
         public string AnimalSupplieTypeOid { get; set; }
         public string AnimalSupplieTypeName { get; set; }
+        public string manageSubAnimalSupplierOid { get; set; }
         public Double QuotaQTY { get; set; }
         public Double StockLimit { get; set; }
         public Double StockUsed { get; set; }
         public Double Amount { get; set; }
+        public List<ManageSubAnimalSupplier_Province> ObjProvinceName { get; set; }
 
     }
     public class Quantity_Modelprovionce
@@ -90,6 +92,7 @@ namespace WebApi.Jwt.Models.Models_Masters
     public class ManageSubAnimalSupplier_Province
     {
         public string ManageSubAnimalSupplierOid { get; set; }
+        public string ProvinceOid { get; set; }
         public string ProvinceName { get; set; }
     }
     public class ManageQuantity

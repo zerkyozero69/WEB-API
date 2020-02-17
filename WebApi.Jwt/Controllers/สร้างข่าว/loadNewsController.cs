@@ -74,10 +74,12 @@ namespace WebApi.Jwt.Controllers.สร้างข่าว
                 XpoTypesInfoHelper.GetXpoTypeInfoSource();
                 XafTypesInfo.Instance.RegisterEntity(typeof(News));
                 List<newsmodel> list = new List<newsmodel>();
+                List<ImageURL_Detail> detail = new List<ImageURL_Detail>();
                 XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
                 News objNews = ObjectSpace.FindObject<News>(CriteriaOperator.Parse("  GCRecord is null and Oid =?", newsOid));
-                if(objNews.Oid != null)
+                IList<News> collection = ObjectSpace.GetObjects<News>(CriteriaOperator.Parse("GCRecord is null and Oid='" + newsOid + "'", null));
+                if (objNews.Oid != null)
                 { 
                     newsmodel model = new newsmodel();
                     model.Oid = objNews.Oid.ToString();
@@ -85,6 +87,24 @@ namespace WebApi.Jwt.Controllers.สร้างข่าว
                     model.Subject = objNews.Subject;
                     model.Details = objNews.Details.Replace("/Images/News/", "http://nutritionit.dld.go.th/Images/News/");
                     model.TotalTimes = objNews.TotalTimes+1;
+
+                    String [] spearator = {"<img src="};
+                    string [] Arr = objNews.Details.ToString().Split(spearator,System.StringSplitOptions.RemoveEmptyEntries);
+
+                    ImageURL_Detail objdetail = null;
+                    foreach (var row in Arr)
+                    {
+                        if (row.Contains("Images"))
+                        {
+                            String [] spearator2 = { "alt=" };
+                            string [] Arr2 = row.ToString().Split(spearator2, System.StringSplitOptions.RemoveEmptyEntries);
+                            objdetail = new ImageURL_Detail();
+                            objdetail.ImageURL = Arr2[0].ToString().Replace(@"""", "").Replace(" ","").Replace("/Images/News/", "http://nutritionit.dld.go.th/Images/News/");
+                            detail.Add(objdetail);
+                        }
+
+                    }
+                    model.objImage = detail;
                     ObjectSpace.CommitChanges();
 
                     list.Add(model);

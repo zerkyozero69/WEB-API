@@ -67,6 +67,7 @@ namespace WebApi.Jwt.Models
             public string Message { get; set; }
             public int Status { get; set; }
             public string Token_key { get; set; }
+            public string ActionName { get; set; }
         }
         public class rigisterFarmer_XAF
         {

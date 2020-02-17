@@ -32,6 +32,8 @@ using System.IO;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using static WebApi.Jwt.Models.Farmerinfo;
+using nutrition.Module;
+using static WebApi.Jwt.Models.Models_Masters.FarmerProduct_model;
 
 namespace WebApi.Jwt.Controllers
 {
@@ -83,7 +85,8 @@ namespace WebApi.Jwt.Controllers
                         {
                             Registerfarmer.Email = string.Empty;
                         }
-                        else {
+                        else
+                        {
                             Registerfarmer.Email = jObject.SelectToken("Email").Value<string>();
                         }
 
@@ -97,12 +100,13 @@ namespace WebApi.Jwt.Controllers
                         {
                             Registerfarmer.Moo = jObject.SelectToken("Moo").Value<string>();
                         }
-                      
+
                         if (jObject.SelectToken("Soi") == null)
                         {
                             Registerfarmer.Soi = string.Empty;
                         }
-                        else {
+                        else
+                        {
                             Registerfarmer.Soi = jObject.SelectToken("Soi").Value<string>();
                         }
 
@@ -114,14 +118,14 @@ namespace WebApi.Jwt.Controllers
                         {
                             Registerfarmer.Road = jObject.SelectToken("Road").Value<string>();
                         }
-                        
+
                         Registerfarmer.ProvinceOid = jObject.SelectToken("ProvinceOid").Value<string>();
                         Registerfarmer.DistrictOid = jObject.SelectToken("DistrictOid").Value<string>();
                         Registerfarmer.SubDistrictOid = jObject.SelectToken("SubDistrictOid").Value<string>();
                         Registerfarmer.ZipCode = jObject.SelectToken("ZipCode").Value<string>();
                         //Registerfarmer.ForageTypeOid = TempForageType;
 
-                        JObject jObject_Forage =  JObject.Parse(jObject.ToString());
+                        JObject jObject_Forage = JObject.Parse(jObject.ToString());
                         JArray Arr_Forage = (JArray)jObject_Forage["ForageTypes"];
 
                         IList<ForageTypeModel> ForageT = Arr_Forage.ToObject<IList<ForageTypeModel>>();
@@ -154,7 +158,7 @@ namespace WebApi.Jwt.Controllers
                         {
                             Registerfarmer.Longitude = jObject.SelectToken("Longitude").Value<float>();
                         }
-                        
+
                         Registerfarmer.Register_Type = 2;
                     }
                 }
@@ -196,7 +200,7 @@ namespace WebApi.Jwt.Controllers
                     Farmer_Status Farmer = new Farmer_Status();
                     Register_Type = TempForageType;
                     Farmer.Message = "ลงทะเบียนสำเร็จ ";
-                    
+
 
                     //return Request.CreateResponse(HttpStatusCode.OK);
                     return Request.CreateResponse(true);
@@ -245,7 +249,7 @@ namespace WebApi.Jwt.Controllers
         public HttpResponseMessage UpdateRegisterFarmer()
         {
             _Registerfarmer Updatefarmer = new _Registerfarmer();
-       
+
             try
             {
 
@@ -414,7 +418,7 @@ namespace WebApi.Jwt.Controllers
                 //  Return resual
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
-      
+
 
 
         }
@@ -535,7 +539,7 @@ namespace WebApi.Jwt.Controllers
 
         }
         /// <summary>
-        /// ค้นหาเลขบัตรประชาชน จากฐานเรา และถ้า TGS
+        /// ค้นหาเลขบัตรประชาชน จากฐานเรา และฐาน TGS ใช้ตัวนี้
         /// </summary>
         /// <returns></returns>
         [AllowAnonymous]
@@ -556,30 +560,90 @@ namespace WebApi.Jwt.Controllers
                 }
                 DataSet ds = new DataSet();
                 ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MobileGetCitizenID", new SqlParameter("@CitizenID", CitizenID));
-                if (ds.Tables[0].Rows.Count > 0)
+                if (ds.Tables.Count > 0)
                 {
+                    List<Farmer_Modelinfo> Farmer_Modelinfo = new List<Farmer_Modelinfo>();
+                    Farmer_Modelinfo Farmer_info = new Farmer_Modelinfo();
+                    Farmer_info.Oid = ds.Tables[0].Rows[0]["Oid"].ToString();
+                    Farmer_info.OrganizationOid = ds.Tables[0].Rows[0]["OrganizationOid"].ToString();
+                    Farmer_info.OrganizeNameTH = ds.Tables[0].Rows[0]["OrganizeNameTH"].ToString();
+                    Farmer_info.CitizenID = ds.Tables[0].Rows[0]["CitizenID"].ToString();
+                    Farmer_info.TitleOid = ds.Tables[0].Rows[0]["TitleOid"].ToString();
+                    Farmer_info.TitleName = ds.Tables[0].Rows[0]["TitleName"].ToString();
+                    Farmer_info.GenderName = ds.Tables[0].Rows[0]["GenderName"].ToString();                 
+                    Farmer_info.FirstNameTH = ds.Tables[0].Rows[0]["FirstNameTH"].ToString();
+                    Farmer_info.LastNameTH = ds.Tables[0].Rows[0]["LastNameTH"].ToString();
+                    Farmer_info.GenderOid = ds.Tables[0].Rows[0]["GenderOid"].ToString();
 
-                    DataTable dt = new DataTable();
-                    dt = ds.Tables[0];
-
-                    System.Web.Script.Serialization.JavaScriptSerializer serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
-
-                    List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
-                    Dictionary<string, object> row;
-                    foreach (DataRow dr in dt.Rows)
+                    if (ds.Tables[0].Rows[0]["BirthDate"].ToString() != "")
                     {
-                        row = new Dictionary<string, object>();
-                        foreach (DataColumn col in dt.Columns)
+                        Farmer_info.BirthDate = Convert.ToDateTime(ds.Tables[0].Rows[0]["BirthDate"]).ToString("dd/MM/yyyy");
+                    }
+
+
+
+
+                    Farmer_info.Tel = ds.Tables[0].Rows[0]["Tel"].ToString();
+                    Farmer_info.Email = ds.Tables[0].Rows[0]["Email"].ToString();
+                    Farmer_info.IsActive = ds.Tables[0].Rows[0]["IsActive"].ToString();
+                    Farmer_info.DisPlayName = ds.Tables[0].Rows[0]["DisPlayName"].ToString();
+                    Farmer_info.Address = ds.Tables[0].Rows[0]["Address"].ToString();
+                    Farmer_info.Moo = ds.Tables[0].Rows[0]["Moo"].ToString();
+                    Farmer_info.Soi = ds.Tables[0].Rows[0]["Soi"].ToString();
+                    Farmer_info.Road = ds.Tables[0].Rows[0]["Road"].ToString();
+                    Farmer_info.ProvinceOid = ds.Tables[0].Rows[0]["ProvinceOid"].ToString();
+                    Farmer_info.ProvinceNameTH = ds.Tables[0].Rows[0]["ProvinceNameTH"].ToString();
+                    Farmer_info.DistrictOid = ds.Tables[0].Rows[0]["DistrictOid"].ToString();
+                    Farmer_info.DistrictNameTH = ds.Tables[0].Rows[0]["DistrictNameTH"].ToString();
+                    Farmer_info.SubDistrictOid = ds.Tables[0].Rows[0]["SubDistrictOid"].ToString();
+                    Farmer_info.SubDistrictNameTH = ds.Tables[0].Rows[0]["SubDistrictNameTH"].ToString();
+                    Farmer_info.ZipCode = ds.Tables[0].Rows[0]["ZipCode"].ToString();
+                    Farmer_info.FullAddress = ds.Tables[0].Rows[0]["FullAddress"].ToString();
+                    Farmer_info.Latitude = (double)ds.Tables[0].Rows[0]["Latitude"];
+                    Farmer_info.Longitude = (double)ds.Tables[0].Rows[0]["Longitude"];
+                    Farmer_info.Rigister_Type = ds.Tables[0].Rows[0]["RegisterType"].ToString();
+                    Farmer_info.FarmerGroupsOid = ds.Tables[0].Rows[0]["FarmerGroupsOid"].ToString();
+                    Farmer_info.Status = ds.Tables[0].Rows[0]["Status"].ToString();
+
+
+                    if (ds.Tables[0].Rows[0]["ForageTypeName"].ToString() != null)
+                    {
+                        //string[] arr = RefNo.Split('|');
+                        //string _refno = arr[0]; //เลขที่อ้างอิง
+                        //string _org_oid = arr[1]; //oid หน่วยงาน
+                        //string _type = arr[2]; //ประเภทส่ง(2)-รับ(1)
+                        string[] arr = null;
+                        arr = ds.Tables[0].Rows[0]["ForageTypeName"].ToString().Split(',');
+                        if (arr.Length == 1)
                         {
-                            row.Add(col.ColumnName, dr[col]);
+                            Farmer_info.ForageTypeName1 = arr[0];
                         }
-                        rows.Add(row);
+                        else if (arr.Length == 2)
+                        {
+                            Farmer_info.ForageTypeName1 = arr[0];
+                            Farmer_info.ForageTypeName2 = arr[1];
+                        }
+                        else if (arr.Length == 3)
+                        {
+                            Farmer_info.ForageTypeName1 = arr[0];
+                            Farmer_info.ForageTypeName2 = arr[1];
+                            Farmer_info.ForageTypeName3 = arr[2];
+                        }
+                        else if (arr.Length == 4)
+                        {
+                            Farmer_info.ForageTypeName1 = arr[0];
+                            Farmer_info.ForageTypeName2 = arr[1];
+                            Farmer_info.ForageTypeName3 = arr[2];
+                            Farmer_info.ForageTypeName4 = arr[3];
+                        }
 
                     }
 
-                    return Request.CreateResponse(HttpStatusCode.OK, rows);
+                    Farmer_Modelinfo.Add(Farmer_info);
+
+                    return Request.CreateResponse(HttpStatusCode.OK, Farmer_Modelinfo);
                 }
-            
+
                 else if (ds.Tables[0].Rows.Count == 0)
                 {
                     string param = "username=regislive01&password=password&grant_type=password";//เพื่อทำการขอ access_token 
@@ -636,14 +700,16 @@ namespace WebApi.Jwt.Controllers
                     farmer_info.longitude = farmerResul["longitude"];
 
                     farmerCitizenList.Add(farmer_info);
+
+
                     return Request.CreateResponse(HttpStatusCode.OK, farmerCitizenList);
                 }
                 else
-                {   
-                
-                        UserError err = new UserError();
-                        err.status = "ไม่พบเลขบัตรประชาชน กรุณาลงทะเบียน";
-                        err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                {
+
+                    UserError err = new UserError();
+                    err.status = "ไม่พบเลขบัตรประชาชน กรุณาลงทะเบียน";
+                    err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
 
 
                     //  Return resual
@@ -651,7 +717,10 @@ namespace WebApi.Jwt.Controllers
 
                 }
 
-           
+
+
+
+
             }
             catch (Exception ex)
             {
@@ -661,7 +730,8 @@ namespace WebApi.Jwt.Controllers
 
                 err.message = ex.Message;
                 //  Return resual
-                return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+                return Request.CreateResponse(HttpStatusCode.BadRequest, false);
+
             }
 
         }
@@ -730,7 +800,7 @@ namespace WebApi.Jwt.Controllers
                     return Request.CreateResponse(HttpStatusCode.BadRequest, "ไม่เจอเลขบัตรประชาชนหรือไม่มีข้อมูล");
 
                 }
-                
+
             }
             catch (Exception ex)
             {
@@ -776,4 +846,4 @@ namespace WebApi.Jwt.Controllers
 //   , new SqlParameter("@Address_subdistricts", registerfarmer.Address_subdistricts)
 //    , new SqlParameter("@ZipCode", registerfarmer.ZipCode)                   
 //   , new SqlParameter("@animalSupplie", registerfarmer.AnimalSupplie));
-#endregion 
+#endregion

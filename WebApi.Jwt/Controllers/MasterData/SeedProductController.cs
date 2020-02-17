@@ -123,7 +123,9 @@ namespace WebApi.Jwt.Controllers.MasterData
                 List<SeedType_Model> list = new List<SeedType_Model>();
                 XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-                IList<SeedType> collection = ObjectSpace.GetObjects<SeedType>(CriteriaOperator.Parse(" GCRecord is null and IsActive = 1 ", null));
+                //   Activity ActivityOid = ObjectSpace.FindObject<Activity>(CriteriaOperator.Parse("GCRecord is null and IsActive = 1 and ActivityName ='เพื่อช่วยเหลือภัยพิบัติ'  ", null));
+                ForageType objseedtype = ObjectSpace.FindObject<ForageType>(CriteriaOperator.Parse("IsActive = 1 and  ForageTypeName = 'เสบียงสัตว์ ' ", null));
+                IList<SeedType> collection = ObjectSpace.GetObjects<SeedType>(CriteriaOperator.Parse(" GCRecord is null and IsActive = 1  and [ForageTypeOid] ='" + objseedtype.Oid + "'  ", null));
                 foreach (SeedType row in collection)
                 {
                     SeedType_Model model = new SeedType_Model();

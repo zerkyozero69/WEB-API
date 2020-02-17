@@ -113,9 +113,15 @@ namespace WebApi.Jwt.Controllers
                 user.Message = ex.Message;
                 return Request.CreateResponse(HttpStatusCode.BadRequest, user);
             }
+            finally
+            {
+                Dispose();
+            }
             return Request.CreateResponse(HttpStatusCode.BadRequest, user);
+           
 
         }
+        
 
         [JwtAuthentication]
         [Route("Logout")]

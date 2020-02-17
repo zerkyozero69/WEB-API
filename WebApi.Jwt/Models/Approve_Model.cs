@@ -101,6 +101,7 @@ namespace WebApi.Jwt.Models
         public string BudgetSourceName { get; set; }
         public string OrganizationOid { get; set; }
         public string OrganizationName { get; set; }
+        public string SubOrganizationName { get; set; }
         public string EmployeeName { get; set; }
         public string Remark { get; set; }
         public string Status { get; set; }
@@ -111,10 +112,11 @@ namespace WebApi.Jwt.Models
         public string ReceiptNo { get; set; }
         public string SubActivityLevelName { get; set; }
         public string RegisCusServiceOid { get; set; }
-        public string RegisCusServiceName { get; set; }
+        public string FullName { get; set; }
+        //public string RegisCusServiceName { get; set; }
         public string FullAddress { get; set; }
         public string OrgeServiceOid { get; set; }
-        public string OrgeServiceName { get; set; }
+        //public string OrgeServiceName { get; set; }
         public string Weight { get; set; }
         public int ServiceCount { get; set; }
         public string TotalAmout { get; set; }
@@ -295,6 +297,7 @@ namespace WebApi.Jwt.Models
         public string RegisCusServiceName { get; set; }
         public string OrgeServiceOid { get; set; }
         public string OrgeServiceName { get; set; }
+        public string FullName { get; set; }
         public string FullAddress { get; set; }
         public string ReceiverCitizenID { get; set; }
         public string ReceiverName { get; set; }
@@ -306,6 +309,7 @@ namespace WebApi.Jwt.Models
         public int ServiceCount { get; set; }
         public string TotalPrice { get; set; }
         public string TotalAmout { get; set; }
+        public int PickupType { get; set; }
         public List<SupplierUseAnimalDetail_Model> details { get; set; }
     }
     public class data_info
@@ -386,6 +390,7 @@ namespace WebApi.Jwt.Models
         public string RegisCusServiceName { get; set; }
         public string OrgeServiceOid { get; set; }
         public string OrgeServiceName { get; set; }
+        public string FullName { get; set; }
         public string FullAddress { get; set; }
         public string ReceiverCitizenID { get; set; }
         public string ReceiverName { get; set; }
@@ -397,8 +402,9 @@ namespace WebApi.Jwt.Models
         public int ServiceCount { get; set; }
         public string TotalPrice { get; set; }
         public string TotalAmout { get; set; }
-        public string PickupType { get; set; }
+        public int PickupType { get; set; }
         public List<SupplierUseAnimalDetail_Model> details { get; set; }
+      
     }
     public class GenOidcalamity
     {

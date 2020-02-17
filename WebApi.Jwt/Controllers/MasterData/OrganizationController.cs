@@ -28,6 +28,8 @@ using WebApi.Jwt.Filters;
 using WebApi.Jwt.helpclass;
 using NTi.CommonUtility;
 using System.IO;
+using nutrition.Module;
+using WebApi.Jwt.Models.Models_Masters;
 
 namespace WebApi.Jwt.Controllers.MasterData
 {
@@ -35,6 +37,7 @@ namespace WebApi.Jwt.Controllers.MasterData
 
     {
         string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
+
 
         /// <summary>
         /// 
@@ -44,11 +47,12 @@ namespace WebApi.Jwt.Controllers.MasterData
         // [JwtAuthentication]
         [HttpPost]
         [Route("Organization_info")]
-        public HttpResponseMessage get_Organization(string Oid = null)
+        public HttpResponseMessage get_Organization( )
         {
             try
             {
-
+                string Oid = null;
+                Oid = HttpContext.Current.Request.Form["Oid"];
                 DataSet ds = new DataSet();
                 ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_GetOrganization", new SqlParameter("@Oid", Oid));
                 DataTable dt = new DataTable();
@@ -72,6 +76,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                     return Request.CreateResponse(HttpStatusCode.OK, rows);
                 }
                 return Request.CreateResponse(HttpStatusCode.BadRequest, "No Data");
+                return Request.CreateResponse(HttpStatusCode.OK);
             }
             catch (Exception ex)
             {
@@ -85,7 +90,62 @@ namespace WebApi.Jwt.Controllers.MasterData
             }
 
         }
-    
+        [AllowAnonymous]
+        // [JwtAuthentication]
+        [HttpPost]
+        [Route("getDLDArea/List")]
+        public HttpResponseMessage getDLDarea()
+        {
+            try
+            {
+                XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.Organization));
+                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                ///รอ debug
+                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+                
+                List<DLDArea_Model> list = new List<DLDArea_Model>();
+                IList<nutrition.Module.Organization> collection = ObjectSpace.GetObjects<nutrition.Module.Organization>(CriteriaOperator.Parse(" IsActive = 1  and [OrganizeNameTH] like 'เขต%' ", null));
+                {
+                    var query = from Q in collection orderby Q.OrganizeNameTH select Q;
+                    if (collection.Count > 0)
+                        
+                    {
+                        
+                        foreach (nutrition.Module.Organization row in query)
+                        {
+                            DLDArea_Model Item = new DLDArea_Model();
+                            Item.DLDAreaOid = row.Oid.ToString();
+                            Item.DLDAreaName = row.OrganizeNameTH;
+                            Item.IsActive = row.IsActive;
+
+                            list.Add(Item);
+
+                        }
+
+                    }
+                    else
+                    {          //invalid
+                        UserError err = new UserError();
+                        err.status = "false";
+                        err.code = "0";
+                        err.message = "NoData";
+                        return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+
+                    }
+                    return Request.CreateResponse(HttpStatusCode.OK, list);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                UserError err = new UserError();
+                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                err.message = ex.Message;
+                return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+            }
+        }
+
 
         //[AllowAnonymous]
         //// [JwtAuthentication]

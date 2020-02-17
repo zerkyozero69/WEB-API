@@ -13,4 +13,11 @@ namespace WebApi.Jwt.Models.Models_Masters
     public class xxx
         {
         }
+    public class DLDArea_Model
+    {
+        public string DLDAreaOid { get; set; }
+        public string DLDAreaName { get; set; }
+       
+        public bool IsActive { get; set; }
+    }
 }

@@ -53,104 +53,159 @@ namespace WebApi.Jwt.helpclass
                 XafTypesInfo.Instance.RegisterEntity(typeof(UserInfo));
                 XafTypesInfo.Instance.RegisterEntity(typeof(RoleInfo));
                 WebApi.Jwt.Models.user.member_info_Shot user2 = new WebApi.Jwt.Models.user.member_info_Shot();
-                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc);
-                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-                UserInfo User;
-               nutrition.Module.Organization DLD;
-                User = ObjectSpace.FindObject<UserInfo>(new BinaryOperator("UserName", Username));
-                // UserInfo = ObjectSpace.FindObject<RoleInfo>(new BinaryOperator("Name", Username));
-                PasswordCryptographer.EnableRfc2898 = true;
-                PasswordCryptographer.SupportLegacySha512 = false;
-                if (User.ComparePassword(Password) == true)
+                //XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc);
+                using (XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc))
                 {
-                    objUser_info.User_Name = User.UserName;
-                    objUser_info.DisplayName = User.DisplayName;
-                    objUser_info.OrganizationOid = User.Organization.Oid;
-                    objUser_info.OrganizationNameTH = User.Organization.OrganizeNameTH;
-                    objUser_info.SubOrganizeName = User.Organization.SubOrganizeName;
-                    objUser_info.Tel = User.Organization.Tel;
-                    objUser_info.Email = User.Organization.Email;
-                    objUser_info.Address = User.Organization.Address;
-                    objUser_info.Moo = User.Organization.Moo;
-                    objUser_info.Soi = User.Organization.Soi;
-                    objUser_info.Road = User.Organization.Road;
-                    if (objUser_info.ProvinceNameTH == "") {
-                        objUser_info.ProvinceNameTH = "ไม่มีข้อมูลศูนย์";
-                    }
-                    else if (objUser_info.ProvinceNameTH != "")
+                    using (IObjectSpace ObjectSpace = directProvider.CreateObjectSpace())
                     {
-                        objUser_info.ProvinceNameTH = User.Organization.ProvinceOid.ProvinceNameTH;
-                    }
-                    if (objUser_info.DistrictNameTH == "")
-                    {
-                        objUser_info.DistrictNameTH = "ไม่มีข้อมูลศูนย์";
-                    }
-                    else if (objUser_info.DistrictNameTH != "")
-                    {
-                        objUser_info.DistrictNameTH = User.Organization.DistrictOid.DistrictNameTH;
-                    }
-                    if (objUser_info.SubDistrictNameTH == "")
-                    {
-                        objUser_info.SubDistrictNameTH = "ไม่มีข้อมูลศูนย์";
-                    }
-                    else if (objUser_info.SubDistrictNameTH != "")
-                    {
-                        objUser_info.SubDistrictNameTH = User.Organization.SubDistrictOid.SubDistrictNameTH;
-                    }
+                        UserInfo User;
+                        nutrition.Module.Organization DLD;
+                        User = ObjectSpace.FindObject<UserInfo>(new BinaryOperator("UserName", Username));
+                        // UserInfo = ObjectSpace.FindObject<RoleInfo>(new BinaryOperator("Name", Username));
+                        PasswordCryptographer.EnableRfc2898 = true;
+                        PasswordCryptographer.SupportLegacySha512 = false;
+                        if (User.ComparePassword(Password) == true)
+                        {
+                            objUser_info.User_Name = User.UserName;
+                            objUser_info.DisplayName = User.DisplayName;
+                            objUser_info.OrganizationOid = User.Organization.Oid;
+                            objUser_info.OrganizationNameTH = User.Organization.OrganizeNameTH;
+                            objUser_info.SubOrganizeName = User.Organization.SubOrganizeName;
+                            objUser_info.Tel = User.Organization.Tel;
+                            objUser_info.Email = User.Organization.Email;
+                            objUser_info.Address = User.Organization.Address;
+                            objUser_info.Moo = User.Organization.Moo;
+                            objUser_info.Soi = User.Organization.Soi;
+                            objUser_info.Road = User.Organization.Road;
+                            if (objUser_info.ProvinceNameTH == "")
+                            {
+                                objUser_info.ProvinceNameTH = "ไม่มีข้อมูลศูนย์";
+                            }
+                            else if (objUser_info.ProvinceNameTH != "")
+                            {
+                                objUser_info.ProvinceNameTH = User.Organization.ProvinceOid.ProvinceNameTH;
+                            }
+                            if (objUser_info.DistrictNameTH == "")
+                            {
+                                objUser_info.DistrictNameTH = "ไม่มีข้อมูลศูนย์";
+                            }
+                            else if (objUser_info.DistrictNameTH != "")
+                            {
+                                objUser_info.DistrictNameTH = User.Organization.DistrictOid.DistrictNameTH;
+                            }
+                            if (objUser_info.SubDistrictNameTH == "")
+                            {
+                                objUser_info.SubDistrictNameTH = "ไม่มีข้อมูลศูนย์";
+                            }
+                            else if (objUser_info.SubDistrictNameTH != "")
+                            {
+                                objUser_info.SubDistrictNameTH = User.Organization.SubDistrictOid.SubDistrictNameTH;
+                            }
 
-                    string TempSubDistrict, TempDistrict;
-                    if (User.Organization.ProvinceOid.ProvinceNameTH.Contains("กรุงเทพ"))
-                    { TempSubDistrict = "แขวง"; }
-                    else
-                    { TempSubDistrict = "ตำบล"; };
+                            string TempSubDistrict, TempDistrict;
+                            if (User.Organization.ProvinceOid.ProvinceNameTH.Contains("กรุงเทพ"))
+                            { TempSubDistrict = "แขวง"; }
+                            else
+                            { TempSubDistrict = "ตำบล"; };
 
-                    if (User.Organization.ProvinceOid.ProvinceNameTH.Contains("กรุงเทพ"))
-                    { TempDistrict = "เขต"; }
-                    else { TempDistrict = "อำเภอ"; };
+                            if (User.Organization.ProvinceOid.ProvinceNameTH.Contains("กรุงเทพ"))
+                            { TempDistrict = "เขต"; }
+                            else { TempDistrict = "อำเภอ"; };
 
-                    objUser_info.FullAddress = User.Organization.Address + " หมู่ที่" +" "+ checknull(User.Organization.Moo) + " ถนน" + checknull(User.Organization.Road) + " " +
-                    TempSubDistrict + User.Organization.SubDistrictOid.SubDistrictNameTH + " " + TempDistrict + User.Organization.DistrictOid.DistrictNameTH + " " +
-                    "จังหวัด" + User.Organization.ProvinceOid.ProvinceNameTH + " " + User.Organization.DistrictOid.PostCode;
+                            objUser_info.FullAddress = User.Organization.Address + " หมู่ที่" + " " + checknull(User.Organization.Moo) + " ถนน" + checknull(User.Organization.Road) + " " +
+                            TempSubDistrict + User.Organization.SubDistrictOid.SubDistrictNameTH + " " + TempDistrict + User.Organization.DistrictOid.DistrictNameTH + " " +
+                            "จังหวัด" + User.Organization.ProvinceOid.ProvinceNameTH + " " + User.Organization.DistrictOid.PostCode;
 
-                    DLD = ObjectSpace.FindObject<nutrition.Module.Organization>(new BinaryOperator("Oid", User.Organization.MasterOrganization));
+                            DLD = ObjectSpace.FindObject<nutrition.Module.Organization>(new BinaryOperator("Oid", User.Organization.MasterOrganization));
+
+                            if (DLD == null)
+                            {
+                                objUser_info.DLD = "ไม่มีเขต";
+                            }
+                            else if (DLD != null)
+                            {
+                                objUser_info.DLD = DLD.OrganizeNameTH;
+                            }
+                            objUser_info.Latitude = User.Organization.Latitude;
+                            objUser_info.Longitude = User.Organization.Longitude;
+                            TokenController token = new TokenController();
+                            objUser_info.Description = "ระบบ Login";
+                            objUser_info.Token_key = token.Get(Username, Password);
+                            objUser_info.Status = 1;
+                            objUser_info.Message = "เข้าสู่ระบบสำเร็จ";
+                            string AcName = "";
+                            foreach (RoleInfo row2 in User.UserRoles)
+                            {
+
+                                switch (row2.Name)
+                                {
+                                    case "Approver":
+                                        if (AcName == "")
+                                        {
+                                            AcName = "Approve";
+                                        }
+                                        else
+                                        {
+                                            AcName = AcName + "," + "Approve";
+                                        }
+                                        break;
+                                    case "Operator":
+                                        if (AcName == "")
+                                        {
+                                            AcName = "Edit";
+                                        }
+                                        else
+                                        {
+                                            AcName = AcName + "," + "Edit";
+                                        }
+                                        break;
+                                        
+                                    default:
+                                        if (AcName == "")
+                                        {
+                                            AcName = "ReadOnly";
+                                        }
+                                        else
+                                        {
+                                            if(AcName.Contains("ReadOnly")==false)
+                                            {
+                                                AcName = AcName + "," + "ReadOnly";
+                                            }
+                                            
+                                        }
+                                        break;
+                                }
+
+                            }
+
+
+                            List<WebApi.Jwt.Models.user.Roles_info> objListRoles_info = new List<WebApi.Jwt.Models.user.Roles_info>();
+
+                            if (AcName.Contains("Edit") == true)
+                            {
+                                objUser_info.ActionName = "Edit";
+                            }
+                            else
+                            {
+                                objUser_info.ActionName = AcName;
+                            }
+
                   
-                    if (DLD == null) {
-                        objUser_info.DLD = "ไม่มีเขต";
-                    }
-                    else if(DLD != null) {
-                        objUser_info.DLD = DLD.OrganizeNameTH;
-                    }
-                    objUser_info.Latitude = User.Organization.Latitude;
-                    objUser_info.Longitude = User.Organization.Longitude;
-                    TokenController token = new TokenController();
-                    objUser_info.Description = "ระบบ Login";
-                    objUser_info.Token_key = token.Get(Username, Password);
-                    objUser_info.Status = 1;
-                    objUser_info.Message = "เข้าสู่ระบบสำเร็จ";
+                            directProvider.Dispose();
+                        }
+                        else if (User.ComparePassword(Password) == false)
+                        {
+                            objUser_info.User_Name = User.UserName;
+                            objUser_info.DisplayName = User.DisplayName;
+                            objUser_info.OrganizationNameTH = User.Organization.OrganizeNameTH;
+                            objUser_info.Tel = User.Organization.Tel;
+                            objUser_info.Status = 0;
+                            objUser_info.Message = "เข้าสู่ระบบไม่สำเร็จ";
 
-
-                    List<WebApi.Jwt.Models.user.Roles_info> objListRoles_info = new List<WebApi.Jwt.Models.user.Roles_info>();
-
-                    foreach (RoleInfo row in User.UserRoles)
-                    {
-                        user.Roles_info objRoles_info = new user.Roles_info();
-                        objRoles_info.Role_Name = row.Name;
-                        objListRoles_info.Add(objRoles_info);
-                  
-                
+                        }
                     }
-                    objUser_info.objRoles_info = objListRoles_info;
                 }
-                else if (User.ComparePassword(Password) == false)
-                {
-                    objUser_info.User_Name = User.UserName;
-                    objUser_info.DisplayName = User.DisplayName;
-                    objUser_info.OrganizationNameTH = User.Organization.OrganizeNameTH;
-                    objUser_info.Tel = User.Organization.Tel;
-                    objUser_info.Status = 0;
-                    objUser_info.Message = "เข้าสู่ระบบไม่สำเร็จ";
-
-                }
+                //IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
             }
             catch (Exception ex)
             {
@@ -206,7 +261,7 @@ namespace WebApi.Jwt.helpclass
                     foreach (RoleInfo row in User.UserRoles)
                     {
                         user.Roles_info Userget = new user.Roles_info();
-                        Userget.Role_display = row.DisplayName;
+                        Userget.Role_display = row.DisplayName.ToString();
                         Userget.Role_Name = row.Name;
                         get_Role_Byusers .Add(Userget);
                     }

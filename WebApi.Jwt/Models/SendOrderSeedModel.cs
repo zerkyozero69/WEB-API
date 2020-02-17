@@ -103,14 +103,16 @@ namespace WebApi.Jwt.Models
     public class SupplierProductUser_Model
     {
         public string Oid { get; set; }
+        public string RegisCusServiceOid { get; set; }
         public string RegisCusService { get; set; }
         public string UseDate { get; set; }
         public string UseNo { get; set; }
         public string Refno { get; set; }
         public string FinanceYearOid { get; set; }
         public string FinanceYear { get; set; }
-
+        public string FullName { get; set; }
         public string OrganizationName { get; set; }
+   public string FullAddress { get; set; }
         public string EmployeeName { get; set; }
         public string Remark { get; set; }
         public string Status { get; set; }
@@ -121,11 +123,11 @@ namespace WebApi.Jwt.Models
         public string SubActivityLevelName { get; set; }
         public string ReceiptNo { get; set; }
 
+        public string OrgeServiceOid { get; set; }
 
+        //public string RegisCusServiceName { get; set; }
+        //public string OrgeServiceName { get; set; }
 
-        public string RegisCusServiceName { get; set; }
-        public string OrgeServiceName { get; set; }
-        
         public string Weight { get; set; }
         public int ServiceCount { get; set; }
 

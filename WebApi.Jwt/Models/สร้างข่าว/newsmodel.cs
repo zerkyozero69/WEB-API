@@ -11,6 +11,7 @@ namespace WebApi.Jwt.Models.สร้างข่าว
         public DateTime CreateDate { get; set; }
       
         public string Subject { get; set; }
+       // public string URLimage { get; set; }
        
         public string Details { get; set; }
        
@@ -18,6 +19,13 @@ namespace WebApi.Jwt.Models.สร้างข่าว
       
         public int TotalTimes { get; set; }
 
+        
+        public List<ImageURL_Detail> objImage { get; set; }
+
+    }
+    public class ImageURL_Detail
+      {
+        public string ImageURL { get; set; }
     }
     public class newsDetail_model
     {

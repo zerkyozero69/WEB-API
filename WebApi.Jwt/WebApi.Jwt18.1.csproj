@@ -234,7 +234,7 @@
     <Compile Include="Controllers\พี่เขียว\LoadReportByRIdController.cs" />
     <Compile Include="Controllers\ManageAnimalSupplierController.cs" />
     <Compile Include="Controllers\MasterData\ActivityController.cs" />
-    <Compile Include="Controllers\MasterData\Get_listAnimalDetailController.cs" />
+    <Compile Include="Controllers\โควตา\Get_listAnimalDetailController.cs" />
     <Compile Include="Controllers\MasterData\SubActivityLevelController.cs" />
     <Compile Include="Controllers\MasterData\ภัยพิบัติController.cs" />
     <Compile Include="Controllers\นับจำนวนเมล็ดพันธุ์ เสีบงสัตว์ คงเหลือ\SuppileSeedCount_Controller.cs" />
@@ -249,6 +249,7 @@
     <Compile Include="Controllers\แผนการผลิต จำนวนคงเหลือ\Stock_SeedINFOController.cs" />
     <Compile Include="Models\Class1.cs" />
     <Compile Include="Models\Models_Masters\Activity_Model.cs" />
+    <Compile Include="Models\Models_Masters\FarmerProduct_model.cs" />
     <Compile Include="Models\Models_Masters\QuotaType_Model.cs" />
     <Compile Include="Models\Models_Masters\ภัยพิบัติ.cs" />
     <Compile Include="Controllers\ส่งพืชพันธุ์อาหารสัตว์\SendOrderSeedController.cs" />
