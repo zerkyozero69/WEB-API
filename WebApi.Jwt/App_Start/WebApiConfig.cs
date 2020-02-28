@@ -28,6 +28,7 @@ namespace WebApi.Jwt
             config.Formatters.JsonFormatter.SerializerSettings.TypeNameHandling = TypeNameHandling.Auto;
             //GlobalConfiguration.Configuration.Formatters.Insert(0, new JsonpFormatter());
             jsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            jsonFormatter.UseDataContractJsonSerializer = false;
         }
         }
     }

@@ -9,16 +9,24 @@ namespace WebApi.Jwt.Models.ต่อดาต้าเบส
 {
     public class ConnectDB
     {
-        string ConnectionString = "";
-        SqlConnection scc;
+
         public void OpenConection()
         {
+            string ConnectionString = null;
+            SqlConnection scc;
+            ConnectionString = "Data Source=TEERAYUTSINBDEV/SQL2017;Initial Catalog=Develop_NutritionDB;User ID=sa;Password=P@ssw0rd ";
             scc = new SqlConnection(ConnectionString);
-            scc.Open();
-        }
-        public void CloseConnection()
-        {
-            scc.Close();
+            try
+            {
+                scc.Open();
+
+
+                scc.Close();
+            }
+            catch (Exception ex)
+            {
+                
+            }
         }
     }
 }

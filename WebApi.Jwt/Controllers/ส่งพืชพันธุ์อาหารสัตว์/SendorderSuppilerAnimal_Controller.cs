@@ -189,7 +189,10 @@ namespace WebApi.Jwt.Controllers.MasterData
                 err.message = "ไม่พบข้อมูล";
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
-
+            finally
+            {
+                SqlConnection.ClearAllPools();
+            }
         }
 
 
@@ -354,6 +357,10 @@ namespace WebApi.Jwt.Controllers.MasterData
                 err.message = ex.Message;
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
+            finally
+            {
+                SqlConnection.ClearAllPools();
+            }
         }
 
 
@@ -372,7 +379,7 @@ namespace WebApi.Jwt.Controllers.MasterData
             object objStockAnimalInfo = null;
             HistoryWork ObjHistory = null;
             string Username = " ";
-
+            bool result = false;
             IList<StockAnimalInfo_Report> objStockAnimalInfo_Detail = null;
 
             try
@@ -404,92 +411,89 @@ namespace WebApi.Jwt.Controllers.MasterData
                         if (Status == "1") //อนุมัติ
                         { //Approve
 
-                            if (objStockAnimalInfo != null)
+                            if (ObjMaster.SendStatus == EnumSendOrderAnimalStatus.Approve)
                             {
+                                var ObjStockSeedInfoInfo = ObjectSpace.CreateObject<StockAnimalInfo>();
+                                var withBlock = ObjStockSeedInfoInfo;
+                                withBlock.TransactionDate = DateTime.Now;
+                                withBlock.AnimalProductNumber = ObjMaster.SendNo;
+                                withBlock.FinanceYearOid = ObjMaster.FinanceYearOid;
+                                withBlock.BudgetSourceOid = ObjMaster.BudgetSourceOid;
+                                withBlock.OrganizationOid = ObjMaster.SendOrgOid;
+                                withBlock.AnimalSupplieOid = ObjMaster.AnimalSupplieOid;
+                                withBlock.AnimalSupplieTypeOid = ObjMaster.AnimalSupplieTypeOid;
+                                withBlock.Remark = "อนุมัติรับเสบียงสัตว์ เลขที่: " + "" + ObjMaster.SendNo + "(Mobile Application)";
+                                withBlock.Weight = ObjMaster.QTY;
+                                withBlock.SeedTypeOid = ObjMaster.SeedTypeOid;
+                                withBlock.Description = "รับเสบียงสัตว์จาก : " + "" + ObjMaster.SendOrgOid.SubOrganizeName + "(Mobile Application)";
+                                ObjectSpace.CommitChanges();
+                                // ''Stock สำหรับ กปศ4ว
+                                //  IList<SendOrderSupplierAnimal> collection = ObjectSpace.GetObjects<SendOrderSupplierAnimal>(CriteriaOperator.Parse(" GCRecord is null and SendStatus = 5 and SendOrgOid=?", SendOrgOid));
 
-                                if (ObjMaster.SendStatus == EnumSendOrderAnimalStatus.Approve)
+                                if (ObjMaster.SeedTypeOid != null)
                                 {
-                                    var ObjStockSeedInfoInfo = ObjectSpace.CreateObject<StockAnimalInfo>();
-                                    var withBlock = ObjStockSeedInfoInfo;
-                                    withBlock.TransactionDate = DateTime.Now;
-                                    withBlock.AnimalProductNumber = ObjMaster.SendNo;
-                                    withBlock.FinanceYearOid = ObjMaster.FinanceYearOid;
-                                    withBlock.BudgetSourceOid = ObjMaster.BudgetSourceOid;
-                                    withBlock.OrganizationOid = ObjMaster.SendOrgOid;
-                                    withBlock.AnimalSupplieOid = ObjMaster.AnimalSupplieOid;
-                                    withBlock.AnimalSupplieTypeOid = ObjMaster.AnimalSupplieTypeOid;
-                                    withBlock.Remark = "อนุมัติรับเสบียงสัตว์ เลขที่: " + "" + ObjMaster.SendNo + "(Mobile Application)";
-                                    withBlock.Weight = ObjMaster.QTY;
-                                    withBlock.SeedTypeOid = ObjMaster.SeedTypeOid;
-                                    withBlock.Description = "รับเสบียงสัตว์จาก : " + "" + ObjMaster.SendOrgOid.SubOrganizeName + "(Mobile Application)";
-                                    ObjectSpace.CommitChanges();
-                                    // ''Stock สำหรับ กปศ4ว
-                                    //  IList<SendOrderSupplierAnimal> collection = ObjectSpace.GetObjects<SendOrderSupplierAnimal>(CriteriaOperator.Parse(" GCRecord is null and SendStatus = 5 and SendOrgOid=?", SendOrgOid));
-
-                                    if (ObjMaster.SeedTypeOid != null)
-                                    {
-                                        objStockAnimalInfo_Detail = ObjectSpace.GetObjects<StockAnimalInfo_Report>(CriteriaOperator.Parse("OrganizationOid= ? and FinanceYearOid=? and BudgetSourceOid=? and SeedTypeOid=? and AnimalSupplieOid=? and AnimalSupplieTypeOid=? ", ObjMaster.ReceiveOrgOid.Oid, ObjMaster.FinanceYearOid.Oid, ObjMaster.BudgetSourceOid, ObjMaster.SeedTypeOid.Oid, ObjMaster.AnimalSupplieOid, ObjMaster.AnimalSupplieTypeOid));
-                                    }
-                                    else
-                                    {
-                                        objStockAnimalInfo_Detail = ObjectSpace.GetObjects<StockAnimalInfo_Report>(CriteriaOperator.Parse("OrganizationOid= ? and FinanceYearOid=? and BudgetSourceOid=? and AnimalSupplieOid=? and AnimalSupplieTypeOid=? ", ObjMaster.ReceiveOrgOid.Oid, ObjMaster.FinanceYearOid.Oid, ObjMaster.BudgetSourceOid, ObjMaster.AnimalSupplieOid, ObjMaster.AnimalSupplieTypeOid));
-                                    }
-                                    var objStockAnimalInfo_DetailNew = ObjectSpace.CreateObject<StockAnimalInfo_Report>();
-
-                                    if (objStockAnimalInfo_Detail.Count == 0)
-                                    {
-                                        objStockAnimalInfo_DetailNew.AnimalProductNumber = ObjMaster.SendNo;
-                                        objStockAnimalInfo_DetailNew.FinanceYearOid = ObjMaster.FinanceYearOid;
-                                        objStockAnimalInfo_DetailNew.BudgetSourceOid = ObjMaster.BudgetSourceOid;
-                                        objStockAnimalInfo_DetailNew.OrganizationOid = ObjMaster.ReceiveOrgOid;
-                                        objStockAnimalInfo_DetailNew.AnimalSupplieOid = ObjMaster.AnimalSupplieOid;
-                                        objStockAnimalInfo_DetailNew.AnimalSupplieTypeOid = ObjMaster.AnimalSupplieTypeOid;
-                                        objStockAnimalInfo_DetailNew.TotalForward = 0;
-                                        objStockAnimalInfo_DetailNew.TotalChange = ObjMaster.QTY;
-                                        objStockAnimalInfo_DetailNew.SeedTypeOid = ObjMaster.SeedTypeOid;
-                                        objStockAnimalInfo_DetailNew.Description = "รับเสบียงสัตว์จาก : " + ObjMaster.SendOrgOid.SubOrganizeName + "(Mobile Application)";
-                                    }
-                                    else
-                                    {
-                                        var ObjStockAnimalInfo_DetailSource = (from item in objStockAnimalInfo_Detail orderby item.TransactionDate descending select item).First().TotalWeight;
-                                        //  (from Item in objStockAnimalInfo_Detail orderby Item.TransactionDate descending select Item).First().TotalWeight;
-                                        //  var query = from Q in collection3 orderby Q.UseNo select Q;
-                                        objStockAnimalInfo_DetailNew.AnimalProductNumber = ObjMaster.SendNo;
-                                        objStockAnimalInfo_DetailNew.FinanceYearOid = ObjMaster.FinanceYearOid;
-                                        objStockAnimalInfo_DetailNew.BudgetSourceOid = ObjMaster.BudgetSourceOid;
-                                        objStockAnimalInfo_DetailNew.OrganizationOid = ObjMaster.ReceiveOrgOid;
-                                        objStockAnimalInfo_DetailNew.AnimalSupplieOid = ObjMaster.AnimalSupplieOid;
-                                        objStockAnimalInfo_DetailNew.AnimalSupplieTypeOid = ObjMaster.AnimalSupplieTypeOid;
-                                        objStockAnimalInfo_DetailNew.TotalForward = ObjStockAnimalInfo_DetailSource;
-                                        objStockAnimalInfo_DetailNew.TotalChange = ObjMaster.QTY;
-                                        objStockAnimalInfo_DetailNew.SeedTypeOid = ObjMaster.SeedTypeOid;
-                                        objStockAnimalInfo_DetailNew.Description = "รับเสบียงสัตว์จาก : " + ObjMaster.SendOrgOid.SubOrganizeName + "(Mobile Application)";
-                                    }
-                                    if (ObjMaster.AnimalSupplieOid.AnimalSupplieName == "แห้ง")
-                                    {
-                                        ManageAnimalSupplier objManageAnimalSupplier = null;
-                                        objManageAnimalSupplier = ObjectSpace.FindObject<ManageAnimalSupplier>(CriteriaOperator.Parse("[AnimalSupplieOid.AnimalSupplieName]='แห้ง' and [OrganizationOid]=?", ObjMaster.ReceiveOrgOid.Oid)); //'เฉพาะที่เป็นเสบียงแห้ง
-                                        if (objManageAnimalSupplier != null)
-                                        {
-                                            objManageAnimalSupplier.OtherQTY += ObjMaster.QTY;
-                                        }
-
-                                    }
-                                    ObjHistory = ObjectSpace.CreateObject<HistoryWork>();
-                                    ObjHistory.RefOid = ObjMaster.Oid.ToString();
-                                    ObjHistory.FormName = "เสบียงสัตว์";
-                                    ObjHistory.Message = "อนุมัติ (รับเสบียงสัตว์จากหน่วยงานในสังกัด (Mobile Application)) เลขที่ส่ง : " + " " + ObjMaster.SendNo;
-                                    ObjHistory.CreateBy = Username;
-                                    ObjHistory.CreateDate = DateTime.Now;
-                                    ObjectSpace.CommitChanges();
-
-                                    ObjMaster.ReceiveStatus = EnumReceiveOrderAnimalStatus.Approve; //2
-                                    ObjMaster.Remark = CancelMsg;
-                                    ObjectSpace.CommitChanges();
+                                    objStockAnimalInfo_Detail = ObjectSpace.GetObjects<StockAnimalInfo_Report>(CriteriaOperator.Parse("OrganizationOid= ? and FinanceYearOid=? and BudgetSourceOid=? and SeedTypeOid=? and AnimalSupplieOid=? and AnimalSupplieTypeOid=? ", ObjMaster.ReceiveOrgOid.Oid, ObjMaster.FinanceYearOid.Oid, ObjMaster.BudgetSourceOid, ObjMaster.SeedTypeOid.Oid, ObjMaster.AnimalSupplieOid, ObjMaster.AnimalSupplieTypeOid));
                                 }
-                            }
-                        }
+                                else
+                                {
+                                    objStockAnimalInfo_Detail = ObjectSpace.GetObjects<StockAnimalInfo_Report>(CriteriaOperator.Parse("OrganizationOid= ? and FinanceYearOid=? and BudgetSourceOid=? and AnimalSupplieOid=? and AnimalSupplieTypeOid=? ", ObjMaster.ReceiveOrgOid.Oid, ObjMaster.FinanceYearOid.Oid, ObjMaster.BudgetSourceOid, ObjMaster.AnimalSupplieOid, ObjMaster.AnimalSupplieTypeOid));
+                                }
+                                var objStockAnimalInfo_DetailNew = ObjectSpace.CreateObject<StockAnimalInfo_Report>();
 
+                                if (objStockAnimalInfo_Detail.Count == 0)
+                                {
+                                    objStockAnimalInfo_DetailNew.AnimalProductNumber = ObjMaster.SendNo;
+                                    objStockAnimalInfo_DetailNew.FinanceYearOid = ObjMaster.FinanceYearOid;
+                                    objStockAnimalInfo_DetailNew.BudgetSourceOid = ObjMaster.BudgetSourceOid;
+                                    objStockAnimalInfo_DetailNew.OrganizationOid = ObjMaster.ReceiveOrgOid;
+                                    objStockAnimalInfo_DetailNew.AnimalSupplieOid = ObjMaster.AnimalSupplieOid;
+                                    objStockAnimalInfo_DetailNew.AnimalSupplieTypeOid = ObjMaster.AnimalSupplieTypeOid;
+                                    objStockAnimalInfo_DetailNew.TotalForward = 0;
+                                    objStockAnimalInfo_DetailNew.TotalChange = ObjMaster.QTY;
+                                    objStockAnimalInfo_DetailNew.SeedTypeOid = ObjMaster.SeedTypeOid;
+                                    objStockAnimalInfo_DetailNew.Description = "รับเสบียงสัตว์จาก : " + ObjMaster.SendOrgOid.SubOrganizeName + "(Mobile Application)";
+                                }
+                                else
+                                {
+                                    var ObjStockAnimalInfo_DetailSource = (from item in objStockAnimalInfo_Detail orderby item.TransactionDate descending select item).First().TotalWeight;
+                                    //  (from Item in objStockAnimalInfo_Detail orderby Item.TransactionDate descending select Item).First().TotalWeight;
+                                    //  var query = from Q in collection3 orderby Q.UseNo select Q;
+                                    objStockAnimalInfo_DetailNew.AnimalProductNumber = ObjMaster.SendNo;
+                                    objStockAnimalInfo_DetailNew.FinanceYearOid = ObjMaster.FinanceYearOid;
+                                    objStockAnimalInfo_DetailNew.BudgetSourceOid = ObjMaster.BudgetSourceOid;
+                                    objStockAnimalInfo_DetailNew.OrganizationOid = ObjMaster.ReceiveOrgOid;
+                                    objStockAnimalInfo_DetailNew.AnimalSupplieOid = ObjMaster.AnimalSupplieOid;
+                                    objStockAnimalInfo_DetailNew.AnimalSupplieTypeOid = ObjMaster.AnimalSupplieTypeOid;
+                                    objStockAnimalInfo_DetailNew.TotalForward = ObjStockAnimalInfo_DetailSource;
+                                    objStockAnimalInfo_DetailNew.TotalChange = ObjMaster.QTY;
+                                    objStockAnimalInfo_DetailNew.SeedTypeOid = ObjMaster.SeedTypeOid;
+                                    objStockAnimalInfo_DetailNew.Description = "รับเสบียงสัตว์จาก : " + ObjMaster.SendOrgOid.SubOrganizeName + "(Mobile Application)";
+                                }
+                                if (ObjMaster.AnimalSupplieOid.AnimalSupplieName == "แห้ง")
+                                {
+                                    ManageAnimalSupplier objManageAnimalSupplier = null;
+                                    objManageAnimalSupplier = ObjectSpace.FindObject<ManageAnimalSupplier>(CriteriaOperator.Parse("[AnimalSupplieOid.AnimalSupplieName]='แห้ง' and [OrganizationOid]=?", ObjMaster.ReceiveOrgOid.Oid)); //'เฉพาะที่เป็นเสบียงแห้ง
+                                    if (objManageAnimalSupplier != null)
+                                    {
+                                        objManageAnimalSupplier.OtherQTY += ObjMaster.QTY;
+                                    }
+
+                                }
+                                ObjHistory = ObjectSpace.CreateObject<HistoryWork>();
+                                ObjHistory.RefOid = ObjMaster.Oid.ToString();
+                                ObjHistory.FormName = "เสบียงสัตว์";
+                                ObjHistory.Message = "อนุมัติ (รับเสบียงสัตว์จากหน่วยงานในสังกัด (Mobile Application)) เลขที่ส่ง : " + " " + ObjMaster.SendNo;
+                                ObjHistory.CreateBy = Username;
+                                ObjHistory.CreateDate = DateTime.Now;
+                                ObjectSpace.CommitChanges();
+
+                                ObjMaster.ReceiveStatus = EnumReceiveOrderAnimalStatus.Approve; //2
+                                ObjMaster.Remark = CancelMsg;
+                                ObjectSpace.CommitChanges();
+                            }
+                            result = true;
+                        }
+                      
 
                         else if (Status == "2")  //ไม่อนุมัติ
                         { //Reject
@@ -553,7 +557,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                                 if (objStockAnimalInfo_DetailSend.Count > 0)
                                 {
                                     var objStockAnimalInfo_DetailNew = ObjectSpace.CreateObject<StockAnimalInfo_Report>();
-                                    var ObjStockAnimalInfo_DetailSource = (from Item in objStockAnimalInfo_Detail orderby Item.TransactionDate descending select Item).First().TotalWeight;
+                                    var ObjStockAnimalInfo_DetailSource = (from Item in objStockAnimalInfo_DetailSend orderby Item.TransactionDate descending select Item).First().TotalWeight;
 
                                     var withBlock = objStockAnimalInfo_DetailNew;
                                     withBlock.TransactionDate = DateTime.Now;
@@ -586,6 +590,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                             }
 
                         }
+                        result = true;
                     }
                     else if (_type == "2") //หน่วยส่ง
                     {
@@ -663,17 +668,19 @@ namespace WebApi.Jwt.Controllers.MasterData
                                 ObjHistory.CreateDate = DateTime.Now;
                                 ObjectSpace.CommitChanges();
 
-                                ObjMaster.SendStatus = EnumSendOrderAnimalStatus.Approve;
-                                ObjMaster.ReceiveStatus = EnumReceiveOrderAnimalStatus.InProgess;
+                                ObjMaster.SendStatus = EnumSendOrderAnimalStatus.Approve; //2
+                                ObjMaster.ReceiveStatus = EnumReceiveOrderAnimalStatus.InProgess;//0
                                 ObjectSpace.CommitChanges();
 
+
                             }
+                            result = true;
                         }
-                    }
-                    else if (Status == "2")  //ไม่รับ
-                    { //Reject
-                        if (objStockAnimalInfo != null)
-                        {
+
+                        else if (Status == "2")  //ไม่รับ
+                        { //Reject
+                            objStockAnimalInfo = null;
+
                             if (ObjMaster.SeedTypeOid != null)
                             {
                                 objStockAnimalInfo = ObjectSpace.GetObjects<StockAnimalInfo>(CriteriaOperator.Parse("OrganizationOid= ? and FinanceYearOid=? and BudgetSourceOid=? and AnimalSeedOid=? and AnimalSupplieOid=? and StockType=0 and ReferanceCode=? ", ObjMaster.SendOrgOid.Oid, ObjMaster.FinanceYearOid.Oid, ObjMaster.BudgetSourceOid, ObjMaster.SeedTypeOid.Oid, ObjMaster.AnimalSupplieOid, ObjMaster.SendNo));
@@ -716,44 +723,40 @@ namespace WebApi.Jwt.Controllers.MasterData
                             ObjHistory.CreateBy = Username;
                             ObjHistory.CreateDate = DateTime.Now;
                             ObjectSpace.CommitChanges();
+                        }
+                        result = true;
 
-                            
-                        }
-                        else
-                        {
-                            UserError err = new UserError();
-                            err.status = "false";
-                            err.code = "0";
-                            err.message = "ไม่พบข้อมูล";
-                            return Request.CreateResponse(HttpStatusCode.BadRequest, err);
-                        }
+
                     }
 
-                                    else
-                                    {
-                                        UserError err = new UserError();
-                                        err.status = "false";
-                                        err.code = "-1";
-                                        err.message = "ไม่พบข้อมูล";
-                                        return Request.CreateResponse(HttpStatusCode.NotFound, err);
-                                    }
+                    if (result == true)
+                    {
+                        UpdateResult ret = new UpdateResult();
+                        ret.status = "true";
+                        ret.message = "บันทึกข้อมูลเสร็จเรียบร้อยแล้ว";
+                        return Request.CreateResponse(HttpStatusCode.OK, ret);
+                    }
+                    else
+                    {
+                        UserError err = new UserError();
+                        err.status = "false";
+                        err.code = "-6";
+                        err.message = "บันทึกข้อมูลไม่สำเร็จ";
+                        return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+                    }
+                 
 
-                    UpdateResult ret = new UpdateResult();
-                    ret.status = "true";
-                    ret.message = "บันทึกข้อมูลเสร็จเรียบร้อยแล้ว";
-                    return Request.CreateResponse(HttpStatusCode.OK, ret);
+                    }
+                            else
+                            {
+                                UserError err = new UserError();
+                                err.status = "false";
+                                err.code = "0";
+                                err.message = "กรุณาใส่ข้อมูล RefNo ให้เรียบร้อยก่อน";
+                                return Request.CreateResponse(HttpStatusCode.BadRequest, err);
 
-                }
+                            }
 
-                else
-                {
-                    UserError err = new UserError();
-                    err.status = "false";
-                    err.code = "0";
-                    err.message = "กรุณาใส่ข้อมูล RefNo ให้เรียบร้อยก่อน";
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, err);
-
-                }
             }
             catch (Exception ex)
             {

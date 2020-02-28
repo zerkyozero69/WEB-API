@@ -5,6 +5,7 @@ using nutrition.Module;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -49,14 +50,14 @@ namespace WebApi.Jwt.Controllers.MasterData
                             Item.ActivityNameOid = row.Oid.ToString();
                             Item.ActivityName = row.ActivityName;
                             Item.ObjectTypeOid = row.ObjectTypeOid.Oid.ToString();
-                            Item.ObjectTypeName = row.ObjectTypeOid.ObjectTypeName ;
+                            Item.ObjectTypeName = row.ObjectTypeOid.ObjectTypeName;
                             if (row.MasterActivity != null)
                             {
                                 Item.MasterActivity = row.MasterActivity.Oid.ToString();
                             }
-                          
+
                             list.Add(Item);
-                           
+
                         }
 
                     }
@@ -71,7 +72,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                     }
                     return Request.CreateResponse(HttpStatusCode.OK, list);
                 }
-                
+
             }
             catch (Exception ex)
             {
@@ -79,6 +80,10 @@ namespace WebApi.Jwt.Controllers.MasterData
                 err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
                 err.message = ex.Message;
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+            }
+            finally
+            {
+                SqlConnection.ClearAllPools();
             }
         }
 
@@ -138,6 +143,10 @@ namespace WebApi.Jwt.Controllers.MasterData
                 err.message = ex.Message;
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
+            finally
+            {
+                SqlConnection.ClearAllPools();
+            }
         }
         /// <summary>
         /// เรียกวัตุประสงค์การใช้
@@ -193,6 +202,10 @@ namespace WebApi.Jwt.Controllers.MasterData
                 err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
                 err.message = ex.Message;
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+            }
+            finally
+            {
+                SqlConnection.ClearAllPools();
             }
         }
 

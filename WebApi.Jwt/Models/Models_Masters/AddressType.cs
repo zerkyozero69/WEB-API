@@ -20,4 +20,26 @@ namespace WebApi.Jwt.Models.Models_Masters
        
         public bool IsActive { get; set; }
     }
+    public class GetProvinceDLD
+        {
+        public string OId { get; set; }
+        public string ProvinceOid   { get; set; }
+
+        public string ProvinceNameTH { get; set; }
+
+        public string DLDZoneOid { get; set; }
+        public string DLDZone { get; set; }
+  
+        public string OrganizationOid { get; set; }
+        public string OrganizationName { get; set; }
+        public bool IsActive { get; set; }
+    
+        public double Latitude { get; set; }
+      
+        public double Longitude { get; set; }
+      
+       
+
+    }
+
 }

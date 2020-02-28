@@ -21,7 +21,9 @@ namespace WebApi.Jwt.Controllers.แผนการผลิต_จำนวน�
 {
     public class Stock_SeedINFOController : ApiController
     {
-        string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
+
+
+        SqlConnection scc = new SqlConnection( ConfigurationManager.ConnectionStrings["scc"].ConnectionString);
 
 
         /// <summary>
@@ -125,12 +127,14 @@ namespace WebApi.Jwt.Controllers.แผนการผลิต_จำนวน�
                     err.message = "OK";
                     return Request.CreateResponse(HttpStatusCode.OK, titile_Groups);
                 }
+                else
+                {
 
-
-                UserError err2 = new UserError();
-                err2.code = "0"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-                err2.message = "กรุณาระบุศูนย์";
-                return Request.CreateResponse(HttpStatusCode.BadRequest);
+                    UserError err2 = new UserError();
+                    err2.code = "0"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                    err2.message = "กรุณาระบุศูนย์";
+                    return Request.CreateResponse(HttpStatusCode.BadRequest);
+                }
 
             }
             catch (Exception ex)
@@ -139,6 +143,10 @@ namespace WebApi.Jwt.Controllers.แผนการผลิต_จำนวน�
                 err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
                 err.message = ex.Message;
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+            }
+           finally
+            {
+                SqlConnection.ClearAllPools();
             }
         }
 
@@ -254,64 +262,69 @@ namespace WebApi.Jwt.Controllers.แผนการผลิต_จำนวน�
                 err.message = ex.Message;
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
+            finally
+            {
+                SqlConnection.ClearPool(scc);
+            }
         }
         /// <summary>
         /// เรียกเสบียงสัตว์คงเหลือ ตามศูนย์
         /// </summary>
         /// <returns></returns>
-        [AllowAnonymous]
-        [HttpPost]
-        [Route("SupplierProductAmount/Count")]   ///SupplierProductAmount/Count
-        public HttpResponseMessage Stockseedanimaldemo()
-        {
-            try
-            {
+        //[AllowAnonymous]
+        //[HttpPost]
+        //[Route("SupplierProductAmount/Count")]   ///SupplierProductAmount/Count
+        //public HttpResponseMessage Stockseedanimaldemo()
+        //{
+        //    try
+        //    {
 
 
-                string OrganizeOid = null; // Oid จังหวัด
-                string BudgetSourceOid = null;
-                string DLD = null;
+        //        string OrganizeOid = null; // Oid จังหวัด
+        //        string BudgetSourceOid = null;
+        //        string DLD = null;
 
 
-                if (HttpContext.Current.Request.Form["OrganizationOid"].ToString() != null)
-                {
-                    if (HttpContext.Current.Request.Form["OrganizationOid"].ToString() != "")
-                    {
-                        OrganizeOid = HttpContext.Current.Request.Form["OrganizationOid"].ToString();
-                    }
-                }
+        //        if (HttpContext.Current.Request.Form["OrganizationOid"].ToString() != null)
+        //        {
+        //            if (HttpContext.Current.Request.Form["OrganizationOid"].ToString() != "")
+        //            {
+        //                OrganizeOid = HttpContext.Current.Request.Form["OrganizationOid"].ToString();
+        //            }
+        //        }
 
-                BudgetSourceOid = HttpContext.Current.Request.Form["BudgetSourceOid"].ToString();
-                DLD = HttpContext.Current.Request.Form["DLD"].ToString();
+        //        BudgetSourceOid = HttpContext.Current.Request.Form["BudgetSourceOid"].ToString();
+        //        DLD = HttpContext.Current.Request.Form["DLD"].ToString();
 
-                XpoTypesInfoHelper.GetXpoTypeInfoSource();
-                XafTypesInfo.Instance.RegisterEntity(typeof(StockSeedInfo));
-                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
-                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+        //        XpoTypesInfoHelper.GetXpoTypeInfoSource();
+        //        XafTypesInfo.Instance.RegisterEntity(typeof(StockSeedInfo));
+        //        XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+        //        IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
 
-                //IList<StockSeedInfo> objstockseed = ObjectSpace.GetObject <StockSeedInfo>(CriteriaOperator.Parse("[OrganizationOid]=? and Status=1",DLD ));
-                //UserError err = new UserError();
-                //err.code = ""; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-                //err.message = "OK";
-                //return Request.CreateResponse(HttpStatusCode.OK, "");
+        //        //IList<StockSeedInfo> objstockseed = ObjectSpace.GetObject <StockSeedInfo>(CriteriaOperator.Parse("[OrganizationOid]=? and Status=1",DLD ));
+        //        //UserError err = new UserError();
+        //        //err.code = ""; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+        //        //err.message = "OK";
+        //        //return Request.CreateResponse(HttpStatusCode.OK, "");
             
 
 
-                UserError err2 = new UserError();
-            err2.code = "0"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-            err2.message = "กรุณาระบุศูนย์";
-            return Request.CreateResponse(HttpStatusCode.BadRequest);
+        //        UserError err2 = new UserError();
+        //    err2.code = "0"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+        //    err2.message = "กรุณาระบุศูนย์";
+        //    return Request.CreateResponse(HttpStatusCode.BadRequest);
 
-        }
-            catch (Exception ex)
-            {
-                UserError err = new UserError();
-        err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-                err.message = ex.Message;
-                return Request.CreateResponse(HttpStatusCode.BadRequest, err);
-            }
+        //}
+        //    catch (Exception ex)
+        //    {
+        //        UserError err = new UserError();
+        //err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+        //        err.message = ex.Message;
+        //        return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+        //    }
 
-        }
+        //}
         
     }
+    
 }

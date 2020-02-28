@@ -810,11 +810,16 @@ namespace WebApi.Jwt.Controllers
         [Route("SupplierUseAnimal/InsertDetail")]
         public HttpResponseMessage SupplierUseAnimal_InsertDetail()  ///SupplierUseAnimal_InsertDetail
         {
+         
             inserts_suppile inserts = new inserts_suppile();
             try
             {
                 string requestString = Request.Content.ReadAsStringAsync().Result;
                 JObject jObject = (JObject)JsonConvert.DeserializeObject(requestString);
+                XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                XafTypesInfo.Instance.RegisterEntity(typeof(Unit));
+                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
                 if (jObject.SelectToken("OrganizationOid") != null)
                 {
                     inserts.orgOid = jObject.SelectToken("OrganizationOid").Value<string>();
@@ -862,6 +867,12 @@ namespace WebApi.Jwt.Controllers
                 {
                     inserts.WeightUnitOid = jObject.SelectToken("weightunitoid").Value<string>();
                 }
+                else
+                {
+                    Unit WeightUnit = ObjectSpace.FindObject<Unit>(CriteriaOperator.Parse("UnitName=? ", "กิโลกรัม"));
+                    inserts.WeightUnitOid = WeightUnit.Oid.ToString();
+                }
+         
 
 
                 if (jObject.SelectToken("managesuboid") != null)
@@ -876,12 +887,12 @@ namespace WebApi.Jwt.Controllers
                 XafTypesInfo.Instance.RegisterEntity(typeof(SeedType));
                 XafTypesInfo.Instance.RegisterEntity(typeof(AnimalSupplieType));
                 XafTypesInfo.Instance.RegisterEntity(typeof(AnimalSupplie));
+           
                 List<ManageAnimalSupplier_Model2> list = new List<ManageAnimalSupplier_Model2>();
                 List<ManageQuantityProductDetail> listQuantity = new List<ManageQuantityProductDetail>();
                 List<objManageAnimalSupplier> listdetail = new List<objManageAnimalSupplier>();
                 ManageQuantityProductDetail listQuantity2 = new ManageQuantityProductDetail();
-                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
-                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+            
                 double balanceQTY = 0.0;
                 double amount = 0.0;
                 double objstocklimit = 0.0;
@@ -1018,6 +1029,7 @@ namespace WebApi.Jwt.Controllers
                 }
                 else
                 {
+                     
                     var stocklimit = 0.0;
                     if (jObject.SelectToken("seedtypeoid").Value<string>() != null && jObject.SelectToken("seedtypeoid").Value<string>() != "")
                     {
@@ -1371,7 +1383,11 @@ namespace WebApi.Jwt.Controllers
                                 Supplier_3.TypeMoblie = type;
                                 Supplier_3.Oid = row.Oid.ToString();
                                 Supplier_3.UseDate = row.UseDate.ToString("dd-MM-yyyy", new CultureInfo("us-US"));
-                                Supplier_3.UseNo = row.UseNo.ToString();
+                                if(row.UseNo != null)
+                                {
+                                    Supplier_3.UseNo = row.UseNo.ToString();
+                                }
+                               
                                 if (row.RegisCusServiceOid != null  )
                                 {
                                     Supplier_3.RegisCusServiceOid = row.RegisCusServiceOid.Oid.ToString();
@@ -1425,6 +1441,7 @@ namespace WebApi.Jwt.Controllers
                                 Supplier_3.Refno = row.UseNo + "|" + row.OrganizationOid.Oid.ToString() + "|3";
                                 Supplier_3.Weight = row.SupplierUseAnimalProductDetails.Sum((c => c.Weight)).ToString() + " " + "กิโลกรัม";
                                 UseACT3.Add(Supplier_3);
+                              
                             }
                             //lists.UseACT2 = UseACT2;
                             return Request.CreateResponse(HttpStatusCode.OK, UseACT3);

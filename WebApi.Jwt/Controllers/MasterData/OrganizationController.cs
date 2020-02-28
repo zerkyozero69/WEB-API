@@ -90,6 +90,10 @@ namespace WebApi.Jwt.Controllers.MasterData
             }
 
         }
+        /// <summary>
+        /// ค้นหา DLD Zone 
+        /// </summary>
+        /// <returns></returns>
         [AllowAnonymous]
         // [JwtAuthentication]
         [HttpPost]
