@@ -14,8 +14,8 @@ namespace WebApi.Jwt.Models.นับจำนวนกิจกรรม
             {
                 Data = new List<SeedAnimal_info>();
             }
-        [JsonProperty ("DLDzone")]
-        public Int64 DLDZone { get; set; }
+        //[JsonProperty ("DLDzone")]
+        //public Int64 DLDZone { get; set; }
         [JsonProperty("Id")]
         public long Id { get; set; }
 

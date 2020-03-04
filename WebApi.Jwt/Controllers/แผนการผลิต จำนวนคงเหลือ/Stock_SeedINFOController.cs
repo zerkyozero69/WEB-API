@@ -132,8 +132,8 @@ namespace WebApi.Jwt.Controllers.แผนการผลิต_จำนวน�
 
                     UserError err2 = new UserError();
                     err2.code = "0"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-                    err2.message = "กรุณาระบุศูนย์";
-                    return Request.CreateResponse(HttpStatusCode.BadRequest);
+                    err2.message = "NoData";
+                    return Request.CreateResponse(HttpStatusCode.NoContent,err2);
                 }
 
             }

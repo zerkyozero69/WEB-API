@@ -8,6 +8,7 @@ using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Web;
 using System.Web.Http;
 using WebApi.Jwt.Models;
 using WebApi.Jwt.Models.Models_Masters;
@@ -32,53 +33,60 @@ namespace WebApi.Jwt.Controllers.API_ศูนย์ไปเรียกเข�
         [AllowAnonymous]
         [HttpPost]
         [Route("GetDLD_byORG")]
-        public HttpResponseMessage GetDLD_byORG([FromBody]string OrganizationOid)
+        public HttpResponseMessage GetDLD_byORG()
         {
+            string OrganizationOid = null;
+
             try
             {
-                if (OrganizationOid != null)
+
+
+                XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                XafTypesInfo.Instance.RegisterEntity(typeof(DLDArea));
+                XafTypesInfo.Instance.RegisterEntity(typeof(Organization));
+                List<listdetail> DLD = new List<listdetail>();
+                
+
+
+                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+
+                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+
+                //IList<Organization> collection = ObjectSpace.GetObjects<Organization>(CriteriaOperator.Parse("GCRecord is null and IsActive = 1 and OrganizeNameTH LIKE 'เขต%'", null));
+                IList<Organization> collection = ObjectSpace.GetObjects<Organization>(CriteriaOperator.Parse("GCRecord is null and IsActive = 1 and OrganizeNameTH like 'เขต%'", null));
+
+                var query = from Q in collection orderby Q.OrganizeNameTH select Q;
+
+                foreach (Organization row in query)
                 {
-                    XpoTypesInfoHelper.GetXpoTypeInfoSource();
-                    XafTypesInfo.Instance.RegisterEntity(typeof(DLDArea));
-                    XafTypesInfo.Instance.RegisterEntity(typeof(Province));
-                    List<GetProvinceDLD> DLD = new List<GetProvinceDLD>();
+                    listdetail listsa = new listdetail();
+                    listsa.OId = row.Oid.ToString();
+                    listsa.DLDName = row.OrganizeNameTH;
 
-
-
-                    XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
-
-                    IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-
-                    IList<Province> collection = ObjectSpace.GetObjects<Province>(CriteriaOperator.Parse("GCRecord is null and OrganizationOid='" + OrganizationOid + "'", null));
-                    var query = from Q in collection orderby Q.OrganizationOid select Q;
-                    foreach (Province row in collection)
+                    IList<Organization> collection2 = ObjectSpace.GetObjects<Organization>(CriteriaOperator.Parse("GCRecord is null and IsActive = 1 and MasterOrganization ='" + row.Oid + "' ", null));
+                    List<listDLD> listDLDs = new List<listDLD>();
+                    foreach (Organization row2 in collection2)
                     {
-                        GetProvinceDLD listsa = new GetProvinceDLD();
-                        listsa.OId = row.Oid.ToString();
-                        listsa.ProvinceOid = row.ProvinceCode;
-                        listsa.ProvinceNameTH = row.ProvinceNameTH;
-                        listsa.OrganizationOid = row.OrganizationOid.OrganizeNameTH;
-                        listsa.DLDZoneOid = row.DLDZone.Oid.ToString();
-                        listsa.DLDZone = row.DLDZone.DLDAreaName;
-                        DLD.Add(listsa);
+                        listDLD item = new listDLD();
+                        item.ORGOid = row2.Oid.ToString();
+                        item.OrganizationName = row2.OrganizeNameTH;
+                        listDLDs.Add(item);
                     }
-                    return Request.CreateResponse(HttpStatusCode.OK, DLD);
+                    listsa.Detail = listDLDs;
+                    DLD.Add(listsa);
                 }
-                else
-                {
-                    UserError err = new UserError();
-                    err.status = "false";
-                    err.code = "0";
-                    err.message = "กรุณาใส่ OrganizationOid ";
-                    return Request.CreateResponse(HttpStatusCode.NoContent, err);
-                }
+                return Request.CreateResponse(HttpStatusCode.OK, DLD);
+
+
 
             }
             catch (Exception ex)
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, ex);
+                err2 err = new err2();
+                err.message = ex.Message;
+                return Request.CreateResponse(HttpStatusCode.BadRequest, err);
                 throw;
-               
+
             }
 
 

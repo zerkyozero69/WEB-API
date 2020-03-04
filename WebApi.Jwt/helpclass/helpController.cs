@@ -120,11 +120,11 @@ namespace WebApi.Jwt.helpclass
 
                             if (DLD == null)
                             {
-                                objUser_info.DLD = "ไม่มีเขต";
+                                objUser_info.DLDName = "ไม่มีเขต";
                             }
                             else if (DLD != null)
                             {
-                                objUser_info.DLD = DLD.OrganizeNameTH;
+                                objUser_info.DLDName = DLD.OrganizeNameTH;
                             }
                             objUser_info.DLDZone = User.Organization.ProvinceOid.DLDZone.Oid.ToString();
                             objUser_info.Latitude = User.Organization.Latitude;
@@ -160,20 +160,28 @@ namespace WebApi.Jwt.helpclass
                                             AcName = AcName + "," + "Edit";
                                         }
                                         break;
+
                                     case "Administrator":
                                         if (AcName == "")
                                         {
-                                            AcName = "Edit";
+                                            AcName = "EditAdmin";
                                         }
                                         else if (AcName.Contains("Edit") != true)
                                         {
-                                            AcName = AcName + "," + "Edit";
+                                            AcName = AcName + "," + "EditAdmin";
                                         }
-                                        //else
-                                        //{
-                                        //    AcName = AcName + "," + "Edit";
+                           
+                                        break;
 
-                                        //}
+                                    case "EditAdmin":
+                                        if (AcName == "")
+                                        {
+                                            AcName = "EditAdmin";
+                                        }
+                                        else if (AcName.Contains("EditAdmin") != true)
+                                        {
+                                            AcName = AcName + "," + "EditAdmin";
+                                        }
                                         break;
 
                                     default:
