@@ -254,6 +254,7 @@
     <Compile Include="Controllers\API ศูนย์ไปเรียกเขต\GetDLD_byORG.cs" />
     <Compile Include="Controllers\API ศูนย์ไปเรียกเขต\orgGETDLD_Controller.cs" />
     <Compile Include="Controllers\Approval_SendSeedController.cs" />
+    <Compile Include="Controllers\นับจำนวนเมล็ดพันธุ์ เสีบงสัตว์ คงเหลือ\Count_ApproveController.cs" />
     <Compile Include="Controllers\พี่เขียว\LoadReportByRIdController.cs" />
     <Compile Include="Controllers\ManageAnimalSupplierController.cs" />
     <Compile Include="Controllers\MasterData\ActivityController.cs" />
@@ -321,6 +322,7 @@
     <Compile Include="Models\Approve_Model.cs" />
     <Compile Include="Models\Customer_Service.cs" />
     <Compile Include="Models\ต่อดาต้าเบส\ConnectDB.cs" />
+    <Compile Include="Models\นับจำนวนกิจกรรม\Count_Approve.cs" />
     <Compile Include="Models\พี่เขียว\non_xAF.cs" />
     <Compile Include="Models\ภัยภิบัติ\inserts_suppile.cs" />
     <Compile Include="Models\สร้างข่าว\newsmodel.cs" />
