@@ -28,14 +28,18 @@ using WebApi.Jwt.Filters;
 using WebApi.Jwt.helpclass;
 using NTi.CommonUtility;
 using System.IO;
+using nutrition.Module;
+using WebApi.Jwt.Models.Models_Masters;
+using Organization = nutrition.Module.Organization;
 
 namespace WebApi.Jwt.Controllers.MasterData
 {
-    public class OrganizationController : ApiController  
+    public class OrganizationController : ApiController
 
     {
         string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
-     
+
+
         /// <summary>
         /// 
         /// </summary>
@@ -44,13 +48,14 @@ namespace WebApi.Jwt.Controllers.MasterData
         // [JwtAuthentication]
         [HttpPost]
         [Route("Organization_info")]
-        public HttpResponseMessage get_Organization(string Oid= null)
+        public HttpResponseMessage get_Organization( )
         {
             try
             {
-
+                string Oid = null;
+                Oid = HttpContext.Current.Request.Form["Oid"];
                 DataSet ds = new DataSet();
-                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_GetOrganization", new SqlParameter("@Oid",Oid));
+                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_GetOrganization", new SqlParameter("@Oid", Oid));
                 DataTable dt = new DataTable();
                 dt = ds.Tables[0];
 
@@ -72,6 +77,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                     return Request.CreateResponse(HttpStatusCode.OK, rows);
                 }
                 return Request.CreateResponse(HttpStatusCode.BadRequest, "No Data");
+               
             }
             catch (Exception ex)
             {
@@ -84,7 +90,93 @@ namespace WebApi.Jwt.Controllers.MasterData
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
 
-
         }
+        /// <summary>
+        /// ค้นหา DLD Zone 
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        // [JwtAuthentication]
+        [HttpPost]
+        [Route("getDLDArea/List")]
+        public HttpResponseMessage getDLDarea()
+        {
+            try
+            {
+                XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                XafTypesInfo.Instance.RegisterEntity(typeof(DLDArea));
+                XafTypesInfo.Instance.RegisterEntity(typeof(Organization));
+                List<listdetail> DLD = new List<listdetail>();
+
+
+
+                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+
+                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+
+                //IList<Organization> collection = ObjectSpace.GetObjects<Organization>(CriteriaOperator.Parse("GCRecord is null and IsActive = 1 and OrganizeNameTH LIKE 'เขต%'", null));
+                IList<Organization> collection = ObjectSpace.GetObjects<Organization>(CriteriaOperator.Parse("GCRecord is null and IsActive = 1 and OrganizeNameTH like 'เขต%'", null));
+
+                var query = from Q in collection orderby Q.OrganizeNameTH select Q;
+                {
+                    foreach (Organization row in query)
+                    {
+                        listdetail listsa = new listdetail();
+                        listsa.OId = row.Oid.ToString();
+                        listsa.DLDName = row.OrganizeNameTH;
+
+                        IList<Organization> collection2 = ObjectSpace.GetObjects<Organization>(CriteriaOperator.Parse("GCRecord is null and IsActive = 1 and MasterOrganization ='" + row.Oid + "' ", null));
+                        List<listDLD> listDLDs = new List<listDLD>();
+                        foreach (Organization row2 in collection2)
+                        {
+                            listDLD item = new listDLD();
+                            item.ORGOid = row2.Oid.ToString();
+                            item.OrganizationName = row2.OrganizeNameTH;
+                            listDLDs.Add(item);
+                        }
+                        listsa.Detail = listDLDs;
+                        DLD.Add(listsa);
+                    }
+                    return Request.CreateResponse(HttpStatusCode.OK, DLD);
+
+                }
+       
+                  
+
+            }
+            catch (Exception ex)
+            {
+                UserError err = new UserError();
+                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                err.message = ex.Message;
+                return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+            }
+        }
+
+
+
+        //[AllowAnonymous]
+        //// [JwtAuthentication]
+        //[HttpPost]
+        //[Route("Organization_info")]
+        //public  HttpResponseMessage getquotaOrganization()
+        //{
+        //    try
+        //    {
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        //Error case เกิดข้อผิดพลาด
+        //        UserError err = new UserError();
+        //        err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+
+        //        err.message = ex.Message;
+        //        //  Return resual
+        //        return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+        //    }
+
+
+        //}
     }
 }

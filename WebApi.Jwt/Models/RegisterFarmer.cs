@@ -56,7 +56,7 @@ namespace WebApi.Jwt.Models
             public object TitleOid { get; set; }
             public string FirstNameTH { get; set; }
             public string LastNameTH { get; set; }
-            public DateTime BirthDate { get; set; }
+            public string BirthDate { get; set; }
             public object GenderOid { get; set; }
             public string Tel { get; set; }
             public string Email { get; set; }

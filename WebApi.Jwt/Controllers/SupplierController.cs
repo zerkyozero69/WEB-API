@@ -69,7 +69,7 @@ namespace WebApi.Jwt.Controllers
                         Model.OrganizationSendOid = row.OrganizationSendOid.OrganizeNameTH;
                         Model.OrganizationReceiveOid = row.OrganizationReceiveOid.OrganizeNameTH;
                         Model.Remark = row.Remark;
-                        Model.SendStatusOid = row.SendStatusOid.StatusName;
+                        Model.SendStatusOid = row.SendStatusOid;
                         list.Add(Model);
                     }
 
@@ -107,10 +107,10 @@ namespace WebApi.Jwt.Controllers
                         supplier.AnimalSeedOid = row.AnimalSeedOid.SeedName;
                         supplier.AnimalSeedLevelOid = row.AnimalSeedLevelOid.SeedLevelName;
                         supplier.PlotHeaderOid = row.PlotInfoOidOid.PlotName;
-                        supplier.Weight = row.Weight;
+                        supplier.Weight = Convert.ToDouble(row.Weight);
                         supplier.UnitOid = row.UnitOid.UnitName;
                         supplier.LastCleansingDate = row.LastCleansingDate;
-                        supplier.Stauts = row.Stauts.ToString();
+                        supplier.Status = row.Status.ToString();
                         supplier.Used = row.Used;
                         supplier.ReferanceUsed = row.ReferanceUsed;
                         supplier.PlotInfoOidOid = row.PlotInfoOidOid.PlotName;

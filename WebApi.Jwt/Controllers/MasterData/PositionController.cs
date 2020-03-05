@@ -28,45 +28,37 @@ using WebApi.Jwt.Filters;
 using WebApi.Jwt.helpclass;
 using NTi.CommonUtility;
 using System.IO;
+using nutrition.Module;
+
 namespace WebApi.Jwt.Controllers.MasterData
 {
     public class PositionController : ApiController
     {
         string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
         [AllowAnonymous]
-        [HttpGet]
-        
+        [HttpPost]
+
         [Route("Position")]/// เรียกตำแหน่งเจ้าหน้าที่
         public HttpResponseMessage loadPosition()
         {
             try
             {
-                DataSet ds = new DataSet();
-                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieLoadPosition");
-                DataTable dt = new DataTable();
-                dt = ds.Tables[0];
-                List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
-                Dictionary<string, object> row;
-
-                foreach (DataRow dr in dt.Rows)
+                XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.Position));
+                List<Position_Model> list = new List<Position_Model>();
+                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+                IList<Position> collection = ObjectSpace.GetObjects<Position>(CriteriaOperator.Parse("  GCRecord is null and IsActive = 1", null));
+                foreach (Position row in collection)
                 {
-                    row = new Dictionary<string, object>();
-                    foreach (DataColumn col in dt.Columns)
-                    {
-                        row.Add(col.ColumnName, dr[col]);
-                    }
-                    rows.Add(row);
+                    Position_Model model = new Position_Model();
+                    model.PositionName = row.PositionName;
+                    model.IsActive = row.IsActive;
+                    list.Add(model);
                 }
-                if (rows != null)
-                {
-                    return Request.CreateResponse(HttpStatusCode.OK, rows);
-                    //    return new HttpResponseMessage { Content = new StringContent("[{\"Success\":\"Success\"},{\"Message\":\"Login successfully\"}],{\"Data\":" + "200" + "}", System.Text.Encoding.UTF8, "application/json") };
-
-                }
-                {
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, "No data");
-                }
+                return Request.CreateResponse(HttpStatusCode.OK, list);
             }
+            
             catch (Exception ex)
             { //Error case เกิดข้อผิดพลาด
                 UserError err = new UserError();
@@ -80,36 +72,28 @@ namespace WebApi.Jwt.Controllers.MasterData
             
         }
         [AllowAnonymous]
-        [HttpGet]
-
+        [HttpPost]
         [Route("Position/Level")] /// เรียกลำดับชั้นของตำแหน่ง
         public HttpResponseMessage loadPosition_Tier()
         {
             try
             {
-                DataSet ds = new DataSet();
-                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieLoadPositionLevel");
-                DataTable dt = new DataTable();
-                dt = ds.Tables[0];
-                List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
-                Dictionary<string, object> row;
-                foreach (DataRow dr in dt.Rows)
+                XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.PositionLevel));
+                List<PositionLevel_Model> list = new List<PositionLevel_Model>();
+                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+                IList<PositionLevel> collection = ObjectSpace.GetObjects<PositionLevel>(CriteriaOperator.Parse("  GCRecord is null and IsActive = 1", null));
+                foreach (PositionLevel row in collection)
                 {
-                    row = new Dictionary<string, object>();
-                    foreach (DataColumn col in dt.Columns)
-                    {
-                        row.Add(col.ColumnName, dr[col]);
-                    }
-                    rows.Add(row);
+                    PositionLevel_Model model = new PositionLevel_Model();
+                    model.PositionLevelName = row.PositionLevelName;
+                    model.IsActive = row.IsActive;
+                    list.Add(model);
                 }
-                if (rows != null)
-                {
-                    return Request.CreateResponse(HttpStatusCode.OK, rows);
-                }
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "No Data");
-            
-
+                return Request.CreateResponse(HttpStatusCode.OK, list);
             }
+  
             catch (Exception ex)
             { //Error case เกิดข้อผิดพลาด
                 UserError err = new UserError();
@@ -120,16 +104,6 @@ namespace WebApi.Jwt.Controllers.MasterData
                 return Request.CreateResponse(HttpStatusCode.ExpectationFailed, err);
             }
         }
-        //[AllowAnonymous]
-        //[HttpGet]
-
-        //[Route("getPosition2")]
-        //public IHttpActionResult get()
-        //{
-        //    try
-        //    {
-        //    }
-        //}
-      //  public HttpActionResult
+        
     }
 }

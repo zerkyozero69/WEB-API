@@ -29,11 +29,14 @@ using WebApi.Jwt.Filters;
 using WebApi.Jwt.helpclass;
 using NTi.CommonUtility;
 using System.IO;
+using nutrition.Module;
+using WebApi.Jwt.Models.Models_Masters;
 
 namespace WebApi.Jwt.Controllers.MasterData
+#region จังหวัด อำเภอ ตำบล
 {/// <summary>
-/// ใช้เรียกจังหวัด อำเภอ ตำบล
-/// </summary>
+ /// ใช้เรียกจังหวัด อำเภอ ตำบล
+ /// </summary>
     public class ProvinceController : ApiController
     {
         string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
@@ -76,81 +79,10 @@ namespace WebApi.Jwt.Controllers.MasterData
                 return Request.CreateResponse(HttpStatusCode.ExpectationFailed, err);
             }
         }
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("Districts")]
-        public HttpResponseMessage loadDistricts() // โหลดอำเภอ
-        {
-            try
-            {
-                DataSet ds = new DataSet();
-                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieGetDistricts");
-                DataTable dt = new DataTable();
-                dt = ds.Tables[0];
-                List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
-                Dictionary<string, object> row;
-                foreach (DataRow dr in dt.Rows)
-                {
-                    row = new Dictionary<string, object>();
-                    foreach (DataColumn col in dt.Columns)
-                    {
-                        row.Add(col.ColumnName, dr[col]);
-                    }
-                    rows.Add(row);
-                }
-                return Request.CreateResponse(HttpStatusCode.OK, rows);
-
-
-            }
-            catch (Exception ex)
-            { //Error case เกิดข้อผิดพลาด
-                UserError err = new UserError();
-                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-
-                err.message = ex.Message;
-                //  Return resual
-                return Request.CreateResponse(HttpStatusCode.ExpectationFailed, err);
-            }
-        }
-                [AllowAnonymous]
-        [HttpGet]
-        [Route("SubDistricts")]
-        public HttpResponseMessage loadSubDistricts() // โหลดอำเภอ
-        {
-            try
-            {
-                DataSet ds = new DataSet();
-                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieGetSubDistricts");
-                DataTable dt = new DataTable();
-                dt = ds.Tables[0];
-                List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
-                Dictionary<string, object> row;
-                foreach (DataRow dr in dt.Rows)
-                {
-                    row = new Dictionary<string, object>();
-                    foreach (DataColumn col in dt.Columns)
-                    {
-                        row.Add(col.ColumnName, dr[col]);
-                    }
-                    rows.Add(row);
-                }
-                return Request.CreateResponse(HttpStatusCode.OK, rows);
-
-
-            }
-            catch (Exception ex)
-            { //Error case เกิดข้อผิดพลาด
-                UserError err = new UserError();
-                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-
-                err.message = ex.Message;
-                //  Return resual
-                return Request.CreateResponse(HttpStatusCode.ExpectationFailed, err);
-            }
-        }
+    
         [AllowAnonymous]
         [HttpPost]
-        [Route("Districts/Oid")]
+        [Route("Districts")]
         public HttpResponseMessage getDistricts_ByProvince() ///โหลดอำเภอ by จังหวัด
         {
             try
@@ -165,7 +97,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                     }
                 }
                 DataSet ds = new DataSet();
-                ds = SqlHelper.ExecuteDataset(scc,CommandType.StoredProcedure, "spt_MoblieGetDistricts_ByProvince",  new SqlParameter("@Oid", Oid)
+                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieGetDistricts_ByProvince", new SqlParameter("@Oid", Oid)
                    );
 
                 _Districts districts = new _Districts();
@@ -173,7 +105,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                 dt = ds.Tables[0];
                 List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
                 Dictionary<string, object> row;
-                    foreach (DataRow dr in dt.Rows)
+                foreach (DataRow dr in dt.Rows)
                 {
                     row = new Dictionary<string, object>();
                     foreach (DataColumn col in dt.Columns)
@@ -199,13 +131,13 @@ namespace WebApi.Jwt.Controllers.MasterData
         }
         [AllowAnonymous]
         [HttpPost]
-        [Route("SubDistricts/Oid")]
+        [Route("SubDistricts")]
         public HttpResponseMessage getSubDistricts_ByDistricts() ///โหลดตำบล by อำเภอ
         {
             try
             {
                 string Oid = null; // Oid อำเภอ
-                
+
                 if (HttpContext.Current.Request.Form["Oid"].ToString() != null)
                 {
                     if (HttpContext.Current.Request.Form["Oid"].ToString() != "")
@@ -248,4 +180,5 @@ namespace WebApi.Jwt.Controllers.MasterData
             }
         }
     }
+    #endregion
 }

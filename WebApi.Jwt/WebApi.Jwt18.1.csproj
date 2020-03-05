@@ -104,6 +104,12 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="GraphQL, Version=2.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\GraphQL.2.4.0\lib\net45\GraphQL.dll</HintPath>
+    </Reference>
+    <Reference Include="GraphQL-Parser, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\GraphQL-Parser.3.0.0\lib\net45\GraphQL-Parser.dll</HintPath>
+    </Reference>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
@@ -146,7 +152,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\NTi.CommonUtility.dll</HintPath>
     </Reference>
-    <Reference Include="nutrition.Module, Version=1.0.7254.27026, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="nutrition.Module, Version=1.0.7288.2887, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\nutrition.Module.dll</HintPath>
     </Reference>
@@ -156,6 +162,9 @@
     <Reference Include="Swashbuckle.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cd1bb07a5ac7c7bc, processorArchitecture=MSIL">
       <HintPath>..\packages\Swashbuckle.Core.5.6.0\lib\net40\Swashbuckle.Core.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.0\lib\netstandard1.1\System.Buffers.dll</HintPath>
     </Reference>
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.IdentityModel.Tokens.Jwt, Version=5.0.0.127, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -182,8 +191,20 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Reactive.Core, Version=3.0.1000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.Core.3.1.1\lib\net45\System.Reactive.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Interfaces, Version=3.0.1000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.Interfaces.3.1.1\lib\net45\System.Reactive.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Linq, Version=3.0.1000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.Linq.3.1.1\lib\net45\System.Reactive.Linq.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Transactions" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -229,14 +250,40 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\API นับรายการ ที่ให้ผ.อ. อนุมัติ\Count_RequestController.cs" />
+    <Compile Include="Controllers\API ศูนย์ไปเรียกเขต\GetDLD_byORG.cs" />
+    <Compile Include="Controllers\API ศูนย์ไปเรียกเขต\orgGETDLD_Controller.cs" />
     <Compile Include="Controllers\Approval_SendSeedController.cs" />
-    <Compile Include="Controllers\JWT_ReportController.cs" />
-    <Compile Include="Controllers\SendorderSuppilerAnimal_Controller.cs" />
-    <Compile Include="Controllers\OrderSeedDetailController.cs" />
-    <Compile Include="Controllers\Subscriber_UserController.cs" />
+    <Compile Include="Controllers\นับจำนวนเมล็ดพันธุ์ เสีบงสัตว์ คงเหลือ\Count_ApproveController.cs" />
+    <Compile Include="Controllers\พี่เขียว\LoadReportByRIdController.cs" />
+    <Compile Include="Controllers\ManageAnimalSupplierController.cs" />
+    <Compile Include="Controllers\MasterData\ActivityController.cs" />
+    <Compile Include="Controllers\โควตา\Get_listAnimalDetailController.cs" />
+    <Compile Include="Controllers\MasterData\SubActivityLevelController.cs" />
+    <Compile Include="Controllers\MasterData\ภัยพิบัติController.cs" />
+    <Compile Include="Controllers\นับจำนวนเมล็ดพันธุ์ เสีบงสัตว์ คงเหลือ\SuppileSeedCount_Controller.cs" />
+    <Compile Include="Controllers\พี่เขียว\PublishReportController.cs" />
+    <Compile Include="Controllers\พี่เขียว\RepostCategoriesController.cs" />
+    <Compile Include="Controllers\พี่เขียว\ResponceMessage.cs" />
+    <Compile Include="Controllers\พี่เขียว\RoleController.cs" />
+    <Compile Include="Controllers\พี่เขียว\_DeleteReportsController.cs" />
+    <Compile Include="Controllers\สร้างข่าว\loadNewsController.cs" />
+    <Compile Include="Controllers\เทส\ContentResult.cs" />
+    <Compile Include="Controllers\เทส\HttpGetController.cs" />
+    <Compile Include="Controllers\แผนการผลิต จำนวนคงเหลือ\Stock_SeedINFOController.cs" />
+    <Compile Include="Models\Class1.cs" />
+    <Compile Include="Models\Models_Masters\Activity_Model.cs" />
+    <Compile Include="Models\Models_Masters\FarmerProduct_model.cs" />
+    <Compile Include="Models\Models_Masters\QuotaType_Model.cs" />
+    <Compile Include="Models\Models_Masters\ภัยพิบัติ.cs" />
+    <Compile Include="Controllers\ส่งพืชพันธุ์อาหารสัตว์\SendOrderSeedController.cs" />
+    <Compile Include="Controllers\ส่งพืชพันธุ์อาหารสัตว์\SendorderSuppilerAnimal_Controller.cs" />
+    <Compile Include="Controllers\ข้อมูลการใช้เมล็ดพันธุ์และเสบียงสัตว์.cs" />
+    <Compile Include="Controllers\StockSeedController.cs" />
+    <Compile Include="Controllers\ผู้รับบริการ\Subscriber_UserController.cs" />
     <Compile Include="Controllers\SupplierController.cs" />
     <Compile Include="Controllers\testinsert_APIController.cs" />
-    <Compile Include="Controllers\UserService_Controller.cs" />
+    <Compile Include="Controllers\ผู้รับบริการ\UserService_Controller.cs" />
     <Compile Include="Controllers\AuthenticationController.cs" />
     <Compile Include="Controllers\Getlog_Controller.cs" />
     <Compile Include="Controllers\Get_RolesController.cs" />
@@ -251,14 +298,15 @@
     <Compile Include="Controllers\MasterData\OrganizationController.cs" />
     <Compile Include="Controllers\MasterData\PositionController.cs" />
     <Compile Include="Controllers\MasterData\Product_unitController.cs" />
-    <Compile Include="Controllers\MasterData\ProvinceController.cs" />
+    <Compile Include="Controllers\MasterData\Province_DistricController.cs" />
     <Compile Include="Controllers\MasterData\ServiceTypeController.cs" />
-    <Compile Include="Controllers\Send_SeedController.cs" />
     <Compile Include="Controllers\MasterData\TitleController.cs" />
     <Compile Include="Controllers\MasterData\SeedProductController.cs" />
     <Compile Include="Controllers\RegisterFarmerController.cs" />
     <Compile Include="Controllers\TokenController.cs" />
     <Compile Include="Controllers\ValueController.cs" />
+    <Compile Include="Controllers\อนุมัติภัยพิบัตื\CalamityController.cs" />
+    <Compile Include="Controllers\แผนการผลิต จำนวนคงเหลือ\PlanSeedInfo_SumController.cs" />
     <Compile Include="Filters\AuthenticationFailureResult.cs" />
     <Compile Include="Filters\HttpAuthenticationChallengeContextExtensions.cs" />
     <Compile Include="Filters\AddChallengeOnUnauthorizedResult.cs" />
@@ -273,23 +321,45 @@
     <Compile Include="Models\AddSubscriber_User.cs" />
     <Compile Include="Models\Approve_Model.cs" />
     <Compile Include="Models\Customer_Service.cs" />
-    <Compile Include="Models\Disaster assistance.cs" />
+    <Compile Include="Models\ต่อดาต้าเบส\ConnectDB.cs" />
+    <Compile Include="Models\นับจำนวนกิจกรรม\Count_Approve.cs" />
+    <Compile Include="Models\พี่เขียว\non_xAF.cs" />
+    <Compile Include="Models\ภัยภิบัติ\inserts_suppile.cs" />
+    <Compile Include="Models\สร้างข่าว\newsmodel.cs" />
+    <Compile Include="Models\แผนการผลิตโมเดล\SupplieUseAnimalInfo.cs" />
     <Compile Include="Models\FarmerCitizen.cs" />
+    <Compile Include="Models\ManageAnimalSupplier.cs" />
+    <Compile Include="Models\Models_Masters\AddressType.cs" />
+    <Compile Include="Models\Models_Masters\AnimalSupplie_info.cs" />
     <Compile Include="Models\Models_Masters\FinanceYear.cs" />
     <Compile Include="Models\Login.cs" />
     <Compile Include="Models\Models_Masters\MasterData.cs" />
+    <Compile Include="Models\Models_Masters\Objective_Used.cs" />
     <Compile Include="Models\Models_Masters\Plant.cs" />
+    <Compile Include="Models\Models_Masters\Province.cs" />
     <Compile Include="Models\Models_Masters\SendStatus.cs" />
+    <Compile Include="Models\Models_Masters\ServiceType.cs" />
     <Compile Include="Models\Models_Masters\Unit.cs" />
     <Compile Include="Models\Organization.cs" />
     <Compile Include="Models\refresh_Token.cs" />
     <Compile Include="Models\RegisterFarmer.cs" />
     <Compile Include="Models\Reports_values.cs" />
+    <Compile Include="Models\SendOrderSeedModel.cs" />
     <Compile Include="Models\SendOrderSupplierAnimal.cs" />
+    <Compile Include="Models\StockSeedInfo.cs" />
     <Compile Include="Models\Subscriber_User.cs" />
     <Compile Include="Models\Supplier.cs" />
     <Compile Include="Models\user.cs" />
     <Compile Include="Models\UserError.cs" />
+    <Compile Include="Models\นับจำนวนกิจกรรม\count_Number.cs" />
+    <Compile Include="Models\นับจำนวนกิจกรรม\Stock_Count.cs" />
+    <Compile Include="Controllers\พี่เขียว\DisplayonAPPController.cs" />
+    <Compile Include="Models\พี่เขียว\Display.cs" />
+    <Compile Include="Models\พี่เขียว\PublishReport.cs" />
+    <Compile Include="Models\พี่เขียว\ReportCategories.cs" />
+    <Compile Include="Models\พี่เขียว\Role.cs" />
+    <Compile Include="Models\แผนการผลิตโมเดล\PlanSeedInfo.cs" />
+    <Compile Include="Models\แผนการผลิตโมเดล\การใช้เมล็ดพันธุ์อนุมัติภัยพิบัติ.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

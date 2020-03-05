@@ -45,60 +45,28 @@ namespace WebApi.Jwt.Controllers.MasterData
         [AllowAnonymous]
         [HttpGet]
         [Route("Product_unit")]
-        public HttpResponseMessage loadProduct_unit()
+        public HttpResponseMessage get_Product_unit()
         {
-            Unit_Modle unit_model = new Unit_Modle();
+        
             try
             {
-                //    XpoTypesInfoHelper.GetXpoTypeInfoSource();
-                //    XafTypesInfo.Instance.RegisterEntity(typeof(Unit));
-                //    XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
-                //    IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-                //    Unit unit_type;
-                //    unit_type = ObjectSpace.FindObject<Unit>(CriteriaOperator.Parse("GCRecord is null and IsActive = 1"));
-                //    if (unit_type != null)
-                //    {
-
-                //        unit_model.Oid = unit_type.Oid;
-                //        unit_model.UnitCode = unit_type.UnitCode;
-                //        unit_model.UnitName = unit_type.UnitName;
-                //        return Request.CreateResponse(HttpStatusCode.OK, unit_model);
-                //    }
-                //    else
-                //    {
-                //        UserError err = new UserError();
-                //        err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-
-                //        err.message = "No data";
-                //        //  Return resual
-                //        return Request.CreateResponse(HttpStatusCode.BadRequest, err);
-                //    }
-                //}
-                //catch (Exception ex)
-                //{ //Error case เกิดข้อผิดพลาด
-                //    UserError err = new UserError();
-                //    err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-
-                //    err.message = ex.Message;
-                //    //  Return resual
-                //    return Request.CreateResponse(HttpStatusCode.BadRequest, err);
-                //}
-                DataSet ds = new DataSet();
-                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieGetunit");
-                DataTable dt = new DataTable();
-                dt = ds.Tables[0];
-                List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
-                Dictionary<string, object> row;
-                foreach (DataRow dr in dt.Rows)
+                XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.Unit));
+                List<Unit_Model> list = new List<Unit_Model>();
+                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+                IList<Unit> collection = ObjectSpace.GetObjects<Unit>(CriteriaOperator.Parse("  GCRecord is null and IsActive = 1 ", null));
+                foreach (Unit row in collection)
                 {
-                    row = new Dictionary<string, object>();
-                    foreach (DataColumn col in dt.Columns)
-                    {
-                        row.Add(col.ColumnName, dr[col]);
-                    }
-                    rows.Add(row);
+                    Unit_Model model = new Unit_Model();
+                    model.UnitOid = row.Oid.ToString();
+                    model.UnitCode = row.UnitCode;
+                    model.UnitName = row.UnitName;
+                    model.IsActive = row.IsActive;
+                    list.Add(model);
                 }
-                return Request.CreateResponse(HttpStatusCode.OK, rows);
+                return Request.CreateResponse(HttpStatusCode.OK, list);
+         
             }
             catch (Exception ex)
             { //Error case เกิดข้อผิดพลาด
@@ -109,34 +77,35 @@ namespace WebApi.Jwt.Controllers.MasterData
                 //  Return resual
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
+
         }
     
 
 
         [AllowAnonymous]
         [HttpGet]
-        [Route("Package_Info")]
+        [Route("Package_List")]
         public HttpResponseMessage loadPackage_Info() ///ข้อมูลบรรจุภัณท์
         {
             try
-            {
-                DataSet ds = new DataSet();
-                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieGetPackage_Info");
-                DataTable dt = new DataTable();
-                dt = ds.Tables[0];
-                List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
-                Dictionary<string, object> row;
-                foreach (DataRow dr in dt.Rows)
-                {
-                    row = new Dictionary<string, object>();
-                    foreach (DataColumn col in dt.Columns)
+            { 
+                   XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                    XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.Package));
+                    List<Package_Model> list = new List<Package_Model>();
+                    XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                    IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+                    IList<Package> collection = ObjectSpace.GetObjects<Package>(CriteriaOperator.Parse("  GCRecord is null and IsActive = 1 ", null));
+                    foreach (Package row in collection)
                     {
-                        row.Add(col.ColumnName, dr[col]);
+                    Package_Model model = new Package_Model();
+                       model.PackageOid = row.Oid.ToString();
+                        model.PackageName = row.PackageName;     
+                        model.IsActive = row.IsActive;
+                        list.Add(model);
                     }
-                    rows.Add(row);
-                }
-                return Request.CreateResponse(HttpStatusCode.OK, rows);
-            }
+                    return Request.CreateResponse(HttpStatusCode.OK, list);
+
+                    }
             catch (Exception ex)
             { //Error case เกิดข้อผิดพลาด
                 UserError err = new UserError();

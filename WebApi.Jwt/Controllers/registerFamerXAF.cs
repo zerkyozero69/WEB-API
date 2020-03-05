@@ -51,7 +51,7 @@ namespace WebApi.Jwt.Controllers.MasterData
             XpoTypesInfoHelper.GetTypesInfo();
             XafTypesInfo.Instance.RegisterEntity(typeof(Farmer));
             XafTypesInfo.Instance.RegisterEntity(typeof(Organization));
-            Organization org;
+            Organization org = null;
             Farmerinfo._Registerfarmer farmerinfo = new Farmerinfo._Registerfarmer();
             string TempForageType = string.Empty;
             //Farmer _Farmer = new Farmer();
@@ -73,7 +73,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                         farmerinfo.TitleOid = jObject.SelectToken("TitleOid").Value<string>();
                         farmerinfo.FirstNameTH = jObject.SelectToken("FirstNameTH").Value<string>();
                         farmerinfo.LastNameTH = jObject.SelectToken("LastNameTH").Value<string>();
-                        farmerinfo.BirthDate = jObject.SelectToken("BirthDate").Value<DateTime>();
+                        farmerinfo.BirthDate = jObject.SelectToken("BirthDate").Value<string>();
 
                         farmerinfo.GenderOid = jObject.SelectToken("GenderOid").Value<string>();
                         farmerinfo.Tel = jObject.SelectToken("Tel").Value<string>();
@@ -166,7 +166,9 @@ namespace WebApi.Jwt.Controllers.MasterData
                 //   IList<Farmer> collection = ObjectSpace.GetObjects<Farmer>(CriteriaOperator.Parse(" GCRecord is null and IsActive = 1", null));
 
                 //     XPCollection collection = (XPCollection)ObjectSpace.CreateCollection(typeof(Farmer));
- 
+
+
+
                 DataSet ds = new DataSet();
                 Farmer farmer_ = ObjectSpace.CreateObject< Farmer >();  // new Farmer(session);
              /*   ds = SqlHelper.ExecuteDataset(scc, CommandType.Text, sql)*/;

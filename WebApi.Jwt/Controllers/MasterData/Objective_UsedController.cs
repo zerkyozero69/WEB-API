@@ -29,6 +29,9 @@ using WebApi.Jwt.Filters;
 using WebApi.Jwt.helpclass;
 using NTi.CommonUtility;
 using System.IO;
+using nutrition.Module;
+using WebApi.Jwt.Models.Models_Masters;
+
 namespace WebApi.Jwt.Controllers.MasterData
 {
     public class Objective_UsedController : ApiController
@@ -42,25 +45,21 @@ namespace WebApi.Jwt.Controllers.MasterData
         {
         try
             {
-                DataSet ds = new DataSet();
-                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MobileGetObjective_Used");
-                DataTable dt = new DataTable();
-                dt = ds.Tables[0];
-                List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
-                Dictionary<string, object> row;
-                foreach (DataRow dr in dt.Rows)
-                
-                    {
-                        row = new Dictionary<string, object>();
-                        foreach (DataColumn col in dt.Columns)
-                        {
-                            row.Add(col.ColumnName, dr[col]);
-                        }
-                        rows.Add(row);
-                    }
-                    return Request.CreateResponse(HttpStatusCode.OK, rows);
-
+                XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.ObjectType));
+                List<Objective_Used_Model> list = new List<Objective_Used_Model>();
+                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+                IList<ObjectType> collection = ObjectSpace.GetObjects<ObjectType>(CriteriaOperator.Parse("  GCRecord is null and IsActive = 1", null));
+                foreach (ObjectType row in collection)
+                {
+                    Objective_Used_Model model = new Objective_Used_Model();
+                    model.ObjectTypeName = row.ObjectTypeName;
+                    model.Oid = row.Oid.ToString();
+                    list.Add(model);
                 }
+                return Request.CreateResponse(HttpStatusCode.OK, list);
+            }
             catch (Exception ex)
             { //Error case เกิดข้อผิดพลาด
                 UserError err = new UserError();
@@ -74,27 +73,24 @@ namespace WebApi.Jwt.Controllers.MasterData
         [AllowAnonymous]
         [HttpGet]
         [Route("Objective_Usedinfo")]
-        public HttpResponseMessage loadObjective_UsedinfoloadObjective_Usedinfo()
+        public HttpResponseMessage get_ProductionObjective()
         {
             try
             {
-                DataSet ds = new DataSet();
-                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MobileGetObjective_Usedinfo");
-                DataTable dt = new DataTable();
-                dt = ds.Tables[0];
-                List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
-                Dictionary<string, object> row;
-                foreach (DataRow dr in dt.Rows)
-
+                XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.ProductionObjective));
+                List<ProductionObjective_Model> list = new List<ProductionObjective_Model>();
+                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+                IList<ProductionObjective> collection = ObjectSpace.GetObjects<ProductionObjective>(CriteriaOperator.Parse("  GCRecord is null and IsActive = 1", null));
+                foreach (ProductionObjective row in collection)
                 {
-                    row = new Dictionary<string, object>();
-                    foreach (DataColumn col in dt.Columns)
-                    {
-                        row.Add(col.ColumnName, dr[col]);
-                    }
-                    rows.Add(row);
+                    ProductionObjective_Model model = new ProductionObjective_Model();
+                    model.ProductObjectiveName = row.ProductObjectiveName;
+                    model.IsActive = row.IsActive;
+                    list.Add(model);
                 }
-                return Request.CreateResponse(HttpStatusCode.OK, rows);
+                return Request.CreateResponse(HttpStatusCode.OK, list);
             }
             catch (Exception ex)
             { //Error case เกิดข้อผิดพลาด

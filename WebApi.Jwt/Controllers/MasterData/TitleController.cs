@@ -29,6 +29,7 @@ using WebApi.Jwt.helpclass;
 using NTi.CommonUtility;
 using System.IO;
 using nutrition.Module;
+using static WebApi.Jwt.Models.MasterData;
 
 namespace WebApi.Jwt.Controllers.MasterData
 {
@@ -43,29 +44,23 @@ namespace WebApi.Jwt.Controllers.MasterData
         {
             try
             {
-                //string language = "TH";
-                //language = HttpContext.Current.Request.Form["language"].ToString();
-
-
-                DataSet ds = new DataSet();
-
-                ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "LoadTitle_Name");
-                DataTable dt = new DataTable();
-                dt = ds.Tables[0];
-                List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
-                Dictionary<string, object> row;
-                foreach (DataRow dr in dt.Rows)
+                XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.Title));
+                List<TitleName_Model> list = new List<TitleName_Model>();
+                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+                IList<Title> collection = ObjectSpace.GetObjects<Title>(CriteriaOperator.Parse("  GCRecord is null and IsActive = 1 ", null));
+                foreach (Title row in collection)
                 {
-                    row = new Dictionary<string, object>();
-                    foreach (DataColumn col in dt.Columns)
-                    {
-                        row.Add(col.ColumnName, dr[col]);
-                    }
-                    rows.Add(row);
-                }
-                return Request.CreateResponse(HttpStatusCode.OK, rows);
+                    TitleName_Model model = new TitleName_Model();
+                    model.Oid = row.Oid.ToString();
+                    model.SubTitleName = row.SubTitleName;
+                    model.TitleName = row.TitleName;
+                    model.IsActive = row.IsActive;
+                    list.Add(model);
 
-            
+                }
+                return Request.CreateResponse(HttpStatusCode.OK, list);
             }
             catch (Exception ex)
             { //Error case เกิดข้อผิดพลาด

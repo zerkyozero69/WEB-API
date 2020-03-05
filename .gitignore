@@ -153,3 +153,4 @@ dump.rdb
 
 # GhostDoc
 *.GhostDoc.xml
+/WebApi.Jwt/Controllers/ManageAnimalSupplierController.cs
