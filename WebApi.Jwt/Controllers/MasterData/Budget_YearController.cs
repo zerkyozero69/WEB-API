@@ -58,11 +58,11 @@ namespace WebApi.Jwt.Controllers.MasterData
                 XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
                 IList<FinanceYear> collection = ObjectSpace.GetObjects<FinanceYear>(CriteriaOperator.Parse("GCRecord is null and IsActive = 1", null));
-
+                var Qurey = (from Q in collection orderby Q.YearName descending select Q);
                 if (collection.Count > 0)
                 {
                     List<FinanceYearModel> list = new List<FinanceYearModel>();
-                    foreach (FinanceYear row in collection)
+                    foreach (FinanceYear row in Qurey)
                     {
                         FinanceYearModel Finance = new FinanceYearModel();
                         Finance.FinanceYearOid = row.Oid.ToString();
@@ -139,7 +139,10 @@ namespace WebApi.Jwt.Controllers.MasterData
                 //  Return resual
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
-         
+            finally
+            {
+                
+            }
 
         }
     }

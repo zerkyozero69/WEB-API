@@ -54,6 +54,8 @@ namespace WebApi.Jwt.Models
             public string Moo { get; set; }
             public string Soi { get; set; }
             public string Road { get; set; }
+            public string DLDZone { get; set; }
+            public string DLDName { get; set; }
             public string ProvinceNameTH { get; set; }
             public string DistrictNameTH { get; set; }
             public string SubDistrictNameTH { get; set; }

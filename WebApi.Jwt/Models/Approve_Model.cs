@@ -104,6 +104,7 @@ namespace WebApi.Jwt.Models
         public string SubOrganizationName { get; set; }
         public string EmployeeName { get; set; }
         public string Remark { get; set; }
+        public string ReceiverRemark { get; set; }
         public string Status { get; set; }
         public string ApproveDate { get; set; }
         public string ActivityNameOid { get; set; }

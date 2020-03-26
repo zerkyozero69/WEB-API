@@ -101,7 +101,7 @@ namespace WebApi.Jwt.Controllers.MasterData
 
                 err.message = ex.Message;
                 //  Return resual
-                return Request.CreateResponse(HttpStatusCode.ExpectationFailed, err);
+                return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
         }
         

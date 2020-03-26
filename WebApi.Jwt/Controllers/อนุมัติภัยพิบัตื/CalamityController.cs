@@ -41,6 +41,7 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
         {
             string TempDescription = "";
             string Username = "";
+            bool result = false;
             try
             {
 
@@ -224,7 +225,9 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                             ObjHistory.CreateBy = Username;
                             ObjHistory.CreateDate = DateTime.Now;
                             ObjectSpace.CommitChanges();
+                           
                         }
+                 
                         if (Status == "2")
                         { //ไม่อนุมัติ
                             foreach (SupplierUseProductDetail row in ObjMaster.SupplierUseProductDetails)
@@ -517,11 +520,15 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
             return_OidSupplierUseAnimalProductOid item = new return_OidSupplierUseAnimalProductOid();
             SupplierProductUser_Model2 productUser = new SupplierProductUser_Model2();
             int? Type = 0;
+            int? Typestatus = 0;
 
 
             try
             {
 
+                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+
+                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
                 string requestString = Request.Content.ReadAsStringAsync().Result;
                 JObject jObject = (JObject)JsonConvert.DeserializeObject(requestString);
                 string TempForageType = string.Empty;
@@ -546,7 +553,12 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                     productUser.FinanceYearOid = jObject.SelectToken("FinanceYearOid").Value<string>();
                     productUser.OrganizationOid = jObject.SelectToken("OrganizationOid").Value<string>();
                     productUser.Remark = jObject.SelectToken("Remark").Value<string>();
-                    productUser.ActivityNameOid = "b100c7c1-4755-4af0-812e-3dd6ba372d45";
+                    if (jObject.SelectToken("activityNameOid") == null)
+                    {
+                        Activity ActivityOid = ObjectSpace.FindObject<Activity>(CriteriaOperator.Parse("GCRecord is null and IsActive = 1 and ActivityName=? ", "เพื่อช่วยเหลือภัยพิบัติ"));
+                        productUser.ActivityNameOid = ActivityOid.Oid.ToString();
+                    }
+                   
                     productUser.CitizenID = jObject.SelectToken("CitizenID").Value<string>();
                     productUser.YearName = jObject.SelectToken("FinanceYear").Value<string>(); ///ใช้สำหรับเจนเลข ออโต้
 
@@ -581,7 +593,8 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                     productUser.ReceiverAddress = jObject.SelectToken("FullAddress").Value<string>();
                     //if (jObject.SelectToken("Type") != null || jObject.SelectToken("type") != null)
                     //{
-                    Type = jObject.SelectToken("type").Value<int>();
+                    //Type = jObject.SelectToken("type").Value<int>();
+                    Typestatus = jObject.SelectToken("type").Value<int>();
 
                     // }
 
@@ -595,10 +608,7 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                         XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.Organization));
 
 
-                        XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
-                        directProvider.Dispose();
-                        IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-                        ObjectSpace.Dispose();
+
                         Organization objORG = ObjectSpace.FindObject<Organization>(CriteriaOperator.Parse("Oid=?", productUser.OrganizationOid));
                         //SendOrderSeed objSupplierProduct = ObjectSpace.FindObject<SendOrderSeed>(CriteriaOperator.Parse("SendNo=?", _refno));
                         /// รอเปลี่ยน
@@ -619,6 +629,8 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                             prm2[3] = new SqlParameter("@FormType", "nutrition");
                             prm2[4] = new SqlParameter("@Type", 1);
 
+                            directProvider.Dispose();
+                            ObjectSpace.Dispose();
                             SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "Insert_RuningNumber", prm2);
 
                         }
@@ -647,8 +659,9 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                     {
                         Type = 1;
                     }
+
                     DataSet ds;
-                    SqlParameter[] prm = new SqlParameter[17];
+                    SqlParameter[] prm = new SqlParameter[18];
                     prm[0] = new SqlParameter("@UseNo", productUser.UseNo);
                     prm[1] = new SqlParameter("@UseDate", productUser.UseDate);
                     prm[2] = new SqlParameter("@YearName", productUser.YearName);
@@ -665,8 +678,10 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                     prm[12] = new SqlParameter("@oid", productUser.SupplierUseAnimalProductOid);
                     prm[13] = new SqlParameter("@ReceiverName", productUser.ReceiverName);
                     prm[14] = new SqlParameter("@ReceiverAddress", productUser.ReceiverAddress);
-                    prm[15] = new SqlParameter("@ReceiverNumber", productUser.ReceiverNumber);
-                    prm[16] = new SqlParameter("@ReceiverRemark", productUser.ReceiverRemark + "" + "(Mobile Application)");
+                    prm[15] = new SqlParameter("@ReceiverNumber", productUser.ServiceCount);
+                    prm[16] = new SqlParameter("@ReceiverRemark", productUser.Remark);
+                    prm[17] = new SqlParameter("@Type", Typestatus);
+                    
 
                     ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MoblieInserts_Calamity_SupplierUseAnimalProduct_Update", prm);
 
@@ -1200,9 +1215,9 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                     XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.SupplierUseProductDetail));
 
                     XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
-                    directProvider.Dispose();
+
                     IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-                    ObjectSpace.Dispose();
+
                     SupplierUseAnimalProduct objSupplierUseAnimalProduct = ObjectSpace.FindObject<SupplierUseAnimalProduct>(CriteriaOperator.Parse(" GCRecord is null  and Oid=?  ", SupplierUseAnimalProductOid));
                     //SupplierUseProductDetail objSupplierUseProductDetail;
                     SupplierUseProductDetail objSupplierUseProductDetail = ObjectSpace.FindObject<SupplierUseProductDetail>(CriteriaOperator.Parse(" GCRecord is null   ", null));
@@ -1215,19 +1230,14 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                         { //รอการตรวจสอบ                    
 
                             //objSupplierUseProductDetail.SupplierUseProduct = ;
-                            objSupplierUseAnimalProduct.Status = EnumRodBreedProductSeedStatus.Accepet; //0
+                            objSupplierUseAnimalProduct.Status = EnumRodBreedProductSeedStatus.InProgess; //0
                             if (Remark != "")
                             {
                                 objSupplierUseAnimalProduct.Remark = Remark;
                             }
                             ObjectSpace.CommitChanges();
-
-                            UpdateResult Accept = new UpdateResult();
-                            Accept.status = "true";
-                            Accept.message = "บันทึกข้อมูลรออนุมัติเสร็จเรียบร้อยแล้ว";
-                            return Request.CreateResponse(HttpStatusCode.OK, Accept);
                         }
-                        else if (Status == "1")
+                        else if (Status == "2")
                         { // อนุมัติให้ ผ.อ. 
 
                             objSupplierUseAnimalProduct.Status = EnumRodBreedProductSeedStatus.Accepet; //1
@@ -1241,6 +1251,8 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                         UpdateResult ret = new UpdateResult();
                         ret.status = "true";
                         ret.message = "ยืนยันการส่งให้ ผอ.อนุมัติเรียบร้อยแล้ว";
+                        directProvider.Dispose();
+                        ObjectSpace.Dispose();
                         return Request.CreateResponse(HttpStatusCode.OK, ret);
 
                     }
@@ -1311,7 +1323,7 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                     XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.StockAnimalInfo_Report));
                     XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.HistoryWork));
                     XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.StockAnimalUseInfo));
-                    
+
                     XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                     IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
 
@@ -1547,6 +1559,7 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                             ObjHistory.CreateDate = DateTime.Now;
                             ObjectSpace.CommitChanges();
                         }
+
                         else if (Status == "2")
                         {
                             foreach (SupplierUseAnimalProductDetail row in ObjMaster.SupplierUseAnimalProductDetails)
@@ -1691,6 +1704,7 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                             ObjHistory.CreateDate = DateTime.Now;
                             ObjectSpace.CommitChanges();
                         }
+                    
 
 
                         UpdateResult ret = new UpdateResult();
@@ -1737,7 +1751,7 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
             string Username = "";
             try
             {
-                 string Remark = HttpContext.Current.Request.Form["Remark"].ToString();
+                string Remark = HttpContext.Current.Request.Form["Remark"].ToString();
                 string RefNo = HttpContext.Current.Request.Form["RefNo"].ToString(); //ข้อมูลเลขที่อ้างอิง
                 string Status = HttpContext.Current.Request.Form["Status"].ToString(); //สถานะ
                 Username = HttpContext.Current.Request.Form["Username"].ToString();
@@ -1756,7 +1770,7 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                     XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.StockAnimalUseInfo));
                     XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.StockSeedInfo));
                     XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.SupplierUseProduct));
-                    
+
                     List<SendOrderSeed> list = new List<SendOrderSeed>();
                     XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                     IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
@@ -2012,7 +2026,7 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                     err.message = "กรุณาใส่ข้อมูล RefNo ให้เรียบร้อยก่อน";
                     return Request.CreateResponse(HttpStatusCode.BadRequest, err);
                 }
-            
+
 
             }
             catch (Exception ex)
@@ -2158,7 +2172,7 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                         {
                             SubActivityOid = "86e8c106 - a176 - 441f - a7e0 - b911e487641f";
                         }
-                        IList<SupplierUseAnimalProduct> collection3 = ObjectSpace.GetObjects<SupplierUseAnimalProduct>(CriteriaOperator.Parse("GCRecord is null and SubActivityOid is not null and PickupType is not null and (Status IN (0, 1)) and [OrganizationOid] like '%" + org_oid + "%' and [ActivityOid] = '" + ActivityOid.Oid + "'  ", null));
+                        IList<SupplierUseAnimalProduct> collection3 = ObjectSpace.GetObjects<SupplierUseAnimalProduct>(CriteriaOperator.Parse("GCRecord is null and SubActivityOid is not null and PickupType is not null and Status = 0 and [OrganizationOid] like '%" + org_oid + "%' and [ActivityOid] = '" + ActivityOid.Oid + "'  ", null));
                         var query = from Q in collection3 orderby Q.UseNo select Q;
                         if (collection3.Count > 0)
                         {

@@ -30,6 +30,7 @@ using NTi.CommonUtility;
 using System.IO;
 using nutrition.Module;
 using WebApi.Jwt.Models.Models_Masters;
+using Organization = nutrition.Module.Organization;
 
 namespace WebApi.Jwt.Controllers.MasterData
 {
@@ -40,7 +41,7 @@ namespace WebApi.Jwt.Controllers.MasterData
 
 
         /// <summary>
-        /// 
+        /// เลือกหน่วยงาน
         /// </summary>
         /// 
         [AllowAnonymous]
@@ -75,8 +76,8 @@ namespace WebApi.Jwt.Controllers.MasterData
                 {
                     return Request.CreateResponse(HttpStatusCode.OK, rows);
                 }
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "No Data");
-                return Request.CreateResponse(HttpStatusCode.OK);
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "NoData");
+               
             }
             catch (Exception ex)
             {
@@ -90,6 +91,10 @@ namespace WebApi.Jwt.Controllers.MasterData
             }
 
         }
+        /// <summary>
+        /// ค้นหา DLD Zone 
+        /// </summary>
+        /// <returns></returns>
         [AllowAnonymous]
         // [JwtAuthentication]
         [HttpPost]
@@ -99,42 +104,44 @@ namespace WebApi.Jwt.Controllers.MasterData
             try
             {
                 XpoTypesInfoHelper.GetXpoTypeInfoSource();
-                XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.Organization));
+                XafTypesInfo.Instance.RegisterEntity(typeof(DLDArea));
+                XafTypesInfo.Instance.RegisterEntity(typeof(Organization));
+                List<listdetail> DLD = new List<listdetail>();
+
+
+
                 XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
-                ///รอ debug
+
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-                
-                List<DLDArea_Model> list = new List<DLDArea_Model>();
-                IList<nutrition.Module.Organization> collection = ObjectSpace.GetObjects<nutrition.Module.Organization>(CriteriaOperator.Parse(" IsActive = 1  and [OrganizeNameTH] like 'เขต%' ", null));
+
+                //IList<Organization> collection = ObjectSpace.GetObjects<Organization>(CriteriaOperator.Parse("GCRecord is null and IsActive = 1 and OrganizeNameTH LIKE 'เขต%'", null));
+                IList<Organization> collection = ObjectSpace.GetObjects<Organization>(CriteriaOperator.Parse("GCRecord is null and IsActive = 1 and OrganizeNameTH like 'เขต%'", null));
+
+                var query = from Q in collection orderby Q.OrganizeNameTH select Q;
                 {
-                    var query = from Q in collection orderby Q.OrganizeNameTH select Q;
-                    if (collection.Count > 0)
-                        
+                    foreach (Organization row in query)
                     {
-                        
-                        foreach (nutrition.Module.Organization row in query)
+                        listdetail listsa = new listdetail();
+                        listsa.OId = row.Oid.ToString();
+                        listsa.DLDName = row.OrganizeNameTH;
+
+                        IList<Organization> collection2 = ObjectSpace.GetObjects<Organization>(CriteriaOperator.Parse("GCRecord is null and IsActive = 1 and MasterOrganization ='" + row.Oid + "' ", null));
+                        List<listDLD> listDLDs = new List<listDLD>();
+                        foreach (Organization row2 in collection2)
                         {
-                            DLDArea_Model Item = new DLDArea_Model();
-                            Item.DLDAreaOid = row.Oid.ToString();
-                            Item.DLDAreaName = row.OrganizeNameTH;
-                            Item.IsActive = row.IsActive;
-
-                            list.Add(Item);
-
+                            listDLD item = new listDLD();
+                            item.ORGOid = row2.Oid.ToString();
+                            item.OrganizationName = row2.OrganizeNameTH;
+                            listDLDs.Add(item);
                         }
-
+                        listsa.Detail = listDLDs;
+                        DLD.Add(listsa);
                     }
-                    else
-                    {          //invalid
-                        UserError err = new UserError();
-                        err.status = "false";
-                        err.code = "0";
-                        err.message = "NoData";
-                        return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+                    return Request.CreateResponse(HttpStatusCode.OK, DLD);
 
-                    }
-                    return Request.CreateResponse(HttpStatusCode.OK, list);
                 }
+       
+                  
 
             }
             catch (Exception ex)
@@ -146,29 +153,5 @@ namespace WebApi.Jwt.Controllers.MasterData
             }
         }
 
-
-        //[AllowAnonymous]
-        //// [JwtAuthentication]
-        //[HttpPost]
-        //[Route("Organization_info")]
-        //public  HttpResponseMessage getquotaOrganization()
-        //{
-        //    try
-        //    {
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        //Error case เกิดข้อผิดพลาด
-        //        UserError err = new UserError();
-        //        err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-
-        //        err.message = ex.Message;
-        //        //  Return resual
-        //        return Request.CreateResponse(HttpStatusCode.BadRequest, err);
-        //    }
-
-
-        //}
     }
 }

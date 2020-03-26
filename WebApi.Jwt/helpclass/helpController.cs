@@ -126,6 +126,7 @@ namespace WebApi.Jwt.helpclass
                             {
                                 objUser_info.DLD = DLD.OrganizeNameTH;
                             }
+                            objUser_info.DLDZone = User.Organization.ProvinceOid.DLDZone.ToString() ;
                             objUser_info.Latitude = User.Organization.Latitude;
                             objUser_info.Longitude = User.Organization.Longitude;
                             TokenController token = new TokenController();
@@ -154,12 +155,27 @@ namespace WebApi.Jwt.helpclass
                                         {
                                             AcName = "Edit";
                                         }
-                                        else
+                                        else if (AcName.Contains("Edit") != true)
                                         {
                                             AcName = AcName + "," + "Edit";
                                         }
                                         break;
-                                        
+                                    case "Administrator":
+                                        if (AcName == "")
+                                        {
+                                            AcName = "Edit";
+                                        }
+                                        else if (AcName.Contains("Edit") != true)
+                                        {
+                                            AcName = AcName + "," + "Edit";
+                                        }
+                                        //else
+                                        //{
+                                        //    AcName = AcName + "," + "Edit";
+
+                                        //}
+                                        break;
+
                                     default:
                                         if (AcName == "")
                                         {
@@ -178,20 +194,20 @@ namespace WebApi.Jwt.helpclass
 
                             }
 
+                            objUser_info.ActionName = AcName;
 
-                            List<WebApi.Jwt.Models.user.Roles_info> objListRoles_info = new List<WebApi.Jwt.Models.user.Roles_info>();
+                            //List<WebApi.Jwt.Models.user.Roles_info> objListRoles_info = new List<WebApi.Jwt.Models.user.Roles_info>();
 
-                            if (AcName.Contains("Edit") == true)
-                            {
-                                objUser_info.ActionName = "Edit";
-                            }
-                            else
-                            {
-                                objUser_info.ActionName = AcName;
-                            }
+                            //if (AcName.Contains("Edit") == true || AcName.Contains("Administrator") == true )
+                            //{
+                            //    objUser_info.ActionName = "Edit"+ "Administrator";
+                            //}
+                            //else
+                            //{
+                            //    objUser_info.ActionName = AcName;
+                            //}
 
                   
-                            directProvider.Dispose();
                         }
                         else if (User.ComparePassword(Password) == false)
                         {
@@ -204,6 +220,8 @@ namespace WebApi.Jwt.helpclass
 
                         }
                     }
+                    
+                            directProvider.Dispose();
                 }
                 //IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
             }

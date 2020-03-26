@@ -339,6 +339,11 @@ namespace WebApi.Jwt.Controllers
                             {
                                 Supplier_.SubActivityName = row.SubActivityOid.ActivityName.ToString();
                             }
+                            if (row.ReceiverRemark != null)
+                            {
+                                Supplier_.ReceiverRemark = row.ReceiverRemark;
+                            }
+                            Supplier_.Remark = row.Remark;
                             string BudgetSourceName = null;
                             double Amount = 0;
                             double Price = 0;
@@ -523,7 +528,8 @@ namespace WebApi.Jwt.Controllers
                             Supplier_.EmployeeName = collection.EmployeeOid.FullName;
                         }
 
-                        Supplier_.Remark = collection.ReceiverRemark;
+                        Supplier_.Remark = collection.Remark;
+                        Supplier_.ReceiverRemark = collection.ReceiverRemark; //เพิ่มใหม่
                         Supplier_.Status = collection.Status.ToString();
                         Supplier_.ApproveDate = collection.ApproveDate.ToString("dd-MM-yyyy", new CultureInfo("us-US"));
                         Supplier_.ActivityNameOid = collection.ActivityOid.Oid.ToString();
@@ -589,7 +595,7 @@ namespace WebApi.Jwt.Controllers
                                 item2.StockLimit = row2.StockLimit;
                                 item2.AnimalSupplieName = row2.AnimalSupplieOid.AnimalSupplieName;
                                 item2.QuotaQTY = row2.QuotaQTY;
-
+                             
                                 item2.Amount = row2.Amount;
                                 Amount = item2.Amount.ToString();
                                 BudgetSourceName = item2.BudgetSourceName;
@@ -706,7 +712,7 @@ namespace WebApi.Jwt.Controllers
                             item2.AnimalSupplieName = row2.AnimalSupplieOid.AnimalSupplieName;
                             item2.QuotaQTY = row2.QuotaQTY;
                             item2.PerUnit = row2.PerUnit;
-                            if (row2.PackageOid !=null)
+                            if (row2.PackageOid !=null) 
                             {
                                 item2.PackageOid = row2.PackageOid.Oid.ToString();
                                 item2.PackageName = row2.PackageOid.PackageName;
@@ -810,11 +816,16 @@ namespace WebApi.Jwt.Controllers
         [Route("SupplierUseAnimal/InsertDetail")]
         public HttpResponseMessage SupplierUseAnimal_InsertDetail()  ///SupplierUseAnimal_InsertDetail
         {
+         
             inserts_suppile inserts = new inserts_suppile();
             try
             {
                 string requestString = Request.Content.ReadAsStringAsync().Result;
                 JObject jObject = (JObject)JsonConvert.DeserializeObject(requestString);
+                XpoTypesInfoHelper.GetXpoTypeInfoSource();
+                XafTypesInfo.Instance.RegisterEntity(typeof(Unit));
+                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
                 if (jObject.SelectToken("OrganizationOid") != null)
                 {
                     inserts.orgOid = jObject.SelectToken("OrganizationOid").Value<string>();
@@ -834,7 +845,7 @@ namespace WebApi.Jwt.Controllers
                 }
 
                 inserts.SupplierUseAnimalProductOid = jObject.SelectToken("supplierUseAnimalProductOid").Value<string>();
-                inserts.Weight = jObject.SelectToken("weight").Value<string>();
+                inserts.Weight = jObject.SelectToken("weight").Value<double>();
                 inserts.AnimalSupplieOid = jObject.SelectToken("animalsupplieoid").Value<string>();
                 if (jObject.SelectToken("animalSupplieTypeOid") != null)
                 {
@@ -862,6 +873,12 @@ namespace WebApi.Jwt.Controllers
                 {
                     inserts.WeightUnitOid = jObject.SelectToken("weightunitoid").Value<string>();
                 }
+                else
+                {
+                    Unit WeightUnit = ObjectSpace.FindObject<Unit>(CriteriaOperator.Parse("UnitName=? ", "กิโลกรัม"));
+                    inserts.WeightUnitOid = WeightUnit.Oid.ToString();
+                }
+         
 
 
                 if (jObject.SelectToken("managesuboid") != null)
@@ -876,15 +893,14 @@ namespace WebApi.Jwt.Controllers
                 XafTypesInfo.Instance.RegisterEntity(typeof(SeedType));
                 XafTypesInfo.Instance.RegisterEntity(typeof(AnimalSupplieType));
                 XafTypesInfo.Instance.RegisterEntity(typeof(AnimalSupplie));
+           
                 List<ManageAnimalSupplier_Model2> list = new List<ManageAnimalSupplier_Model2>();
                 List<ManageQuantityProductDetail> listQuantity = new List<ManageQuantityProductDetail>();
                 List<objManageAnimalSupplier> listdetail = new List<objManageAnimalSupplier>();
                 ManageQuantityProductDetail listQuantity2 = new ManageQuantityProductDetail();
-                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
-                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
+            
                 double balanceQTY = 0.0;
-                double amount = 0.0;
-                double objstocklimit = 0.0;
+             
 
                 AnimalSupplie objAnimalSupplie = ObjectSpace.FindObject<AnimalSupplie>(CriteriaOperator.Parse("[oid] =? ", inserts.AnimalSupplieOid));
                 if (objAnimalSupplie.AnimalSupplieName == "แห้ง")
@@ -1018,6 +1034,7 @@ namespace WebApi.Jwt.Controllers
                 }
                 else
                 {
+                     
                     var stocklimit = 0.0;
                     if (jObject.SelectToken("seedtypeoid").Value<string>() != null && jObject.SelectToken("seedtypeoid").Value<string>() != "")
                     {
@@ -1028,7 +1045,7 @@ namespace WebApi.Jwt.Controllers
                          , new SqlParameter("@BudgetSourceOid", inserts.BudgetSourceOid)
                          , new SqlParameter("@AnimalSupplieOid", inserts.AnimalSupplieOid)
                          , new SqlParameter("@SeedTypeOid", inserts.SeedTypeOid));
-                        if (Ds.Tables[0].Rows.Count > 0)
+                       if (Ds.Tables[0].Rows.Count > 0)
                         {
                             balanceQTY = (double)Ds.Tables[0].Rows[0]["Total_StockAnimalInfo"];
                         }
@@ -1044,7 +1061,7 @@ namespace WebApi.Jwt.Controllers
                          , new SqlParameter("@AnimalSupplieOid", inserts.AnimalSupplieOid)
                          , new SqlParameter("@SeedTypeOid", inserts.SeedTypeOid));
                         if (Ds.Tables[0].Rows.Count > 0)
-                        {
+                                                                                                                                                                                                                                                                                                                                                                                          {
                             stocklimit = (double)Ds.Tables[0].Rows[0]["Total_Current"];
                         }
                         else
@@ -1093,11 +1110,10 @@ namespace WebApi.Jwt.Controllers
 
 
                 }
-                if (inserts.AnimalSupplieOid != "")
+                
+                if (inserts.AnimalSupplieOid != "" && listQuantity2.balanceQTY  >= inserts.Weight )
                 {
                     DataSet ds;
-
-
                     SqlParameter[] prm = new SqlParameter[15];
 
                     prm[0] = new SqlParameter("@AnimalSupplieOid", inserts.AnimalSupplieOid);
@@ -1110,14 +1126,24 @@ namespace WebApi.Jwt.Controllers
                     prm[6] = new SqlParameter("@ManageSubAnimalSupplierOid", listQuantity2.ManageSubAnimalSupplierOid);
                     prm[7] = new SqlParameter("@QuotaQTY", listQuantity2.QuotaQTY);
                     prm[8] = new SqlParameter("@StockUsed", listQuantity2.stockuse);
-                    prm[9] = new SqlParameter("@Amount", listQuantity2.QuotaQTY);
-                    prm[10] = new SqlParameter("@QuotaTypeOid", inserts.QuotaTypeOid);
+                    prm[9] = new SqlParameter("@Amount", listQuantity2.balancQuotaQTY);
+
+                    if (objAnimalSupplie.AnimalSupplieName == "TMR")
+                    {
+                        prm[10] = new SqlParameter("@QuotaTypeOid", null);
+                    }
+                    else
+                    {
+                        prm[10] = new SqlParameter("@QuotaTypeOid", inserts.QuotaTypeOid);
+                    }
+
+
                     prm[11] = new SqlParameter("@SeedTypeOid", inserts.SeedTypeOid);
                     prm[12] = new SqlParameter("@PackageOid", inserts.PackageOid);
                     prm[13] = new SqlParameter("@PerUnit", inserts.PerUnit);
                     prm[14] = new SqlParameter("@BudgetSourceOid", inserts.BudgetSourceOid);
                     ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "SP_ADDSupplierUseAnimalProductDetail", prm);
-                    if (ds.Tables[0].Rows.Count > 0)
+                    if (ds.Tables[0].Rows.Count > 0   )
                     {
                         UpdateResult ret = new UpdateResult();
                         ret.status = "true";
@@ -1137,8 +1163,8 @@ namespace WebApi.Jwt.Controllers
                 {
                     UpdateResult ret = new UpdateResult();
                     ret.status = "-1";
-                    ret.message = "ต้องระบุข้อมูลให้ครบ";
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, ret);
+                    ret.message = "จำนวนคงเหลือตามจริง ไม่พอให้เบิกใช้ โปรดตรวจสอบ";
+                    return Request.CreateResponse(HttpStatusCode.NoContent, ret);
                 }
 
 
@@ -1359,7 +1385,7 @@ namespace WebApi.Jwt.Controllers
                             SubActivityOid = "86e8c106 - a176 - 441f - a7e0 - b911e487641f";
                         }
 
-                        IList<SupplierUseAnimalProduct> collection3 = ObjectSpace.GetObjects<SupplierUseAnimalProduct>(CriteriaOperator.Parse("GCRecord is null and SubActivityOid is not null and PickupType is not null and Status  = 1 and [OrganizationOid] like '%" + org_oid + "%' and [ActivityOid] = '" + ActivityOid.Oid + "'  ", null));
+                        IList<SupplierUseAnimalProduct> collection3 = ObjectSpace.GetObjects<SupplierUseAnimalProduct>(CriteriaOperator.Parse("UseNo is not null  and GCRecord is null and SubActivityOid is not null and PickupType is not null and Status  = 1 and [OrganizationOid] like '%" + org_oid + "%' and [ActivityOid] = '" + ActivityOid.Oid + "'  ", null));
 
                         var query = from Q in collection3 orderby Q.UseNo select Q;
                         if (collection3.Count > 0)
@@ -1371,7 +1397,11 @@ namespace WebApi.Jwt.Controllers
                                 Supplier_3.TypeMoblie = type;
                                 Supplier_3.Oid = row.Oid.ToString();
                                 Supplier_3.UseDate = row.UseDate.ToString("dd-MM-yyyy", new CultureInfo("us-US"));
-                                Supplier_3.UseNo = row.UseNo.ToString();
+                                if(row.UseNo != null)
+                                {
+                                    Supplier_3.UseNo = row.UseNo.ToString();
+                                }
+                               
                                 if (row.RegisCusServiceOid != null  )
                                 {
                                     Supplier_3.RegisCusServiceOid = row.RegisCusServiceOid.Oid.ToString();
@@ -1406,7 +1436,8 @@ namespace WebApi.Jwt.Controllers
                                 {
                                     Supplier_3.EmployeeName = row.EmployeeOid.EmployeeFirstName + " " + row.EmployeeOid.EmployeeLastName;
                                 }
-
+                                Supplier_3.ServiceCount = row.ServiceCount;
+                               
                                 Supplier_3.Remark = row.Remark;
                                 Supplier_3.Status = row.Status.ToString();
                                 Supplier_3.ApproveDate = row.ApproveDate.ToString("dd-MM-yyyy", new CultureInfo("us-US"));
@@ -1425,6 +1456,7 @@ namespace WebApi.Jwt.Controllers
                                 Supplier_3.Refno = row.UseNo + "|" + row.OrganizationOid.Oid.ToString() + "|3";
                                 Supplier_3.Weight = row.SupplierUseAnimalProductDetails.Sum((c => c.Weight)).ToString() + " " + "กิโลกรัม";
                                 UseACT3.Add(Supplier_3);
+                              
                             }
                             //lists.UseACT2 = UseACT2;
                             return Request.CreateResponse(HttpStatusCode.OK, UseACT3);
@@ -1524,7 +1556,7 @@ namespace WebApi.Jwt.Controllers
                     err.status = "false";
                     err.code = "0";
                     err.message = "กรุณาใส่ข้อมูล  type (type 1 เพื่อการแจกจ่าย (สนับสนุนเกษตรกร)/2 การจำหน่าย /3 ภัยพิบัติ/)  ให้เรียบร้อยก่อน";
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+                    return Request.CreateResponse(HttpStatusCode.NotFound, err);
 
                 }
                 else

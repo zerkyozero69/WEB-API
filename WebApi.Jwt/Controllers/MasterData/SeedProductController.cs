@@ -199,21 +199,15 @@ namespace WebApi.Jwt.Controllers.MasterData
                 string animalsupplieoid = HttpContext.Current.Request.Form["animalsupplieoid"].ToString();
                 string orgOid = HttpContext.Current.Request.Form["orgoid"].ToString();
 
-                if (HttpContext.Current.Request.Form["managesuboid"].ToString() == null)
+                if (HttpContext.Current.Request.Form["managesuboid"].ToString() != null)
                 {
-                    managesuboid = " ";
-                }
-                else
-                {
+     
                     managesuboid = HttpContext.Current.Request.Form["seedTypeOid"].ToString();
                 }
 
-                if (HttpContext.Current.Request.Form["seedTypeOid"].ToString() == null)
+                if (HttpContext.Current.Request.Form["seedTypeOid"].ToString() != null)
                 {
-                    SeedTypeOid = " ";
-                }
-                else
-                {
+             
                     SeedTypeOid = HttpContext.Current.Request.Form["seedTypeOid"].ToString();
                 }
 

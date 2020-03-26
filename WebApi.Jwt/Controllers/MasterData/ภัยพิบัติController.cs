@@ -51,7 +51,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                 List<Disaster_Model> list = new List<Disaster_Model>();
                 XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-                IList<Activity> collection = ObjectSpace.GetObjects<Activity>(CriteriaOperator.Parse("  GCRecord is null and IsActive = 1 ", null));
+                IList<Activity> collection = ObjectSpace.GetObjects<Activity>(CriteriaOperator.Parse("GCRecord is null and IsActive = 1 ", null));
                 foreach (Activity row in collection)
                 {
                     Disaster_Model model = new Disaster_Model();

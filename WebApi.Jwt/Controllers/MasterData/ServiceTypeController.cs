@@ -54,7 +54,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                 List<ServiceType_Model> list = new List<ServiceType_Model>();
                 XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-                IList<ServiceType> collection = ObjectSpace.GetObjects<ServiceType>(CriteriaOperator.Parse("  GCRecord is null and IsActive = 1 ", null));
+                IList<ServiceType> collection = ObjectSpace.GetObjects<ServiceType>(CriteriaOperator.Parse("GCRecord is null and IsActive = 1 ", null));
                 foreach (ServiceType row in collection)
                 {
                     ServiceType_Model model = new ServiceType_Model();
@@ -64,7 +64,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                     model.IsActive = row.IsActive;
                     list.Add(model);
 
-    }
+                   }
                 return Request.CreateResponse(HttpStatusCode.OK, list);
             }
             catch (Exception ex)

@@ -13,7 +13,7 @@ namespace WebApi.Jwt.Models.ภัยภิบัติ
         public string PackageOid { get; set; }
         public string orgOid { get; set; }
         public double StockLimit { get; set; }
-        public string Weight { get; set; }
+        public double Weight { get; set; }
         public string SupplierUseAnimalProductOid { get; set; }
         public string AnimalSupplieOid { get; set; }
         public string AnimalSupplieTypeOid { get; set; }

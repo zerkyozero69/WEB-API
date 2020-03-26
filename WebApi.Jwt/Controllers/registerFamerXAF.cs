@@ -73,7 +73,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                         farmerinfo.TitleOid = jObject.SelectToken("TitleOid").Value<string>();
                         farmerinfo.FirstNameTH = jObject.SelectToken("FirstNameTH").Value<string>();
                         farmerinfo.LastNameTH = jObject.SelectToken("LastNameTH").Value<string>();
-                        farmerinfo.BirthDate = jObject.SelectToken("BirthDate").Value<DateTime>();
+                        farmerinfo.BirthDate = jObject.SelectToken("BirthDate").Value<string>();
 
                         farmerinfo.GenderOid = jObject.SelectToken("GenderOid").Value<string>();
                         farmerinfo.Tel = jObject.SelectToken("Tel").Value<string>();

@@ -49,7 +49,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                 List<TitleName_Model> list = new List<TitleName_Model>();
                 XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-                IList<Title> collection = ObjectSpace.GetObjects<Title>(CriteriaOperator.Parse("  GCRecord is null and IsActive = 1 ", null));
+                IList<Title> collection = ObjectSpace.GetObjects<Title>(CriteriaOperator.Parse("GCRecord is null and IsActive = 1 ", null));
                 foreach (Title row in collection)
                 {
                     TitleName_Model model = new TitleName_Model();
@@ -69,7 +69,7 @@ namespace WebApi.Jwt.Controllers.MasterData
 
                 err.message = ex.Message;
                 //  Return resual
-                return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+                return Request.CreateResponse(HttpStatusCode.BadRequest,err);
             }
 
 

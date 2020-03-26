@@ -359,7 +359,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                         else //โควตาจังหวัด
                         {
                             listQuantity2.QuotaName = objQuotaType.QuotaName;
-                            ManageSubAnimalSupplier objManageSubAnimalSupplier = ObjectSpace.FindObject<ManageSubAnimalSupplier>(CriteriaOperator.Parse("[ManageAnimalSupplierOid.OrganizationOid] =?", orgOid));
+                            ManageSubAnimalSupplier objManageSubAnimalSupplier = ObjectSpace.FindObject<ManageSubAnimalSupplier>(CriteriaOperator.Parse("[ManageSubAnimalSupplier.ProvinceOid] =?", managesuboid));
                             if (objManageSubAnimalSupplier != null)
                             {
 
