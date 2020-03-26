@@ -38,20 +38,20 @@ namespace WebApi.Jwt.Controllers.API_นับรายการ_ที่ให
                 string OrganizeOid = HttpContext.Current.Request.Form["OrganizeOid"].ToString();
                 DataSet ds;
                 ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "SP_GetStatusName", new SqlParameter("@OrganizationOid", OrganizeOid));
-             
+
                 List<Titile_Group> titile_Groups = new List<Titile_Group>();
                 Titile_Group Group_ = new Titile_Group();
-                List<Status_count> status = new List<Status_count>(); 
+                List<Status_count> status = new List<Status_count>();
                 int idApp = 0;
-                
+
                 if (ds.Tables[0].Rows.Count > 0)
                 {
                     int number = 0;
                     string Temp_Group_Name = "";
-              
+
                     foreach (DataRow dr in ds.Tables[0].Rows)
                     {
-                      
+
                         if (Temp_Group_Name == dr["GroupName"].ToString())
                         {
                             Group_.No = number;
@@ -113,13 +113,14 @@ namespace WebApi.Jwt.Controllers.API_นับรายการ_ที่ให
             }
             catch (Exception ex)
             {
-                    UserError err = new UserError();
+                UserError err = new UserError();
                 err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
                 err.message = ex.Message;
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
         }
     }
+
 }
 
 

@@ -1752,28 +1752,28 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                                 ObjHistory.CreateDate = DateTime.Now;
                                 ObjectSpace.CommitChanges();
                             }
-
+                            UpdateResult ret = new UpdateResult();
                             if (Status.Contains("1") == true)
                             {
-                                UpdateResult ret = new UpdateResult();
+                             
                                 ret.status = "true";
                                 ret.message = "บันทึกข้อมูลอนุมัติเรียบร้อยแล้ว";
-                                return Request.CreateResponse(HttpStatusCode.OK, ret);
+                               
                             }
                             else if (Status.Contains("2") == true)
                             {
-                                UpdateResult ret = new UpdateResult();
+                                //UpdateResult ret = new UpdateResult();
                                 ret.status = "true";
                                 ret.message = "บันทึกข้อมูลไม่อนุมัติเรียบร้อยแล้ว";
-                                return Request.CreateResponse(HttpStatusCode.OK, ret);
+                                
                             }
-                            return Request.CreateResponse(HttpStatusCode.OK);
+                           return Request.CreateResponse(HttpStatusCode.OK,ret);
                         }
                         else
                         {
                             UpdateResult ret = new UpdateResult();
                             ret.status = "False";
-                            ret.message = "ไม่พบข้อมูล";
+                            ret.message = "ไม่สามารถอนุมัติได้";
                             return Request.CreateResponse(HttpStatusCode.NotFound, ret);
                         }
                     }
@@ -2268,8 +2268,8 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                                 UseACT3.Add(Supplier_3);
                             }
                             //lists.UseACT2 = UseACT2;
-                            directProvider.Dispose();
-                            ObjectSpace.Dispose();
+                            //directProvider.Dispose();
+                            //ObjectSpace.Dispose();
                             return Request.CreateResponse(HttpStatusCode.OK, UseACT3);
 
                         }
