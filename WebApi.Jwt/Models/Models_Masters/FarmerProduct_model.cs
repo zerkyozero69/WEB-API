@@ -36,8 +36,8 @@ namespace WebApi.Jwt.Models.Models_Masters
             public string SubDistrictNameTH { get; set; }
             public string ZipCode { get; set; }
             public string FullAddress { get; set; }
-            public double Latitude { get; set; }
-            public double Longitude { get; set; }
+            public string Latitude { get; set; }
+            public string Longitude { get; set; }
             public string Rigister_Type { get; set; }
             public string FarmerGroupsOid { get; set; }
             public string Status { get; set; }
@@ -48,7 +48,7 @@ namespace WebApi.Jwt.Models.Models_Masters
             public string ForageTypeName2 { get; set; }
             public string ForageTypeName3 { get; set; }
             public string ForageTypeName4 { get; set; }
-          //  public List<ForageType_Name> detail { get; set; }
+           // public List<ForageType_Name> detail { get; set; }
         }
         public class Farmer_Modelinfo_province
         {

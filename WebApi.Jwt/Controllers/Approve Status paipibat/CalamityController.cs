@@ -1365,216 +1365,216 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                                     //if ( row.Weight >= 0)
                                     //{
 
-                                        string TempDescription = "";
-                                        switch (ObjMaster.ActivityOid.ActivityName)
-                                        {
-                                            case "เพื่อใช้ในกิจกรรมของศูนย์ฯ":
+                                    string TempDescription = "";
+                                    switch (ObjMaster.ActivityOid.ActivityName)
+                                    {
+                                        case "เพื่อใช้ในกิจกรรมของศูนย์ฯ":
+                                            {
+                                                EmployeeInfo objEmployees = ObjectSpace.FindObject<EmployeeInfo>(CriteriaOperator.Parse("[Oid]=?", ObjMaster.EmployeeOid));
+                                                if (objEmployees != null)
                                                 {
-                                                    EmployeeInfo objEmployees = ObjectSpace.FindObject<EmployeeInfo>(CriteriaOperator.Parse("[Oid]=?", ObjMaster.EmployeeOid));
-                                                    if (objEmployees != null)
+                                                    TempDescription = "ใช้ในกิจกรรมของศูนย์ฯ-" + ObjMaster.SubActivityOid.ActivityName + " : " + objEmployees.FullName + "(Mobile Application)";
+                                                }
+                                                else
+                                                {
+                                                    TempDescription = "ใช้ในกิจกรรมของศูนย์ฯ-" + ObjMaster.SubActivityOid.ActivityName + " : " + "(Mobile Application)";
+                                                }
+                                                break;
+                                            }
+
+                                        case "เพื่อช่วยเหลือภัยพิบัติ":
+                                            {
+                                                if (ObjMaster.RegisCusServiceOid != null)
+                                                {
+                                                    RegisterCusService objRegisCusService = ObjectSpace.FindObject<RegisterCusService>(CriteriaOperator.Parse("[Oid]=?", ObjMaster.RegisCusServiceOid));
+                                                    if (objRegisCusService != null)
                                                     {
-                                                        TempDescription = "ใช้ในกิจกรรมของศูนย์ฯ-" + ObjMaster.SubActivityOid.ActivityName + " : " + objEmployees.FullName + "(Mobile Application)";
+                                                        TempDescription = "ช่วยเหลือภัยพิบัติ-" + ObjMaster.SubActivityLevelOid.ActivityName + " : " + objRegisCusService.DisPlayName + "(Mobile Application)";
                                                     }
                                                     else
                                                     {
-                                                        TempDescription = "ใช้ในกิจกรรมของศูนย์ฯ-" + ObjMaster.SubActivityOid.ActivityName + " : " + "(Mobile Application)";
+                                                        TempDescription = "ช่วยเหลือภัยพิบัติ-" + ObjMaster.SubActivityLevelOid.ActivityName + " : " + "(Mobile Application)";
                                                     }
-                                                    break;
                                                 }
-
-                                            case "เพื่อช่วยเหลือภัยพิบัติ":
+                                                else if (ObjMaster.OrgeServiceOid != null)
                                                 {
-                                                    if (ObjMaster.RegisCusServiceOid != null)
+                                                    OrgeService objOrgeService = ObjectSpace.FindObject<OrgeService>(CriteriaOperator.Parse("[Oid]=?", ObjMaster.OrgeServiceOid));
+                                                    if (objOrgeService != null)
                                                     {
-                                                        RegisterCusService objRegisCusService = ObjectSpace.FindObject<RegisterCusService>(CriteriaOperator.Parse("[Oid]=?", ObjMaster.RegisCusServiceOid));
-                                                        if (objRegisCusService != null)
-                                                        {
-                                                            TempDescription = "ช่วยเหลือภัยพิบัติ-" + ObjMaster.SubActivityLevelOid.ActivityName + " : " + objRegisCusService.DisPlayName + "(Mobile Application)";
-                                                        }
-                                                        else
-                                                        {
-                                                            TempDescription = "ช่วยเหลือภัยพิบัติ-" + ObjMaster.SubActivityLevelOid.ActivityName + " : " + "(Mobile Application)";
-                                                        }
+                                                        TempDescription = "ช่วยเหลือภัยพิบัติ-" + ObjMaster.SubActivityLevelOid.ActivityName + " : " + objOrgeService.OrgeServiceName + "(Mobile Application)";
                                                     }
-                                                    else if (ObjMaster.OrgeServiceOid != null)
-                                                    {
-                                                        OrgeService objOrgeService = ObjectSpace.FindObject<OrgeService>(CriteriaOperator.Parse("[Oid]=?", ObjMaster.OrgeServiceOid));
-                                                        if (objOrgeService != null)
-                                                        {
-                                                            TempDescription = "ช่วยเหลือภัยพิบัติ-" + ObjMaster.SubActivityLevelOid.ActivityName + " : " + objOrgeService.OrgeServiceName + "(Mobile Application)";
-                                                        }
-                                                        else
-                                                        {
-                                                            TempDescription = "ช่วยเหลือภัยพิบัติ-" + ObjMaster.SubActivityLevelOid.ActivityName + " : " + "(Mobile Application)";
-                                                        }
-                                                    }
-
-                                                    break;
-                                                }
-
-                                            case "เพื่อใช้ในกิจกรรมกรมปศุสัตว์":
-                                                {
-                                                    EmployeeInfo objEmployees = ObjectSpace.FindObject<EmployeeInfo>(CriteriaOperator.Parse("[Oid]=?", ObjMaster.EmployeeOid));
-                                                    if (objEmployees != null)
-                                                        TempDescription = "ใช้ในกิจกรรมกรม-" + ObjMaster.SubActivityOid.ActivityName + " : " + objEmployees.FullName + "(Mobile Application)";
                                                     else
-                                                        TempDescription = "ใช้ในกิจกรรมกรม-" + ObjMaster.SubActivityOid.ActivityName + " : " + "(Mobile Application)";
-                                                    break;
-                                                }
-
-                                            case "เพื่อสนับสนุนหน่วยงานภายนอกกรมปศุสัตว์":
-                                                {
-                                                    TempDescription = "สนับสนุนหน่วยงานภายนอก : " + ObjMaster.OrgeServiceOid.OrgeServiceName + "(Mobile Application)";
-                                                    break;
-                                                }
-
-                                            case "พัฒนาความมั่นคงด้านเสบียงสัตว์":
-                                                {
-                                                    TempDescription = "พัฒนาความมั่นคงด้านเสบียงสัตว์";
-                                                    break;
-                                                }
-
-                                            case "เพื่อการจำหน่าย":
-                                                {
-                                                    if (ObjMaster.RegisCusServiceOid != null)
                                                     {
-                                                        RegisterCusService objRegisCusService = ObjectSpace.FindObject<RegisterCusService>(CriteriaOperator.Parse("[Oid]=?", ObjMaster.RegisCusServiceOid));
-                                                        if (objRegisCusService != null)
-                                                        {
-                                                            TempDescription = "จำหน่ายให้ : " + objRegisCusService.DisPlayName + "(Mobile Application)";
-                                                        }
-                                                        else
-                                                        {
-                                                            TempDescription = "จำหน่ายให้ : " + "(Mobile Application)";
-                                                        }
+                                                        TempDescription = "ช่วยเหลือภัยพิบัติ-" + ObjMaster.SubActivityLevelOid.ActivityName + " : " + "(Mobile Application)";
                                                     }
-                                                    else if (ObjMaster.OrgeServiceOid != null)
-                                                    {
-                                                        OrgeService objOrgeService = ObjectSpace.FindObject<OrgeService>(CriteriaOperator.Parse("[Oid]=?", ObjMaster.OrgeServiceOid));
-                                                        if (objOrgeService != null)
-                                                            TempDescription = "จำหน่ายให้ : " + objOrgeService.OrgeServiceName + "(Mobile Application)";
-                                                        else
-                                                            TempDescription = "จำหน่ายให้ : " + "(Mobile Application)";
-                                                    }
-
-                                                    break;
                                                 }
 
-                                            case "เพื่อการแจกจ่าย (สนับสนุนเกษตรกร)":
+                                                break;
+                                            }
+
+                                        case "เพื่อใช้ในกิจกรรมกรมปศุสัตว์":
+                                            {
+                                                EmployeeInfo objEmployees = ObjectSpace.FindObject<EmployeeInfo>(CriteriaOperator.Parse("[Oid]=?", ObjMaster.EmployeeOid));
+                                                if (objEmployees != null)
+                                                    TempDescription = "ใช้ในกิจกรรมกรม-" + ObjMaster.SubActivityOid.ActivityName + " : " + objEmployees.FullName + "(Mobile Application)";
+                                                else
+                                                    TempDescription = "ใช้ในกิจกรรมกรม-" + ObjMaster.SubActivityOid.ActivityName + " : " + "(Mobile Application)";
+                                                break;
+                                            }
+
+                                        case "เพื่อสนับสนุนหน่วยงานภายนอกกรมปศุสัตว์":
+                                            {
+                                                TempDescription = "สนับสนุนหน่วยงานภายนอก : " + ObjMaster.OrgeServiceOid.OrgeServiceName + "(Mobile Application)";
+                                                break;
+                                            }
+
+                                        case "พัฒนาความมั่นคงด้านเสบียงสัตว์":
+                                            {
+                                                TempDescription = "พัฒนาความมั่นคงด้านเสบียงสัตว์";
+                                                break;
+                                            }
+
+                                        case "เพื่อการจำหน่าย":
+                                            {
+                                                if (ObjMaster.RegisCusServiceOid != null)
                                                 {
-                                                    if (ObjMaster.RegisCusServiceOid != null)
+                                                    RegisterCusService objRegisCusService = ObjectSpace.FindObject<RegisterCusService>(CriteriaOperator.Parse("[Oid]=?", ObjMaster.RegisCusServiceOid));
+                                                    if (objRegisCusService != null)
                                                     {
-                                                        RegisterCusService objRegisCusService = ObjectSpace.FindObject<RegisterCusService>(CriteriaOperator.Parse("[Oid]=?", ObjMaster.RegisCusServiceOid));
-                                                        if (objRegisCusService != null)
-                                                        {
-                                                            TempDescription = "แจกจ่ายให้ : " + objRegisCusService.DisPlayName + "(Mobile Application)";
-                                                        }
-                                                        else
-                                                        {
-                                                            TempDescription = "แจกจ่ายให้ : " + "(Mobile Application)";
-                                                        }
+                                                        TempDescription = "จำหน่ายให้ : " + objRegisCusService.DisPlayName + "(Mobile Application)";
                                                     }
-                                                    else if (ObjMaster.OrgeServiceOid != null)
+                                                    else
                                                     {
-                                                        OrgeService objOrgeService = ObjectSpace.FindObject<OrgeService>(CriteriaOperator.Parse("[Oid]=?", ObjMaster.OrgeServiceOid));
-                                                        if (objOrgeService != null)
-                                                        {
-                                                            TempDescription = "แจกจ่ายให้ : " + objOrgeService.OrgeServiceName + "(Mobile Application)";
-                                                        }
-                                                        else
-                                                        {
-                                                            TempDescription = "แจกจ่ายให้ : " + "(Mobile Application)";
-                                                        }
+                                                        TempDescription = "จำหน่ายให้ : " + "(Mobile Application)";
                                                     }
-
-                                                    break;
                                                 }
-                                        }
-                                        if (TempDescription == "เพื่อช่วยเหลือภัยพิบัติ")
+                                                else if (ObjMaster.OrgeServiceOid != null)
+                                                {
+                                                    OrgeService objOrgeService = ObjectSpace.FindObject<OrgeService>(CriteriaOperator.Parse("[Oid]=?", ObjMaster.OrgeServiceOid));
+                                                    if (objOrgeService != null)
+                                                        TempDescription = "จำหน่ายให้ : " + objOrgeService.OrgeServiceName + "(Mobile Application)";
+                                                    else
+                                                        TempDescription = "จำหน่ายให้ : " + "(Mobile Application)";
+                                                }
+
+                                                break;
+                                            }
+
+                                        case "เพื่อการแจกจ่าย (สนับสนุนเกษตรกร)":
+                                            {
+                                                if (ObjMaster.RegisCusServiceOid != null)
+                                                {
+                                                    RegisterCusService objRegisCusService = ObjectSpace.FindObject<RegisterCusService>(CriteriaOperator.Parse("[Oid]=?", ObjMaster.RegisCusServiceOid));
+                                                    if (objRegisCusService != null)
+                                                    {
+                                                        TempDescription = "แจกจ่ายให้ : " + objRegisCusService.DisPlayName + "(Mobile Application)";
+                                                    }
+                                                    else
+                                                    {
+                                                        TempDescription = "แจกจ่ายให้ : " + "(Mobile Application)";
+                                                    }
+                                                }
+                                                else if (ObjMaster.OrgeServiceOid != null)
+                                                {
+                                                    OrgeService objOrgeService = ObjectSpace.FindObject<OrgeService>(CriteriaOperator.Parse("[Oid]=?", ObjMaster.OrgeServiceOid));
+                                                    if (objOrgeService != null)
+                                                    {
+                                                        TempDescription = "แจกจ่ายให้ : " + objOrgeService.OrgeServiceName + "(Mobile Application)";
+                                                    }
+                                                    else
+                                                    {
+                                                        TempDescription = "แจกจ่ายให้ : " + "(Mobile Application)";
+                                                    }
+                                                }
+
+                                                break;
+                                            }
+                                    }
+                                    if (TempDescription == "เพื่อช่วยเหลือภัยพิบัติ")
+                                    {
+                                        var objInsStockAnimalUseInfo = ObjectSpace.CreateObject<StockAnimalUseInfo>();
+
+                                        var withBlock = objInsStockAnimalUseInfo;
+                                        withBlock.OrganizationOid = objOrganizationOid;
+                                        withBlock.TransactionDate = DateTime.Now;
+                                        withBlock.AnimalSupplieOid = objAnimalSupplieOid;
+                                        withBlock.AnimalSupplieTypeOid = objAnimalSupplieTypeOid;
+                                        withBlock.QuotaTypeOid = objQuotaType;
+                                        withBlock.ManageSubAnimalSupplierOid = objManageSubAnimalSupplierOid;
+                                        // .AnimalSeedOid = ObjAnimalSeedOid
+                                        withBlock.BudgetSourceOid = row.BudgetSourceOid;
+                                        withBlock.Weight = row.Weight;
+                                        withBlock.Remark = "อนุมัติใช้เสบียงสัตว์ (Mobile Application)";
+                                        withBlock.ActivityOid = row.SupplierUseAnimalProductOid.ActivityOid;
+                                        withBlock.SubActivityOid = row.SupplierUseAnimalProductOid.SubActivityOid;
+                                        withBlock.FinanceYearOid = row.SupplierUseAnimalProductOid.FinanceYearOid;
+                                        withBlock.SupplierUseAnimalDetailOid = row;
+                                        withBlock.SeedTypeOid = row.SeedTypeOid;
+                                        withBlock.Description = TempDescription;
+                                        withBlock.AnimalUseNumber = ObjMaster.UseNo;
+                                        ObjectSpace.CommitChanges();
+
+                                        StockAnimalInfo objStockAnimalInfo = ObjectSpace.CreateObject<StockAnimalInfo>();
+
+                                        var withBlock1 = objStockAnimalInfo;
+                                        withBlock1.AnimalProductNumber = ObjMaster.UseNo;
+                                        withBlock1.AnimalSupplieOid = row.AnimalSupplieOid;
+                                        withBlock1.FinanceYearOid = ObjMaster.FinanceYearOid;
+                                        withBlock1.BudgetSourceOid = row.BudgetSourceOid;
+                                        withBlock1.OrganizationOid = ObjMaster.OrganizationOid;
+                                        withBlock1.AnimalSupplieTypeOid = row.AnimalSupplieTypeOid;
+                                        // .AnimalSeedOid = row.AnimalSeedOid
+                                        withBlock1.Weight = 0 - row.Weight;
+                                        withBlock1.Remark = "ยอดใช้เสบียงสัตว์ (Mobile Application)";
+                                        withBlock1.SeedTypeOid = row.SeedTypeOid;
+                                        withBlock1.Description = TempDescription;
+                                        ObjectSpace.CommitChanges();
+
+                                        //   ''Stock สำหรับ กปศ4ว
+                                        //IList<StockAnimalInfo_Report> objStockAnimalInfo_Detail = ObjectSpace.GetObjects<StockAnimalInfo_Report>();
+                                        IList<StockAnimalInfo_Report> objStockAnimalInfo_Detail;
+                                        objStockAnimalInfo_Detail = ObjectSpace.GetObjects<StockAnimalInfo_Report>();
+                                        if (row.SeedTypeOid != null)
                                         {
-                                            var objInsStockAnimalUseInfo = ObjectSpace.CreateObject<StockAnimalUseInfo>();
-
-                                            var withBlock = objInsStockAnimalUseInfo;
-                                            withBlock.OrganizationOid = objOrganizationOid;
-                                            withBlock.TransactionDate = DateTime.Now;
-                                            withBlock.AnimalSupplieOid = objAnimalSupplieOid;
-                                            withBlock.AnimalSupplieTypeOid = objAnimalSupplieTypeOid;
-                                            withBlock.QuotaTypeOid = objQuotaType;
-                                            withBlock.ManageSubAnimalSupplierOid = objManageSubAnimalSupplierOid;
-                                            // .AnimalSeedOid = ObjAnimalSeedOid
-                                            withBlock.BudgetSourceOid = row.BudgetSourceOid;
-                                            withBlock.Weight = row.Weight;
-                                            withBlock.Remark = "อนุมัติใช้เสบียงสัตว์ (Mobile Application)";
-                                            withBlock.ActivityOid = row.SupplierUseAnimalProductOid.ActivityOid;
-                                            withBlock.SubActivityOid = row.SupplierUseAnimalProductOid.SubActivityOid;
-                                            withBlock.FinanceYearOid = row.SupplierUseAnimalProductOid.FinanceYearOid;
-                                            withBlock.SupplierUseAnimalDetailOid = row;
-                                            withBlock.SeedTypeOid = row.SeedTypeOid;
-                                            withBlock.Description = TempDescription;
-                                            withBlock.AnimalUseNumber = ObjMaster.UseNo;
-                                            ObjectSpace.CommitChanges();
-
-                                            StockAnimalInfo objStockAnimalInfo = ObjectSpace.CreateObject<StockAnimalInfo>();
-
-                                            var withBlock1 = objStockAnimalInfo;
-                                            withBlock1.AnimalProductNumber = ObjMaster.UseNo;
-                                            withBlock1.AnimalSupplieOid = row.AnimalSupplieOid;
-                                            withBlock1.FinanceYearOid = ObjMaster.FinanceYearOid;
-                                            withBlock1.BudgetSourceOid = row.BudgetSourceOid;
-                                            withBlock1.OrganizationOid = ObjMaster.OrganizationOid;
-                                            withBlock1.AnimalSupplieTypeOid = row.AnimalSupplieTypeOid;
-                                            // .AnimalSeedOid = row.AnimalSeedOid
-                                            withBlock1.Weight = 0 - row.Weight;
-                                            withBlock1.Remark = "ยอดใช้เสบียงสัตว์ (Mobile Application)";
-                                            withBlock1.SeedTypeOid = row.SeedTypeOid;
-                                            withBlock1.Description = TempDescription;
-                                            ObjectSpace.CommitChanges();
-
-                                            //   ''Stock สำหรับ กปศ4ว
-                                            //IList<StockAnimalInfo_Report> objStockAnimalInfo_Detail = ObjectSpace.GetObjects<StockAnimalInfo_Report>();
-                                            IList<StockAnimalInfo_Report> objStockAnimalInfo_Detail;
-                                            objStockAnimalInfo_Detail = ObjectSpace.GetObjects<StockAnimalInfo_Report>();
-                                            if (row.SeedTypeOid != null)
-                                            {
-                                                objStockAnimalInfo_Detail = ObjectSpace.GetObjects<StockAnimalInfo_Report>(CriteriaOperator.Parse("[BudgetSourceOid]=? and [OrganizationOid]=? and [AnimalSupplieOid]=? and [AnimalSupplieTypeOid]=? and [SeedTypeOid]=?", row.BudgetSourceOid.Oid, ObjMaster.OrganizationOid.Oid, row.AnimalSupplieOid.Oid, row.AnimalSupplieTypeOid.Oid, row.SeedTypeOid.Oid));
-                                            }
-                                            else
-                                            {
-                                                objStockAnimalInfo_Detail = ObjectSpace.GetObjects<StockAnimalInfo_Report>(CriteriaOperator.Parse("[BudgetSourceOid]=? and [OrganizationOid]=? and [AnimalSupplieOid]=? and [AnimalSupplieTypeOid]=?", row.BudgetSourceOid.Oid, ObjMaster.OrganizationOid.Oid, row.AnimalSupplieOid.Oid, row.AnimalSupplieTypeOid.Oid));
-
-                                            }
-                                            var objStockAnimalInfo_DetailNew = ObjectSpace.CreateObject<StockAnimalInfo_Report>();
-                                            if (objStockAnimalInfo_Detail.Count > 0)
-                                            {
-                                                var ObjSubStockCardSource = (from Item in objStockAnimalInfo_Detail orderby Item.TransactionDate descending select Item).First().TotalWeight;
-                                                objStockAnimalInfo_DetailNew.AnimalProductNumber = ObjMaster.UseNo;
-                                                objStockAnimalInfo_DetailNew.FinanceYearOid = ObjMaster.FinanceYearOid;
-                                                objStockAnimalInfo_DetailNew.BudgetSourceOid = row.BudgetSourceOid;
-                                                objStockAnimalInfo_DetailNew.OrganizationOid = ObjMaster.OrganizationOid;
-                                                objStockAnimalInfo_DetailNew.AnimalSupplieOid = objAnimalSupplieOid;
-                                                objStockAnimalInfo_DetailNew.AnimalSupplieTypeOid = objAnimalSupplieTypeOid;
-                                                objStockAnimalInfo_DetailNew.TotalForward = ObjSubStockCardSource;
-                                                objStockAnimalInfo_DetailNew.TotalChange = 0 - row.Weight;
-                                                objStockAnimalInfo_DetailNew.SeedTypeOid = row.SeedTypeOid;
-                                                objStockAnimalInfo_DetailNew.Description = TempDescription;
-
-                                            }
+                                            objStockAnimalInfo_Detail = ObjectSpace.GetObjects<StockAnimalInfo_Report>(CriteriaOperator.Parse("[BudgetSourceOid]=? and [OrganizationOid]=? and [AnimalSupplieOid]=? and [AnimalSupplieTypeOid]=? and [SeedTypeOid]=?", row.BudgetSourceOid.Oid, ObjMaster.OrganizationOid.Oid, row.AnimalSupplieOid.Oid, row.AnimalSupplieTypeOid.Oid, row.SeedTypeOid.Oid));
                                         }
-                                        ObjMaster.Status = EnumRodBreedProductSeedStatus.Approve;//2
-                                        ObjMaster.ApproveDate = DateTime.Now;
-                                        ObjMaster.Remark = CancelMsg;
-                                        ObjectSpace.CommitChanges();
+                                        else
+                                        {
+                                            objStockAnimalInfo_Detail = ObjectSpace.GetObjects<StockAnimalInfo_Report>(CriteriaOperator.Parse("[BudgetSourceOid]=? and [OrganizationOid]=? and [AnimalSupplieOid]=? and [AnimalSupplieTypeOid]=?", row.BudgetSourceOid.Oid, ObjMaster.OrganizationOid.Oid, row.AnimalSupplieOid.Oid, row.AnimalSupplieTypeOid.Oid));
 
-                                        HistoryWork ObjHistory = null;
-                                        ObjHistory = ObjectSpace.CreateObject<HistoryWork>();
-                                        // ประวัติ
-                                        ObjHistory.RefOid = ObjMaster.Oid.ToString();
-                                        ObjHistory.FormName = "เสบียงสัตว์";
-                                        ObjHistory.Message = "อนุมัติ (ขอเบิกเสบียงสัตว์ (Mobile Application)) ลำดับที่ : " + ObjMaster.UseNo;
-                                        ObjHistory.CreateBy = Username;
-                                        ObjHistory.CreateDate = DateTime.Now;
-                                        ObjectSpace.CommitChanges();
-                                    
+                                        }
+                                        var objStockAnimalInfo_DetailNew = ObjectSpace.CreateObject<StockAnimalInfo_Report>();
+                                        if (objStockAnimalInfo_Detail.Count > 0)
+                                        {
+                                            var ObjSubStockCardSource = (from Item in objStockAnimalInfo_Detail orderby Item.TransactionDate descending select Item).First().TotalWeight;
+                                            objStockAnimalInfo_DetailNew.AnimalProductNumber = ObjMaster.UseNo;
+                                            objStockAnimalInfo_DetailNew.FinanceYearOid = ObjMaster.FinanceYearOid;
+                                            objStockAnimalInfo_DetailNew.BudgetSourceOid = row.BudgetSourceOid;
+                                            objStockAnimalInfo_DetailNew.OrganizationOid = ObjMaster.OrganizationOid;
+                                            objStockAnimalInfo_DetailNew.AnimalSupplieOid = objAnimalSupplieOid;
+                                            objStockAnimalInfo_DetailNew.AnimalSupplieTypeOid = objAnimalSupplieTypeOid;
+                                            objStockAnimalInfo_DetailNew.TotalForward = ObjSubStockCardSource;
+                                            objStockAnimalInfo_DetailNew.TotalChange = 0 - row.Weight;
+                                            objStockAnimalInfo_DetailNew.SeedTypeOid = row.SeedTypeOid;
+                                            objStockAnimalInfo_DetailNew.Description = TempDescription;
+
+                                        }
+                                    }
+                                    ObjMaster.Status = EnumRodBreedProductSeedStatus.Approve;//2
+                                    ObjMaster.ApproveDate = DateTime.Now;
+                                    ObjMaster.Remark = CancelMsg;
+                                    ObjectSpace.CommitChanges();
+
+                                    HistoryWork ObjHistory = null;
+                                    ObjHistory = ObjectSpace.CreateObject<HistoryWork>();
+                                    // ประวัติ
+                                    ObjHistory.RefOid = ObjMaster.Oid.ToString();
+                                    ObjHistory.FormName = "เสบียงสัตว์";
+                                    ObjHistory.Message = "อนุมัติ (ขอเบิกเสบียงสัตว์ (Mobile Application)) ลำดับที่ : " + ObjMaster.UseNo;
+                                    ObjHistory.CreateBy = Username;
+                                    ObjHistory.CreateDate = DateTime.Now;
+                                    ObjectSpace.CommitChanges();
+
                                     //else
                                     //{
                                     //    UpdateResult stock = new UpdateResult();
@@ -1612,8 +1612,8 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                                     var ObjSupplierUseAnimalProductDetails = (from Q in ObjMaster.SupplierUseAnimalProductDetails orderby row.StockLimit descending select Q).First().StockLimit;
 
 
-                                    object objStockAnimalUseInfo =null;
-                                    object objStockAnimalInfo=null ;
+                                    object objStockAnimalUseInfo = null;
+                                    object objStockAnimalInfo = null;
                                     if (objQuotaType != null)
                                     {
                                         if (objManageSubAnimalSupplierOid is object)
@@ -1623,9 +1623,17 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                                         }
                                         else
                                         {
+                                            if (objStockAnimalUseInfo != null)
+                                            {
 
-                                            objStockAnimalUseInfo = ObjectSpace.GetObjects<StockAnimalUseInfo>(CriteriaOperator.Parse("OrganizationOid=? and AnimalSupplieOid=? and AnimalSupplieTypeOid=? and SeedTypeOid=?", objOrganizationOid.Oid, objAnimalSupplieOid.Oid, objAnimalSupplieTypeOid.Oid, ObjSeedTypeOid.Oid));
 
+                                                objStockAnimalUseInfo = ObjectSpace.GetObjects<StockAnimalUseInfo>(CriteriaOperator.Parse("OrganizationOid=? and AnimalSupplieOid=? and AnimalSupplieTypeOid=? and SeedTypeOid=?", objOrganizationOid.Oid, objAnimalSupplieOid.Oid, objAnimalSupplieTypeOid.Oid, ObjSeedTypeOid.Oid));
+
+                                            }
+                                            else
+                                            {
+                                                return Request.CreateResponse(HttpStatusCode.NotFound, "ข้อมูลไม่ครบ");
+                                            }
                                             //}
                                             //else
                                             //{
@@ -1638,17 +1646,17 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                                     }
                                     else if (ObjSeedTypeOid != null)
                                     {
-                                            // objStockAnimalUseInfo = View.ObjectSpace.GetObjects(Of StockAnimalUseInfo)(CriteriaOperator.Parse("OrganizationOid=? and AnimalSupplieOid=? and AnimalSupplieTypeOid=? and AnimalSeedOid=?", objOrganizationOid.Oid, objAnimalSupplieOid.Oid, objAnimalSupplieTypeOid.Oid, ObjAnimalSeedOid.Oid))
-                                            objStockAnimalUseInfo = ObjectSpace.GetObjects<StockAnimalUseInfo>(CriteriaOperator.Parse("OrganizationOid=? and AnimalSupplieOid=? and AnimalSupplieTypeOid=? and SeedTypeOid=?", objOrganizationOid.Oid, objAnimalSupplieOid.Oid, objAnimalSupplieTypeOid.Oid, ObjSeedTypeOid.Oid));
-                                            objStockAnimalInfo = ObjectSpace.GetObjects<StockAnimalInfo>(CriteriaOperator.Parse("OrganizationOid=? and AnimalSupplieOid=? and AnimalSupplieTypeOid=? and SeedTypeOid=?", objOrganizationOid.Oid, objAnimalSupplieOid.Oid, objAnimalSupplieTypeOid.Oid, ObjSeedTypeOid.Oid));
-                                        }
-                                        else
-                                        {
-                                            objStockAnimalUseInfo = ObjectSpace.GetObjects<StockAnimalUseInfo>(CriteriaOperator.Parse("OrganizationOid=? and AnimalSupplieOid=? and AnimalSupplieTypeOid=?", objOrganizationOid.Oid, objAnimalSupplieOid.Oid, objAnimalSupplieTypeOid.Oid));
-                                            objStockAnimalInfo = ObjectSpace.GetObjects<StockAnimalInfo>(CriteriaOperator.Parse("OrganizationOid=? and AnimalSupplieOid=? and AnimalSupplieTypeOid=?", objOrganizationOid.Oid, objAnimalSupplieOid.Oid, objAnimalSupplieTypeOid.Oid));
-                                        }
+                                        // objStockAnimalUseInfo = View.ObjectSpace.GetObjects(Of StockAnimalUseInfo)(CriteriaOperator.Parse("OrganizationOid=? and AnimalSupplieOid=? and AnimalSupplieTypeOid=? and AnimalSeedOid=?", objOrganizationOid.Oid, objAnimalSupplieOid.Oid, objAnimalSupplieTypeOid.Oid, ObjAnimalSeedOid.Oid))
+                                        objStockAnimalUseInfo = ObjectSpace.GetObjects<StockAnimalUseInfo>(CriteriaOperator.Parse("OrganizationOid=? and AnimalSupplieOid=? and AnimalSupplieTypeOid=? and SeedTypeOid=?", objOrganizationOid.Oid, objAnimalSupplieOid.Oid, objAnimalSupplieTypeOid.Oid, ObjSeedTypeOid.Oid));
+                                        objStockAnimalInfo = ObjectSpace.GetObjects<StockAnimalInfo>(CriteriaOperator.Parse("OrganizationOid=? and AnimalSupplieOid=? and AnimalSupplieTypeOid=? and SeedTypeOid=?", objOrganizationOid.Oid, objAnimalSupplieOid.Oid, objAnimalSupplieTypeOid.Oid, ObjSeedTypeOid.Oid));
+                                    }
+                                    else
+                                    {
+                                        objStockAnimalUseInfo = ObjectSpace.GetObjects<StockAnimalUseInfo>(CriteriaOperator.Parse("OrganizationOid=? and AnimalSupplieOid=? and AnimalSupplieTypeOid=?", objOrganizationOid.Oid, objAnimalSupplieOid.Oid, objAnimalSupplieTypeOid.Oid));
+                                        objStockAnimalInfo = ObjectSpace.GetObjects<StockAnimalInfo>(CriteriaOperator.Parse("OrganizationOid=? and AnimalSupplieOid=? and AnimalSupplieTypeOid=?", objOrganizationOid.Oid, objAnimalSupplieOid.Oid, objAnimalSupplieTypeOid.Oid));
+                                    }
 
-                                    
+
                                     // ตัดยอดออกจาก Stock การใช้ เนื่องจากยกเลิกการอนุมัติ
                                     // ========================================================
                                     if (objStockAnimalUseInfo != null)
@@ -1734,7 +1742,9 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
 
                                         }
                                     }
+
                                 }
+
                                 ObjMaster.CancelMsg = CancelMsg;
                                 ObjMaster.Status = EnumRodBreedProductSeedStatus.Eject;
                                 ObjMaster.CancelBy = Username;
@@ -1752,30 +1762,22 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                                 ObjHistory.CreateDate = DateTime.Now;
                                 ObjectSpace.CommitChanges();
                             }
-                            UpdateResult ret = new UpdateResult();
-                            if (Status.Contains("1") == true)
-                            {
-                             
-                                ret.status = "true";
-                                ret.message = "บันทึกข้อมูลอนุมัติเรียบร้อยแล้ว";
-                               
-                            }
-                            else if (Status.Contains("2") == true)
-                            {
-                                //UpdateResult ret = new UpdateResult();
-                                ret.status = "true";
-                                ret.message = "บันทึกข้อมูลไม่อนุมัติเรียบร้อยแล้ว";
-                                
-                            }
-                           return Request.CreateResponse(HttpStatusCode.OK,ret);
                         }
-                        else
-                        {
-                            UpdateResult ret = new UpdateResult();
-                            ret.status = "False";
-                            ret.message = "ไม่สามารถอนุมัติได้";
-                            return Request.CreateResponse(HttpStatusCode.NotFound, ret);
-                        }
+
+                        UpdateResult ret = new UpdateResult();
+
+
+                        ret.status = "true";
+                        ret.message = "บันทึกข้อมูลอนุมัติเรียบร้อยแล้ว";
+
+                        return Request.CreateResponse(HttpStatusCode.OK, ret);
+                        //else
+                        //{
+                        //    UpdateResult ret = new UpdateResult();//ใช้ดัก ไม่อนุมัติ
+                        //    ret.status = "False";
+                        //    ret.message = "ไม่สามารถอนุมัติได้";
+                        //    return Request.CreateResponse(HttpStatusCode.NotFound, ret);
+                        //}
                     }
                     else
                     {
@@ -1786,13 +1788,13 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                     }
 
                 }
-                else
-                {
-                    UpdateResult ret = new UpdateResult();
-                    ret.status = "False";
-                    ret.message = "กรุณากรอก RefNo";
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, ret);
-                }
+                            else
+                            {
+                                UpdateResult ret = new UpdateResult();
+                                ret.status = "False";
+                                ret.message = "กรุณากรอก RefNo";
+                                return Request.CreateResponse(HttpStatusCode.BadRequest, ret);
+                            }
 
             }
             catch (Exception ex)
@@ -2271,7 +2273,7 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                             //directProvider.Dispose();
                             //ObjectSpace.Dispose();
                             return Request.CreateResponse(HttpStatusCode.OK, UseACT3);
-
+                            
                         }
                         else
                         {
