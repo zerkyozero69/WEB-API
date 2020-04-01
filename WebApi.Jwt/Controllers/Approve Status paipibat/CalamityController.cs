@@ -1310,8 +1310,7 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
             try
             {
                 string CancelMsg = "";
-                string Remark = "";
-                double stocklimit = 0;
+  
                 string RefNo = HttpContext.Current.Request.Form["RefNo"].ToString(); //ข้อมูลเลขที่อ้างอิง
                 string Status = HttpContext.Current.Request.Form["Status"].ToString(); //สถานะ
                 if (CancelMsg != null)
@@ -1344,7 +1343,7 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                         if (ObjMaster != null)
                         {
 
-                            if (Status == "1")
+                            if (Status == "1") //เคสอนุมัติ
                             {
                                 foreach (SupplierUseAnimalProductDetail row in ObjMaster.SupplierUseAnimalProductDetails)
                                 {
@@ -1490,7 +1489,7 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                                                 break;
                                             }
                                     }
-                                    if (TempDescription == "เพื่อช่วยเหลือภัยพิบัติ")
+                                    if (TempDescription == "เพื่อช่วยเหลือภัยพิบัติ")// ถ้าเข้าเศสนี้ตัดสต็อค
                                     {
                                         var objInsStockAnimalUseInfo = ObjectSpace.CreateObject<StockAnimalUseInfo>();
 
@@ -1557,7 +1556,6 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                                             objStockAnimalInfo_DetailNew.TotalChange = 0 - row.Weight;
                                             objStockAnimalInfo_DetailNew.SeedTypeOid = row.SeedTypeOid;
                                             objStockAnimalInfo_DetailNew.Description = TempDescription;
-
                                         }
                                     }
                                     ObjMaster.Status = EnumRodBreedProductSeedStatus.Approve;//2
@@ -1588,10 +1586,7 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
 
                             }
 
-
-
-
-                            else if (Status == "2")
+                            else if (Status == "2") //เคสไม่อนุมัติ
                             {
 
                                 foreach (SupplierUseAnimalProductDetail row in ObjMaster.SupplierUseAnimalProductDetails)
@@ -1723,7 +1718,7 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                                         if (objStockAnimalInfo_Detail.Count > 0)
                                         {
                                             var objStockAnimalInfo_DetailNew = ObjectSpace.CreateObject<StockAnimalInfo_Report>();
-                                            var ObjSubStockCardSource = (from Item in objStockAnimalInfo_Detail orderby Item.TransactionDate descending select Item).First().TotalWeight;
+                                            var ObjSubStockCardSource = (from Item in objStockAnimalInfo_Detail orderby Item.TransactionDate descending select Item).First();
 
 
                                             var withBlock = objStockAnimalInfo_DetailNew;
@@ -1734,7 +1729,7 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                                             withBlock.OrganizationOid = ObjMaster.OrganizationOid;
                                             withBlock.AnimalSupplieOid = row.AnimalSupplieOid;
                                             withBlock.AnimalSupplieTypeOid = row.AnimalSupplieTypeOid;
-                                            withBlock.TotalForward = ObjSubStockCardSource;
+                                            withBlock.TotalForward = ObjSubStockCardSource.TotalWeight;
                                             withBlock.TotalChange = row.Weight;
                                             withBlock.SeedTypeOid = row.SeedTypeOid;
                                             withBlock.Description = "ไม่อนุมัติการใช้เสบียงสัตว์ (Mobile Application): " + ObjMaster.UseNo;
