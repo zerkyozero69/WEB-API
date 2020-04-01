@@ -53,7 +53,6 @@ namespace WebApi.Jwt.Controllers
                 string TempForageType = string.Empty;
                 if (jObject != null)
                 {
-              
 
                     Registerfarmer.OrganizationOid = jObject.SelectToken("OrganizationOid").Value<string>();
                     Registerfarmer.CitizenID = jObject.SelectToken("CitizenID").Value<Int64>();
@@ -78,40 +77,28 @@ namespace WebApi.Jwt.Controllers
                         Registerfarmer.GenderOid = jObject.SelectToken("GenderOid").Value<string>();
                         Registerfarmer.Tel = jObject.SelectToken("Tel").Value<string>();
 
-                        if (jObject.SelectToken("Email") == null)
-                        {
-                            Registerfarmer.Email = string.Empty;
-                        }
-                        else
+                        if (jObject.SelectToken("Email") != null)
+                
                         {
                             Registerfarmer.Email = jObject.SelectToken("Email").Value<string>();
                         }
 
                         Registerfarmer.Address = jObject.SelectToken("Address").Value<string>();
 
-                        if (jObject.SelectToken("Moo") == null)
-                        {
-                            Registerfarmer.Moo = string.Empty;
-                        }
-                        else
+                        if (jObject.SelectToken("Moo") != null)
+                    
                         {
                             Registerfarmer.Moo = jObject.SelectToken("Moo").Value<string>();
                         }
 
-                        if (jObject.SelectToken("Soi") == null)
-                        {
-                            Registerfarmer.Soi = string.Empty;
-                        }
-                        else
+                        if (jObject.SelectToken("Soi") != null)
+                
                         {
                             Registerfarmer.Soi = jObject.SelectToken("Soi").Value<string>();
                         }
 
-                        if (jObject.SelectToken("Road") == null)
-                        {
-                            Registerfarmer.Road = string.Empty;
-                        }
-                        else
+                        if (jObject.SelectToken("Road") != null)
+           
                         {
                             Registerfarmer.Road = jObject.SelectToken("Road").Value<string>();
                         }
@@ -269,40 +256,29 @@ namespace WebApi.Jwt.Controllers
                         Updatefarmer.GenderOid = jObject.SelectToken("GenderOid").Value<string>();
                         Updatefarmer.Tel = jObject.SelectToken("Tel").Value<string>();
 
-                        if (jObject.SelectToken("Email") == null)
-                        {
-                            Updatefarmer.Email = null;
-                        }
-                        else
+                        if (jObject.SelectToken("Email") != null)
+             
                         {
                             Updatefarmer.Email = jObject.SelectToken("Email").Value<string>();
                         }
 
                         Updatefarmer.Address = jObject.SelectToken("Address").Value<string>();
 
-                        if (jObject.SelectToken("Moo") == null)
-                        {
-                            Updatefarmer.Moo = null;
-                        }
-                        else
+                        if (jObject.SelectToken("Moo") != null)
+                
                         {
                             Updatefarmer.Moo = jObject.SelectToken("Moo").Value<string>();
                         }
 
-                        if (jObject.SelectToken("Soi") == null)
-                        {
-                            Updatefarmer.Soi = null;
-                        }
-                        else
+                        if (jObject.SelectToken("Soi") != null)
+  
                         {
                             Updatefarmer.Soi = jObject.SelectToken("Soi").Value<string>();
                         }
 
-                        if (jObject.SelectToken("Road") == null)
-                        {
-                            Updatefarmer.Road = null;
-                        }
-                        else
+                        if (jObject.SelectToken("Road") != null)
+               
+
                         {
                             Updatefarmer.Road = jObject.SelectToken("Road").Value<string>();
                         }
