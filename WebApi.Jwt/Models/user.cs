@@ -59,7 +59,7 @@ namespace WebApi.Jwt.Models
             public string ProvinceNameTH { get; set; }
             public string DistrictNameTH { get; set; }
             public string SubDistrictNameTH { get; set; }
-            public string DLD { get; set; }
+
             public string Email { get; set; }
             public string Tel { get; set; }
             public string Website { get; set; }

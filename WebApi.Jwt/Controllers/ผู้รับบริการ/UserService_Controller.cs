@@ -640,6 +640,8 @@ namespace WebApi.Jwt.Controllers
                         }
 
                         item.IsActive = RegisterCusService_.IsActive;
+                        directProvider.Dispose();
+
                         return Request.CreateResponse(HttpStatusCode.OK, item);
                     }
 
@@ -647,7 +649,7 @@ namespace WebApi.Jwt.Controllers
                     else
                     {
 
-                        return Request.CreateResponse(HttpStatusCode.BadRequest, "NoData");
+                        return Request.CreateResponse(HttpStatusCode.NotFound, "NoData");
 
                     }
 
@@ -658,7 +660,7 @@ namespace WebApi.Jwt.Controllers
                     err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
                     err.message = "กรุณาระบุเลขบัตรประชาชน";
                     //  Return resual
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+                    return Request.CreateResponse(HttpStatusCode.NotFound, err);
                 }
             }
             catch (Exception ex)

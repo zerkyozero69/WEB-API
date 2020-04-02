@@ -205,7 +205,7 @@ namespace WebApi.Jwt.Controllers
                         item.SendStatus = row.SendStatus.ToString();
                         item.FinanceYear = row.FinanceYearOid.YearName;
                         item.CancelMsg = row.CancelMsg;
-                        item.ReceiveOrgOid = row.ReceiveOrgOid.Oid.ToString();
+                        item. ReceiveOrgOid = row.ReceiveOrgOid.Oid.ToString();
                         item.ReceiveOrgName = row.ReceiveOrgOid.SubOrganizeName;
                         item.ReceiveOrgFullName = row.ReceiveOrgOid.OrganizeNameTH;
                         item.RefNo = RefNo;
