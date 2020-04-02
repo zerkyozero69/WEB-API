@@ -190,8 +190,8 @@ namespace WebApi.Jwt.Controllers.ท่อนพันธุ์_กล้าพ�
 
                         item.Status = row.Status.ToString();
                         item.ServiceCount = row.ServiceCount;
-                        item.TotalWeight = row.SupplierRodBreedUseProductDetails.Sum((c => c.Weight)).ToString()+""+"กิโลกรัม";
-                        item.TotalPrice = row.SupplierRodBreedUseProductDetails.Sum((c => c.Price)).ToString()+""+"บาท";
+                        item.TotalWeight = row.SupplierRodBreedUseProductDetails.Sum((c => c.Weight)).ToString() + "" + "กิโลกรัม";
+                        item.TotalPrice = row.SupplierRodBreedUseProductDetails.Sum((c => c.Price)).ToString() + "" + "บาท";
                         item.CancelMsg = row.CancelMsg;
                         if (row.ActivityOid.ActivityName == "เพื่อการจำหน่าย")
                         {

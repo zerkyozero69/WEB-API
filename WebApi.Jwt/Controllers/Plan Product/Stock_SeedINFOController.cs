@@ -1,14 +1,9 @@
-﻿using DevExpress.Data.Filtering;
-using DevExpress.ExpressApp;
-using DevExpress.ExpressApp.Xpo;
-using Microsoft.ApplicationBlocks.Data;
-using nutrition.Module;
+﻿using Microsoft.ApplicationBlocks.Data;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web;
@@ -16,15 +11,11 @@ using System.Web.Http;
 using WebApi.Jwt.Models;
 using WebApi.Jwt.Models.นับจำนวนกิจกรรม;
 
-
 namespace WebApi.Jwt.Controllers.แผนการผลิต_จำนวนคงเหลือ
 {
     public class Stock_SeedINFOController : ApiController
     {
-
-
-        SqlConnection scc = new SqlConnection( ConfigurationManager.ConnectionStrings["scc"].ConnectionString);
-
+        private SqlConnection scc = new SqlConnection(ConfigurationManager.ConnectionStrings["scc"].ConnectionString);
 
         /// <summary>
         /// เรียกเสบียงสัตว์คงเหลือ ตามศูนย์
@@ -37,11 +28,7 @@ namespace WebApi.Jwt.Controllers.แผนการผลิต_จำนวน�
         {
             try
             {
-
-
                 string OrganizeOid = null; // Oid จังหวัด
-            
-
 
                 if (HttpContext.Current.Request.Form["OrganizationOid"].ToString() != null)
                 {
@@ -51,9 +38,7 @@ namespace WebApi.Jwt.Controllers.แผนการผลิต_จำนวน�
                     }
                 }
 
-
                 DataSet ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "sp_Stock_count", new SqlParameter("@OrganizationOid", OrganizeOid));
-              
 
                 List<Stock_info> titile_Groups = new List<Stock_info>();
                 Stock_info stock_Info = new Stock_info();
@@ -71,7 +56,6 @@ namespace WebApi.Jwt.Controllers.แผนการผลิต_จำนวน�
                             item.Title = dr["SeedName"].ToString();
                             item.Weight = Convert.ToDouble(dr["TotalWeight"]);
                             item.Unit = dr["WeightUnit"].ToString();
-
 
                             //status.Add(item);
                             stock_Info.Data.Add(item);
@@ -99,27 +83,29 @@ namespace WebApi.Jwt.Controllers.แผนการผลิต_จำนวน�
                                 case "BS":
                                     stock_Info.Color = "#F1948A";
                                     break;
+
                                 case "CS":
                                     stock_Info.Color = "#FF7F27";
                                     break;
+
                                 case "FS":
                                     stock_Info.Color = "#00E142";
                                     break;
+
                                 case "RS":
                                     stock_Info.Color = "#99D9EA";
                                     break;
+
                                 default:
                                     stock_Info.Color = "#ABB2B9";
                                     break;
                             }
-
 
                             //status.Add(item);
                             //Group_.Status_List = status;
                             stock_Info.Data.Add(item);
                             titile_Groups.Add(stock_Info);
                         }
-
                     }
                     UserError err = new UserError();
                     err.code = ""; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
@@ -128,13 +114,11 @@ namespace WebApi.Jwt.Controllers.แผนการผลิต_จำนวน�
                 }
                 else
                 {
-
                     UserError err2 = new UserError();
                     err2.code = "0"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
                     err2.message = "NoData";
-                    return Request.CreateResponse(HttpStatusCode.NotFound,err2);
+                    return Request.CreateResponse(HttpStatusCode.NotFound, err2);
                 }
-
             }
             catch (Exception ex)
             {
@@ -143,7 +127,7 @@ namespace WebApi.Jwt.Controllers.แผนการผลิต_จำนวน�
                 err.message = ex.Message;
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
-           finally
+            finally
             {
                 //SqlConnection.ClearAllPools();
             }
@@ -156,10 +140,7 @@ namespace WebApi.Jwt.Controllers.แผนการผลิต_จำนวน�
         {
             try
             {
-
-
                 string OrganizeOid = null; // Oid จังหวัด
-            
 
                 if (HttpContext.Current.Request.Form["OrganizationOid"].ToString() != null)
                 {
@@ -186,12 +167,10 @@ namespace WebApi.Jwt.Controllers.แผนการผลิต_จำนวน�
                     {
                         if (Temp_Group_Name == dr["AnimalSupplieName"].ToString())
                         {
-                        
                             SeedAnimalStock_info item = new SeedAnimalStock_info();
                             item.Title = dr["SeedName"].ToString();
                             item.Weight = Convert.ToDouble(dr["TotalWeight"]);
                             item.Unit = dr["WeightUnit"].ToString();
-
 
                             //status.Add(item);
                             stock_Info.Data.Add(item);
@@ -219,9 +198,11 @@ namespace WebApi.Jwt.Controllers.แผนการผลิต_จำนวน�
                                 case "สด":
                                     stock_Info.Color = "#F1948A";
                                     break;
+
                                 case "หมัก":
                                     stock_Info.Color = "#FF7F27";
                                     break;
+
                                 case "แห้ง":
                                     stock_Info.Color = "#00E142";
                                     break;
@@ -231,13 +212,11 @@ namespace WebApi.Jwt.Controllers.แผนการผลิต_จำนวน�
                                     break;
                             }
 
-
                             //status.Add(item);
                             //Group_.Status_List = status;
                             stock_Info.Data.Add(item);
                             titile_Groups.Add(stock_Info);
                         }
-
                     }
                     UserError err = new UserError();
                     err.code = ""; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
@@ -245,13 +224,10 @@ namespace WebApi.Jwt.Controllers.แผนการผลิต_จำนวน�
                     return Request.CreateResponse(HttpStatusCode.OK, titile_Groups);
                 }
 
-
                 UserError err2 = new UserError();
                 err2.code = "0"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
                 err2.message = "กรุณาระบุศูนย์";
-                return Request.CreateResponse(HttpStatusCode.NotFound,err2);
-
-
+                return Request.CreateResponse(HttpStatusCode.NotFound, err2);
             }
             catch (Exception ex)
             {
@@ -265,6 +241,7 @@ namespace WebApi.Jwt.Controllers.แผนการผลิต_จำนวน�
                 SqlConnection.ClearPool(scc);
             }
         }
+
         /// <summary>
         /// เรียกเสบียงสัตว์คงเหลือ ตามศูนย์
         /// </summary>
@@ -276,12 +253,9 @@ namespace WebApi.Jwt.Controllers.แผนการผลิต_จำนวน�
         //{
         //    try
         //    {
-
-
         //        string OrganizeOid = null; // Oid จังหวัด
         //        string BudgetSourceOid = null;
         //        string DLD = null;
-
 
         //        if (HttpContext.Current.Request.Form["OrganizationOid"].ToString() != null)
         //        {
@@ -304,8 +278,6 @@ namespace WebApi.Jwt.Controllers.แผนการผลิต_จำนวน�
         //        //err.code = ""; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
         //        //err.message = "OK";
         //        //return Request.CreateResponse(HttpStatusCode.OK, "");
-            
-
 
         //        UserError err2 = new UserError();
         //    err2.code = "0"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
@@ -322,7 +294,5 @@ namespace WebApi.Jwt.Controllers.แผนการผลิต_จำนวน�
         //    }
 
         //}
-        
     }
-    
 }

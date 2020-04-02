@@ -1,44 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.ApplicationBlocks.Data;
+using System;
+using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Formatting;
-using System.Xml;
-using System.Data.SqlClient;
-using System.Configuration;
-using DevExpress.ExpressApp;
-using DevExpress.Data.Filtering;
-using DevExpress.Persistent.BaseImpl.PermissionPolicy;
-using Microsoft.ApplicationBlocks.Data;
-using DevExpress.Persistent.BaseImpl;
-using System.Text;
-using DevExpress.Persistent.Base;
-using DevExpress.Persistent.Base.General;
-using System.Web.Http;
+using System.Net.Mail;
 using System.Web;
-using static WebApi.Jwt.helpclass.helpController;
-using static WebApi.Jwt.Models.user;
-using System.Data;
-using DevExpress.ExpressApp.Xpo;
-using DevExpress.Persistent.Base.Security;
-using DevExpress.ExpressApp.Security;
-using WebApi.Jwt.Models;
+using System.Web.Http;
 using WebApi.Jwt.Filters;
 using WebApi.Jwt.helpclass;
-using NTi.CommonUtility;
-using System.IO;
-using nutrition.Module.EmployeeAsUserExample.Module.BusinessObjects;
-using DevExpress.Utils.Extensions;
-using System.Net.Mail;
+using WebApi.Jwt.Models;
+using static WebApi.Jwt.helpclass.helpController;
+using static WebApi.Jwt.Models.user;
 
 namespace WebApi.Jwt.Controllers
 {
     public class AuthenticationController : ApiController
     {
-        string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
-
-
+        private string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
 
         /// <summary>
         /// ฟังชั่น login ผ่าน xaf แล้ว เจน token ให้ไปใช้กับเซอร์วิสอื่น
@@ -49,7 +29,7 @@ namespace WebApi.Jwt.Controllers
         // [HttpPost] หน้าโมบาย
         [HttpPost]
         [Route("Login")]
-        public HttpResponseMessage LoginAuthen() // ByVal UserName As String, ByVal password As String : 
+        public HttpResponseMessage LoginAuthen() // ByVal UserName As String, ByVal password As String :
         {
             //  HttpResponseMessage
             // IHttpActionResult
@@ -102,9 +82,7 @@ namespace WebApi.Jwt.Controllers
                     SqlHelper.ExecuteNonQuery(scc, CommandType.StoredProcedure, "insert_EventLog", prm);
                     return Request.CreateResponse(HttpStatusCode.BadRequest, user);
                 }
-
             }
-
             catch (Exception ex)
             {
                 //Error case เกิดข้อผิดพลาด
@@ -118,10 +96,7 @@ namespace WebApi.Jwt.Controllers
                 Dispose();
             }
             return Request.CreateResponse(HttpStatusCode.BadRequest, user);
-           
-
         }
-        
 
         [JwtAuthentication]
         [Route("Logout")]
@@ -146,6 +121,7 @@ namespace WebApi.Jwt.Controllers
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
         }
+
         /// <summary>
         /// ทำการรีเซ็จพาสเวริค
         /// </summary>
@@ -154,7 +130,6 @@ namespace WebApi.Jwt.Controllers
         [AllowAnonymous]
         [Route("Reset/Password")]
         [AcceptVerbs("POST")]
-
         public HttpResponseMessage Reset_Password()
         {
             Reset_Password reset = new Reset_Password();
@@ -173,7 +148,6 @@ namespace WebApi.Jwt.Controllers
                 const string fromPassword = "fromPassword";
                 const string subject = "Subject";
                 const string body = "Body";
-
 
                 var smtp = new SmtpClient
                 {
@@ -204,9 +178,5 @@ namespace WebApi.Jwt.Controllers
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
         }
-
-
     }
- }       
-
-
+}

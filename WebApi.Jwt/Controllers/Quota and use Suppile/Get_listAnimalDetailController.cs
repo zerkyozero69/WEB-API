@@ -1,16 +1,13 @@
 ﻿using DevExpress.Data.Filtering;
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Xpo;
-using DevExpress.Xpo;
 using Microsoft.ApplicationBlocks.Data;
 using nutrition.Module;
-using nutrition.Module.EmployeeAsUserExample.Module.BusinessObjects;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web;
@@ -22,7 +19,8 @@ namespace WebApi.Jwt.Controllers.MasterData
 {
     public class Get_listAnimalDetailController : ApiController
     {
-        string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
+        private string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
+
         [AllowAnonymous]
         [HttpPost]
         [Route("AnimalSupplieTypeList")]
@@ -67,12 +65,9 @@ namespace WebApi.Jwt.Controllers.MasterData
                 err.message = ex.Message;
                 //  Return resual
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
-
-
             }
-
-
         }
+
         /// <summary>
         /// list โควตาจัดสรร
         /// </summary>
@@ -122,7 +117,9 @@ namespace WebApi.Jwt.Controllers.MasterData
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
         }
+
         #region แก้โควตา หญ้าแห้ง
+
         ///// <summary>
         ///// /// ชุดโควต้า
         ///// </summary>
@@ -132,7 +129,6 @@ namespace WebApi.Jwt.Controllers.MasterData
         [Route("ManageSubAnimalSupplierList")]
         public HttpResponseMessage ManageSubAnimalSupplierList()
         {
-
             List<AnimalProductDetail> animalDatail = new List<AnimalProductDetail>();
             AnimalProductDetail animal = new AnimalProductDetail();
             try
@@ -140,7 +136,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                 //    string QuotaName = HttpContext.Current.Request.Form["QuotaName"].ToString();
                 string OrganizationOid = HttpContext.Current.Request.Form["OrganizationOid"].ToString();
                 //string AnimalSupplieOid = HttpContext.Current.Request.Form["AnimalSupplieOid"].ToString();
-                //string AnimalSupplieTypeOid = HttpContext.Current.Request.Form["AnimalSupplieTypeOid"].ToString(); 
+                //string AnimalSupplieTypeOid = HttpContext.Current.Request.Form["AnimalSupplieTypeOid"].ToString();
                 string QuotaTypeOid = HttpContext.Current.Request.Form["QuotaTypeOid"].ToString();
 
                 List<QuotaType_Model> listquo = new List<QuotaType_Model>();
@@ -155,91 +151,82 @@ namespace WebApi.Jwt.Controllers.MasterData
                 QuotaType quotaType;
                 //  var ManageSubAnimalSupplierOid = null;
                 quotaType = ObjectSpace.FindObject<QuotaType>(CriteriaOperator.Parse("GCRecord is null and IsActive = 1 and Oid  = '" + QuotaTypeOid + "' ", null));
-               
-                    ManageAnimalSupplier ObjManageAnimalSupplier = ObjectSpace.FindObject<ManageAnimalSupplier>(CriteriaOperator.Parse("[OrganizationOid]=? and Status=1", OrganizationOid));
-                    if (ObjManageAnimalSupplier != null)
+
+                ManageAnimalSupplier ObjManageAnimalSupplier = ObjectSpace.FindObject<ManageAnimalSupplier>(CriteriaOperator.Parse("[OrganizationOid]=? and Status=1", OrganizationOid));
+                if (ObjManageAnimalSupplier != null)
+                {
+                    switch (quotaType.QuotaName)
                     {
-                        switch (quotaType.QuotaName)
-                        {
-                            case "โควตาสำนัก":
-                                animal.QuotaName = "โควตาสำนัก"; //ผิด
+                        case "โควตาสำนัก":
+                            animal.QuotaName = "โควตาสำนัก"; //ผิด
                             animal.AnimalSupplieTypeOid = ObjectSpace.FindObject<AnimalSupplieType>(CriteriaOperator.Parse("[SupplietypeName]='หญ้าแห้ง'", null)).Oid.ToString();
                             animal.AnimalSupplieTypeName = ObjectSpace.FindObject<AnimalSupplieType>(CriteriaOperator.Parse("[SupplietypeName]='หญ้าแห้ง'", null)).SupplietypeName;
 
                             break;
 
-                            case "โควตาศูนย์ฯ":
-                                animal.QuotaName = "โควตาศูนย์ฯ";
-                                animal.AnimalSupplieTypeOid = ObjectSpace.FindObject<AnimalSupplieType>(CriteriaOperator.Parse("[SupplietypeName]='หญ้าแห้ง'", null)).Oid.ToString();
-                                animal.AnimalSupplieTypeName = ObjectSpace.FindObject<AnimalSupplieType>(CriteriaOperator.Parse("[SupplietypeName]='หญ้าแห้ง'", null)).SupplietypeName;
-                                animal.QuotaQTY = ObjManageAnimalSupplier.CenterQTY;
+                        case "โควตาศูนย์ฯ":
+                            animal.QuotaName = "โควตาศูนย์ฯ";
+                            animal.AnimalSupplieTypeOid = ObjectSpace.FindObject<AnimalSupplieType>(CriteriaOperator.Parse("[SupplietypeName]='หญ้าแห้ง'", null)).Oid.ToString();
+                            animal.AnimalSupplieTypeName = ObjectSpace.FindObject<AnimalSupplieType>(CriteriaOperator.Parse("[SupplietypeName]='หญ้าแห้ง'", null)).SupplietypeName;
+                            animal.QuotaQTY = ObjManageAnimalSupplier.CenterQTY;
 
-                                break;
-                            case "โควตาปศุสัตว์เขต":
-                                animal.QuotaName = "โควตาปศุสัตว์เขต";
-                                animal.AnimalSupplieTypeOid = ObjectSpace.FindObject<AnimalSupplieType>(CriteriaOperator.Parse("[SupplietypeName]='หญ้าแห้ง'", null)).Oid.ToString();
-                                animal.AnimalSupplieTypeName = ObjectSpace.FindObject<AnimalSupplieType>(CriteriaOperator.Parse("[SupplietypeName]='หญ้าแห้ง'", null)).SupplietypeName;
-                                animal.QuotaQTY = ObjManageAnimalSupplier.ZoneQTY;
-                                break;
-                            //case "โควตาปศุสัตว์จังหวัด":
-                            //    animal.QuotaName = "โควตาปศุสัตว์จังหวัด";
-                            //    animal.AnimalSupplieTypeOid = ObjectSpace.FindObject<AnimalSupplieType>(CriteriaOperator.Parse("[SupplietypeName]='หญ้าแห้ง'", null)).Oid.ToString();
-                            //    animal.AnimalSupplieTypeName = ObjectSpace.FindObject<AnimalSupplieType>(CriteriaOperator.Parse("[SupplietypeName]='หญ้าแห้ง'", null)).SupplietypeName;
-                            //    animal.QuotaQTY = ObjManageAnimalSupplier.ZoneQTY;
-                            //    break;
-                            case "โควตาอื่นๆ":
-                                animal.QuotaName = "โควตาอื่นๆ";
-                                animal.AnimalSupplieTypeOid = ObjectSpace.FindObject<AnimalSupplieType>(CriteriaOperator.Parse("[SupplietypeName]='หญ้าแห้ง'", null)).Oid.ToString();
-                                animal.AnimalSupplieTypeName = ObjectSpace.FindObject<AnimalSupplieType>(CriteriaOperator.Parse("[SupplietypeName]='หญ้าแห้ง'", null)).SupplietypeName;
-                                animal.QuotaQTY = ObjManageAnimalSupplier.OtherQTY;
-                                break;
+                            break;
 
-                            case "โควตาปศุสัตว์จังหวัด":
-                                if (ObjManageAnimalSupplier != null)
-                                {
+                        case "โควตาปศุสัตว์เขต":
+                            animal.QuotaName = "โควตาปศุสัตว์เขต";
+                            animal.AnimalSupplieTypeOid = ObjectSpace.FindObject<AnimalSupplieType>(CriteriaOperator.Parse("[SupplietypeName]='หญ้าแห้ง'", null)).Oid.ToString();
+                            animal.AnimalSupplieTypeName = ObjectSpace.FindObject<AnimalSupplieType>(CriteriaOperator.Parse("[SupplietypeName]='หญ้าแห้ง'", null)).SupplietypeName;
+                            animal.QuotaQTY = ObjManageAnimalSupplier.ZoneQTY;
+                            break;
+                        //case "โควตาปศุสัตว์จังหวัด":
+                        //    animal.QuotaName = "โควตาปศุสัตว์จังหวัด";
+                        //    animal.AnimalSupplieTypeOid = ObjectSpace.FindObject<AnimalSupplieType>(CriteriaOperator.Parse("[SupplietypeName]='หญ้าแห้ง'", null)).Oid.ToString();
+                        //    animal.AnimalSupplieTypeName = ObjectSpace.FindObject<AnimalSupplieType>(CriteriaOperator.Parse("[SupplietypeName]='หญ้าแห้ง'", null)).SupplietypeName;
+                        //    animal.QuotaQTY = ObjManageAnimalSupplier.ZoneQTY;
+                        //    break;
+                        case "โควตาอื่นๆ":
+                            animal.QuotaName = "โควตาอื่นๆ";
+                            animal.AnimalSupplieTypeOid = ObjectSpace.FindObject<AnimalSupplieType>(CriteriaOperator.Parse("[SupplietypeName]='หญ้าแห้ง'", null)).Oid.ToString();
+                            animal.AnimalSupplieTypeName = ObjectSpace.FindObject<AnimalSupplieType>(CriteriaOperator.Parse("[SupplietypeName]='หญ้าแห้ง'", null)).SupplietypeName;
+                            animal.QuotaQTY = ObjManageAnimalSupplier.OtherQTY;
+                            break;
+
+                        case "โควตาปศุสัตว์จังหวัด":
+                            if (ObjManageAnimalSupplier != null)
+                            {
                                 animal.AnimalSupplieTypeOid = ObjectSpace.FindObject<AnimalSupplieType>(CriteriaOperator.Parse("[SupplietypeName]='หญ้าแห้ง'", null)).Oid.ToString();
                                 animal.AnimalSupplieTypeName = ObjectSpace.FindObject<AnimalSupplieType>(CriteriaOperator.Parse("[SupplietypeName]='หญ้าแห้ง'", null)).SupplietypeName;
                                 animal.manageSubAnimalSupplierOid = ObjManageAnimalSupplier.Oid.ToString();
-                                    List<ManageSubAnimalSupplier_Province> Detail2 = new List<ManageSubAnimalSupplier_Province>();
-                                    IList<ManageSubAnimalSupplier> objmanageSubAnimalSupplier = ObjectSpace.GetObjects<ManageSubAnimalSupplier>(CriteriaOperator.Parse("[ManageAnimalSupplierOid]= '" + ObjManageAnimalSupplier.Oid + "' ", null));
-                                    if (objmanageSubAnimalSupplier.Count > 0)
+                                List<ManageSubAnimalSupplier_Province> Detail2 = new List<ManageSubAnimalSupplier_Province>();
+                                IList<ManageSubAnimalSupplier> objmanageSubAnimalSupplier = ObjectSpace.GetObjects<ManageSubAnimalSupplier>(CriteriaOperator.Parse("[ManageAnimalSupplierOid]= '" + ObjManageAnimalSupplier.Oid + "' ", null));
+                                if (objmanageSubAnimalSupplier.Count > 0)
+                                {
+                                    foreach (ManageSubAnimalSupplier row2 in objmanageSubAnimalSupplier)
                                     {
-                                        foreach (ManageSubAnimalSupplier row2 in objmanageSubAnimalSupplier)
-                                        {
-                                            ManageSubAnimalSupplier_Province subanimal = new ManageSubAnimalSupplier_Province();
-                                            subanimal.ManageSubAnimalSupplierOid = row2.ManageAnimalSupplierOid.Oid.ToString();
-                                            subanimal.ProvinceOid = row2.ProvinceOid.Oid.ToString();
-                                            subanimal.ProvinceName = row2.ProvinceOid.ProvinceNameTH;
-                                            Detail2.Add(subanimal);
-                                        }
+                                        ManageSubAnimalSupplier_Province subanimal = new ManageSubAnimalSupplier_Province();
+                                        subanimal.ManageSubAnimalSupplierOid = row2.ManageAnimalSupplierOid.Oid.ToString();
+                                        subanimal.ProvinceOid = row2.ProvinceOid.Oid.ToString();
+                                        subanimal.ProvinceName = row2.ProvinceOid.ProvinceNameTH;
+                                        Detail2.Add(subanimal);
+                                    }
                                     animal.QuotaName = quotaType.QuotaName;
-                                        animal.ObjProvinceName = Detail2;                                   
-                                    }                   
+                                    animal.ObjProvinceName = Detail2;
+                                }
                             }
                             break;
-
                     }
                     directProvider.Dispose();
                     ObjectSpace.Dispose();
                     return Request.CreateResponse(HttpStatusCode.OK, animal);
-
-                   
                 }
-                    else
-                    {
-                        UserError err2 = new UserError();
-                        err2.code = "3"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-                        err2.message = "ไม่พบข้อมูล";
-                        return Request.CreateResponse(HttpStatusCode.BadRequest, err2);
-
-                    }
-
-                
-           
-                   
-                    }
-                 
-            
+                else
+                {
+                    UserError err2 = new UserError();
+                    err2.code = "3"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                    err2.message = "ไม่พบข้อมูล";
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, err2);
+                }
+            }
             catch (Exception ex)
             { //Error case เกิดข้อผิดพลาด
                 UserError err = new UserError();
@@ -249,22 +236,15 @@ namespace WebApi.Jwt.Controllers.MasterData
                 //  Return resual
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
-
         }
 
-
-
-
-
-
-
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
-        [Route("ManageSubAnimalSupplierList_Quantity")]   ///เรียกโควต้า แห้ง   หมัก สด tmr 
+        [Route("ManageSubAnimalSupplierList_Quantity")]   ///เรียกโควต้า แห้ง   หมัก สด tmr
         public HttpResponseMessage ManageAnimalSupplierList_Quantity()
         {
             ManageQuantity item = new ManageQuantity();
@@ -275,8 +255,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                 if (HttpContext.Current.Request.Form["orgoid"] != null)
                 {
                     orgOid = HttpContext.Current.Request.Form["orgoid"].ToString();
-
-            }
+                }
                 object managesuboid = HttpContext.Current.Request.Form["managesuboid"].ToString();
                 object quotatypeoid = HttpContext.Current.Request.Form["quotatypeoid"].ToString();
                 object budgetsourceoid = HttpContext.Current.Request.Form["budgetsourceoid"].ToString();
@@ -305,7 +284,6 @@ namespace WebApi.Jwt.Controllers.MasterData
                 AnimalSupplie objAnimalSupplie = ObjectSpace.FindObject<AnimalSupplie>(CriteriaOperator.Parse("[oid] =? ", animalsupplieroid));
                 if (objAnimalSupplie.AnimalSupplieName == "แห้ง")
                 {
-
                     QuotaType objQuotaType = ObjectSpace.FindObject<QuotaType>(CriteriaOperator.Parse("[Oid]=?", quotatypeoid));
                     if (objQuotaType != null)
                     {
@@ -362,11 +340,9 @@ namespace WebApi.Jwt.Controllers.MasterData
                             ManageSubAnimalSupplier objManageSubAnimalSupplier = ObjectSpace.FindObject<ManageSubAnimalSupplier>(CriteriaOperator.Parse("[ManageSubAnimalSupplier.ProvinceOid] =?", managesuboid));
                             if (objManageSubAnimalSupplier != null)
                             {
-
                                 listQuantity2.QuotaQTY = objManageSubAnimalSupplier.ProvinceQTY;
 
                                 listQuantity2.Provincename = objManageSubAnimalSupplier.ProvinceOid.ProvinceNameTH;
-
                             }
                         }
 
@@ -398,7 +374,6 @@ namespace WebApi.Jwt.Controllers.MasterData
                             //listQuantity2.ba = (double)Ds.Tables[0].Rows[0]["StockUsed"];
                             listQuantity2.balancQuotaQTY = listQuantity2.QuotaQTY - (double)Ds.Tables[0].Rows[0]["StockUsed"];
                             listQuantity2.StockUsed = (double)Ds.Tables[0].Rows[0]["StockUsed"];
-
                         }
                         else
                         {
@@ -421,7 +396,6 @@ namespace WebApi.Jwt.Controllers.MasterData
                         {
                             listQuantity2.balanceQTY = 0;
                         }
-
                     }
                     else //QuotaType = null
                     {
@@ -507,21 +481,17 @@ namespace WebApi.Jwt.Controllers.MasterData
                         }
                     }
 
-
                     listQuantity2.QuotaQTY = 0;
                     listQuantity2.balanceQTY = balanceQTY;
                     listQuantity2.balancQuotaQTY = 0;
                     listQuantity2.StockUsed = stocklimit;
                     listQuantity.Add(listQuantity2);
-
                 }
 
-               
                 UserError err = new UserError();
                 err.code = ""; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
                 err.message = "OK";
                 return Request.CreateResponse(HttpStatusCode.OK, listQuantity);
-
             }
             catch (Exception ex)
             {
@@ -531,8 +501,9 @@ namespace WebApi.Jwt.Controllers.MasterData
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
         }
+
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <returns></returns>
         [AllowAnonymous]
@@ -543,7 +514,6 @@ namespace WebApi.Jwt.Controllers.MasterData
             ManageQuantity item = new ManageQuantity();
             try
             {
-
                 string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
                 string orgOid = HttpContext.Current.Request.Form["orgoid"].ToString();
                 //   string quotatypeoid = HttpContext.Current.Request.Form["quotatypeoid"].ToString();
@@ -625,7 +595,6 @@ namespace WebApi.Jwt.Controllers.MasterData
                     }
                 }
 
-
                 //item.ProvinceQTY = 0;
                 //item.Current_ProvinceQTY = stockused;
                 //item.StockLimit = stocklimit;
@@ -634,7 +603,6 @@ namespace WebApi.Jwt.Controllers.MasterData
                 err.code = ""; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
                 err.message = "OK";
                 return Request.CreateResponse(HttpStatusCode.OK, item);
-
             }
             catch (Exception ex)
             {
@@ -644,14 +612,14 @@ namespace WebApi.Jwt.Controllers.MasterData
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
         }
+
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <returns></returns>
         [AllowAnonymous]/// เลือกโควต้าจังหวัด
         [HttpPost]
         [Route("QuotaProvince_info")]
-
         public HttpResponseMessage quata_typemanage()
         {
             try
@@ -694,7 +662,6 @@ namespace WebApi.Jwt.Controllers.MasterData
 
                 return Request.CreateResponse(HttpStatusCode.OK, item);
             }
-
             catch (Exception ex)
             { //Error case เกิดข้อผิดพลาด
                 UserError err = new UserError();
@@ -703,10 +670,8 @@ namespace WebApi.Jwt.Controllers.MasterData
                 err.message = ex.Message;
                 //  Return resual
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
-
             }
         }
-
 
         public static double GetStockUsed(string OrganizationOid, string QuotaTypeOid, string BudgetSourceOid, string AnimalSupplieTypeOid, string AnimalSupplieOid)
         {
@@ -740,9 +705,5 @@ namespace WebApi.Jwt.Controllers.MasterData
         public string Name { get; set; }
     }
 }
-#endregion
 
-
-
-
-
+#endregion แก้โควตา หญ้าแห้ง

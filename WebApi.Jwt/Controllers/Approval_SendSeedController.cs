@@ -1,46 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Formatting;
-using System.Xml;
-using System.Data.SqlClient;
-using System.Configuration;
+﻿using DevExpress.Data.Filtering;
 using DevExpress.ExpressApp;
-using DevExpress.Data.Filtering;
-using DevExpress.Persistent.BaseImpl.PermissionPolicy;
-using Microsoft.ApplicationBlocks.Data;
-using DevExpress.Persistent.BaseImpl;
-using System.Text;
-using DevExpress.Persistent.Base;
-using DevExpress.Persistent.Base.General;
-using System.Web.Http;
-using System.Web;
-using static WebApi.Jwt.helpclass.helpController;
-using static WebApi.Jwt.Models.user;
-using System.Data;
 using DevExpress.ExpressApp.Xpo;
-using DevExpress.Persistent.Base.Security;
-using DevExpress.ExpressApp.Security;
-using WebApi.Jwt.Models;
-using WebApi.Jwt.Filters;
-using WebApi.Jwt.helpclass;
-using NTi.CommonUtility;
-using System.IO;
-using nutrition.Module.EmployeeAsUserExample.Module.BusinessObjects;
+using Microsoft.ApplicationBlocks.Data;
 using nutrition.Module;
-using DevExpress.Xpo;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
 using System.Globalization;
-using static WebApi.Jwt.Models.Supplier;
+using System.Web;
+using System.Web.Http;
+using WebApi.Jwt.Models;
 
 namespace WebApi.Jwt.Controllers
 {
     public class Approval_SendSeed : ApiController
     {
-        string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
-       
-        #region แบบใช้ฟังค์ชั่นของ xaf 
+        private string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
+
+        #region แบบใช้ฟังค์ชั่นของ xaf
 
         /// <summary>
         /// หารายละเอียดการส่งเมล็ดด้วย sendOID
@@ -54,7 +32,6 @@ namespace WebApi.Jwt.Controllers
         public IHttpActionResult SendOrderSeedDetail_ByOrderSeedID()
 
         {
-
             object Send_No = string.Empty;
             object ReceiveOrgOid = string.Empty;
             Approve_Model sendDetail = new Approve_Model();
@@ -101,7 +78,6 @@ namespace WebApi.Jwt.Controllers
 
                     foreach (SendOrderSeedDetail row in sendOrderSeed.SendOrderSeedDetails)
                     {
-
                         SendOrderSeed_Model send_Detail = new SendOrderSeed_Model();
                         send_Detail.LotNumber = row.LotNumber.LotNumber;
                         send_Detail.WeightUnit = row.WeightUnitOid.UnitName;
@@ -115,28 +91,25 @@ namespace WebApi.Jwt.Controllers
                         {
                             send_Detail.SendOrderSeed = row.SendOrderSeed.SendNo;
                         }
-                    
+
                         send_Detail.AnimalSeedOid = row.AnimalSeedOid.SeedName;
                         send_Detail.AnimalSeedLevelOid = row.AnimalSeedLevelOid.SeedLevelName;
                         send_Detail.SeedTypeOid = row.SeedTypeOid.SeedTypeName;
                         send_Detail.Amount = row.Amount;
                         sum = sum + row.Weight;
 
-
                         list_detail.Add(send_Detail);
                     }
                     sendDetail.Weight_All = sum.ToString() + " " + "กิโลกรัม";
                     sendDetail.objSeed = list_detail;
-                    
-                    return Ok(sendDetail);
 
+                    return Ok(sendDetail);
                 }
                 else
                 {
                     return BadRequest("NoData");
                 }
             }
-
             catch (Exception ex)
             { //Error case เกิดข้อผิดพลาด
                 UserError err = new UserError();
@@ -145,25 +118,17 @@ namespace WebApi.Jwt.Controllers
                 //  Return resual
                 return BadRequest(ex.Message);
             }
-
         }
 
-
-        #endregion การอนุมัติเบิกใช้เมล็ดพันธุ์
-
-
+        #endregion แบบใช้ฟังค์ชั่นของ xaf
 
         #region SendOrderSeedApprove ยืนยันเมล็ดพันธุ์
+
         [AllowAnonymous]
         [HttpPost]
         [Route("SendSeed/ApprovalSend2")]
-
         public IHttpActionResult ApprovalSend_SupplierUseProduct(string Send_No)
         {
-
-
-
-
             SendOrderSeed_Model Model = new SendOrderSeed_Model();
             try
             {
@@ -197,7 +162,6 @@ namespace WebApi.Jwt.Controllers
                     SendOrderSeed_Model objsend_Detail = new SendOrderSeed_Model();
                     foreach (SendOrderSeedDetail row in ObjMaster.SendOrderSeedDetails)
                     {
-
                         objsend_Detail.LotNumber = row.LotNumber.Oid;
 
                         objsend_Detail.WeightUnit = row.WeightUnitOid.UnitName;
@@ -212,7 +176,6 @@ namespace WebApi.Jwt.Controllers
                         objsend_Detail.Amount = row.Amount;
                         sum = sum + row.Weight;
                         list_detail.Add(objsend_Detail);
-
                     }
                     nutrition.Module.StockSeedInfo ObjStockSeedInfoInfo;
                     var objSupplierProduct = ObjectSpace.FindObject<SupplierProductModifyDetail>(CriteriaOperator.Parse("Oid =?", objsend_Detail.LotNumber));
@@ -221,7 +184,6 @@ namespace WebApi.Jwt.Controllers
                     , objsend_Detail.AnimalSeedLevelOid, objsend_Detail.LotNumber));
                     if (objStockSeedInfo == null)
                     {
-
                         //var stockSeedInfos = from Item in objStockSeedInfo
                         //                     orderby Item.StockDate descending
                         //                     select Item;
@@ -245,16 +207,12 @@ namespace WebApi.Jwt.Controllers
                     ObjMaster.SendStatus = EnumSendOrderSeedStatus.Approve;
                     ObjectSpace.CommitChanges();
                     return Ok(true);
-
                 }
                 else
                 {
                     return BadRequest();
                 }
-
-
             }
-
             catch (Exception ex)
             { //Error case เกิดข้อผิดพลาด
                 UserError err = new UserError();
@@ -265,9 +223,6 @@ namespace WebApi.Jwt.Controllers
             }
         }
 
-        #endregion
+        #endregion SendOrderSeedApprove ยืนยันเมล็ดพันธุ์
     }
 }
-
-
-

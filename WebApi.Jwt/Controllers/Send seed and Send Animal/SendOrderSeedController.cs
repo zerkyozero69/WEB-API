@@ -1,7 +1,6 @@
 ﻿using DevExpress.Data.Filtering;
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Xpo;
-using DevExpress.Xpo;
 using nutrition.Module;
 using nutrition.Module.EmployeeAsUserExample.Module.BusinessObjects;
 using System;
@@ -38,7 +37,7 @@ namespace WebApi.Jwt.Controllers
     public class SendOrderSeedController : ApiController
     {
         //database connection.
-        string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
+        private string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
 
         /// <summary>
         /// แสดงข้อมูลส่ง-รับเมล็ดพันธุ์ให้หน่วยงาน
@@ -71,7 +70,6 @@ namespace WebApi.Jwt.Controllers
 
                     if (type == "2")
                     {  //หน่วยส่ง
-
                         IList<SendOrderSeed> collection = ObjectSpace.GetObjects<SendOrderSeed>(CriteriaOperator.Parse("GCRecord is null and SendStatus=1 and [SendOrgOid.Oid]='" + org_oid + "'", null));
                         var query = from Q in collection orderby Q.SendNo select Q;
                         if (collection.Count > 0)
@@ -102,7 +100,6 @@ namespace WebApi.Jwt.Controllers
                     }
                     else if (type == "1")
                     {  //รับ
-
                         IList<SendOrderSeed> collection2 = ObjectSpace.GetObjects<SendOrderSeed>(CriteriaOperator.Parse("GCRecord is null and SendStatus = 2 and  ReceiveStatus=1 and ReceiveOrgOid.Oid='" + org_oid + "'", null));
                         var query = from Q in collection2 orderby Q.SendNo select Q;
                         if (collection2.Count > 0)
@@ -130,7 +127,6 @@ namespace WebApi.Jwt.Controllers
                             ObjectSpace.Dispose();
                             //lists.Receive = ReceiveItems;
                             return Request.CreateResponse(HttpStatusCode.OK, ReceiveItems);
-
                         }
                         else
                         {
@@ -141,7 +137,6 @@ namespace WebApi.Jwt.Controllers
                             err2.message = "ไม่มีข้อมูลรายการ";
                             return Request.CreateResponse(HttpStatusCode.BadRequest, err2);
                         }
-
                     }
 
                     //invalid
@@ -150,7 +145,6 @@ namespace WebApi.Jwt.Controllers
                     err.code = "0";
                     err.message = "กรุณาใส่ข้อมูล Org_Oid และ type ให้เรียบร้อยก่อน";
                     return Request.CreateResponse(HttpStatusCode.BadRequest, err);
-
                 }
                 else
                 {
@@ -215,7 +209,7 @@ namespace WebApi.Jwt.Controllers
                         item.SendStatus = row.SendStatus.ToString();
                         item.FinanceYear = row.FinanceYearOid.YearName;
                         item.CancelMsg = row.CancelMsg;
-                        item. ReceiveOrgOid = row.ReceiveOrgOid.Oid.ToString();
+                        item.ReceiveOrgOid = row.ReceiveOrgOid.Oid.ToString();
                         item.ReceiveOrgName = row.ReceiveOrgOid.SubOrganizeName;
                         item.ReceiveOrgFullName = row.ReceiveOrgOid.OrganizeNameTH;
                         item.RefNo = RefNo;
@@ -249,7 +243,6 @@ namespace WebApi.Jwt.Controllers
                         }
 
                         item.Details = details;
-
                     }
                     return Request.CreateResponse(HttpStatusCode.OK, item);
                 }
@@ -338,7 +331,6 @@ namespace WebApi.Jwt.Controllers
 
                                     if (objStockSeedInfo.Count > 0)
                                     {
-
                                         var ObjSubStockCardSource = (from Item in objStockSeedInfo orderby Item.StockDate descending select Item).First().TotalWeight;
                                         var ObjStockSeedInfoInfo = ObjectSpace.CreateObject<StockSeedInfo>();
                                         ObjStockSeedInfoInfo.StockDate = DateTime.Today;
@@ -427,9 +419,8 @@ namespace WebApi.Jwt.Controllers
                             ObjectSpace.CommitChanges();
                             ObjMaster.ReceiveStatus = EnumReceiveOrderSeedStatus.Approve;
                             ObjectSpace.CommitChanges();
-                         //   "alert('อนุมัติรับเมล็ดพันธุ์จากหน่วยงานในสังกัดเรียบร้อยแล้ว');")
+                            //   "alert('อนุมัติรับเมล็ดพันธุ์จากหน่วยงานในสังกัดเรียบร้อยแล้ว');")
                         }
-
                         else if (Status == "2")
                         { //Reject
                             if (ObjMaster.SendStatus == EnumSendOrderSeedStatus.Approve)
@@ -444,7 +435,7 @@ namespace WebApi.Jwt.Controllers
                                         {
                                             var ObjStockAnimalInfo_DetailSource = (from Item in objStockSeedInfo orderby Item.StockDate descending select Item).First().TotalWeight;
                                             var ObjStockSeedInfoInfo = ObjectSpace.CreateObject<StockSeedInfo>();
-                                            // ObjMaster.ReceiveOrgOid.Oid, ObjMaster.FinanceYearOid.Oid, objSupplierProduct.BudgetSourceOid, objSupplierProduct.AnimalSeedOid.Oid, objSupplierProduct.AnimalSeedLevelOid.Oid))    
+                                            // ObjMaster.ReceiveOrgOid.Oid, ObjMaster.FinanceYearOid.Oid, objSupplierProduct.BudgetSourceOid, objSupplierProduct.AnimalSeedOid.Oid, objSupplierProduct.AnimalSeedLevelOid.Oid))
                                             var withBlock = ObjStockSeedInfoInfo;
                                             withBlock.StockDate = DateTime.Now;
                                             withBlock.OrganizationOid = ObjMaster.ReceiveOrgOid;
@@ -517,14 +508,8 @@ namespace WebApi.Jwt.Controllers
                             ObjMaster.ReceiveStatus = EnumReceiveOrderSeedStatus.Eject;//4
                             ObjMaster.CancelMsg = CancelMsg;
                             ObjectSpace.CommitChanges();
-
                         }
                     }
-
-
-
-
-
                     else if (_type == "2") //ส่ง
                     {
                         if (Status == "1")
@@ -534,7 +519,6 @@ namespace WebApi.Jwt.Controllers
                                 SupplierProductModifyDetail objSupplierProduct = ObjectSpace.FindObject<SupplierProductModifyDetail>(CriteriaOperator.Parse("Oid=?", row.LotNumber.Oid));
                                 if (objSupplierProduct != null)
                                 {
-
                                     if (ObjMaster.SendOrgOid.IsFactory == true)
                                     {
                                         objStockSeedInfo = ObjectSpace.GetObjects<StockSeedInfo>(CriteriaOperator.Parse("OrganizationOid= ? and FinanceYearOid=? and BudgetSourceOid=? and AnimalSeedOid=? and AnimalSeedLevelOid=? and StockType=0 and ReferanceCode=? ", ObjMaster.SendOrgOid.Oid, ObjMaster.FinanceYearOid.Oid, objSupplierProduct.BudgetSourceOid, objSupplierProduct.AnimalSeedOid.Oid, objSupplierProduct.AnimalSeedLevelOid.Oid, row.LotNumber.LotNumberFactory));
@@ -549,7 +533,7 @@ namespace WebApi.Jwt.Controllers
                                         var ObjSubStockCardSource = (from Item in objStockSeedInfo orderby Item.StockDate descending select Item).First().TotalWeight;
                                         var ObjStockSeedInfoInfo = ObjectSpace.CreateObject<StockSeedInfo>();
                                         // ObjMaster.ReceiveOrgOid.Oid, ObjMaster.FinanceYearOid.Oid, objSupplierProduct.BudgetSourceOid, objSupplierProduct.AnimalSeedOid.Oid, objSupplierProduct.AnimalSeedLevelOid.Oid))
-                                       
+
                                         var withBlock = ObjStockSeedInfoInfo;
                                         withBlock.StockDate = DateTime.Now;
                                         withBlock.OrganizationOid = ObjMaster.SendOrgOid;
@@ -568,7 +552,6 @@ namespace WebApi.Jwt.Controllers
                                         {
                                             withBlock.StockType = EnumStockType.ReceiveProduct;
                                         }
-
 
                                         withBlock.SeedTypeOid = objSupplierProduct.SeedTypeOid;
                                         withBlock.ReferanceCode = row.LotNumber.LotNumberFactory;
@@ -604,7 +587,6 @@ namespace WebApi.Jwt.Controllers
                                         ObjectSpace.CommitChanges();
                                     }
 
-
                                     objQualityAnalysis = ObjectSpace.FindObject<QualityAnalysis>(CriteriaOperator.Parse("[LotNumber]=? and [AnalysisType]=0 and [OrganizationOid]=?", row.LotNumber.LotNumberFactory, row.SendOrderSeed.SendOrgOid));
                                     if (objQualityAnalysis != null)
                                     {
@@ -632,7 +614,6 @@ namespace WebApi.Jwt.Controllers
                                         withBlock.OrganizationOid = ObjMaster.ReceiveOrgOid;
                                         ObjectSpace.CommitChanges();
                                     }
-
                                 }
                             }
                             ObjHistory = ObjectSpace.CreateObject<HistoryWork>();
@@ -648,7 +629,6 @@ namespace WebApi.Jwt.Controllers
                             ObjMaster.Remark = CancelMsg;
                             ObjectSpace.CommitChanges();
                         }
-
                         else if (Status == "2") //ไม่อนุมัติ ฝั่งส่ง
                         { //Reject
                             ObjMaster.CancelMsg = CancelMsg;
@@ -680,12 +660,9 @@ namespace WebApi.Jwt.Controllers
                                         withBlock.SeedTypeOid = objSupplierProduct.SeedTypeOid;
                                         withBlock.ReferanceCode = row.LotNumber.LotNumberFactory;
                                         ObjectSpace.CommitChanges();
-
                                     }
                                 }
-
                             }
-
 
                             ObjHistory = ObjectSpace.CreateObject<HistoryWork>();
                             // ประวัติ
@@ -700,16 +677,13 @@ namespace WebApi.Jwt.Controllers
 
                             ObjectSpace.CommitChanges();
                         }
-
                     }
-                    
 
                     UpdateResult ret = new UpdateResult();
                     ret.status = "true";
                     ret.message = "บันทึกข้อมูลเสร็จเรียบร้อยแล้ว";
                     return Request.CreateResponse(HttpStatusCode.OK, ret);
                 }
-
                 else
                 {
                     UserError err = new UserError();
@@ -718,7 +692,6 @@ namespace WebApi.Jwt.Controllers
                     err.message = "ไม่พบข้อมูล";
                     return Request.CreateResponse(HttpStatusCode.NotFound, err);
                 }
-
             }
             catch (Exception ex)
             {
@@ -732,7 +705,5 @@ namespace WebApi.Jwt.Controllers
                 SqlConnection.ClearAllPools();
             }
         }
-
-        
     }
 }

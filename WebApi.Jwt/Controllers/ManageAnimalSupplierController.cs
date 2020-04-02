@@ -1,14 +1,10 @@
 ﻿using DevExpress.Data.Filtering;
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Xpo;
-using DevExpress.Xpo;
 using nutrition.Module;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web;
 using System.Web.Http;
 using WebApi.Jwt.Models;
@@ -18,7 +14,7 @@ namespace WebApi.Jwt.Controllers
 {
     public class ManageAnimalSupplierController : ApiController
     {
-        string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
+        private string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
 
         ///// <summary>
         ///// เรียกข้อมูลรายการเสบียงสัตว์
@@ -33,7 +29,6 @@ namespace WebApi.Jwt.Controllers
         {
             try
             {
-
                 string OrganizationOid = HttpContext.Current.Request.Form["OrganizationOid"].ToString();
                 string FinanceYearOid = HttpContext.Current.Request.Form["FinanceYearOid"].ToString();
                 XpoTypesInfoHelper.GetXpoTypeInfoSource();
@@ -42,7 +37,6 @@ namespace WebApi.Jwt.Controllers
                 XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
                 IList<ManageAnimalSupplier> collection = ObjectSpace.GetObjects<ManageAnimalSupplier>(CriteriaOperator.Parse(" GCRecord is null and Status = 1 and OrganizationOid=? and FinanceYearOid = ?", OrganizationOid, FinanceYearOid));
-
 
                 //ManageAnimalSupplier ObjMaster;
                 //ObjMaster = ObjectSpace.FindObject<ManageAnimalSupplier>(CriteriaOperator.Parse("GCRecord is null and StockType = 1 and OrganizationOid =? and FinanceYearOid = ? ", OrganizationOid, FinanceYearOid));
@@ -66,11 +60,9 @@ namespace WebApi.Jwt.Controllers
                     Model.Status = row.Status.ToString();
                     Model.SortID = row.SortID;
                     list_detail.Add(Model);
-
                 }
 
                 return Ok(true);
-
             }
             catch (Exception ex)
             { //Error case เกิดข้อผิดพลาด
@@ -86,7 +78,6 @@ namespace WebApi.Jwt.Controllers
         //{
         //    try
         //    {
-
         //        XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
         //        IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
         //        XpoTypesInfoHelper.GetXpoTypeInfoSource();
@@ -149,7 +140,6 @@ namespace WebApi.Jwt.Controllers
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
                 XafTypesInfo.Instance.RegisterEntity(typeof(SupplierUseAnimalProductDetail));
 
-
                 IList<SupplierUseAnimalProductDetail> collection = ObjectSpace.GetObjects<SupplierUseAnimalProductDetail>(CriteriaOperator.Parse(" BudgetSourceOid.Oid = '" + BudgetSource + "' and GCRecord is null and QuotaTypeOid.Oid = ?", QuotaType));
                 List<SupplierUseAnimalProductDetail_Model> list_detail = new List<SupplierUseAnimalProductDetail_Model>();
                 if (collection.Count > 0)
@@ -163,7 +153,7 @@ namespace WebApi.Jwt.Controllers
                         Model.AnimalSupplie = row.AnimalSupplieOid.AnimalSupplieName;
                         Model.QuotaType = row.QuotaTypeOid.QuotaName;
                         Model.AnimalSupplieType = row.AnimalSupplieTypeOid.SupplietypeName;
-                       Model.AnimalSeed = "";
+                        Model.AnimalSeed = "";
                         Model.StockUsed = row.StockUsed;
                         Model.StockLimit = row.StockLimit;
                         Model.QuotaQTY = row.QuotaQTY;
@@ -186,6 +176,7 @@ namespace WebApi.Jwt.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
         //[AllowAnonymous]
         //[HttpPost]
         //[Route("SupplierUseAnimalApprove")]
@@ -199,11 +190,8 @@ namespace WebApi.Jwt.Controllers
         //        SupplierUseAnimalProduct ObjMaster;
         //        ObjMaster = ObjectSpace.FindObject<SupplierUseAnimalProduct>(CriteriaOperator.Parse("UseNo=?", UseNo));
 
-
-
         //        foreach (SupplierUseAnimalProductDetail row in ObjMaster.SupplierUseAnimalProductDetails)
         //        {
-
         //            var objOrganizationOid = row.SupplierUseAnimalProductOid.OrganizationOid;
         //            var objAnimalSupplieOid = row.AnimalSupplieOid;
         //            var objAnimalSupplieTypeOid = row.AnimalSupplieTypeOid;
@@ -214,7 +202,6 @@ namespace WebApi.Jwt.Controllers
         //            IList<StockAnimalUseInfo> objStockAnimalUseInfo = ObjectSpace.GetObjects<StockAnimalUseInfo>(CriteriaOperator.Parse("OrganizationOid=? and AnimalSupplieOid=? and AnimalSupplieTypeOid=? and QuotaType=? and   AnimalSeedOid=?", objOrganizationOid.Oid, objAnimalSupplieOid.Oid, objAnimalSupplieTypeOid.Oid, objQuotaType, ObjAnimalSeedOid.Oid));
         //            if (objStockAnimalUseInfo.Count != 0)
         //            {
-
         //                StockAnimalUseInfo StockAnimalUseInfoNew;
         //                XafTypesInfo.Instance.RegisterEntity(typeof(StockAnimalUseInfo));
         //                StockAnimalUseInfoNew = ObjectSpace.CreateObject<StockAnimalUseInfo>();
@@ -232,7 +219,6 @@ namespace WebApi.Jwt.Controllers
         //            }
         //            else
         //            {
-
         //               ObjectSpace.CommitChanges();
         //                StockAnimalInfo objStockAnimalInfo = ObjectSpace.CreateObject<StockAnimalInfo>();
         //                objStockAnimalInfo.AnimalProductNumber = ObjMaster.UseNo;

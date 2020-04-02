@@ -5,7 +5,6 @@ using nutrition.Module;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web;
@@ -16,7 +15,7 @@ namespace WebApi.Jwt.Controllers
 {
     public class StockSeedController : ApiController
     {
-        string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
+        private string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
 
         /// <summary>
         /// เรียกสต็อคคงเหลือ
@@ -31,7 +30,6 @@ namespace WebApi.Jwt.Controllers
             string FinanceYearOid;
             try
             {
-
                 OrganizationOid = HttpContext.Current.Request.Form["OrganizationOid"].ToString();
 
                 FinanceYearOid = HttpContext.Current.Request.Form["FinanceYearOid"].ToString();
@@ -43,7 +41,7 @@ namespace WebApi.Jwt.Controllers
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
 
                 IList<StockSeedInfo> collection = ObjectSpace.GetObjects<StockSeedInfo>(CriteriaOperator.Parse(" GCRecord is null and StockType = 1 and OrganizationOid=? and FinanceYearOid = ?", OrganizationOid, FinanceYearOid));
-                if (collection.Count >0)
+                if (collection.Count > 0)
                 {
                     foreach (StockSeedInfo row in collection)
                     {
@@ -70,7 +68,6 @@ namespace WebApi.Jwt.Controllers
                         list_detail.Add(stock);
                     }
                     return Ok(list_detail);
-
                 }
                 else
                 {
@@ -83,9 +80,7 @@ namespace WebApi.Jwt.Controllers
 
                 //else
                 // {
-
             }
-
             catch (Exception ex)
             { //Error case เกิดข้อผิดพลาด
                 UserError err = new UserError();
@@ -95,9 +90,10 @@ namespace WebApi.Jwt.Controllers
                 return BadRequest(ex.Message);
             }
         }/// <summary>
-        /// เรียกเสบียงสัตว์ ตามเขต 
-        /// </summary>
-        /// <returns></returns>
+
+         /// เรียกเสบียงสัตว์ ตามเขต
+         /// </summary>
+         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
         [Route("ManageAnimalSupplier")]
@@ -107,8 +103,6 @@ namespace WebApi.Jwt.Controllers
             string FinanceYearOid;
             try
             {
-
-
                 OrganizationOid = HttpContext.Current.Request.Form["OrganizationOid"].ToString();
 
                 FinanceYearOid = HttpContext.Current.Request.Form["FinanceYearOid"].ToString();
@@ -147,8 +141,6 @@ namespace WebApi.Jwt.Controllers
                             ManageSubAnimalSupplier_Model item = new ManageSubAnimalSupplier_Model();
                             item.ProvinceQTY = row2.ProvinceQTY;
 
-
-                       
                             item.Province = row2.ProvinceOid.ProvinceNameTH;
                             detail.Add(item);
                         }
@@ -168,7 +160,6 @@ namespace WebApi.Jwt.Controllers
                     return Request.CreateResponse(HttpStatusCode.BadRequest, err);
                 }
             }
-
             catch (Exception ex)
             { //Error case เกิดข้อผิดพลาด
                 UserError err = new UserError();
@@ -176,9 +167,7 @@ namespace WebApi.Jwt.Controllers
                 err.message = ex.Message;
                 //  Return resual
                 return Request.CreateResponse(HttpStatusCode.BadRequest, ex);
-
             }
         }
-
     }
 }

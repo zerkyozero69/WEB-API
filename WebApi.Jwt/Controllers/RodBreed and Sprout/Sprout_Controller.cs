@@ -20,7 +20,8 @@ namespace WebApi.Jwt.Controllers.ท่อนพันธุ์_กล้าพ�
     public class Sprout_Controller : ApiController
 
     {
-        string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
+        private string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
+
         // GET: api/Sprout_
         public IEnumerable<string> Get()
         {
@@ -49,7 +50,6 @@ namespace WebApi.Jwt.Controllers.ท่อนพันธุ์_กล้าพ�
         [Route("SproutUpdate/Approve")]
         public HttpResponseMessage UpdateSprout()
         {
-
             //  object objStockAnimalInfo = null;
             HistoryWork ObjHistory = null;
             IList<StockSeedInfo> objStockSeedInfo = null;
@@ -58,13 +58,12 @@ namespace WebApi.Jwt.Controllers.ท่อนพันธุ์_กล้าพ�
             try
             {
                 string RefNo = HttpContext.Current.Request.Form["RefNo"].ToString(); //ข้อมูลเลขที่อ้างอิง
-              //  string Status = HttpContext.Current.Request.Form["Status"].ToString(); //สถานะ
+                                                                                     //  string Status = HttpContext.Current.Request.Form["Status"].ToString(); //สถานะ
                 string CancelMsg = HttpContext.Current.Request.Form["Remark"].ToString(); //หมายเหตุ
                 Username = HttpContext.Current.Request.Form["Username"].ToString();
 
                 if (RefNo != "")
                 {
-
                     XpoTypesInfoHelper.GetXpoTypeInfoSource();
                     XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.SupplierSproutUseProduct));
                     XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.StockSproutInfo));
@@ -83,17 +82,14 @@ namespace WebApi.Jwt.Controllers.ท่อนพันธุ์_กล้าพ�
 
                     SupplierSproutUseProduct ObjMaster = ObjectSpace.FindObject<SupplierSproutUseProduct>(CriteriaOperator.Parse("UseNo=?", RefNo));
 
-
                     foreach (SupplierSproutUseProductDetail row in ObjMaster.SupplierSproutUseProductDetails)
                     {
-
                         string TempDescription = "";
                         var switchExpr = ObjMaster.ActivityOid.ActivityName;
                         switch (switchExpr)
                         {
                             case "เพื่อใช้ในกิจกรรมของศูนย์ฯ":
                                 {
-
                                     EmployeeInfo objEmployees = ObjectSpace.FindObject<EmployeeInfo>(CriteriaOperator.Parse("[Oid]=?", ObjMaster.EmployeeOid));
                                     if (objEmployees is object)
                                     {
@@ -233,7 +229,6 @@ namespace WebApi.Jwt.Controllers.ท่อนพันธุ์_กล้าพ�
 
                             var withBlock = objCheckStockSproutInfo[0];
                             withBlock.Weight = 0 - row.Weight;
-
                         }
                         // View.ObjectSpace.CommitChanges()
                         else
@@ -273,10 +268,7 @@ namespace WebApi.Jwt.Controllers.ท่อนพันธุ์_กล้าพ�
                             objStockSproutInfo_DetailNew.SeedTypeOid = row.SeedTypeOid;
                             objStockSproutInfo_DetailNew.Description = TempDescription;
                             // ==========================================
-
                         };
-
-
                     }
                     ObjMaster.Status = EnumRodBreedProductSeedStatus.Approve;
                     ObjMaster.ApproveDate = DateTime.Now;
@@ -291,14 +283,11 @@ namespace WebApi.Jwt.Controllers.ท่อนพันธุ์_กล้าพ�
                     ObjHistory.CreateDate = DateTime.Now;
                     ObjectSpace.CommitChanges();
 
-
                     UpdateResult ret = new UpdateResult();
                     ret.status = "true";
                     ret.message = "บันทึกข้อมูลอนุมัติเรียบร้อยแล้ว";
                     return Request.CreateResponse(HttpStatusCode.OK, ret);
-
                 }
-
                 else
                 {
                     UpdateResult ret = new UpdateResult();
@@ -315,6 +304,7 @@ namespace WebApi.Jwt.Controllers.ท่อนพันธุ์_กล้าพ�
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
         }
+
         [AllowAnonymous]
         [HttpPost]
         [Route("SproutUpdate/Eject")]
@@ -338,7 +328,6 @@ namespace WebApi.Jwt.Controllers.ท่อนพันธุ์_กล้าพ�
                 Username = HttpContext.Current.Request.Form["Username"].ToString();
                 if (RefNo != "")
                 {
-
                     XpoTypesInfoHelper.GetXpoTypeInfoSource();
                     XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.SupplierSproutUseProduct));
                     XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.StockSproutInfo));
@@ -398,7 +387,7 @@ namespace WebApi.Jwt.Controllers.ท่อนพันธุ์_กล้าพ�
                             }
                         }
                     }
-                    SupplierSproutUseProduct TmpObjMaster ;
+                    SupplierSproutUseProduct TmpObjMaster;
                     ObjMaster.CancelMsg = CancelMsg;
                     ObjMaster.Status = EnumRodBreedProductSeedStatus.Eject;
                     ObjMaster.CancelBy = objUserInfo.DisplayName;
@@ -417,9 +406,8 @@ namespace WebApi.Jwt.Controllers.ท่อนพันธุ์_กล้าพ�
                     UpdateResult ret = new UpdateResult();
                     ret.status = "true";
                     ret.message = "บันทึกข้อมูลไม่อนุมัติเรียบร้อยแล้ว";
-                   // ret.message = "บันทึกข้อมูลไม่อนุมัติเรียบร้อยแล้ว"+ "(Mobile Application)";
+                    // ret.message = "บันทึกข้อมูลไม่อนุมัติเรียบร้อยแล้ว"+ "(Mobile Application)";
                     return Request.CreateResponse(HttpStatusCode.OK, ret);
-
                 }
                 else
                 {
@@ -429,7 +417,6 @@ namespace WebApi.Jwt.Controllers.ท่อนพันธุ์_กล้าพ�
                     return Request.CreateResponse(HttpStatusCode.NotFound, ret);
                 }
             }
-
             catch (Exception ex)
             {
                 UserError err = new UserError();
@@ -437,13 +424,13 @@ namespace WebApi.Jwt.Controllers.ท่อนพันธุ์_กล้าพ�
                 err.message = ex.Message;
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
-
         }
+
         [AllowAnonymous]
         [HttpPost]
         [Route("Sprout/list")]
-        public HttpResponseMessage  Sproutlist()
-            {
+        public HttpResponseMessage Sproutlist()
+        {
             try
             {
                 string Org = HttpContext.Current.Request.Form["organizationOid"].ToString();
@@ -470,7 +457,7 @@ namespace WebApi.Jwt.Controllers.ท่อนพันธุ์_กล้าพ�
                             item.SubActivityLevelOid = row.SubActivityLevelOid.Oid.ToString();
                             item.SubActivityLevelName = row.SubActivityLevelOid.ActivityName;
                         }
-                       
+
                         item.FinanceYearOid = row.FinanceYearOid.Oid.ToString();
                         item.FinanceYear = row.FinanceYearOid.YearName;
                         item.UseNo = row.UseNo;
@@ -481,7 +468,6 @@ namespace WebApi.Jwt.Controllers.ท่อนพันธุ์_กล้าพ�
                         {
                             item.EmployeeOid = row.EmployeeOid.Oid.ToString();
                             item.FullName = row.EmployeeOid.FullName;
-                            
                         }
                         if (row.RegisCusServiceOid != null)
                         {
@@ -489,18 +475,16 @@ namespace WebApi.Jwt.Controllers.ท่อนพันธุ์_กล้าพ�
                             item.FullName = row.RegisCusServiceOid.DisPlayName;
                             item.FullName = row.RegisCusServiceOid.FullAddress;
                         }
-                        if(row.OrgeServiceOid != null)
+                        if (row.OrgeServiceOid != null)
                         {
                             item.OrgeServiceOid = row.OrgeServiceOid.Oid.ToString();
                             item.FullName = row.OrgeServiceOid.OrgeServiceName;
                             item.FullAddress = row.OrgeServiceOid.FullAddress;
                         }
 
-                        
                         item.ServiceCount = row.ServiceCount;
                         item.TotalWeight = row.SupplierSproutUseProductDetails.Sum((c => c.Weight)).ToString() + " กิโลกรัม";
                         Detail.Add(item);
-
                     }
                     directProvider.Dispose();
                     ObjectSpace.Dispose();
@@ -514,7 +498,6 @@ namespace WebApi.Jwt.Controllers.ท่อนพันธุ์_กล้าพ�
                     err2.code = "-9";
                     err2.message = "ไม่มีข้อมูลรายการ การใช้กล้าพันธุ์";
                     return Request.CreateResponse(HttpStatusCode.NotFound, err2);
-
                 }
             }
             catch (Exception ex)
@@ -526,10 +509,11 @@ namespace WebApi.Jwt.Controllers.ท่อนพันธุ์_กล้าพ�
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
         }
+
         [AllowAnonymous]
         [HttpPost]
         [Route("Sprout/Detail")]
-        public HttpResponseMessage  Sproutlisttdetail()
+        public HttpResponseMessage Sproutlisttdetail()
         {
             try
             {
@@ -537,8 +521,6 @@ namespace WebApi.Jwt.Controllers.ท่อนพันธุ์_กล้าพ�
 
                 if (UseNo != "")
                 {
-
-
                     XpoTypesInfoHelper.GetXpoTypeInfoSource();
                     XafTypesInfo.Instance.RegisterEntity(typeof(nutrition.Module.SupplierSproutUseProduct));
                     RodbreedSproutUseProduct_model_Detail item = null;
@@ -584,21 +566,20 @@ namespace WebApi.Jwt.Controllers.ท่อนพันธุ์_กล้าพ�
                             item.SubActivityLevelOid = row.SubActivityLevelOid.Oid.ToString();
                             item.SubActivityLevelName = row.SubActivityLevelOid.ActivityName;
                         }
-     
+
                         item.Status = row.Status.ToString();
                         item.ServiceCount = row.ServiceCount;
-                        item.TotalWeight = row.SupplierSproutUseProductDetails.Sum((c => c.Weight)).ToString()+""+"กิโลกกรัม";
-                        item.TotalPrice = row.SupplierSproutUseProductDetails.Sum((c => c.Price)).ToString()+""+"บาท ";
+                        item.TotalWeight = row.SupplierSproutUseProductDetails.Sum((c => c.Weight)).ToString() + "" + "กิโลกกรัม";
+                        item.TotalPrice = row.SupplierSproutUseProductDetails.Sum((c => c.Price)).ToString() + "" + "บาท ";
                         item.CancelMsg = row.CancelMsg;
                         if (row.ActivityOid.ActivityName == "เพื่อการจำหน่าย")
                         {
                             item.ReceiptNo = row.ReceiptNo;
-                         
                         }
                         List<SupplierSproutUseProductDetail_Model> details = new List<SupplierSproutUseProductDetail_Model>();
                         SupplierSproutUseProductDetail_Model _dt = null;
 
-                        foreach (SupplierSproutUseProductDetail  rw in row.SupplierSproutUseProductDetails)
+                        foreach (SupplierSproutUseProductDetail rw in row.SupplierSproutUseProductDetails)
                         {
                             _dt = new SupplierSproutUseProductDetail_Model();
                             _dt.AnimalSeedOid = rw.AnimalSeedOid.Oid.ToString();
@@ -617,7 +598,6 @@ namespace WebApi.Jwt.Controllers.ท่อนพันธุ์_กล้าพ�
                         }
 
                         item.Details = details;
-
                     }
                     return Request.CreateResponse(HttpStatusCode.OK, item);
                 }
@@ -642,6 +622,5 @@ namespace WebApi.Jwt.Controllers.ท่อนพันธุ์_กล้าพ�
                 SqlConnection.ClearAllPools();
             }
         }
-
     }
 }

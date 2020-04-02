@@ -1,46 +1,28 @@
-﻿using System.Web.Http;
-using DevExpress.ExpressApp.Xpo;
-using DevExpress.Persistent.BaseImpl.PermissionPolicy;
-using DevExpress.ExpressApp.Utils;
-using DevExpress.Persistent.Base.Security;
-using DevExpress.ExpressApp.Security;
+﻿using DevExpress.Data.Filtering;
 using DevExpress.ExpressApp;
-using WebApi.Jwt.Models;
-using DevExpress.Data.Filtering;
-using System.Data.SqlClient;
-using System.Configuration;
-using DevExpress.Persistent.Base.General;
-using DevExpress.Persistent.Base;
-using System.Net;
-using System.Net.Http;
-using System.Xml;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using System.Text.RegularExpressions;
-using System.Diagnostics;
-using System;
-using DevExpress.ExpressApp.Model;
-using System.Security.Cryptography;
-using DevExpress.Persistent.Validation;
-using Microsoft.ApplicationBlocks.Data;
-using System.Data;
-using DevExpress.ExpressApp.Security.Strategy;
-using nutrition.Module.EmployeeAsUserExample.Module.BusinessObjects;
-using System.Collections.Generic;
-using WebApi.Jwt.Controllers;
-using nutrition.Module;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
+using DevExpress.ExpressApp.Xpo;
 using DevExpress.Xpo;
 using DevExpress.Xpo.Helpers;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using nutrition.Module;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
+using System.Net;
+using System.Net.Http;
+using System.Web.Http;
+using WebApi.Jwt.Models;
 using static WebApi.Jwt.Models.Farmerinfo;
 
 namespace WebApi.Jwt.Controllers.MasterData
 {
     public class RegisterFarmerXAF_Controller : ApiController
     {
-        string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
+        private string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
+
         [AllowAnonymous]
         //[JwtAuthentication] /ถ้าใช้โทเคนต้องครอบ
         // [HttpPost] หน้าโมบาย
@@ -159,19 +141,18 @@ namespace WebApi.Jwt.Controllers.MasterData
                         farmerinfo.Register_Type = 2;
                     }
                 }
-                    XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
-                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();         
+                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
                 Session session = new Session();
                 ISessionProvider session_ = session;
                 //   IList<Farmer> collection = ObjectSpace.GetObjects<Farmer>(CriteriaOperator.Parse(" GCRecord is null and IsActive = 1", null));
 
                 //     XPCollection collection = (XPCollection)ObjectSpace.CreateCollection(typeof(Farmer));
 
-
-
                 DataSet ds = new DataSet();
-                Farmer farmer_ = ObjectSpace.CreateObject< Farmer >();  // new Farmer(session);
-             /*   ds = SqlHelper.ExecuteDataset(scc, CommandType.Text, sql)*/;
+                Farmer farmer_ = ObjectSpace.CreateObject<Farmer>();  // new Farmer(session);
+                                                                      /*   ds = SqlHelper.ExecuteDataset(scc, CommandType.Text, sql)*/
+                ;
                 SqlParameter[] css = new SqlParameter[21];
                 css[0] = new SqlParameter("@OrganizationOid", farmerinfo.OrganizationOid);
                 css[1] = new SqlParameter("@Citizen_ID", farmerinfo.CitizenID);
@@ -195,10 +176,8 @@ namespace WebApi.Jwt.Controllers.MasterData
                 css[19] = new SqlParameter("@Longitude", farmerinfo.Longitude);
                 css[20] = new SqlParameter("@Register_Type", farmerinfo.Register_Type);
                 ObjectSpace.CommitChanges();
-             
+
                 return Request.CreateResponse(HttpStatusCode.OK, "ok");
-
-
             }
             catch (Exception ex)
             { //Error case เกิดข้อผิดพลาด
@@ -209,24 +188,24 @@ namespace WebApi.Jwt.Controllers.MasterData
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
         }
+
         [AllowAnonymous]
         [HttpGet]
         [Route("farmerGET")]
         public IHttpActionResult xafclass()
         {
-          //  Farmerinfo.Profile_Farmer farmerinfo = new Farmerinfo.Profile_Farmer();
+            //  Farmerinfo.Profile_Farmer farmerinfo = new Farmerinfo.Profile_Farmer();
             try
             {
                 XpoTypesInfoHelper.GetXpoTypeInfoSource();
                 XafTypesInfo.Instance.RegisterEntity(typeof(Farmer));
                 XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-          
+
                 List<Farmerinfo.Profile_Farmer> ilist = new List<Farmerinfo.Profile_Farmer>();
                 IList<Farmer> collection = ObjectSpace.GetObjects<Farmer>(CriteriaOperator.Parse(" GCRecord is null and IsActive = true", null));
                 if (collection != null)
                 {
-                   
                     foreach (Farmer row in collection)
                     {
                         Farmerinfo.Profile_Farmer _farmerinfo = new Farmerinfo.Profile_Farmer();
@@ -236,17 +215,14 @@ namespace WebApi.Jwt.Controllers.MasterData
                         _farmerinfo.FirstNameTH = row.FirstNameTH;
                         _farmerinfo.LastNameTH = row.LastNameTH;
                         ilist.Add(_farmerinfo);
-                    
                     }
-                 
                 }
                 else
                 {
-                    return BadRequest( "Any object");
+                    return BadRequest("Any object");
                 }
                 return Ok(ilist);
             }
-
             catch (Exception ex)
             { //Error case เกิดข้อผิดพลาด
                 UserError err = new UserError();

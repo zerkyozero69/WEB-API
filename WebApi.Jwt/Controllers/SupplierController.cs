@@ -1,43 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Formatting;
-using System.Xml;
-using System.Data.SqlClient;
-using System.Configuration;
+﻿using DevExpress.Data.Filtering;
 using DevExpress.ExpressApp;
-using DevExpress.Data.Filtering;
-using DevExpress.Persistent.BaseImpl.PermissionPolicy;
-using Microsoft.ApplicationBlocks.Data;
-using DevExpress.Persistent.BaseImpl;
-using System.Text;
-using DevExpress.Persistent.Base;
-using DevExpress.Persistent.Base.General;
-using System.Web.Http;
-using System.Web;
-using static WebApi.Jwt.helpclass.helpController;
-using static WebApi.Jwt.Models.user;
-using System.Data;
 using DevExpress.ExpressApp.Xpo;
-using DevExpress.Persistent.Base.Security;
-using DevExpress.ExpressApp.Security;
-using WebApi.Jwt.Models;
-using WebApi.Jwt.Filters;
-using WebApi.Jwt.helpclass;
-using NTi.CommonUtility;
-using System.IO;
-using nutrition.Module.EmployeeAsUserExample.Module.BusinessObjects;
 using nutrition.Module;
-using DevExpress.Xpo;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Web.Http;
 using static WebApi.Jwt.Models.Supplier;
 
 namespace WebApi.Jwt.Controllers
 {
     public class SupplierController : ApiController
     {
-        string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
+        private string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
 
         /// <summary>
         /// ส่งเสบียงสัตว์
@@ -48,7 +23,6 @@ namespace WebApi.Jwt.Controllers
         [Route("SupplierSend")]
         public IHttpActionResult SupplierSend()
         {
-
             try
             {
                 XpoTypesInfoHelper.GetXpoTypeInfoSource();
@@ -59,7 +33,6 @@ namespace WebApi.Jwt.Controllers
                 IList<SupplierSend> collection = ObjectSpace.GetObjects<SupplierSend>(CriteriaOperator.Parse("GCRecord is null "));
                 if (collection.Count > 0)
                 {
-
                     foreach (SupplierSend row in collection)
                     {
                         SupplierSend_Model Model = new SupplierSend_Model();
@@ -72,9 +45,7 @@ namespace WebApi.Jwt.Controllers
                         Model.SendStatusOid = row.SendStatusOid;
                         list.Add(Model);
                     }
-
                 }
-
                 else
                 {
                     return BadRequest("NoData");
@@ -86,7 +57,8 @@ namespace WebApi.Jwt.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        public  IHttpActionResult SupplierProduct()
+
+        public IHttpActionResult SupplierProduct()
         {
             try
             {
@@ -120,7 +92,6 @@ namespace WebApi.Jwt.Controllers
                     }
                     return Ok(list);
                 }
-               
                 else
                 {
                     return BadRequest("NoData");
@@ -131,6 +102,5 @@ namespace WebApi.Jwt.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        }
     }
-
+}

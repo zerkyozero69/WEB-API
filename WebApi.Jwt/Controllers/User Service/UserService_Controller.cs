@@ -1,57 +1,36 @@
-﻿using System;
+﻿using DevExpress.Data.Filtering;
+using DevExpress.ExpressApp;
+using DevExpress.ExpressApp.Xpo;
+using Microsoft.ApplicationBlocks.Data;
+using nutrition.Module;
+using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Configuration;
+using System.Data;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Formatting;
-using System.Xml;
-using System.Data.SqlClient;
-using System.Configuration;
-using DevExpress.ExpressApp;
-using DevExpress.Data.Filtering;
-using DevExpress.Persistent.BaseImpl.PermissionPolicy;
-using Microsoft.ApplicationBlocks.Data;
-using DevExpress.Persistent.BaseImpl;
-using System.Text;
-using DevExpress.Persistent.Base;
-using DevExpress.Persistent.Base.General;
-using System.Web.Http;
 using System.Web;
-using static WebApi.Jwt.helpclass.helpController;
-using static WebApi.Jwt.Models.user;
-using System.Data;
-using DevExpress.ExpressApp.Xpo;
-using DevExpress.Persistent.Base.Security;
-using DevExpress.ExpressApp.Security;
+using System.Web.Http;
 using WebApi.Jwt.Models;
-using WebApi.Jwt.Filters;
-using WebApi.Jwt.helpclass;
-using NTi.CommonUtility;
-using System.IO;
-using nutrition.Module.EmployeeAsUserExample.Module.BusinessObjects;
-using DevExpress.Utils.Extensions;
-using DevExpress.Xpo;
-using DevExpress.Xpo.DB;
-using nutrition.Module;
 
 namespace WebApi.Jwt.Controllers
 {
     public class UserService_Controller : ApiController
     {
-        string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
+        private string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
+
         /// <summary>
         /// ใช้ในการเรียกหน่วยงานที่ขอรับบริการ
         /// </summary>
         /// <param name=</param>
         /// <returns></returns>
         [AllowAnonymous]
-        //[JwtAuthentication] /ถ้าใช้โทเคนต้องครอบ 
-        // [HttpPost] 
+        //[JwtAuthentication] /ถ้าใช้โทเคนต้องครอบ
+        // [HttpPost]
         [HttpPost]
         [Route("SeachCustomer/info")]
         public HttpResponseMessage OrgeCustomer()
         {
-
             try
 
             {
@@ -62,7 +41,7 @@ namespace WebApi.Jwt.Controllers
                 List<OrgeService_info> list = new List<OrgeService_info>();
                 List<OrgeServiceDetail_Model> list_detail = new List<OrgeServiceDetail_Model>();
                 IList<OrgeService> collection = ObjectSpace.GetObjects<OrgeService>(CriteriaOperator.Parse("GCRecord is null and IsActive = 1 ", null));
-                string TempSubDistrict =" ", TempDistrict=" ";
+                string TempSubDistrict = " ", TempDistrict = " ";
                 if (collection.Count > 0)
                 {
                     foreach (OrgeService row in collection)
@@ -73,7 +52,7 @@ namespace WebApi.Jwt.Controllers
 
                         Customer_Info.OrgeServiceOid = row.Oid.ToString();
                         Customer_Info.OrgeServiceName = row.OrgeServiceName;
-                        
+
                         if (row.Tel != null)
                         {
                             Customer_Info.Tel = row.Tel;
@@ -83,30 +62,27 @@ namespace WebApi.Jwt.Controllers
                         {
                             Customer_Info.Email = row.Email;
                         }
-              
+
                         if (row.Address != "")
                         {
                             Customer_Info.Address = row.Address;
                         }
-       
 
                         if (row.Moo != "")
                         {
                             Customer_Info.Moo = row.Moo;
                         }
-        
+
                         if (row.Soi != "")
                         {
-
                             Customer_Info.Soi = row.Soi;
                         }
-        
+
                         if (row.Road != "")
                         {
-
                             Customer_Info.Road = row.Road;
                         }
-                   
+
                         if (row.ProvinceOid != null)
                         {
                             Customer_Info.ProvinceOid = row.ProvinceOid.Oid.ToString();
@@ -118,49 +94,40 @@ namespace WebApi.Jwt.Controllers
                             if (row.ProvinceOid.ProvinceNameTH.Contains("กรุงเทพ"))
                             { TempDistrict = "เขต"; }
                             else { TempDistrict = "อำเภอ"; };
-
                         }
 
                         if (row.DistrictOid != null)
                         {
                             Customer_Info.DistrictOid = row.DistrictOid.Oid.ToString();
                             Customer_Info.DistrictName = row.DistrictOid.DistrictNameTH;
-                         
-                        }       
-                   
-                        if (row.SubDistrictOid  != null)
+                        }
+
+                        if (row.SubDistrictOid != null)
                         {
                             Customer_Info.SubDistrictOid = row.SubDistrictOid.Oid.ToString();
                             Customer_Info.SubDistrictName = row.SubDistrictOid.SubDistrictNameTH;
                         }
-              
 
                         if (row.ZipCode != null)
                         {
-
                             Customer_Info.ZipCode = row.ZipCode;
                         }
 
                         //if (Customer_Info.Address != null && Customer_Info.Moo != null && Customer_Info.Road != null)
 
-                        
-                        Customer_Info.FullAddress = "เลขที่" +" "+ Customer_Info.Address + " หมู่ที่" +" "+ checknull(Customer_Info.Moo) + " ถนน" +" "+ checknull(Customer_Info.Road)+" "+ TempSubDistrict
-                         + " " + Customer_Info.SubDistrictName + " " + TempDistrict +" "+ Customer_Info.DistrictName + " " +
-                        "จังหวัด" +" "+ Customer_Info.ProvinceName + " รหัสไปรษณีย์ " + Customer_Info.ZipCode;
-                        
+                        Customer_Info.FullAddress = "เลขที่" + " " + Customer_Info.Address + " หมู่ที่" + " " + checknull(Customer_Info.Moo) + " ถนน" + " " + checknull(Customer_Info.Road) + " " + TempSubDistrict
+                         + " " + Customer_Info.SubDistrictName + " " + TempDistrict + " " + Customer_Info.DistrictName + " " +
+                        "จังหวัด" + " " + Customer_Info.ProvinceName + " รหัสไปรษณีย์ " + Customer_Info.ZipCode;
 
                         list.Add(Customer_Info);
-                    }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   }
-        
+                    }
+                }
                 else
                 {
                     return Request.CreateResponse(HttpStatusCode.BadRequest, "NoData");
-
                 }
 
                 return Request.CreateResponse(HttpStatusCode.OK, list);
-
-
             }
             catch (Exception ex)
             {
@@ -171,10 +138,11 @@ namespace WebApi.Jwt.Controllers
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
         }
+
         [AllowAnonymous]
-        //[JwtAuthentication] /ถ้าใช้โทเคนต้องครอบ 
+        //[JwtAuthentication] /ถ้าใช้โทเคนต้องครอบ
         ///ค้นหาด้วยชื่อ หน่วยงาน
-        // [HttpPost] 
+        // [HttpPost]
         [HttpPost]
         [Route("SeachCustomer/ID")]
         public HttpResponseMessage OrgeCustomer_All()
@@ -182,14 +150,11 @@ namespace WebApi.Jwt.Controllers
             string OrgeServiceName = string.Empty;
             try
 
-
             {
                 if (HttpContext.Current.Request.Form["OrgeServiceName"].ToString() != null)
                 {
                     OrgeServiceName = HttpContext.Current.Request.Form["OrgeServiceName"].ToString();
                 }
-
-
 
                 XpoTypesInfoHelper.GetXpoTypeInfoSource();
                 XafTypesInfo.Instance.RegisterEntity(typeof(OrgeService));
@@ -203,8 +168,6 @@ namespace WebApi.Jwt.Controllers
                 DataSet ds = SqlHelper.ExecuteDataset(scc, CommandType.Text, "select OrgeServiceName from OrgeService where OrgeServiceName = '" + OrgeServiceName + "'");
                 if (ds.Tables[0].Rows.Count != 0)
                 {
-
-
                     //Customer_Info.OrganizationOid = row.OrganizationOid.OrganizeNameTH;
                     //   Customer_Info.OrgeServiceID = row.or
                     Customer_Info.OrgeServiceName = OrgeService_.OrgeServiceName;
@@ -236,64 +199,52 @@ namespace WebApi.Jwt.Controllers
                     }
                     if (OrgeService_.Soi == null)
                     {
-
                         Customer_Info.Soi = "ไม่พบข้อมูลซอย";
                     }
                     else
                     {
-
                         Customer_Info.Soi = OrgeService_.Soi;
                     }
 
                     if (OrgeService_.Road == null)
                     {
-
                         Customer_Info.Road = "ไม่พบข้อมูลถนน";
                     }
                     else
                     {
-
                         Customer_Info.Road = OrgeService_.Road;
                     }
                     if (OrgeService_.ProvinceOid == null)
                     {
-
                         Customer_Info.ProvinceName = "ไม่พบข้อมูลจังหวัด";
                     }
                     else
                     {
-
                         Customer_Info.ProvinceName = OrgeService_.ProvinceOid.ProvinceNameTH;
                     }
                     if (OrgeService_.DistrictOid == null)
                     {
-
                         Customer_Info.DistrictName = "ไม่พบข้อมูลอำเภอ";
                     }
                     else
                     {
-
                         Customer_Info.DistrictName = OrgeService_.DistrictOid.DistrictNameTH;
                     }
                     if (OrgeService_.SubDistrictOid == null)
                     {
-
                         Customer_Info.SubDistrictName = "ไม่พบข้อมูลตำบล";
                     }
                     else
                     {
-
                         Customer_Info.SubDistrictName = OrgeService_.SubDistrictOid.SubDistrictNameTH;
                     }
 
                     if (OrgeService_.ZipCode == null)
                     {
-
                         Customer_Info.ZipCode = "ไม่พบข้อมูลรหัสไปรษณีย์";
                     }
                     else
                     {
-
                         Customer_Info.ZipCode = OrgeService_.ZipCode;
                     }
 
@@ -306,7 +257,6 @@ namespace WebApi.Jwt.Controllers
                     if (OrgeService_.ProvinceOid.ProvinceNameTH.Contains("กรุงเทพ"))
                     { TempDistrict = "เขต"; }
                     else { TempDistrict = "อำเภอ"; };
-
 
                     Customer_Info.FullAddress = "เลขที่" + " " + Customer_Info.Address + " หมู่ที่" + " " + checknull(Customer_Info.Moo) + " ถนน" + " " + checknull(Customer_Info.Road) + " " + TempSubDistrict
                      + " " + Customer_Info.SubDistrictName + " " + TempDistrict + " " + Customer_Info.DistrictName + " " +
@@ -323,19 +273,10 @@ namespace WebApi.Jwt.Controllers
                     Customer_Info.OrgeServiceDetails = list_detail;
                     return Request.CreateResponse(HttpStatusCode.OK, Customer_Info);
                 }
-
-
-
-
-
                 else
                 {
-
                     return Request.CreateResponse(HttpStatusCode.BadRequest, "NoData");
-
                 }
-
-
             }
             catch (Exception ex)
             {
@@ -346,13 +287,13 @@ namespace WebApi.Jwt.Controllers
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
         }
+
         [AllowAnonymous]
-        //[JwtAuthentication] /ถ้าใช้โทเคนต้องครอบ 
+        //[JwtAuthentication] /ถ้าใช้โทเคนต้องครอบ
         ///ค้นหาชื่อผู้ขอรับบริการ
-        // [HttpPost] 
+        // [HttpPost]
         [HttpPost]
         [Route("SeachCusService/List")]
-
         public HttpResponseMessage GetRegisterCusServiceList()
         {
             try
@@ -404,7 +345,6 @@ namespace WebApi.Jwt.Controllers
                             item.Address = row.Address;
                         }
 
-
                         if (row.Moo != "")
                         {
                             item.Moo = row.Moo;
@@ -412,19 +352,16 @@ namespace WebApi.Jwt.Controllers
 
                         if (row.Soi != "")
                         {
-
                             item.Soi = row.Soi;
                         }
 
                         if (row.Road != "")
                         {
-
                             item.Road = row.Road;
                         }
 
                         if (row.ProvinceOid != null)
                         {
-
                             item.ProvinceName = row.ProvinceOid.ProvinceNameTH;
                             if (row.ProvinceOid.ProvinceNameTH.Contains("กรุงเทพ"))
                             { TempSubDistrict = "แขวง"; }
@@ -433,14 +370,11 @@ namespace WebApi.Jwt.Controllers
                             if (row.ProvinceOid.ProvinceNameTH.Contains("กรุงเทพ"))
                             { TempDistrict = "เขต"; }
                             else { TempDistrict = "อำเภอ"; };
-
                         }
 
                         if (row.DistrictOid != null)
                         {
-
                             item.DistrictName = row.DistrictOid.DistrictNameTH;
-
                         }
 
                         if (row.SubDistrictOid != null)
@@ -448,28 +382,22 @@ namespace WebApi.Jwt.Controllers
                             item.SubDistrictName = row.SubDistrictOid.SubDistrictNameTH;
                         }
 
-
                         if (row.ZipCode != null)
                         {
-
                             item.ZipCode = row.ZipCode;
                         }
 
-
-                        item.FullName = item.TitleName + item.FirstNameTH +" " + item.LastNameTH;                                          
-                 
-
+                        item.FullName = item.TitleName + item.FirstNameTH + " " + item.LastNameTH;
 
                         item.FullAddress = "เลขที่" + " " + item.Address + " หมู่ที่" + " " + checknull(item.Moo) + " ถนน" + " " + checknull(item.Road) + " " + TempSubDistrict
                          + " " + item.SubDistrictName + " " + TempDistrict + " " + item.DistrictName + " " +
                         "จังหวัด" + " " + item.ProvinceName + " รหัสไปรษณีย์ " + item.ZipCode;
 
-
                         if (row.Remark != null)
                         {
                             item.Remark = row.Remark;
                         }
-           
+
                         item.IsActive = row.IsActive;
                         item.ServicesNumber = row.ServicesNumber.ToString();
 
@@ -488,12 +416,11 @@ namespace WebApi.Jwt.Controllers
                         //}
                         //item.Detail = item2;
                         list.Add(item);
-
                     }
                     return Request.CreateResponse(HttpStatusCode.OK, list);
-
-                }              
-                 else {
+                }
+                else
+                {
                     UserError err = new UserError();
                     err.status = "false";
                     err.code = "0";
@@ -509,12 +436,12 @@ namespace WebApi.Jwt.Controllers
                 //  Return resual
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
-
         }
+
         [AllowAnonymous]
-        //[JwtAuthentication] /ถ้าใช้โทเคนต้องครอบ 
+        //[JwtAuthentication] /ถ้าใช้โทเคนต้องครอบ
         ///ค้นหาด้วยเลขบัตร ปชช CitizenID
-        // [HttpPost] 
+        // [HttpPost]
         [HttpPost]
         [Route("SeachCusService/CitizenID")]
         public HttpResponseMessage RegisterCusService_ByCitizenID()
@@ -522,13 +449,11 @@ namespace WebApi.Jwt.Controllers
             string CitizenID = string.Empty;
             try
 
-
             {
                 if (HttpContext.Current.Request.Form["CitizenID"].ToString() != null)
                 {
                     CitizenID = HttpContext.Current.Request.Form["CitizenID"].ToString();
                 }
-
 
                 if (CitizenID != "")
                 {
@@ -539,7 +464,7 @@ namespace WebApi.Jwt.Controllers
                     RegicusService_Model RegisterCusServicer_Info = new RegicusService_Model();
                     RegisterCusService RegisterCusService_;
                     RegisterCusService_ = ObjectSpace.FindObject<RegisterCusService>(CriteriaOperator.Parse("GCRecord is null and CitizenID = ? ", CitizenID));
-                    string TempSubDistrict= "" , TempDistrict="";
+                    string TempSubDistrict = "", TempDistrict = "";
                     if (RegisterCusService_ != null)
                     {
                         RegicusService_Model item = new RegicusService_Model();
@@ -555,9 +480,8 @@ namespace WebApi.Jwt.Controllers
                         {
                             item.GenderOid = RegisterCusService_.GenderOid.Oid.ToString();
                             item.Gender = RegisterCusService_.GenderOid.GenderName;
-
                         }
-              
+
                         if (RegisterCusService_.BirthDate != null)
                         {
                             item.BirthDate = RegisterCusService_.BirthDate.ToString("dd/MM/yyyy");
@@ -570,13 +494,12 @@ namespace WebApi.Jwt.Controllers
                         {
                             item.Email = RegisterCusService_.Email;
                         }
-                        item.FullName = item.TitleName+item.FirstNameTH + " " + item.LastNameTH;
-                     
+                        item.FullName = item.TitleName + item.FirstNameTH + " " + item.LastNameTH;
+
                         if (RegisterCusService_.Address != "")
                         {
                             item.Address = RegisterCusService_.Address;
                         }
-
 
                         if (RegisterCusService_.Moo != "")
                         {
@@ -585,13 +508,11 @@ namespace WebApi.Jwt.Controllers
 
                         if (RegisterCusService_.Soi != " ")
                         {
-
                             item.Soi = RegisterCusService_.Soi;
                         }
 
                         if (RegisterCusService_.Road != "")
                         {
-
                             item.Road = RegisterCusService_.Road;
                         }
 
@@ -606,14 +527,12 @@ namespace WebApi.Jwt.Controllers
                             if (RegisterCusService_.ProvinceOid.ProvinceNameTH.Contains("กรุงเทพ"))
                             { TempDistrict = "เขต"; }
                             else { TempDistrict = "อำเภอ"; };
-
                         }
 
                         if (RegisterCusService_.DistrictOid != null)
                         {
                             item.DistrictOid = RegisterCusService_.DistrictOid.Oid.ToString();
                             item.DistrictName = RegisterCusService_.DistrictOid.DistrictNameTH;
-
                         }
 
                         if (RegisterCusService_.SubDistrictOid != null)
@@ -622,10 +541,8 @@ namespace WebApi.Jwt.Controllers
                             item.SubDistrictName = RegisterCusService_.SubDistrictOid.SubDistrictNameTH;
                         }
 
-
                         if (RegisterCusService_.ZipCode != null)
                         {
-
                             item.ZipCode = RegisterCusService_.ZipCode;
                         }
 
@@ -641,15 +558,10 @@ namespace WebApi.Jwt.Controllers
 
                         return Request.CreateResponse(HttpStatusCode.OK, item);
                     }
-
-
                     else
                     {
-
                         return Request.CreateResponse(HttpStatusCode.NotFound, "NoData");
-
                     }
-
                 }
                 else
                 {
@@ -670,11 +582,6 @@ namespace WebApi.Jwt.Controllers
             }
         }
 
-
-
-
-
-
         public string checknull(object val)
         {
             object ret = "-";
@@ -685,12 +592,11 @@ namespace WebApi.Jwt.Controllers
                     ret = val;
                 };
             }
-            catch (Exception )
+            catch (Exception)
             {
                 ret = "-";
             }
             return ret.ToString();
         }
-
     }
 }

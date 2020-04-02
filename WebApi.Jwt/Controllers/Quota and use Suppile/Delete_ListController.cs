@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web;
@@ -16,7 +15,8 @@ namespace WebApi.Jwt.Controllers.โควตา
 {
     public class Delete_ListController : ApiController
     {
-        string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
+        private string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
+
         [AllowAnonymous]
         // GET: api/ReportCategories
         [Route("DeleteReportsByRID")]
@@ -29,9 +29,7 @@ namespace WebApi.Jwt.Controllers.โควตา
 
                 if (HttpContext.Current.Request.Form["Oid   "].ToString() != null)
                 {
-
                     Oid = HttpContext.Current.Request.Form["Oid "].ToString();
-
                 }
                 List<DisplayOnApp> objOnApp = new List<DisplayOnApp>();
                 DataSet Ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "sp_DeleteList_UseAnimal",
@@ -42,7 +40,6 @@ namespace WebApi.Jwt.Controllers.โควตา
                     DeleteReportsByRID_Model delete = new DeleteReportsByRID_Model();
                     delete.Status = "1";
                     delete.Message = "ลบข้อมูลสำเร็จ";
-
 
                     return Request.CreateResponse(HttpStatusCode.OK, delete);
                 }
@@ -66,6 +63,7 @@ namespace WebApi.Jwt.Controllers.โควตา
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
         }
+
         //public HttpResponseMessage DeleteReportsByLinq()  // IEnumerable(Of String)
         //{
         //    try
@@ -74,11 +72,9 @@ namespace WebApi.Jwt.Controllers.โควตา
 
         //        if (HttpContext.Current.Request.Form["ReportId"].ToString() != null)
         //        {
-
         //            ReportId = HttpContext.Current.Request.Form["ReportId"].ToString();
 
         //        }
-               
 
         //        else
         //        {
@@ -100,7 +96,5 @@ namespace WebApi.Jwt.Controllers.โควตา
         //        return Request.CreateResponse(HttpStatusCode.BadRequest, err);
         //    }
         //}
-
     }
 }
-

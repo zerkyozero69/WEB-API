@@ -244,7 +244,6 @@
     <Compile Include="Controllers\P%27kaew\ResponceMessage.cs" />
     <Compile Include="Controllers\P%27kaew\RoleController.cs" />
     <Compile Include="Controllers\P%27kaew\_DeleteReportsController.cs" />
-    <Compile Include="Controllers\Plan Product\PlanSeedInfo_SumController.cs" />
     <Compile Include="Controllers\Plan Product\Stock_SeedINFOController.cs" />
     <Compile Include="Controllers\Quota and use Suppile\Delete_ListController.cs" />
     <Compile Include="Controllers\Quota and use Suppile\Get_listAnimalDetailController.cs" />

@@ -1,31 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Security;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.VisualBasic;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
+﻿using Controllers;
 using Microsoft.ApplicationBlocks.Data;
+using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
-using System.Web;
-using Controllers;
-using WebApi.Jwt.Models;
 using System.Data.SqlClient;
+using System.Net;
+using System.Net.Http;
+using System.Web;
+using System.Web.Http;
+using WebApi.Jwt.Models;
 
 namespace WebApi.Jwt.Controllers.พี่เขียว
 {
     public class _DeleteReportsController : ApiController
     {
-        string strConn = ConfigurationManager.ConnectionStrings["StrApiDb"].ConnectionString;
+        private string strConn = ConfigurationManager.ConnectionStrings["StrApiDb"].ConnectionString;
 
         [AllowAnonymous]
         // GET: api/ReportCategories
@@ -39,9 +29,7 @@ namespace WebApi.Jwt.Controllers.พี่เขียว
 
                 if (HttpContext.Current.Request.Form["ReportId"].ToString() != null)
                 {
-                    
                     ReportId = HttpContext.Current.Request.Form["ReportId"].ToString();
-
                 }
                 List<DisplayOnApp> objOnApp = new List<DisplayOnApp>();
                 DataSet Ds = SqlHelper.ExecuteDataset(strConn, CommandType.StoredProcedure, "SP_DeleteReportsByRID",
@@ -52,7 +40,6 @@ namespace WebApi.Jwt.Controllers.พี่เขียว
                     DeleteReportsByRID_Model delete = new DeleteReportsByRID_Model();
                     delete.Status = "1";
                     delete.Message = "ลบข้อมูลสำเร็จ";
-
 
                     return Request.CreateResponse(HttpStatusCode.OK, delete);
                 }
@@ -76,20 +63,18 @@ namespace WebApi.Jwt.Controllers.พี่เขียว
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
         }
+
         [AllowAnonymous]
         // GET: api/ReportCategories
         [Route("LoadReportBy/RoleId")]
         [HttpGet]
         public HttpResponseMessage LoadReportByRoleId()  // IEnumerable(Of String)
         {
-
             string ReportId = "";
 
             if (HttpContext.Current.Request.Form["ReportId"].ToString() != null)
             {
-
                 ReportId = HttpContext.Current.Request.Form["ReportId"].ToString();
-
             }
             List<LoadReportByRoleId_Model> objOnApp = new List<LoadReportByRoleId_Model>();
             DataSet Ds = SqlHelper.ExecuteDataset(strConn, CommandType.StoredProcedure, "SP_LoadReportByRoleId"
@@ -105,11 +90,9 @@ namespace WebApi.Jwt.Controllers.พี่เขียว
                     item.Description = obj["Description"].ToString();
                     item.FullRole = obj["FullRole"].ToString();
                     objOnApp.Add(item);
-
-
                 }
 
-       return Request.CreateResponse(HttpStatusCode.OK, objOnApp);
+                return Request.CreateResponse(HttpStatusCode.OK, objOnApp);
             }
             else
             {
@@ -118,17 +101,14 @@ namespace WebApi.Jwt.Controllers.พี่เขียว
                 objErr.message = "NoData";
                 return Request.CreateResponse(HttpStatusCode.BadRequest, objErr);
             }
-
-
         }
+
         [AllowAnonymous]
         // GET: api/ReportCategories
         [Route("LoadReportAllRoleId")]
         [HttpGet]
         public HttpResponseMessage LoadReportAllRole()  // IEnumerable(Of String)
         {
-
-      
             List<LoadReportByRoleId_Model> objOnApp = new List<LoadReportByRoleId_Model>();
             DataSet Ds = SqlHelper.ExecuteDataset(strConn, CommandType.StoredProcedure, "SP_LoadReportAllRole");
             DataTable Dt = Ds.Tables[0];
@@ -142,7 +122,6 @@ namespace WebApi.Jwt.Controllers.พี่เขียว
                     item.Description = obj["Description"].ToString();
                     item.FullRole = obj["FullRole"].ToString();
                     objOnApp.Add(item);
-
                 }
 
                 return Request.CreateResponse(HttpStatusCode.OK, objOnApp);
@@ -154,9 +133,8 @@ namespace WebApi.Jwt.Controllers.พี่เขียว
                 objErr.message = "NoData";
                 return Request.CreateResponse(HttpStatusCode.BadRequest, objErr);
             }
-
-
         }
+
         [AllowAnonymous]
         // GET: api/ReportCategories
         [Route("Update_ReportPermission")]
@@ -167,15 +145,13 @@ namespace WebApi.Jwt.Controllers.พี่เขียว
             string RoleId = "";
             if (HttpContext.Current.Request.Form["ReportId"].ToString() != null)
             {
-
                 ReportId = HttpContext.Current.Request.Form["ReportId"].ToString();
-
             }
             RoleId = HttpContext.Current.Request.Form["RoleId"].ToString();
 
             List<LoadReportByRoleId_Model> objOnApp = new List<LoadReportByRoleId_Model>();
             DataSet Ds = SqlHelper.ExecuteDataset(strConn, CommandType.StoredProcedure, "SP_Update_ReportPermission",
-                new SqlParameter("@ReportId", ReportId),new SqlParameter("@RoleId", RoleId));
+                new SqlParameter("@ReportId", ReportId), new SqlParameter("@RoleId", RoleId));
             DataTable dt = new DataTable();
             dt = Ds.Tables[0];
             if (dt.Rows.Count > 0)
@@ -193,7 +169,6 @@ namespace WebApi.Jwt.Controllers.พี่เขียว
                 }
                 return Request.CreateResponse(HttpStatusCode.OK, rows);
             }
-
             else
             {
                 ResponceMessage objErr = new ResponceMessage();
@@ -202,7 +177,5 @@ namespace WebApi.Jwt.Controllers.พี่เขียว
                 return Request.CreateResponse(HttpStatusCode.BadRequest, "NoData");
             }
         }
-
     }
 }
-
