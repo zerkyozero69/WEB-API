@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web;
@@ -19,7 +18,8 @@ namespace WebApi.Jwt.Controllers.สร้างข่าว
 {
     public class loadNewsController : ApiController
     {
-        string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
+        private string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
+
         [AllowAnonymous]
         // [JwtAuthentication]
         [HttpGet]
@@ -45,9 +45,8 @@ namespace WebApi.Jwt.Controllers.สร้างข่าว
                     }
                     rows.Add(row);
                 }
-               
-                    return Request.CreateResponse(HttpStatusCode.OK, rows);
-               
+
+                return Request.CreateResponse(HttpStatusCode.OK, rows);
             }
             catch (Exception ex)
             {
@@ -58,9 +57,9 @@ namespace WebApi.Jwt.Controllers.สร้างข่าว
                 err.message = ex.Message;
                 //  Return resual
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
-
             }
         }
+
         [AllowAnonymous]
         // [JwtAuthentication]
         [HttpPost]
@@ -80,29 +79,28 @@ namespace WebApi.Jwt.Controllers.สร้างข่าว
                 News objNews = ObjectSpace.FindObject<News>(CriteriaOperator.Parse("  GCRecord is null and Oid =?", newsOid));
                 IList<News> collection = ObjectSpace.GetObjects<News>(CriteriaOperator.Parse("GCRecord is null and Oid='" + newsOid + "'", null));
                 if (objNews.Oid != null)
-                { 
+                {
                     newsmodel model = new newsmodel();
                     model.Oid = objNews.Oid.ToString();
                     model.CreateDate = objNews.CreateDate;
                     model.Subject = objNews.Subject;
                     model.Details = objNews.Details.Replace("/Images/News/", "http://nutritionit.dld.go.th/Images/News/");
-                    model.TotalTimes = objNews.TotalTimes+1;
+                    model.TotalTimes = objNews.TotalTimes + 1;
 
-                    String [] spearator = {"<img src="};
-                    string [] Arr = objNews.Details.ToString().Split(spearator,System.StringSplitOptions.RemoveEmptyEntries);
+                    String[] spearator = { "<img src=" };
+                    string[] Arr = objNews.Details.ToString().Split(spearator, System.StringSplitOptions.RemoveEmptyEntries);
 
                     ImageURL_Detail objdetail = null;
                     foreach (var row in Arr)
                     {
                         if (row.Contains("Images"))
                         {
-                            String [] spearator2 = { "alt=" };
-                            string [] Arr2 = row.ToString().Split(spearator2, System.StringSplitOptions.RemoveEmptyEntries);
+                            String[] spearator2 = { "alt=" };
+                            string[] Arr2 = row.ToString().Split(spearator2, System.StringSplitOptions.RemoveEmptyEntries);
                             objdetail = new ImageURL_Detail();
-                            objdetail.ImageURL = Arr2[0].ToString().Replace(@"""", "").Replace(" ","").Replace("/Images/News/", "http://nutritionit.dld.go.th/Images/News/");
+                            objdetail.ImageURL = Arr2[0].ToString().Replace(@"""", "").Replace(" ", "").Replace("/Images/News/", "http://nutritionit.dld.go.th/Images/News/");
                             detail.Add(objdetail);
                         }
-
                     }
                     model.objImage = detail;
                     ObjectSpace.CommitChanges();

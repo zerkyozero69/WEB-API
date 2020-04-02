@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web;
@@ -18,7 +17,8 @@ namespace WebApi.Jwt.Controllers.MasterData
 {
     public class ActivityController : ApiController
     {
-        string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
+        private string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
+
         /// <summary>
         /// เรียกกิจกรรม ภัยพิบัติ
         /// </summary>
@@ -57,9 +57,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                             }
 
                             list.Add(Item);
-
                         }
-
                     }
                     else
                     {          //invalid
@@ -68,11 +66,9 @@ namespace WebApi.Jwt.Controllers.MasterData
                         err.code = "0";
                         err.message = "กรุณาใส่ข้อมูลให้เรียบร้อย";
                         return Request.CreateResponse(HttpStatusCode.NotFound, err);
-
                     }
                     return Request.CreateResponse(HttpStatusCode.OK, list);
                 }
-
             }
             catch (Exception ex)
             {
@@ -117,11 +113,9 @@ namespace WebApi.Jwt.Controllers.MasterData
                             activitySub_Model Item = new activitySub_Model();
                             Item.SubActivityLevelOid = row.Oid.ToString();
                             Item.SubActivityLevelName = row.ActivityName;
-   
+
                             list.Add(Item);
-
                         }
-
                     }
                     else
                     {          //invalid
@@ -130,11 +124,9 @@ namespace WebApi.Jwt.Controllers.MasterData
                         err.code = "0";
                         err.message = "กรุณาใส่ข้อมูลให้เรียบร้อย";
                         return Request.CreateResponse(HttpStatusCode.BadRequest, err);
-
                     }
                     return Request.CreateResponse(HttpStatusCode.OK, list);
                 }
-
             }
             catch (Exception ex)
             {
@@ -148,6 +140,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                 SqlConnection.ClearAllPools();
             }
         }
+
         /// <summary>
         /// เรียกวัตุประสงค์การใช้
         /// </summary>
@@ -179,9 +172,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                             Item.Oid = row.Oid.ToString();
                             Item.ObjectTypeName = row.ObjectTypeName;
                             list.Add(Item);
-
                         }
-
                     }
                     else
                     {          //invalid
@@ -190,11 +181,9 @@ namespace WebApi.Jwt.Controllers.MasterData
                         err.code = "0";
                         err.message = "กรุณาใส่ข้อมูลให้เรียบร้อย";
                         return Request.CreateResponse(HttpStatusCode.BadRequest, err);
-
                     }
                     return Request.CreateResponse(HttpStatusCode.OK, list);
                 }
-
             }
             catch (Exception ex)
             {
@@ -208,8 +197,5 @@ namespace WebApi.Jwt.Controllers.MasterData
                 SqlConnection.ClearAllPools();
             }
         }
-
-
-
     }
 }

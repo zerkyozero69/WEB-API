@@ -48,7 +48,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                 List<Gender_Model> list = new List<Gender_Model>();
                 XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
-                IList<Gender> collection = ObjectSpace.GetObjects<Gender>(CriteriaOperator.Parse("  GCRecord is null and IsActive = 1", null));
+                IList<Gender> collection = ObjectSpace.GetObjects<Gender>(CriteriaOperator.Parse(" GCRecord is null and IsActive = 1", null));
                 foreach (Gender row in collection)
                 {
                     Gender_Model model = new Gender_Model();

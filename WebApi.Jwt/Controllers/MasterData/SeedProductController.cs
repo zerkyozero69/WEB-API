@@ -1,34 +1,15 @@
-﻿using System;
+﻿using DevExpress.Data.Filtering;
+using DevExpress.ExpressApp;
+using DevExpress.ExpressApp.Xpo;
+using nutrition.Module;
+using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Configuration;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Formatting;
-using System.Xml;
-using System.Data.SqlClient;
-using System.Configuration;
-using DevExpress.ExpressApp;
-using DevExpress.Data.Filtering;
-using DevExpress.Persistent.BaseImpl.PermissionPolicy;
-using Microsoft.ApplicationBlocks.Data;
-using DevExpress.Persistent.BaseImpl;
-using System.Text;
-using DevExpress.Persistent.Base;
-using DevExpress.Persistent.Base.General;
-using System.Web.Http;
 using System.Web;
-using static WebApi.Jwt.helpclass.helpController;
-using static WebApi.Jwt.Models.user;
-using System.Data;
-using DevExpress.ExpressApp.Xpo;
-using DevExpress.Persistent.Base.Security;
-using DevExpress.ExpressApp.Security;
+using System.Web.Http;
 using WebApi.Jwt.Models;
-using WebApi.Jwt.Filters;
-using WebApi.Jwt.helpclass;
-using NTi.CommonUtility;
-using System.IO;
-using nutrition.Module;
 using WebApi.Jwt.Models.Models_Masters;
 
 namespace WebApi.Jwt.Controllers.MasterData
@@ -37,7 +18,7 @@ namespace WebApi.Jwt.Controllers.MasterData
     {/// <summary>
      /// เรียกข้อมูล การผลิตของเกษตรกร
      /// </summary>
-        string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
+        private string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
 
         [AllowAnonymous]
         [HttpPost]
@@ -72,8 +53,8 @@ namespace WebApi.Jwt.Controllers.MasterData
                 //  Return resual
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
-
         }
+
         [AllowAnonymous]
         [HttpPost]
         [Route("Seedlevel")]
@@ -110,6 +91,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
         }
+
         [AllowAnonymous]
         [HttpPost]
         [Route("SeedType")]
@@ -146,6 +128,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
         }
+
         [AllowAnonymous]
         [HttpPost]
         [Route("Harvesting")]
@@ -170,7 +153,6 @@ namespace WebApi.Jwt.Controllers.MasterData
                     list.Add(plant);
                 }
                 return Request.CreateResponse(HttpStatusCode.OK, list);
-
             }
             catch (Exception ex)
             { //Error case เกิดข้อผิดพลาด
@@ -181,6 +163,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
         }
+
         /// <summary>
         /// ค้นหาจำนวนคงเหลือ
         /// </summary>
@@ -195,22 +178,18 @@ namespace WebApi.Jwt.Controllers.MasterData
             string managesuboid = null;
             try
             {
-
                 string animalsupplieoid = HttpContext.Current.Request.Form["animalsupplieoid"].ToString();
                 string orgOid = HttpContext.Current.Request.Form["orgoid"].ToString();
 
                 if (HttpContext.Current.Request.Form["managesuboid"].ToString() != null)
                 {
-     
                     managesuboid = HttpContext.Current.Request.Form["seedTypeOid"].ToString();
                 }
 
                 if (HttpContext.Current.Request.Form["seedTypeOid"].ToString() != null)
                 {
-             
                     SeedTypeOid = HttpContext.Current.Request.Form["seedTypeOid"].ToString();
                 }
-
 
                 string budgetsourceoid = HttpContext.Current.Request.Form["budgetsourceoid"].ToString();
                 //   string animalsupplieroid = HttpContext.Current.Request.Form["animalsupplieroid"].ToString();
@@ -232,8 +211,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                     model.IsActive = row.IsActive;
                     list.Add(model);
                 }
-                    return Request.CreateResponse(HttpStatusCode.OK, list);
-
+                return Request.CreateResponse(HttpStatusCode.OK, list);
             }
             catch (Exception ex)
             { //Error case เกิดข้อผิดพลาด
@@ -243,9 +221,9 @@ namespace WebApi.Jwt.Controllers.MasterData
                 err.message = ex.Message;
                 //  Return resual
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
-
             }
         }
+
         [AllowAnonymous]
         [HttpPost]
         [Route("AnimalType")]
@@ -254,7 +232,6 @@ namespace WebApi.Jwt.Controllers.MasterData
         {
             try
             {
-
                 XpoTypesInfoHelper.GetXpoTypeInfoSource();
                 XafTypesInfo.Instance.RegisterEntity(typeof(AnimalType));
                 List<AnimalType_Model> list = new List<AnimalType_Model>();
@@ -282,6 +259,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
         }
+
         [AllowAnonymous]
         [HttpPost]
         [Route("Animal_seed")]
@@ -326,7 +304,6 @@ namespace WebApi.Jwt.Controllers.MasterData
         /// ชื่อพันธุ์พืชอาหารสัตว์
         public HttpResponseMessage AnimalForageType()
         {
-
             try
             {
                 XpoTypesInfoHelper.GetXpoTypeInfoSource();
@@ -355,6 +332,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
         }
+
         /// <summary>
         /// ค้นหาจำนวนคงเหลือ
         /// </summary>
@@ -366,8 +344,8 @@ namespace WebApi.Jwt.Controllers.MasterData
         public HttpResponseMessage loadAnimalsupplies()
         {
             try
-            { 
-                  string animalsupplieroid = HttpContext.Current.Request.Form["animalsupplieroid"].ToString();
+            {
+                string animalsupplieroid = HttpContext.Current.Request.Form["animalsupplieroid"].ToString();
                 // string animalsuppliertypeoid = HttpContext.Current.Request.Form["animalsuppliertypeoid"].ToString();
                 XpoTypesInfoHelper.GetXpoTypeInfoSource();
                 XafTypesInfo.Instance.RegisterEntity(typeof(AnimalSupplieType));
@@ -385,7 +363,6 @@ namespace WebApi.Jwt.Controllers.MasterData
                     model.SalePrice = row.SalePrice;
                     model.IsActive = row.IsActive;
                     list.Add(model);
-
                 }
                 return Request.CreateResponse(HttpStatusCode.OK, list);
             }
@@ -398,8 +375,6 @@ namespace WebApi.Jwt.Controllers.MasterData
                 //  Return resual
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
-
         }
-
     }
 }

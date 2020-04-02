@@ -168,13 +168,8 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                                     }
 
                                 }
-
-                                var ObjSubStockCardSource = (from Item in objStockSeedInfo orderby Item.StockDate descending select Item).First().TotalWeight;
-                                var ObjSubStockCardSource_BudgetSourceOid = (from Item in objStockSeedInfo orderby Item.StockDate descending select Item).First().BudgetSourceOid;
-                                var ObjSubStockCardSource_FinanceYearOid = (from Item in objStockSeedInfo orderby Item.StockDate descending select Item).First().FinanceYearOid;
-                                var ObjSubStockCardSource_AnimalSeedOid = (from Item in objStockSeedInfo orderby Item.StockDate descending select Item).First().AnimalSeedOid;
-                                var ObjSubStockCardSource_AnimalSeedLevelOid = (from Item in objStockSeedInfo orderby Item.StockDate descending select Item).First().AnimalSeedLevelOid;
-                                var ObjSubStockCardSource_SeedTypeOid = (from Item in objStockSeedInfo orderby Item.StockDate descending select Item).First().SeedTypeOid;
+                                var ObjSubStockCardSource = (from Item in objStockSeedInfo orderby Item.StockDate descending select Item).First();
+                           
 
                                 var ObjStockSeedInfoInfo = ObjectSpace.CreateObject<StockSeedInfo>();
                                 // ObjMaster.ReceiveOrgOid.Oid, ObjMaster.FinanceYearOid.Oid, objSupplierProduct.BudgetSourceOid, objSupplierProduct.AnimalSeedOid.Oid, objSupplierProduct.AnimalSeedLevelOid.Oid))
@@ -182,13 +177,13 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                                     var withBlock = ObjStockSeedInfoInfo;
                                     withBlock.StockDate = DateTime.Now;
                                     withBlock.OrganizationOid = ObjMaster.OrganizationOid;
-                                    withBlock.FinanceYearOid = ObjSubStockCardSource_FinanceYearOid;
-                                    withBlock.BudgetSourceOid = ObjSubStockCardSource_BudgetSourceOid;
-                                    withBlock.AnimalSeedOid = ObjSubStockCardSource_AnimalSeedOid;
-                                    withBlock.AnimalSeedLevelOid = ObjSubStockCardSource_AnimalSeedLevelOid;
+                                    withBlock.FinanceYearOid = ObjSubStockCardSource.FinanceYearOid;
+                                    withBlock.BudgetSourceOid = ObjSubStockCardSource.BudgetSourceOid;
+                                    withBlock.AnimalSeedOid = ObjSubStockCardSource.AnimalSeedOid;
+                                    withBlock.AnimalSeedLevelOid = ObjSubStockCardSource.AnimalSeedLevelOid;
                                     withBlock.StockDetail = "เบิกเมล็ดพันธุ์ (Mobile Application) ลำดับที่ : " + ObjMaster.UseNo;
-                                    withBlock.TotalForward = ObjSubStockCardSource;
-                                    withBlock.SeedTypeOid = ObjSubStockCardSource_SeedTypeOid;
+                                    withBlock.TotalForward = ObjSubStockCardSource.TotalForward;
+                                    withBlock.SeedTypeOid = ObjSubStockCardSource.SeedTypeOid;
                                     withBlock.TotalChange = 0 - row.Weight;
                                     withBlock.StockType = EnumStockType.ReceiveProduct;
                                     withBlock.ReferanceCode = row.LotNumber.LotNumber;

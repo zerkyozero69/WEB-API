@@ -1,19 +1,11 @@
-﻿using Microsoft.ApplicationBlocks.Data;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+﻿using System.Configuration;
 using System.Web.Http;
-using WebApi.Jwt.Models;
 
 namespace WebApi.Jwt.Controllers
 {
     public class SuppileSeedCount_Controller : ApiController
     {
-        string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
+        private string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
         //public HttpResponseMessage supplie_seedCount()
         //{
         //    try
@@ -21,7 +13,6 @@ namespace WebApi.Jwt.Controllers
         //        DataSet ds;
         //        ds =SqlHelper.ExecuteDataset(scc);
 
-            
         //    }
 
         //    catch (Exception ex)

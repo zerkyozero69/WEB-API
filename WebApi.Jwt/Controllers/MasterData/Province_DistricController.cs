@@ -1,50 +1,28 @@
-﻿using System;
+﻿using Microsoft.ApplicationBlocks.Data;
+using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Formatting;
-using System.Xml;
-using System.Data.SqlClient;
-using System.Configuration;
-using DevExpress.ExpressApp;
-using DevExpress.Data.Filtering;
-using DevExpress.Persistent.BaseImpl.PermissionPolicy;
-using Microsoft.ApplicationBlocks.Data;
-using DevExpress.Persistent.BaseImpl;
-using System.Text;
-using DevExpress.Persistent.Base;
-using DevExpress.Persistent.Base.General;
-using System.Web.Http;
 using System.Web;
-using static WebApi.Jwt.helpclass.helpController;
-using static WebApi.Jwt.Models.user;
-using static WebApi.Jwt.Models.MasterData;
-using System.Data;
-using DevExpress.ExpressApp.Xpo;
-using DevExpress.Persistent.Base.Security;
-using DevExpress.ExpressApp.Security;
+using System.Web.Http;
 using WebApi.Jwt.Models;
-using WebApi.Jwt.Filters;
-using WebApi.Jwt.helpclass;
-using NTi.CommonUtility;
-using System.IO;
-using nutrition.Module;
-using WebApi.Jwt.Models.Models_Masters;
 
 namespace WebApi.Jwt.Controllers.MasterData
+
 #region จังหวัด อำเภอ ตำบล
+
 {/// <summary>
  /// ใช้เรียกจังหวัด อำเภอ ตำบล
  /// </summary>
     public class ProvinceController : ApiController
     {
-        string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
-
+        private string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
 
         [AllowAnonymous]
         [HttpPost]
-
         [Route("Province")]
         public HttpResponseMessage loadProvince() /// get จังหวัด
         {
@@ -66,8 +44,6 @@ namespace WebApi.Jwt.Controllers.MasterData
                     rows.Add(row);
                 }
                 return Request.CreateResponse(HttpStatusCode.OK, rows);
-
-
             }
             catch (Exception ex)
             { //Error case เกิดข้อผิดพลาด
@@ -79,7 +55,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                 return Request.CreateResponse(HttpStatusCode.ExpectationFailed, err);
             }
         }
-    
+
         [AllowAnonymous]
         [HttpPost]
         [Route("Districts")]
@@ -115,7 +91,6 @@ namespace WebApi.Jwt.Controllers.MasterData
                     rows.Add(row);
                 }
                 return Request.CreateResponse(HttpStatusCode.OK, rows);
-
             }
             catch (Exception ex)
             {
@@ -129,6 +104,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                 return Request.CreateResponse(HttpStatusCode.BadRequest, err);
             }
         }
+
         [AllowAnonymous]
         [HttpPost]
         [Route("SubDistricts")]
@@ -165,7 +141,6 @@ namespace WebApi.Jwt.Controllers.MasterData
                     rows.Add(row);
                 }
                 return Request.CreateResponse(HttpStatusCode.OK, rows);
-
             }
             catch (Exception ex)
             {
@@ -180,5 +155,6 @@ namespace WebApi.Jwt.Controllers.MasterData
             }
         }
     }
-    #endregion
+
+    #endregion จังหวัด อำเภอ ตำบล
 }

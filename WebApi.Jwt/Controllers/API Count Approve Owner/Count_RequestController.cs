@@ -104,7 +104,7 @@ namespace WebApi.Jwt.Controllers.API_นับรายการ_ที่ให
                 else
                 {
                     UserError err = new UserError();
-                    err.code = ""; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                    err.code = "99"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
                     err.message = "Nodata";
                     return Request.CreateResponse(HttpStatusCode.OK, err);
                 }

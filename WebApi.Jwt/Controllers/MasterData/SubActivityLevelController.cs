@@ -1,15 +1,4 @@
-﻿using DevExpress.ExpressApp;
-using DevExpress.ExpressApp.Xpo;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using WebApi.Jwt.Models;
-
-namespace WebApi.Jwt.Controllers.MasterData
+﻿namespace WebApi.Jwt.Controllers.MasterData
 {
     //public class SubActivityLevelController : ApiController
     //     string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
@@ -35,5 +24,4 @@ namespace WebApi.Jwt.Controllers.MasterData
     //            //  Return resual
     //            return Request.CreateResponse(HttpStatusCode.BadRequest, err);
     //        }
-      }
-    
+}

@@ -70,98 +70,54 @@ namespace WebApi.Jwt.Controllers.MasterData
                     Model.FirstNameTH = row.FirstNameTH;
                     Model.LastNameTH = row.LastNameTH;
                     Model.Gender = row.GenderOid.GenderName;
-                    if (row.BirthDate == null)
-                    {
-                        Model.BirthDate = "ไม่พบข้อมูลวันเกิด";
-                    }
-                    else
+                    if (row.BirthDate != null)
                     {
                         Model.BirthDate = row.BirthDate.ToString();
                     }
-                    if (row.Tel == null)
-                    {
-                        Model.Tel = "ไม่พบข้อมูลเบอร์โทร";
-                    }
-                    else
+                    if (row.Tel != null)
                     {
                         Model.Tel = row.Tel.ToString();
                     }
-                    if (row.Email == null)
-                    {
-                        Model.Email = "ไม่พบข้อมูลอีเมลล์";
-                    }
-                    else
+                    if (row.Email != null)
                     {
                         Model.Email = row.Email.ToString();
                     }
 
-                    if (row.Address == null)
-                    {
-                        Model.Address = "ไม่พบข้อมูลบ้านเลขที่";
-                    }
-                    else
+                    if (row.Address != null)
                     {
                         Model.Address = row.Address.ToString();
                     }
 
-                    if (row.Moo == null)
-                    {
-                        Model.Moo = "ไม่พบข้อมูลหมู่";
-                    }
-                    else
+                    if (row.Moo != null)
                     {
                         Model.Moo = row.Moo.ToString();
                     }
-                    if (row.Soi == null)
-                    {
-                        Model.Soi = "ไม่พบข้อมูลซอย";
-                    }
-                    else
+                    if (row.Soi != null)
                     {
                         Model.Soi = row.Soi.ToString();
                     }
 
-                    if (row.Road == null)
-                    {
-                        Model.Road = "ไม่พบข้อมูลถนน";
-                    }
-                    else
+                    if (row.Road != null)
                     {
                         Model.Road = row.Road.ToString();
                     }
 
                     Model.Province = row.ProvinceOid.ProvinceNameTH;
-                    if (row.DistrictOid == null)
-                    {
-                        Model.District = "ไม่พบข้อมูลอำเภอ";
-                    }
-                    else
+                    if (row.DistrictOid != null)
                     {
                         Model.District = row.DistrictOid.DistrictNameTH;
                     }
-                    if (row.SubDistrictOid == null)
-                    {
-
-                        Model.SubDistrict  = "ไม่พบข้อมูลตำบล";
-                    }
-                    else
+                    if (row.SubDistrictOid != null)
                     {
 
                         Model.SubDistrict = row.SubDistrictOid.SubDistrictNameTH;
                     }
-                    if (row.ZipCode == null)
-                    {
-
-                        Model.ZipCode = "ไม่พบข้อมูลรหัสไปรษณีย์";
-                    }
-                    else
+                    if (row.ZipCode != null)
                     {
 
                         Model.ZipCode = row.ZipCode;
                     }
 
-
-              
                     list.Add(Model);
 
                 }
