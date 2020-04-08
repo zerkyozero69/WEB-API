@@ -255,20 +255,12 @@ namespace WebApi.Jwt.Controllers.MasterData
                             item.ReceiveOrgFullName = row.ReceiveOrgOid.OrganizeNameTH.ToString();
                         }
 
-                        if (row.ObjectTypeOid == null)
-                        {
-                            item.ObjectTypeName = "ไม่พบข้อมูลวัตถุประสงค์";
-                        }
-                        else
+                        if (row.ObjectTypeOid != null)
                         {
                             item.ObjectTypeName = row.ObjectTypeOid.ObjectTypeName.ToString();
                         }
 
-                        if (row.QuotaTypeOid == null)
-                        {
-                            item.QuotaTypeName = "ไม่พบข้อมูลโควตาศูนย์";
-                        }
-                        else
+                        if (row.QuotaTypeOid != null)
                         {
                             item.QuotaTypeName = row.QuotaTypeOid.QuotaName;
                         }
@@ -278,25 +270,16 @@ namespace WebApi.Jwt.Controllers.MasterData
                             item.StockLimit = row.StockLimit;
                         }
 
-                        if (row.AnimalSupplieOid == null)
-                        {
-                            item.AnimalSupplieName = "ไม่พบข้อมูลชนิดเสบียงสัตว์";
-                        }
-                        else
+                        if (row.AnimalSupplieOid != null)
                         {
                             item.AnimalSupplieName = row.AnimalSupplieOid.AnimalSupplieName;
                         }
-                        if (row.UnitOid == null)
-                        {
-                            item.UnitName = "ไม่พบข้อมูลหน่วยนับ";
-                        }
-                        else
+                        if (row.UnitOid != null)
                         {
                             item.UnitName = row.UnitOid.UnitName;
                         }
 
                         item.AnimalSeedName = "";
-
                         item.AnimalSupplieTypeName = row.AnimalSupplieTypeOid.SupplietypeName.ToString();
                         item.PackageName = row.PackageOid.PackageName;
                         item.PerUnit = row.PerUnit.ToString();
@@ -315,11 +298,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                         {
                             SendOrderSupplierType_Model itemD = new SendOrderSupplierType_Model();
                             itemD.AnimalSupplieTypeName = row2.AnimalSupplieTypeOid.SupplietypeName.ToString();
-                            if (row2.AnimalSupplieOid == null)
-                            {
-                                itemD.AnimalSupplieName = "ไม่พบข้อมูลชนิดเสบียงสัตว์";
-                            }
-                            else
+                            if (row2.AnimalSupplieOid != null)
                             {
                                 itemD.AnimalSupplieName = row2.AnimalSupplieOid.AnimalSupplieName;
                             }
@@ -333,9 +312,6 @@ namespace WebApi.Jwt.Controllers.MasterData
 
                         }
                         item.Details = listitem;
-
-
-
                     }
                     directProvider.Dispose();
                     ObjectSpace.Dispose();
@@ -376,11 +352,11 @@ namespace WebApi.Jwt.Controllers.MasterData
         [Route("SendOrderAnimalstock/Update")]
         public HttpResponseMessage UpdateSendOrderAnimalstock()
         {
-            object objStockAnimalInfo = null;
+                  
             HistoryWork ObjHistory = null;
             string Username = " ";
             bool result = false;
-            IList<StockAnimalInfo_Report> objStockAnimalInfo_Detail = null;
+
 
             try
             {
@@ -410,7 +386,6 @@ namespace WebApi.Jwt.Controllers.MasterData
                     {
                         if (Status == "1") //อนุมัติ
                         { //Approve
-
                             if (ObjMaster.SendStatus == EnumSendOrderAnimalStatus.Approve)
                             {
                                 var ObjStockSeedInfoInfo = ObjectSpace.CreateObject<StockAnimalInfo>();
@@ -426,10 +401,10 @@ namespace WebApi.Jwt.Controllers.MasterData
                                 withBlock.Weight = ObjMaster.QTY;
                                 withBlock.SeedTypeOid = ObjMaster.SeedTypeOid;
                                 withBlock.Description = "รับเสบียงสัตว์จาก : " + "" + ObjMaster.SendOrgOid.SubOrganizeName + "(Mobile Application)";
-                                ObjectSpace.CommitChanges();
+                                withBlock.IsApprove = true;
                                 // ''Stock สำหรับ กปศ4ว
                                 //  IList<SendOrderSupplierAnimal> collection = ObjectSpace.GetObjects<SendOrderSupplierAnimal>(CriteriaOperator.Parse(" GCRecord is null and SendStatus = 5 and SendOrgOid=?", SendOrgOid));
-
+                                IList<StockAnimalInfo_Report> objStockAnimalInfo_Detail;
                                 if (ObjMaster.SeedTypeOid != null)
                                 {
                                     objStockAnimalInfo_Detail = ObjectSpace.GetObjects<StockAnimalInfo_Report>(CriteriaOperator.Parse("OrganizationOid= ? and FinanceYearOid=? and BudgetSourceOid=? and SeedTypeOid=? and AnimalSupplieOid=? and AnimalSupplieTypeOid=? ", ObjMaster.ReceiveOrgOid.Oid, ObjMaster.FinanceYearOid.Oid, ObjMaster.BudgetSourceOid, ObjMaster.SeedTypeOid.Oid, ObjMaster.AnimalSupplieOid, ObjMaster.AnimalSupplieTypeOid));
@@ -439,7 +414,6 @@ namespace WebApi.Jwt.Controllers.MasterData
                                     objStockAnimalInfo_Detail = ObjectSpace.GetObjects<StockAnimalInfo_Report>(CriteriaOperator.Parse("OrganizationOid= ? and FinanceYearOid=? and BudgetSourceOid=? and AnimalSupplieOid=? and AnimalSupplieTypeOid=? ", ObjMaster.ReceiveOrgOid.Oid, ObjMaster.FinanceYearOid.Oid, ObjMaster.BudgetSourceOid, ObjMaster.AnimalSupplieOid, ObjMaster.AnimalSupplieTypeOid));
                                 }
                                 var objStockAnimalInfo_DetailNew = ObjectSpace.CreateObject<StockAnimalInfo_Report>();
-
                                 if (objStockAnimalInfo_Detail.Count == 0)
                                 {
                                     objStockAnimalInfo_DetailNew.AnimalProductNumber = ObjMaster.SendNo;
@@ -452,9 +426,11 @@ namespace WebApi.Jwt.Controllers.MasterData
                                     objStockAnimalInfo_DetailNew.TotalChange = ObjMaster.QTY;
                                     objStockAnimalInfo_DetailNew.SeedTypeOid = ObjMaster.SeedTypeOid;
                                     objStockAnimalInfo_DetailNew.Description = "รับเสบียงสัตว์จาก : " + ObjMaster.SendOrgOid.SubOrganizeName + "(Mobile Application)";
+                                    objStockAnimalInfo_DetailNew.IsApprove = true;
                                 }
                                 else
                                 {
+
                                     var ObjStockAnimalInfo_DetailSource = (from item in objStockAnimalInfo_Detail orderby item.TransactionDate descending select item).First().TotalWeight;
                                     //  (from Item in objStockAnimalInfo_Detail orderby Item.TransactionDate descending select Item).First().TotalWeight;
                                     //  var query = from Q in collection3 orderby Q.UseNo select Q;
@@ -468,6 +444,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                                     objStockAnimalInfo_DetailNew.TotalChange = ObjMaster.QTY;
                                     objStockAnimalInfo_DetailNew.SeedTypeOid = ObjMaster.SeedTypeOid;
                                     objStockAnimalInfo_DetailNew.Description = "รับเสบียงสัตว์จาก : " + ObjMaster.SendOrgOid.SubOrganizeName + "(Mobile Application)";
+                                    objStockAnimalInfo_DetailNew.IsApprove = true;
                                 }
                                 if (ObjMaster.AnimalSupplieOid.AnimalSupplieName == "แห้ง")
                                 {
@@ -476,6 +453,10 @@ namespace WebApi.Jwt.Controllers.MasterData
                                     if (objManageAnimalSupplier != null)
                                     {
                                         objManageAnimalSupplier.OtherQTY += ObjMaster.QTY;
+                                    }
+                                    else
+                                    {
+                                        return null;
                                     }
 
                                 }
@@ -493,8 +474,8 @@ namespace WebApi.Jwt.Controllers.MasterData
                             }
                             result = true;
                         }
-                      
-
+                        
+  
                         else if (Status == "2")  //ไม่อนุมัติ
                         { //Reject
                             ObjMaster.CancelMsg = CancelMsg;
@@ -598,67 +579,27 @@ namespace WebApi.Jwt.Controllers.MasterData
                         { //Approve
                             if (ObjMaster != null)
                             {
+                                     StockAnimalInfo objStockAnimalInfo;
+                                StockAnimalInfo_Report objStockAnimalInfo_Detail;
                                 if (ObjMaster.SeedTypeOid != null)
                                 {
-                                    objStockAnimalInfo = ObjectSpace.GetObjects<StockAnimalInfo>(CriteriaOperator.Parse("OrganizationOid= ? and FinanceYearOid=? and BudgetSourceOid=? and SeedTypeOid=? and AnimalSupplieOid=? and AnimalProductNumber=? ", ObjMaster.SendOrgOid.Oid, ObjMaster.FinanceYearOid.Oid, ObjMaster.BudgetSourceOid, ObjMaster.SeedTypeOid.Oid, ObjMaster.AnimalSupplieOid, ObjMaster.SendNo));
-                                    objStockAnimalInfo_Detail = ObjectSpace.GetObjects<StockAnimalInfo_Report>(CriteriaOperator.Parse("OrganizationOid= ? and FinanceYearOid=? and BudgetSourceOid=? and SeedTypeOid=? and AnimalSupplieOid=? and AnimalSupplieTypeOid=? ", ObjMaster.SendOrgOid.Oid, ObjMaster.FinanceYearOid.Oid, ObjMaster.BudgetSourceOid, ObjMaster.SeedTypeOid.Oid, ObjMaster.AnimalSupplieOid, ObjMaster.AnimalSupplieTypeOid));
+                                    objStockAnimalInfo = ObjectSpace.FindObject<StockAnimalInfo>(CriteriaOperator.Parse("OrganizationOid= ? and FinanceYearOid=? and BudgetSourceOid=? and SeedTypeOid=? and AnimalSupplieOid=? and AnimalProductNumber=? and IsApprove=0 ", ObjMaster.SendOrgOid.Oid, ObjMaster.FinanceYearOid.Oid, ObjMaster.BudgetSourceOid, ObjMaster.SeedTypeOid.Oid, ObjMaster.AnimalSupplieOid, ObjMaster.SendNo));
+                                    objStockAnimalInfo_Detail = ObjectSpace.FindObject<StockAnimalInfo_Report>(CriteriaOperator.Parse("OrganizationOid= ? and FinanceYearOid=? and BudgetSourceOid=? and SeedTypeOid=? and AnimalSupplieOid=? and AnimalSupplieTypeOid=? and IsApprove=0 and AnimalProductNumber=?", ObjMaster.SendOrgOid.Oid, ObjMaster.FinanceYearOid.Oid, ObjMaster.BudgetSourceOid, ObjMaster.SeedTypeOid.Oid, ObjMaster.AnimalSupplieOid, ObjMaster.AnimalSupplieTypeOid, ObjMaster.SendNo));
                                 }
                                 else
                                 {
-                                    objStockAnimalInfo = ObjectSpace.GetObjects<StockAnimalInfo>(CriteriaOperator.Parse("OrganizationOid= ? and FinanceYearOid=? and BudgetSourceOid=? and AnimalSupplieOid=? and AnimalProductNumber=? ", ObjMaster.SendOrgOid.Oid, ObjMaster.FinanceYearOid.Oid, ObjMaster.BudgetSourceOid, ObjMaster.AnimalSupplieOid, ObjMaster.SendNo));
-                                    objStockAnimalInfo_Detail = ObjectSpace.GetObjects<StockAnimalInfo_Report>(CriteriaOperator.Parse("OrganizationOid= ? and FinanceYearOid=? and BudgetSourceOid=? and AnimalSupplieOid=? and AnimalSupplieTypeOid=? ", ObjMaster.SendOrgOid.Oid, ObjMaster.FinanceYearOid.Oid, ObjMaster.BudgetSourceOid, ObjMaster.AnimalSupplieOid, ObjMaster.AnimalSupplieTypeOid));
-
+                                    objStockAnimalInfo = ObjectSpace.FindObject<StockAnimalInfo>(CriteriaOperator.Parse("OrganizationOid= ? and FinanceYearOid=? and BudgetSourceOid=? and AnimalSupplieOid=? and AnimalProductNumber=? and IsApprove=0 ", ObjMaster.SendOrgOid.Oid, ObjMaster.FinanceYearOid.Oid, ObjMaster.BudgetSourceOid, ObjMaster.AnimalSupplieOid, ObjMaster.SendNo));
+                                    objStockAnimalInfo_Detail = ObjectSpace.FindObject<StockAnimalInfo_Report>(CriteriaOperator.Parse("OrganizationOid= ? and FinanceYearOid=? and BudgetSourceOid=? and AnimalSupplieOid=? and AnimalSupplieTypeOid=? and IsApprove=0 and AnimalProductNumber=?", ObjMaster.SendOrgOid.Oid, ObjMaster.FinanceYearOid.Oid, ObjMaster.BudgetSourceOid, ObjMaster.AnimalSupplieOid, ObjMaster.AnimalSupplieTypeOid, ObjMaster.SendNo));
                                 }
                                 if (objStockAnimalInfo != null)
                                 {
-                                    var ObjStockSeedInfoInfo = ObjectSpace.CreateObject<StockAnimalInfo>();
-                                    ObjStockSeedInfoInfo.TransactionDate = DateTime.Now;
-                                    ObjStockSeedInfoInfo.AnimalProductNumber = ObjMaster.SendNo;
-                                    ObjStockSeedInfoInfo.FinanceYearOid = ObjMaster.FinanceYearOid;
-                                    ObjStockSeedInfoInfo.BudgetSourceOid = ObjMaster.BudgetSourceOid;
-                                    ObjStockSeedInfoInfo.OrganizationOid = ObjMaster.SendOrgOid;
-                                    ObjStockSeedInfoInfo.AnimalSupplieOid = ObjMaster.AnimalSupplieOid;
-                                    //  '.AnimalSeedOid = ObjMaster.AnimalSeedOid;
-                                    ObjStockSeedInfoInfo.AnimalSupplieTypeOid = ObjMaster.AnimalSupplieTypeOid;
-                                    ObjStockSeedInfoInfo.Remark = "อนุมัติส่งเสบียงสัตว์ เลขที่: " + ObjMaster.SendNo + "(Mobile Application)";
-                                    ObjStockSeedInfoInfo.Weight = 0 - ObjMaster.QTY;
-                                    ObjStockSeedInfoInfo.SeedTypeOid = ObjMaster.SeedTypeOid;
-                                    ObjStockSeedInfoInfo.Description = "ส่งเสบียงสัตว์ให้ : " + ObjMaster.ReceiveOrgOid.SubOrganizeName + "(Mobile Application)";
+                                    objStockAnimalInfo.IsApprove = true;
                                 }
-                                //    ''Stock สำหรับ กปศ4ว
-                                var objStockAnimalInfo_DetailNew = ObjectSpace.CreateObject<StockAnimalInfo_Report>();
+                                if (objStockAnimalInfo_Detail != null)
+                                {
+                                    objStockAnimalInfo_Detail.IsApprove = true;
+                                }
 
-                                if (objStockAnimalInfo_Detail.Count == 0)
-                                {
-                                    objStockAnimalInfo_DetailNew.AnimalProductNumber = ObjMaster.SendNo;
-                                    objStockAnimalInfo_DetailNew.FinanceYearOid = ObjMaster.FinanceYearOid;
-                                    objStockAnimalInfo_DetailNew.BudgetSourceOid = ObjMaster.BudgetSourceOid;
-                                    objStockAnimalInfo_DetailNew.OrganizationOid = ObjMaster.SendOrgOid;
-                                    objStockAnimalInfo_DetailNew.AnimalSupplieOid = ObjMaster.AnimalSupplieOid;
-                                    //  ' .AnimalSeedOid = ObjMaster.AnimalSeedOid
-                                    objStockAnimalInfo_DetailNew.AnimalSupplieTypeOid = ObjMaster.AnimalSupplieTypeOid;
-                                    //  '.Weight = ObjMaster.Weight;
-                                    objStockAnimalInfo_DetailNew.TotalForward = 0;
-                                    objStockAnimalInfo_DetailNew.TotalChange = 0 - ObjMaster.QTY;
-                                    objStockAnimalInfo_DetailNew.SeedTypeOid = ObjMaster.SeedTypeOid;
-                                    objStockAnimalInfo_DetailNew.Description = "ส่งเสบียงสัตว์ให้ : " + ObjMaster.ReceiveOrgOid.SubOrganizeName + "(Mobile Application)";
-                                }
-                                else
-                                {
-                                    var ObjStockAnimalInfo_DetailSource = (from item in objStockAnimalInfo_Detail orderby item.TransactionDate descending select item).First().TotalWeight;
-                                    objStockAnimalInfo_DetailNew.AnimalProductNumber = ObjMaster.SendNo;
-                                    objStockAnimalInfo_DetailNew.FinanceYearOid = ObjMaster.FinanceYearOid;
-                                    objStockAnimalInfo_DetailNew.BudgetSourceOid = ObjMaster.BudgetSourceOid;
-                                    objStockAnimalInfo_DetailNew.OrganizationOid = ObjMaster.SendOrgOid;
-                                    objStockAnimalInfo_DetailNew.AnimalSupplieOid = ObjMaster.AnimalSupplieOid;
-                                    //   '.AnimalSeedOid = ObjMaster.AnimalSeedOid
-                                    objStockAnimalInfo_DetailNew.AnimalSupplieTypeOid = ObjMaster.AnimalSupplieTypeOid;
-                                    //     '.Weight = ObjMaster.Weight
-                                    objStockAnimalInfo_DetailNew.TotalForward = ObjStockAnimalInfo_DetailSource;
-                                    objStockAnimalInfo_DetailNew.TotalChange = 0 - ObjMaster.QTY;
-                                    objStockAnimalInfo_DetailNew.SeedTypeOid = ObjMaster.SeedTypeOid;
-                                    objStockAnimalInfo_DetailNew.Description = "ส่งเสบียงสัตว์ให้ : " + ObjMaster.ReceiveOrgOid.SubOrganizeName + "(Mobile Application)";
-                                }
                                 ObjHistory = ObjectSpace.CreateObject<HistoryWork>();
                                 //    'ประวัติ
                                 ObjHistory.RefOid = ObjMaster.Oid.ToString();
@@ -667,33 +608,63 @@ namespace WebApi.Jwt.Controllers.MasterData
                                 ObjHistory.CreateBy = Username;
                                 ObjHistory.CreateDate = DateTime.Now;
                                 ObjectSpace.CommitChanges();
-
-                                ObjMaster.SendStatus = EnumSendOrderAnimalStatus.Approve; //2
-                                ObjMaster.ReceiveStatus = EnumReceiveOrderAnimalStatus.InProgess;//0
-                                ObjectSpace.CommitChanges();
-
-
                             }
+                            ObjMaster.SendStatus = EnumSendOrderAnimalStatus.Approve; //2
+                            ObjMaster.ReceiveStatus = EnumReceiveOrderAnimalStatus.InProgess;//0
+                            ObjectSpace.CommitChanges();
                             result = true;
                         }
 
                         else if (Status == "2")  //ไม่รับ
                         { //Reject
-                            objStockAnimalInfo = null;
-
-                            if (ObjMaster.SeedTypeOid != null)
+                            if (ObjMaster.SendStatus == EnumSendOrderAnimalStatus.Approve || ObjMaster.SendStatus == EnumSendOrderAnimalStatus.Accepet)
                             {
+                              
+                                IList<StockAnimalInfo> objStockAnimalInfo;
+                                IList<StockAnimalInfo_Report> objStockAnimalInfo_Detail;
+                                IList<StockAnimalInfo_Report> objStockAnimalInfo_UpdateDetail;
+                                objStockAnimalInfo_UpdateDetail = null;
+                                objStockAnimalInfo_Detail = null;
                                 objStockAnimalInfo = ObjectSpace.GetObjects<StockAnimalInfo>(CriteriaOperator.Parse("OrganizationOid= ? and FinanceYearOid=? and BudgetSourceOid=? and AnimalSeedOid=? and AnimalSupplieOid=? and StockType=0 and ReferanceCode=? ", ObjMaster.SendOrgOid.Oid, ObjMaster.FinanceYearOid.Oid, ObjMaster.BudgetSourceOid, ObjMaster.SeedTypeOid.Oid, ObjMaster.AnimalSupplieOid, ObjMaster.SendNo));
-                            }
-                            else
-                            {
-                                objStockAnimalInfo = ObjectSpace.GetObjects<StockAnimalInfo>(CriteriaOperator.Parse("OrganizationOid= ? and FinanceYearOid=? and BudgetSourceOid=? and AnimalSupplieOid=? and StockType=0 and ReferanceCode=? ", ObjMaster.SendOrgOid.Oid, ObjMaster.FinanceYearOid.Oid, ObjMaster.BudgetSourceOid, ObjMaster.AnimalSupplieOid, ObjMaster.SendNo));
-                            }
-                            if (ObjMaster.SendStatus == EnumSendOrderAnimalStatus.Approve)
-                            {
-                                if (objStockAnimalInfo != null)
+                                if (ObjMaster.SeedTypeOid != null)
                                 {
+                                    if (ObjMaster.SendStatus == EnumSendOrderAnimalStatus.Accepet)
+                                    {
+                                        objStockAnimalInfo = ObjectSpace.GetObjects<StockAnimalInfo>(CriteriaOperator.Parse("OrganizationOid= ? and FinanceYearOid=? and BudgetSourceOid=? and SeedTypeOid=? and AnimalSupplieOid=? and AnimalSupplieTypeOid=? and AnimalProductNumber=? and IsApprove=0", ObjMaster.SendOrgOid.Oid, ObjMaster.FinanceYearOid.Oid, ObjMaster.BudgetSourceOid, ObjMaster.SeedTypeOid.Oid, ObjMaster.AnimalSupplieOid, ObjMaster.AnimalSupplieTypeOid, ObjMaster.SendNo));
+                                        objStockAnimalInfo_Detail = ObjectSpace.GetObjects<StockAnimalInfo_Report>(CriteriaOperator.Parse("OrganizationOid= ? and FinanceYearOid=? and BudgetSourceOid=? and SeedTypeOid=? and AnimalSupplieOid=? and AnimalSupplieTypeOid=? and IsApprove=0", ObjMaster.SendOrgOid.Oid, ObjMaster.FinanceYearOid.Oid, ObjMaster.BudgetSourceOid, ObjMaster.SeedTypeOid.Oid, ObjMaster.AnimalSupplieOid, ObjMaster.AnimalSupplieTypeOid));
+                                        objStockAnimalInfo_UpdateDetail = ObjectSpace.GetObjects<StockAnimalInfo_Report>(CriteriaOperator.Parse("OrganizationOid= ? and FinanceYearOid=? and BudgetSourceOid=? and SeedTypeOid=? and AnimalSupplieOid=? and AnimalSupplieTypeOid=? and IsApprove=0 and AnimalProductNumber=?", ObjMaster.SendOrgOid.Oid, ObjMaster.FinanceYearOid.Oid, ObjMaster.BudgetSourceOid, ObjMaster.SeedTypeOid.Oid, ObjMaster.AnimalSupplieOid, ObjMaster.AnimalSupplieTypeOid, ObjMaster.SendNo));
+                                    }
+                                    else if (ObjMaster.SendStatus == EnumSendOrderAnimalStatus.Approve)
+                                    {
+                                        objStockAnimalInfo = ObjectSpace.GetObjects<StockAnimalInfo>(CriteriaOperator.Parse("OrganizationOid= ? and FinanceYearOid=? and BudgetSourceOid=? and SeedTypeOid=? and AnimalSupplieOid=? and AnimalSupplieTypeOid=? and AnimalProductNumber=? and IsApprove=0", ObjMaster.SendOrgOid.Oid, ObjMaster.FinanceYearOid.Oid, ObjMaster.BudgetSourceOid, ObjMaster.SeedTypeOid.Oid, ObjMaster.AnimalSupplieOid, ObjMaster.AnimalSupplieTypeOid, ObjMaster.SendNo));
+                                        objStockAnimalInfo_Detail = ObjectSpace.GetObjects<StockAnimalInfo_Report>(CriteriaOperator.Parse("OrganizationOid= ? and FinanceYearOid=? and BudgetSourceOid=? and SeedTypeOid=? and AnimalSupplieOid=? and AnimalSupplieTypeOid=? and IsApprove=0", ObjMaster.SendOrgOid.Oid, ObjMaster.FinanceYearOid.Oid, ObjMaster.BudgetSourceOid, ObjMaster.SeedTypeOid.Oid, ObjMaster.AnimalSupplieOid, ObjMaster.AnimalSupplieTypeOid));
+                                        objStockAnimalInfo_UpdateDetail = ObjectSpace.GetObjects<StockAnimalInfo_Report>(CriteriaOperator.Parse("OrganizationOid= ? and FinanceYearOid=? and BudgetSourceOid=? and SeedTypeOid=? and AnimalSupplieOid=? and AnimalSupplieTypeOid=? and IsApprove=0 and AnimalProductNumber=?", ObjMaster.SendOrgOid.Oid, ObjMaster.FinanceYearOid.Oid, ObjMaster.BudgetSourceOid, ObjMaster.SeedTypeOid.Oid, ObjMaster.AnimalSupplieOid, ObjMaster.AnimalSupplieTypeOid, ObjMaster.SendNo));
+                                    }
+                                }
+                                else
+                                {
+                                    if (ObjMaster.SendStatus == EnumSendOrderAnimalStatus.Accepet)
+                                    {
+                                        objStockAnimalInfo = ObjectSpace.GetObjects<StockAnimalInfo>(CriteriaOperator.Parse("OrganizationOid= ? and FinanceYearOid=? and BudgetSourceOid=? and SeedTypeOid=? and AnimalSupplieOid=? and AnimalSupplieTypeOid=? and AnimalProductNumber=? and IsApprove=0", ObjMaster.SendOrgOid.Oid, ObjMaster.FinanceYearOid.Oid, ObjMaster.BudgetSourceOid, ObjMaster.SeedTypeOid.Oid, ObjMaster.AnimalSupplieOid, ObjMaster.AnimalSupplieTypeOid, ObjMaster.SendNo));
+                                        objStockAnimalInfo_Detail = ObjectSpace.GetObjects<StockAnimalInfo_Report>(CriteriaOperator.Parse("OrganizationOid= ? and FinanceYearOid=? and BudgetSourceOid=? and SeedTypeOid=? and AnimalSupplieOid=? and AnimalSupplieTypeOid=? and IsApprove=0", ObjMaster.SendOrgOid.Oid, ObjMaster.FinanceYearOid.Oid, ObjMaster.BudgetSourceOid, ObjMaster.SeedTypeOid.Oid, ObjMaster.AnimalSupplieOid, ObjMaster.AnimalSupplieTypeOid));
+                                        objStockAnimalInfo_UpdateDetail = ObjectSpace.GetObjects<StockAnimalInfo_Report>(CriteriaOperator.Parse("OrganizationOid= ? and FinanceYearOid=? and BudgetSourceOid=? and SeedTypeOid=? and AnimalSupplieOid=? and AnimalSupplieTypeOid=? and IsApprove=0 and AnimalProductNumber=?", ObjMaster.SendOrgOid.Oid, ObjMaster.FinanceYearOid.Oid, ObjMaster.BudgetSourceOid, ObjMaster.SeedTypeOid.Oid, ObjMaster.AnimalSupplieOid, ObjMaster.AnimalSupplieTypeOid, ObjMaster.SendNo));
+                                    }
+                                    else if (ObjMaster.SendStatus == EnumSendOrderAnimalStatus.Approve)
+                                    {
+                                        objStockAnimalInfo = ObjectSpace.GetObjects<StockAnimalInfo>(CriteriaOperator.Parse("OrganizationOid= ? and FinanceYearOid=? and BudgetSourceOid=? and SeedTypeOid=? and AnimalSupplieOid=? and AnimalSupplieTypeOid=? and AnimalProductNumber=? and IsApprove=0", ObjMaster.SendOrgOid.Oid, ObjMaster.FinanceYearOid.Oid, ObjMaster.BudgetSourceOid, ObjMaster.SeedTypeOid.Oid, ObjMaster.AnimalSupplieOid, ObjMaster.AnimalSupplieTypeOid, ObjMaster.SendNo));
+                                        objStockAnimalInfo_Detail = ObjectSpace.GetObjects<StockAnimalInfo_Report>(CriteriaOperator.Parse("OrganizationOid= ? and FinanceYearOid=? and BudgetSourceOid=? and SeedTypeOid=? and AnimalSupplieOid=? and AnimalSupplieTypeOid=? and IsApprove=0", ObjMaster.SendOrgOid.Oid, ObjMaster.FinanceYearOid.Oid, ObjMaster.BudgetSourceOid, ObjMaster.SeedTypeOid.Oid, ObjMaster.AnimalSupplieOid, ObjMaster.AnimalSupplieTypeOid));
+                                      objStockAnimalInfo_UpdateDetail = ObjectSpace.GetObjects<StockAnimalInfo_Report>(CriteriaOperator.Parse("OrganizationOid= ? and FinanceYearOid=? and BudgetSourceOid=? and SeedTypeOid=? and AnimalSupplieOid=? and AnimalSupplieTypeOid=? and IsApprove=0 and AnimalProductNumber=?", ObjMaster.SendOrgOid.Oid, ObjMaster.FinanceYearOid.Oid, ObjMaster.BudgetSourceOid, ObjMaster.SeedTypeOid.Oid, ObjMaster.AnimalSupplieOid, ObjMaster.AnimalSupplieTypeOid, ObjMaster.SendNo));
+
+                                    }
+                                }
+                                if (objStockAnimalInfo.Count > 0)
+                                {
+
                                     var ObjStockSeedInfoInfo = ObjectSpace.CreateObject<StockAnimalInfo>();
+                                    foreach (StockAnimalInfo row in objStockAnimalInfo)
+                                    {
+                                        row.IsApprove = true;
+                                    }
                                     var withBlock = ObjStockSeedInfoInfo;
                                     withBlock.TransactionDate = DateTime.Now;
                                     withBlock.AnimalProductNumber = ObjMaster.SendNo;
@@ -707,14 +678,52 @@ namespace WebApi.Jwt.Controllers.MasterData
                                     withBlock.Remark = "ไม่อนุมัติการส่งเสบียงสัตว์  (Mobile Application) เลขที่: " + "" + ObjMaster.SendNo + "" + " สาเหตุ :" + "" + ObjMaster.CancelMsg;
                                     withBlock.Weight = ObjMaster.QTY;
                                     withBlock.SeedTypeOid = ObjMaster.SeedTypeOid;
+                                    withBlock.IsApprove = true;
+                                    withBlock.Description = "ไม่อนุมัติการส่งเสบียงสัตว์  (Mobile Application) เลขที่: " + "" + ObjMaster.SendNo + "" + " สาเหตุ :" + "" + ObjMaster.CancelMsg;
+                                }
+
+                                //''Stock สำหรับ กปศ4ว
+                           //     objStockAnimalInfo_UpdateDetail = ObjectSpace.GetObjects<StockAnimalInfo_Report>(CriteriaOperator.Parse("OrganizationOid= ? and FinanceYearOid=? and BudgetSourceOid=? and SeedTypeOid=? and AnimalSupplieOid=? and AnimalSupplieTypeOid=? and IsApprove=0 and AnimalProductNumber=?", ObjMaster.SendOrgOid.Oid, ObjMaster.FinanceYearOid.Oid, ObjMaster.BudgetSourceOid, ObjMaster.SeedTypeOid.Oid, ObjMaster.AnimalSupplieOid, ObjMaster.AnimalSupplieTypeOid, ObjMaster.SendNo));
+
+                                var objStockAnimalInfo_DetailNew = ObjectSpace.CreateObject<StockAnimalInfo_Report>();
+                                foreach (StockAnimalInfo_Report row in objStockAnimalInfo_UpdateDetail)
+                                {
+                                    row.IsApprove = true;
+                                }
+                                if (objStockAnimalInfo_Detail.Count == 0)
+                                {
+                                    objStockAnimalInfo_DetailNew.AnimalProductNumber = ObjMaster.SendNo;
+                                    objStockAnimalInfo_DetailNew.FinanceYearOid = ObjMaster.FinanceYearOid;
+                                    objStockAnimalInfo_DetailNew.BudgetSourceOid = ObjMaster.BudgetSourceOid;
+                                    objStockAnimalInfo_DetailNew.OrganizationOid = ObjMaster.SendOrgOid;
+                                    objStockAnimalInfo_DetailNew.AnimalSupplieOid = ObjMaster.AnimalSupplieOid;
+                                    objStockAnimalInfo_DetailNew.AnimalSupplieTypeOid = ObjMaster.AnimalSupplieTypeOid;
+                                    objStockAnimalInfo_DetailNew.TotalForward = 0;
+                                    objStockAnimalInfo_DetailNew.TotalChange = ObjMaster.QTY;
+                                    objStockAnimalInfo_DetailNew.SeedTypeOid = ObjMaster.SeedTypeOid;
+                                    objStockAnimalInfo_DetailNew.Description = "ไม่อนุมัติการส่งเสบียงสัตว์ เลขที่: " + ObjMaster.SendNo + " สาเหตุ : " + ObjMaster.CancelMsg;
+                                    objStockAnimalInfo_DetailNew.IsApprove = true;
+                                }
+                                else
+                                {
+                                    var ObjStockAnimalInfo_DetailSource = (from Item in objStockAnimalInfo_Detail orderby Item.TransactionDate descending select Item).First();
+                                    //        var ObjStockAnimalInfo_DetailSource = (from item in objStockAnimalInfo_Detail orderby item.TransactionDate descending select item).First().TotalWeight;
+                                    objStockAnimalInfo_DetailNew.AnimalProductNumber = ObjMaster.SendNo;
+                                    objStockAnimalInfo_DetailNew.FinanceYearOid = ObjMaster.FinanceYearOid;
+                                    objStockAnimalInfo_DetailNew.BudgetSourceOid = ObjMaster.BudgetSourceOid;
+                                    objStockAnimalInfo_DetailNew.OrganizationOid = ObjMaster.SendOrgOid;
+                                    objStockAnimalInfo_DetailNew.AnimalSupplieOid = ObjMaster.AnimalSupplieOid;
+                                    objStockAnimalInfo_DetailNew.AnimalSupplieTypeOid = ObjMaster.AnimalSupplieTypeOid;
+                                    objStockAnimalInfo_DetailNew.TotalForward = ObjStockAnimalInfo_DetailSource.TotalWeight;
+                                    objStockAnimalInfo_DetailNew.TotalChange = ObjMaster.QTY;
+                                    objStockAnimalInfo_DetailNew.SeedTypeOid = ObjMaster.SeedTypeOid;
+                                    objStockAnimalInfo_DetailNew.Description = "ไม่อนุมัติการส่งเสบียงสัตว์ เลขที่: " + ObjMaster.SendNo + " สาเหตุ : " + ObjMaster.CancelMsg;
+                                    objStockAnimalInfo_DetailNew.IsApprove = true;
                                 }
                             }
-
                             ObjMaster.SendStatus = EnumSendOrderAnimalStatus.Eject;//4
 
                             ObjMaster.CancelMsg = CancelMsg;
-                            ObjectSpace.CommitChanges();
-
                             ObjHistory = ObjectSpace.CreateObject<HistoryWork>();
                             ObjHistory.RefOid = ObjMaster.Oid.ToString();
                             ObjHistory.FormName = "เสบียงสัตว์";

@@ -53,6 +53,7 @@ namespace WebApi.Jwt.Controllers.ท่อนพันธุ์_กล้าพ�
             //  object objStockAnimalInfo = null;
             HistoryWork ObjHistory = null;
             IList<StockSeedInfo> objStockSeedInfo = null;
+            object objDetailService = null;
             string Username = " ";
 
             try
@@ -85,201 +86,120 @@ namespace WebApi.Jwt.Controllers.ท่อนพันธุ์_กล้าพ�
                     foreach (SupplierSproutUseProductDetail row in ObjMaster.SupplierSproutUseProductDetails)
                     {
                         string TempDescription = "";
-                        var switchExpr = ObjMaster.ActivityOid.ActivityName;
-                        switch (switchExpr)
+                        if (ObjMaster.Status == EnumRodBreedProductSeedStatus.Accepet)
                         {
-                            case "เพื่อใช้ในกิจกรรมของศูนย์ฯ":
+                            //    'Update สถานะ IsApprove ให้เป็น True
+                            var objStockGetBudgetSource = ObjectSpace.FindObject<StockSproutInfo>(CriteriaOperator.Parse("[FinanceYearOid]=? and [AnimalSeedOid]=? and [OrganizationOid]=? and [SeedTypeOid]=?", row.SupplierSproutUseProduct.FinanceYearOid, row.AnimalSeedOid, row.SupplierSproutUseProduct.OrganizationOid, row.SeedTypeOid));
+                            if (objStockGetBudgetSource != null)
+                            {
+                                var objStockSproutInfoEdit = ObjectSpace.FindObject<StockSproutInfo>(CriteriaOperator.Parse("[SupplierSproutNumber]=? and [FinanceYearOid]=? and [BudgetSourceOid]=? and [OrganizationOid]=? and [AnimalSeedOid]=? and [SeedTypeOid]=?", row.SupplierSproutUseProduct.UseNo, row.SupplierSproutUseProduct.FinanceYearOid, objStockGetBudgetSource.BudgetSourceOid, row.SupplierSproutUseProduct.OrganizationOid, row.AnimalSeedOid, row.SeedTypeOid));
+                                if (objStockSproutInfoEdit != null)
                                 {
-                                    EmployeeInfo objEmployees = ObjectSpace.FindObject<EmployeeInfo>(CriteriaOperator.Parse("[Oid]=?", ObjMaster.EmployeeOid));
-                                    if (objEmployees is object)
-                                    {
-                                        TempDescription = "ใช้ในกิจกรรมของศูนย์ฯ-" + ObjMaster.SubActivityOid.ActivityName + " : " + objEmployees.FullName + " (Mobile Application)";
-                                    }
-                                    else
-                                    {
-                                        TempDescription = "ใช้ในกิจกรรมของศูนย์ฯ-" + ObjMaster.SubActivityOid.ActivityName + " : " + " (Mobile Application)";
-                                    }
-
-                                    break;
+                                    objStockSproutInfoEdit.IsApprove = true;
                                 }
+                            }
 
-                            case "เพื่อช่วยเหลือภัยพิบัติ":
-                                {
-                                    if (ObjMaster.RegisCusServiceOid is object)
-                                    {
-                                        RegisterCusService objRegisCusService = ObjectSpace.FindObject<RegisterCusService>(CriteriaOperator.Parse("[Oid]=?", ObjMaster.RegisCusServiceOid));
-                                        if (objRegisCusService is object)
-                                        {
-                                            TempDescription = "ช่วยเหลือภัยพิบัติ-" + ObjMaster.SubActivityLevelOid.ActivityName + " : " + objRegisCusService.DisPlayName + " (Mobile Application)";
-                                        }
-                                        else
-                                        {
-                                            TempDescription = "ช่วยเหลือภัยพิบัติ-" + ObjMaster.SubActivityLevelOid.ActivityName + " : " + " (Mobile Application)";
-                                        }
-                                    }
-                                    else if (ObjMaster.OrgeServiceOid is object)
-                                    {
-                                        OrgeService objOrgeService = ObjectSpace.FindObject<OrgeService>(CriteriaOperator.Parse("[Oid]=?", ObjMaster.OrgeServiceOid));
-                                        if (objOrgeService is object)
-                                        {
-                                            TempDescription = "ช่วยเหลือภัยพิบัติ-" + ObjMaster.SubActivityLevelOid.ActivityName + " : " + objOrgeService.OrgeServiceName + " (Mobile Application)";
-                                        }
-                                        else
-                                        {
-                                            TempDescription = "ช่วยเหลือภัยพิบัติ (Mobile Application)-" + ObjMaster.SubActivityLevelOid.ActivityName + " : " + " (Mobile Application)";
-                                        }
-                                    }
 
-                                    break;
-                                }
+                            // 'Stock สำหรับ กปศ4ว
+                            //    'Update สถานะ IsApprove ให้เป็น True
 
-                            case "เพื่อใช้ในกิจกรรมกรมปศุสัตว์":
-                                {
-                                    EmployeeInfo objEmployees = ObjectSpace.FindObject<EmployeeInfo>(CriteriaOperator.Parse("[Oid]=?", ObjMaster.EmployeeOid));
-                                    if (objEmployees is object)
-                                    {
-                                        TempDescription = "ใช้ในกิจกรรมกรม-" + ObjMaster.SubActivityOid.ActivityName + " : " + objEmployees.FullName + " (Mobile Application)";
-                                    }
-                                    else
-                                    {
-                                        TempDescription = "ใช้ในกิจกรรมกรม-" + ObjMaster.SubActivityOid.ActivityName + " : " + " (Mobile Application)";
-                                    }
-
-                                    break;
-                                }
-
-                            case "เพื่อสนับสนุนหน่วยงานภายนอกกรมปศุสัตว์":
-                                {
-                                    TempDescription = "สนับสนุนหน่วยงานภายนอก: " + ObjMaster.OrgeServiceOid.OrgeServiceName + " (Mobile Application) ";
-                                    break;
-                                }
-
-                            case "พัฒนาความมั่นคงด้านเสบียงสัตว์":
-                                {
-                                    TempDescription = "พัฒนาความมั่นคงด้านเสบียงสัตว์" + "(Mobile Application)";
-                                    break;
-                                }
-
-                            case "เพื่อการจำหน่าย":
-                                {
-                                    if (ObjMaster.RegisCusServiceOid is object)
-                                    {
-                                        RegisterCusService objRegisCusService = ObjectSpace.FindObject<RegisterCusService>(CriteriaOperator.Parse("[Oid]=?", ObjMaster.RegisCusServiceOid));
-                                        if (objRegisCusService is object)
-                                        {
-                                            TempDescription = "จำหน่ายให้ : " + objRegisCusService.DisPlayName + "(Mobile Application)";
-                                        }
-                                        else
-                                        {
-                                            TempDescription = "จำหน่ายให้ : " + "(Mobile Application)";
-                                        }
-                                    }
-                                    else if (ObjMaster.OrgeServiceOid is object)
-                                    {
-                                        OrgeService objOrgeService = ObjectSpace.FindObject<OrgeService>(CriteriaOperator.Parse("[Oid]=?", ObjMaster.OrgeServiceOid));
-                                        if (objOrgeService is object)
-                                        {
-                                            TempDescription = "จำหน่ายให้ : " + objOrgeService.OrgeServiceName + "(Mobile Application)";
-                                        }
-                                        else
-                                        {
-                                            TempDescription = "จำหน่ายให้ : " + "(Mobile Application)";
-                                        }
-                                    }
-
-                                    break;
-                                }
-
-                            case "เพื่อการแจกจ่าย (สนับสนุนเกษตรกร)":
-                                {
-                                    if (ObjMaster.RegisCusServiceOid is object)
-                                    {
-                                        RegisterCusService objRegisCusService = ObjectSpace.FindObject<RegisterCusService>(CriteriaOperator.Parse("[Oid]=?", ObjMaster.RegisCusServiceOid));
-                                        if (objRegisCusService is object)
-                                        {
-                                            TempDescription = "แจกจ่ายให้ : " + objRegisCusService.DisPlayName + "(Mobile Application)";
-                                        }
-                                        else
-                                        {
-                                            TempDescription = "แจกจ่ายให้ : " + "(Mobile Application)";
-                                        }
-                                    }
-                                    else if (ObjMaster.OrgeServiceOid is object)
-                                    {
-                                        OrgeService objOrgeService = ObjectSpace.FindObject<OrgeService>(CriteriaOperator.Parse("[Oid]=?", ObjMaster.OrgeServiceOid));
-                                        if (objOrgeService is object)
-                                        {
-                                            TempDescription = "แจกจ่ายให้ : " + objOrgeService.OrgeServiceName + "(Mobile Application)";
-                                        }
-                                        else
-                                        {
-                                            TempDescription = "แจกจ่ายให้ : " + "(Mobile Application)";
-                                        }
-                                    }
-
-                                    break;
-                                }
-                        }
-                        //''Stock สำหรับ กปศ4ว
-                        var objCheckStockSproutInfo = ObjectSpace.GetObjects<StockSproutInfo>(CriteriaOperator.Parse("SupplierSproutNumber=? and FinanceYearOid=? and AnimalSeedOid=? and OrganizationOid=? ", row.SupplierSproutUseProduct.UseNo, row.SupplierSproutUseProduct.FinanceYearOid.Oid, row.AnimalSeedOid.Oid, row.SupplierSproutUseProduct.OrganizationOid.Oid));
-
-                        if (objCheckStockSproutInfo.Count > 0)
-                        {
-                            var ObjSubStockCardSource = (from item in objCheckStockSproutInfo orderby item.TransactionDate descending select item).First();
-
-                            var withBlock = objCheckStockSproutInfo[0];
-                            withBlock.Weight = 0 - row.Weight;
-                        }
-                        // View.ObjectSpace.CommitChanges()
-                        else
-                        {
-                            objCheckStockSproutInfo = ObjectSpace.GetObjects<StockSproutInfo>(CriteriaOperator.Parse("FinanceYearOid=? and AnimalSeedOid=? and OrganizationOid=? and [SeedTypeOid]=?", row.SupplierSproutUseProduct.FinanceYearOid.Oid, row.AnimalSeedOid.Oid, row.SupplierSproutUseProduct.OrganizationOid.Oid, row.SeedTypeOid.Oid));
-                            var objStockSproutInfo = ObjectSpace.CreateObject<StockSproutInfo>();
-                            objStockSproutInfo.TransactionDate = DateTime.Now;
-                            objStockSproutInfo.SupplierSproutNumber = row.SupplierSproutUseProduct.UseNo;
-                            objStockSproutInfo.FinanceYearOid = row.SupplierSproutUseProduct.FinanceYearOid;
-                            objStockSproutInfo.BudgetSourceOid = objCheckStockSproutInfo[0].BudgetSourceOid;
-                            objStockSproutInfo.AnimalSeedOid = row.AnimalSeedOid;
-                            objStockSproutInfo.OrganizationOid = row.SupplierSproutUseProduct.OrganizationOid;
-                            objStockSproutInfo.Weight = 0 - row.Weight;
-                            objStockSproutInfo.Remark = "อนุมัติใช้กล้าพันธุ์ (Mobile Application)";
-                            objStockSproutInfo.SeedTypeOid = row.SeedTypeOid;
-                            objStockSproutInfo.Description = TempDescription;
-                            // View.ObjectSpace.CommitChanges()
-                        }
-
-                        // 'Stock สำหรับ กปศ4ว
-                        var objStockSproutInfo_Detail = ObjectSpace.GetObjects<StockSproutInfo_Report>(CriteriaOperator.Parse("[FinanceYearOid]=? and [OrganizationOid]=? and [AnimalSeedOid]=? and [SeedTypeOid]=?", ObjMaster.FinanceYearOid, ObjMaster.OrganizationOid, row.AnimalSeedOid, row.SeedTypeOid));
-                        var objStockSproutInfo_DetailNew = ObjectSpace.CreateObject<StockSproutInfo_Report>();
-                        // ==========================================
-                        if (objStockSproutInfo_Detail.Count > 0)
-                        {
-                            var ObjStockSproutInfo_DetailSource = (from Item in objStockSproutInfo_Detail
-                                                                   orderby Item.TransactionDate descending
-                                                                   select Item).First();
-                            objStockSproutInfo_DetailNew.TransactionDate = DateTime.Now;
-                            objStockSproutInfo_DetailNew.SproutProductNumber = ObjMaster.UseNo;
-                            objStockSproutInfo_DetailNew.FinanceYearOid = ObjMaster.FinanceYearOid;
-                            objStockSproutInfo_DetailNew.BudgetSourceOid = ObjStockSproutInfo_DetailSource.BudgetSourceOid;
-                            objStockSproutInfo_DetailNew.OrganizationOid = ObjMaster.OrganizationOid;
-                            objStockSproutInfo_DetailNew.AnimalSeedOid = row.AnimalSeedOid;
-                            objStockSproutInfo_DetailNew.TotalForward = ObjStockSproutInfo_DetailSource.TotalWeight;
-                            objStockSproutInfo_DetailNew.TotalChange = 0 - row.Weight;
-                            objStockSproutInfo_DetailNew.SeedTypeOid = row.SeedTypeOid;
-                            objStockSproutInfo_DetailNew.Description = TempDescription;
+                            var objStockGetBudgetSourceReport = ObjectSpace.FindObject<StockSproutInfo_Report>(CriteriaOperator.Parse("[FinanceYearOid]=? and [AnimalSeedOid]=? and [OrganizationOid]=? and [SeedTypeOid]=?", row.SupplierSproutUseProduct.FinanceYearOid, row.AnimalSeedOid, row.SupplierSproutUseProduct.OrganizationOid, row.SeedTypeOid));
+                            var objStockRodBreedInfoReportEdit = ObjectSpace.FindObject<StockSproutInfo_Report>(CriteriaOperator.Parse("[SproutProductNumber]=? and [FinanceYearOid]=? and [BudgetSourceOid]=? and [OrganizationOid]=? and [AnimalSeedOid]=? and [SeedTypeOid]=?", row.SupplierSproutUseProduct.UseNo, row.SupplierSproutUseProduct.FinanceYearOid, objStockGetBudgetSource.BudgetSourceOid, row.SupplierSproutUseProduct.OrganizationOid, row.AnimalSeedOid, row.SeedTypeOid));
+                            var objStockSproutInfo_DetailNew = ObjectSpace.CreateObject<StockSproutInfo_Report>();
                             // ==========================================
-                        };
+                            if (objStockRodBreedInfoReportEdit != null)
+                            {
+                                objStockRodBreedInfoReportEdit.IsApprove = true;
+                            }
+                        }
                     }
-                    ObjMaster.Status = EnumRodBreedProductSeedStatus.Approve;
+                   
+                    if (ObjMaster.ActivityOid.ActivityName.Contains("จำหน่าย") == true)
+                    {
+
+                        if (ObjMaster.ChkOneService == true)
+                        {
+                            objDetailService = ObjectSpace.FindObject<RegisterCusServiceDetail>(CriteriaOperator.Parse("[RegisterCusServiceOid]=? and [ServiceTypeOid.ServiceTypeName] like '%จำหน่าย%' and [SubServiceTypeOid.ServiceTypeName]='กล้าพันธุ์' and [ReceiveDate]=?", ObjMaster.RegisCusServiceOid, ObjMaster.UseDate));
+                            if (objDetailService == null)
+                            {
+                                var objDetailService_new = ObjectSpace.CreateObject<RegisterCusServiceDetail>();
+                                objDetailService_new.RegisterCusServiceOid = ObjMaster.RegisCusServiceOid;
+
+                                var objServiceType = ObjectSpace.FindObject<ServiceType>(CriteriaOperator.Parse("[ServiceTypeName] like '%จำหน่าย%'"));
+                                objDetailService_new.ServiceTypeOid = objServiceType;
+
+                                var objSubServiceType = ObjectSpace.FindObject<ServiceType>(CriteriaOperator.Parse("[MasterServiceType]=? and [ServiceTypeName]='กล้าพันธุ์'", objServiceType.Oid));
+                                objDetailService_new.SubServiceTypeOid = objSubServiceType;
+
+                                objDetailService_new.ReceiveDate = ObjMaster.UseDate;
+                                objDetailService_new.RefOid = ObjMaster.Oid.ToString();
+                            }
+                            else if (ObjMaster.ChkGroupService == true)
+                            {
+                                objDetailService = ObjectSpace.FindObject<OrgeServiceDetail>(CriteriaOperator.Parse("[OrgeServiceOid]=? and [ServiceTypeOid.ServiceTypeName] like '%จำหน่าย%' and [SubServiceTypeOid.ServiceTypeName]='กล้าพันธุ์' and [ReceiveDate]=?", ObjMaster.OrgeServiceOid, ObjMaster.UseDate));
+                                if (objDetailService == null) //'ถ้ายังไม่มีข้อมูลการขอรับบบริการให้ Insert ลงในส่วนของรายละเอียดการขอรับบริการด้วย
+                                {
+                                    var objDetailService_new = ObjectSpace.CreateObject<OrgeServiceDetail>();
+                                    objDetailService_new.OrgeServiceOid = ObjMaster.OrgeServiceOid;
+                                    var objServiceType = ObjectSpace.FindObject<ServiceType>(CriteriaOperator.Parse("[ServiceTypeName] like '%จำหน่าย%'"));
+                                    objDetailService_new.ServiceTypeOid = objServiceType;
+                                    var objSubServiceType = ObjectSpace.FindObject<ServiceType>(CriteriaOperator.Parse("[MasterServiceType]=? and [ServiceTypeName]='กล้าพันธุ์'", objServiceType.Oid));
+                                    objDetailService_new.SubServiceTypeOid = objSubServiceType;
+
+                                    objDetailService_new.ReceiveDate = ObjMaster.UseDate;
+                                    objDetailService_new.RefOid = ObjMaster.Oid.ToString();
+                                }
+                            }
+
+                        }
+
+                    }
+                    else if (ObjMaster.ActivityOid.ActivityName.Contains("แจกจ่าย") == true)
+                    {
+                        if (ObjMaster.ChkOneService == true) //'รายเดี่ยว
+                        {
+                            objDetailService = ObjectSpace.FindObject<RegisterCusServiceDetail>(CriteriaOperator.Parse("[RegisterCusServiceOid]=? and [ServiceTypeOid.ServiceTypeName] like '%แจกจ่าย%' and [SubServiceTypeOid.ServiceTypeName]='กล้าพันธุ์' and [ReceiveDate]=?", ObjMaster.RegisCusServiceOid, ObjMaster.UseDate));
+                            if (objDetailService == null)// 'ถ้ายังไม่มีข้อมูลการขอรับบบริการให้ Insert ลงในส่วนของรายละเอียดการขอรับบริการด้วย
+                            {
+                                var objDetailService_new = ObjectSpace.CreateObject<RegisterCusServiceDetail>();
+                                objDetailService_new.RegisterCusServiceOid = ObjMaster.RegisCusServiceOid;
+
+
+                                var objServiceType = ObjectSpace.FindObject<ServiceType>(CriteriaOperator.Parse("[ServiceTypeName] like '%แจกจ่าย%'"));
+                                objDetailService_new.ServiceTypeOid = objServiceType;
+
+                                objDetailService_new.ReceiveDate = ObjMaster.UseDate;
+                                objDetailService_new.RefOid = ObjMaster.Oid.ToString();
+                            }
+                            else if (ObjMaster.ChkGroupService == true)
+                            {
+                                objDetailService = ObjectSpace.FindObject<OrgeServiceDetail>(CriteriaOperator.Parse("[OrgeServiceOid]=? and [ServiceTypeOid.ServiceTypeName] like '%จำหน่าย%' and [SubServiceTypeOid.ServiceTypeName]='กล้าพันธุ์' and [ReceiveDate]=?", ObjMaster.OrgeServiceOid, ObjMaster.UseDate));
+                                if (objDetailService == null) //'ถ้ายังไม่มีข้อมูลการขอรับบบริการให้ Insert ลงในส่วนของรายละเอียดการขอรับบริการด้วย
+                                {
+                                    var objDetailService_new = ObjectSpace.CreateObject<OrgeServiceDetail>();
+                                    objDetailService_new.OrgeServiceOid = ObjMaster.OrgeServiceOid;
+                                    var objServiceType = ObjectSpace.FindObject<ServiceType>(CriteriaOperator.Parse("[ServiceTypeName] like '%จำหน่าย%'"));
+                                    objDetailService_new.ServiceTypeOid = objServiceType;
+                                    var objSubServiceType = ObjectSpace.FindObject<ServiceType>(CriteriaOperator.Parse("[MasterServiceType]=? and [ServiceTypeName]='กล้าพันธุ์'", objServiceType.Oid));
+                                    objDetailService_new.SubServiceTypeOid = objSubServiceType;
+
+                                    objDetailService_new.ReceiveDate = ObjMaster.UseDate;
+                                    objDetailService_new.RefOid = ObjMaster.Oid.ToString();
+                                }
+                            }
+                        }
+                    }
+                           
+                            ObjMaster.Status = EnumRodBreedProductSeedStatus.Approve;
                     ObjMaster.ApproveDate = DateTime.Now;
-                    ObjectSpace.CommitChanges();
+                 
 
                     ObjHistory = ObjectSpace.CreateObject<HistoryWork>();
                     // ประวัติ
                     ObjHistory.RefOid = ObjMaster.Oid.ToString();
                     ObjHistory.FormName = "กล้าพันธุ์";
                     ObjHistory.Message = "อนุมัติ (ขอใช้กล้าพันธุ์ (Mobile Application) ) ลำดับที่ : " + ObjMaster.UseNo;
-                    ObjHistory.CreateBy = objUserInfo.DisplayName;
+                    ObjHistory.CreateBy = objUserInfo.UserName;
                     ObjHistory.CreateDate = DateTime.Now;
                     ObjectSpace.CommitChanges();
 
@@ -314,7 +234,6 @@ namespace WebApi.Jwt.Controllers.ท่อนพันธุ์_กล้าพ�
             HistoryWork ObjHistory = null;
             IList<StockSeedInfo> objStockSeedInfo = null;
             string Username = " ";
-
             try
             {
                 //string RefNo = HttpContext.Current.Request.Form["RefNo"].ToString(); //ข้อมูลเลขที่อ้างอิง
@@ -351,21 +270,34 @@ namespace WebApi.Jwt.Controllers.ท่อนพันธุ์_กล้าพ�
                         var objCheckStockSproutInfo = ObjectSpace.GetObjects<StockSproutInfo>(CriteriaOperator.Parse("SupplierSproutNumber=? and FinanceYearOid=? and AnimalSeedOid=? and OrganizationOid=? ", row.SupplierSproutUseProduct.UseNo, row.SupplierSproutUseProduct.FinanceYearOid.Oid, row.AnimalSeedOid.Oid, row.SupplierSproutUseProduct.OrganizationOid.Oid));
                         if (objCheckStockSproutInfo.Count > 0)
                         {
-                            objCheckStockSproutInfo = ObjectSpace.GetObjects<StockSproutInfo>(CriteriaOperator.Parse("FinanceYearOid=? and AnimalSeedOid=? and OrganizationOid=? ", row.SupplierSproutUseProduct.FinanceYearOid.Oid, row.AnimalSeedOid.Oid, row.SupplierSproutUseProduct.OrganizationOid.Oid));
-                            var objStockSproutInfo = ObjectSpace.CreateObject<StockSproutInfo>();
-                            objStockSproutInfo.TransactionDate = DateTime.Now;
-                            objStockSproutInfo.SupplierSproutNumber = row.SupplierSproutUseProduct.UseNo;
-                            objStockSproutInfo.FinanceYearOid = row.SupplierSproutUseProduct.FinanceYearOid;
-                            objStockSproutInfo.BudgetSourceOid = objCheckStockSproutInfo[0].BudgetSourceOid;
-                            objStockSproutInfo.AnimalSeedOid = row.AnimalSeedOid;
-                            objStockSproutInfo.OrganizationOid = row.SupplierSproutUseProduct.OrganizationOid;
-                            objStockSproutInfo.Weight = row.Weight;
-                            objStockSproutInfo.Remark = "คืนสต๊อกสินค้าเนื่องจากไม่อนุมัติ (Mobile Application) ";
-                            objStockSproutInfo.SeedTypeOid = row.SeedTypeOid;
-                        }
-                        //                ''Stock สำหรับ กปศ4ว
+                            objCheckStockSproutInfo = ObjectSpace.GetObjects<StockSproutInfo>(CriteriaOperator.Parse("FinanceYearOid=? and AnimalSeedOid=? and OrganizationOid=? and SeedTypeOid=?", row.SupplierSproutUseProduct.FinanceYearOid.Oid, row.AnimalSeedOid.Oid, row.SupplierSproutUseProduct.OrganizationOid.Oid, row.SeedTypeOid));
 
-                        if (ObjMaster.Status == EnumRodBreedProductSeedStatus.Approve)
+                            //   'Update สถานะ IsApprove ให้เป็น True
+                            var objStockSproutInfoEdit = ObjectSpace.FindObject<StockSproutInfo>(CriteriaOperator.Parse("[SupplierSproutNumber]=? and [FinanceYearOid]=? and [BudgetSourceOid]=? and [OrganizationOid]=? and [AnimalSeedOid]=? and [SeedTypeOid]=?", row.SupplierSproutUseProduct.UseNo, row.SupplierSproutUseProduct.FinanceYearOid, objCheckStockSproutInfo[0].BudgetSourceOid, row.SupplierSproutUseProduct.OrganizationOid, row.AnimalSeedOid, row.SeedTypeOid));
+                       //     objCheckStockSproutInfo =ObjectSpace.GetObjects<StockSproutInfo>(CriteriaOperator.Parse("FinanceYearOid=? and AnimalSeedOid=? and OrganizationOid=? and SeedTypeOid=?", row.SupplierSproutUseProduct.FinanceYearOid.Oid, row.AnimalSeedOid.Oid, row.SupplierSproutUseProduct.OrganizationOid.Oid, row.SeedTypeOid));
+                            if (objStockSproutInfoEdit != null)
+                            {
+                                objStockSproutInfoEdit.IsApprove = true;
+                            }
+
+                                    var objStockSproutInfo = ObjectSpace.CreateObject<StockSproutInfo>();
+                                    objStockSproutInfo.TransactionDate = DateTime.Now;
+                                    objStockSproutInfo.SupplierSproutNumber = row.SupplierSproutUseProduct.UseNo;
+                                    objStockSproutInfo.FinanceYearOid = row.SupplierSproutUseProduct.FinanceYearOid;
+                                    objStockSproutInfo.BudgetSourceOid = objCheckStockSproutInfo[0].BudgetSourceOid;
+                                    objStockSproutInfo.AnimalSeedOid = row.AnimalSeedOid;
+                             objStockSproutInfo.OrganizationOid = row.SupplierSproutUseProduct.OrganizationOid;
+                                    objStockSproutInfo.Weight = row.Weight;
+                             objStockSproutInfo.Remark = "คืนสต๊อกเนื่องจากไม่อนุมัติการใช้กล้าพันธุ์ (Mobile Application)";
+                                    objStockSproutInfo.SeedTypeOid = row.SeedTypeOid;
+                                    objStockSproutInfo.IsApprove = true;
+
+
+                        }
+
+                        //        ''Stock สำหรับ กปศ4ว
+                        //'=======================================================================
+                        if (ObjMaster.Status == EnumRodBreedProductSeedStatus.Accepet || ObjMaster.Status == EnumRodBreedProductSeedStatus.Approve)
                         {
                             var objStockSproutInfo_Detail = ObjectSpace.GetObjects<StockSproutInfo_Report>(CriteriaOperator.Parse("[FinanceYearOid]=? and [OrganizationOid]=? and [AnimalSeedOid]=? and [SeedTypeOid]=?", ObjMaster.FinanceYearOid, ObjMaster.OrganizationOid, row.AnimalSeedOid, row.SeedTypeOid));
                             var objStockSproutInfo_DetailNew = ObjectSpace.CreateObject<StockSproutInfo_Report>();
@@ -374,23 +306,31 @@ namespace WebApi.Jwt.Controllers.ท่อนพันธุ์_กล้าพ�
                                 var ObjStockSproutInfo_DetailSource = (from Item in objStockSproutInfo_Detail
                                                                        orderby Item.TransactionDate descending
                                                                        select Item).First();
-                                objStockSproutInfo_DetailNew.TransactionDate = DateTime.Now;
+                                var objStockRodBreedInfoReportEdit = ObjectSpace.FindObject<StockSproutInfo_Report>(CriteriaOperator.Parse("[SproutProductNumber]=? and [FinanceYearOid]=? and [BudgetSourceOid]=? and [OrganizationOid]=? and [AnimalSeedOid]=? and [SeedTypeOid]=?", row.SupplierSproutUseProduct.UseNo, row.SupplierSproutUseProduct.FinanceYearOid, ObjStockSproutInfo_DetailSource.BudgetSourceOid, row.SupplierSproutUseProduct.OrganizationOid, row.AnimalSeedOid, row.SeedTypeOid));
+                                if (objStockRodBreedInfoReportEdit != null)
+                                {
+                                    objStockRodBreedInfoReportEdit.IsApprove = true;
+                                }
+
+                                        objStockSproutInfo_DetailNew.TransactionDate = DateTime.Now;
                                 objStockSproutInfo_DetailNew.SproutProductNumber = ObjMaster.UseNo;
                                 objStockSproutInfo_DetailNew.FinanceYearOid = ObjMaster.FinanceYearOid;
                                 objStockSproutInfo_DetailNew.BudgetSourceOid = ObjStockSproutInfo_DetailSource.BudgetSourceOid;
-                                objStockSproutInfo_DetailNew.OrganizationOid = ObjMaster.OrganizationOid;
-                                objStockSproutInfo_DetailNew.AnimalSeedOid = row.AnimalSeedOid;
-                                objStockSproutInfo_DetailNew.TotalForward = ObjStockSproutInfo_DetailSource.TotalWeight;
-                                objStockSproutInfo_DetailNew.TotalChange = row.Weight;
-                                objStockSproutInfo_DetailNew.SeedTypeOid = row.SeedTypeOid;
-                                objStockSproutInfo_DetailNew.Description = "คืนสต๊อกเนื่องจากไม่อนุมัติการใช้กล้าพันธุ์ (Mobile Application): " + ObjMaster.OrganizationOid.SubOrganizeName;
+                              objStockSproutInfo_DetailNew.OrganizationOid = ObjMaster.OrganizationOid;
+                             objStockSproutInfo_DetailNew.AnimalSeedOid = row.AnimalSeedOid;
+                              objStockSproutInfo_DetailNew.TotalForward = ObjStockSproutInfo_DetailSource.TotalWeight;
+                              objStockSproutInfo_DetailNew.TotalChange = row.Weight;
+                               objStockSproutInfo_DetailNew.SeedTypeOid = row.SeedTypeOid;
+                               objStockSproutInfo_DetailNew.Description = "คืนสต๊อกเนื่องจากไม่อนุมัติการใช้กล้าพันธุ์  (Mobile Application):"+ "  ObjMaster.OrganizationOid.SubOrganizeName";
+                               objStockSproutInfo_DetailNew.IsApprove = true;
                             }
                         }
-                    }
+                        }       
+                    
                     SupplierSproutUseProduct TmpObjMaster;
                     ObjMaster.CancelMsg = CancelMsg;
                     ObjMaster.Status = EnumRodBreedProductSeedStatus.Eject;
-                    ObjMaster.CancelBy = objUserInfo.DisplayName;
+                    ObjMaster.CancelBy = objUserInfo.UserName;
                     ObjMaster.ActionType = EnumAction.Eject;
                     ObjMaster.CancelDate = DateTime.Now;
                     ObjectSpace.CommitChanges();
@@ -400,9 +340,10 @@ namespace WebApi.Jwt.Controllers.ท่อนพันธุ์_กล้าพ�
                     ObjHistory.RefOid = ObjMaster.Oid.ToString();
                     ObjHistory.FormName = "กล้าพันธุ์";
                     ObjHistory.Message = "ไม่อนุมัติ (ขอใช้กล้าพันธุ์ (Mobile Application)) ลำดับที่ : " + ObjMaster.UseNo;
-                    ObjHistory.CreateBy = objUserInfo.DisplayName;
+                    ObjHistory.CreateBy = objUserInfo.UserName;
                     ObjHistory.CreateDate = DateTime.Now;
                     ObjectSpace.CommitChanges();
+
                     UpdateResult ret = new UpdateResult();
                     ret.status = "true";
                     ret.message = "บันทึกข้อมูลไม่อนุมัติเรียบร้อยแล้ว";
@@ -445,6 +386,7 @@ namespace WebApi.Jwt.Controllers.ท่อนพันธุ์_กล้าพ�
                 if (collection.Count > 0)
                 {
                     foreach (SupplierSproutUseProduct row in query)
+
                     {
                         SproutUseProduct_Model item = new SproutUseProduct_Model();
                         item.SproutUseProductOid = row.Oid.ToString();

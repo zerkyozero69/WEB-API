@@ -542,9 +542,7 @@ namespace WebApi.Jwt.Controllers
                                         withBlock.AnimalSeedOid = objSupplierProduct.AnimalSeedOid;
                                         withBlock.AnimalSeedLevelOid = objSupplierProduct.AnimalSeedLevelOid;
                                         withBlock.StockDetail = "ส่งเมล็ดพันธุ์ Lot Number (Mobile Application): " + row.LotNumber.LotNumberFactory;
-                                        withBlock.TotalForward = ObjSubStockCardSource;
-                                        withBlock.TotalChange = 0 - row.Weight;
-                                        if (ObjMaster.SendOrgOid.IsFactory == true)
+                                    if (ObjMaster.SendOrgOid.IsFactory == true)
                                         {
                                             withBlock.StockType = EnumStockType.ModifyProduct;
                                         }
@@ -552,7 +550,16 @@ namespace WebApi.Jwt.Controllers
                                         {
                                             withBlock.StockType = EnumStockType.ReceiveProduct;
                                         }
-
+                                        //((ObjMaster.SendOrgOid.IsFactory == true) ? EnumStockType.ModifyProduct : EnumStockType.ReceiveProduct);
+                                        //    if (ObjMaster.SendOrgOid.IsFactory == true)
+                                        //{
+                                        //    EnumStockType.ModifyProduct = EnumStockType.ReceiveProduct;
+                                        //}
+                                        withBlock.SeedTypeOid = objSupplierProduct.SeedTypeOid;
+                                        withBlock.TotalForward = ObjSubStockCardSource;
+                                        withBlock.TotalChange = 0 - row.Weight;
+                                   
+                                
                                         withBlock.SeedTypeOid = objSupplierProduct.SeedTypeOid;
                                         withBlock.ReferanceCode = row.LotNumber.LotNumberFactory;
                                         withBlock.Description = "ส่งเมล็ดพันธุ์ให้ : " + "" + ObjMaster.ReceiveOrgOid.SubOrganizeName + "" + "(Mobile Application)";
@@ -608,8 +615,8 @@ namespace WebApi.Jwt.Controllers
                                         withBlock.SeedTypeOid = objSupplierProductModifyDetail.SeedTypeOid;
                                         withBlock.LotNumber = objSupplierProductModifyDetail.LotNumberFactory;
                                         withBlock.Weight = row.Weight;
-                                        withBlock.Moisture = objSupplierProductModifyDetail.Moisture;
-                                        withBlock.Germination = objSupplierProductModifyDetail.Germination;
+                                        withBlock.Moisture = (double)objSupplierProductModifyDetail.Moisture;
+                                        withBlock.Germination = (double)objSupplierProductModifyDetail.Germination;
                                         withBlock.AnalysisType = 1.ToString();
                                         withBlock.OrganizationOid = ObjMaster.ReceiveOrgOid;
                                         ObjectSpace.CommitChanges();

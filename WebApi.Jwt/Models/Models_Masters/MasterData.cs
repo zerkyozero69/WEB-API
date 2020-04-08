@@ -98,7 +98,7 @@ namespace WebApi.Jwt.Models
     }
     public class UpdateResult
     {
-        public string status { get; set; }
+        public string status {get; set; }
         public string message { get; set; }
         }
 }

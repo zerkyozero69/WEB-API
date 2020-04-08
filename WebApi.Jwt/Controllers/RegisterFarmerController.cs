@@ -569,7 +569,8 @@ namespace WebApi.Jwt.Controllers
                     {
                         Farmer_info.ForageTypeName3 = "ท่อนพันธุ์";
                     }
-
+                    Farmer_Modelinfo.Add(Farmer_info);
+                    return Request.CreateResponse(HttpStatusCode.OK, Farmer_info);
                     //if (ds.Tables[0].Rows[0]["ForageTypeName"].ToString() != null)
                     //{
                     //    //string[] arr = RefNo.Split('|');
@@ -604,87 +605,89 @@ namespace WebApi.Jwt.Controllers
                     //}
 
                     //    return Request.CreateResponse(HttpStatusCode.OK, Farmer_Modelinfo);
-                    else
+                }
+                else
+                {
+                    string param = "username=regislive01&password=password&grant_type=password";//เพื่อทำการขอ access_token
+                    byte[] dataStream = Encoding.UTF8.GetBytes(param);
+                    string AuthParam = "regislive:password";
+                    string authInfo = Convert.ToBase64String(Encoding.Default.GetBytes(AuthParam));
+                    var request = (HttpWebRequest)WebRequest.Create("http://regislives.dld.go.th:9080/regislive_authen/oauth/token");
+                    request.Method = "POST";
+                    request.ContentType = "application/x-www-form-urlencoded";
+                    request.ContentLength = dataStream.Length;
+                    request.Headers.Add("Authorization", "Basic " + authInfo);
+                    using (var stream = request.GetRequestStream())
                     {
-                        string param = "username=regislive01&password=password&grant_type=password";//เพื่อทำการขอ access_token
-                        byte[] dataStream = Encoding.UTF8.GetBytes(param);
-                        string AuthParam = "regislive:password";
-                        string authInfo = Convert.ToBase64String(Encoding.Default.GetBytes(AuthParam));
-                        var request = (HttpWebRequest)WebRequest.Create("http://regislives.dld.go.th:9080/regislive_authen/oauth/token");
-                        request.Method = "POST";
-                        request.ContentType = "application/x-www-form-urlencoded";
-                        request.ContentLength = dataStream.Length;
-                        request.Headers.Add("Authorization", "Basic " + authInfo);
-                        using (var stream = request.GetRequestStream())
+                        stream.Write(dataStream, 0, dataStream.Length);
+                    }
+                    var response = (HttpWebResponse)request.GetResponse();
+                    string responseString = new StreamReader(response.GetResponseStream()).ReadToEnd().ToString();
+                    var jsonResulttodict = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseString);
+                    var access_token = jsonResulttodict["access_token"];
+
+                    //    'Get Data By Token
+                    request = (HttpWebRequest)WebRequest.Create("http://regislives.dld.go.th:9080/regislive_webservice/farmer/findbyPid?pid=" + CitizenID);
+                    request.Method = "GET";
+                    request.ContentType = "application/x-www-form-urlencoded";
+                    request.Headers.Add("Authorization", "Bearer " + access_token);
+                    response = (HttpWebResponse)request.GetResponse();
+                    var xreader = new StreamReader(response.GetResponseStream()).ReadToEnd();
+                    var farmerResul = JsonConvert.DeserializeObject<Dictionary<string, object>>(xreader);
+                    if (xreader != "")
+                    {
+                        farmer_info.CitizenID = farmerResul["pid"];
+                        farmer_info.titleName = farmerResul["prefixNameTh"];
+                        farmer_info.FirstNameTH = farmerResul["firstName"];
+                        farmer_info.LastNameTH = farmerResul["lastName"];
+                        if (farmerResul["genderName"] == null)
                         {
-                            stream.Write(dataStream, 0, dataStream.Length);
-                        }
-                        var response = (HttpWebResponse)request.GetResponse();
-                        string responseString = new StreamReader(response.GetResponseStream()).ReadToEnd().ToString();
-                        var jsonResulttodict = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseString);
-                        var access_token = jsonResulttodict["access_token"];
-
-                        //    'Get Data By Token
-                        request = (HttpWebRequest)WebRequest.Create("http://regislives.dld.go.th:9080/regislive_webservice/farmer/findbyPid?pid=" + CitizenID);
-                        request.Method = "GET";
-                        request.ContentType = "application/x-www-form-urlencoded";
-                        request.Headers.Add("Authorization", "Bearer " + access_token);
-                        response = (HttpWebResponse)request.GetResponse();
-                        var xreader = new StreamReader(response.GetResponseStream()).ReadToEnd();
-                        var farmerResul = JsonConvert.DeserializeObject<Dictionary<string, object>>(xreader);
-                        if (xreader != "")
-                        {
-                            farmer_info.CitizenID = farmerResul["pid"];
-                            farmer_info.titleName = farmerResul["prefixNameTh"];
-                            farmer_info.FirstNameTH = farmerResul["firstName"];
-                            farmer_info.LastNameTH = farmerResul["lastName"];
-                            if (farmerResul["genderName"] == null)
-                            {
-                                farmer_info.genderName = "";
-                            }
-                            else
-                            {
-                                farmer_info.genderName = farmerResul["genderName"];
-                            }
-
-                            farmer_info.birthDate = farmerResul["birthDay"];
-                            farmer_info.tel = farmerResul["phone"];
-                            farmer_info.email = farmerResul["email"];
-                            farmer_info.address = farmerResul["homeNo"];
-                            farmer_info.moo = farmerResul["moo"];
-                            farmer_info.soi = farmerResul["soi"];
-                            farmer_info.road = farmerResul["road"];
-                            farmer_info.provinceNameTH = farmerResul["provinceName"];
-                            farmer_info.districtNameTH = farmerResul["amphurName"];
-                            farmer_info.subDistrictNameTH = farmerResul["tambolName"];
-                            farmer_info.PostCode = farmerResul["postCode"];
-                            farmer_info.latitude = farmerResul["latitude"];
-                            farmer_info.longitude = farmerResul["longitude"];
-
-                            farmerCitizenList.Add(farmer_info);
-
-                            return Request.CreateResponse(HttpStatusCode.OK, farmerCitizenList);
+                            farmer_info.genderName = "";
                         }
                         else
                         {
-                            UserError err3 = new UserError();
-                            err3.status = "ไม่พบเลขบัตรประชาชน กรุณาลงทะเบียน";
-                            err3.code = "-99"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-
-                            // Return resual
-                            return Request.CreateResponse(HttpStatusCode.NotFound, err3);
+                            farmer_info.genderName = farmerResul["genderName"];
                         }
-                    }
-                    Farmer_Modelinfo.Add(Farmer_info);
-                    return Request.CreateResponse(HttpStatusCode.OK, Farmer_Modelinfo);
-                }
 
-                UserError err = new UserError();
-                err.status = "ไม่พบเลขบัตรประชาชนในระบบ กรุณาลงทะเบียน";
-                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                        farmer_info.birthDate = farmerResul["birthDay"];
+                        farmer_info.tel = farmerResul["phone"];
+                        farmer_info.email = farmerResul["email"];
+                        farmer_info.address = farmerResul["homeNo"];
+                        farmer_info.moo = farmerResul["moo"];
+                        farmer_info.soi = farmerResul["soi"];
+                        farmer_info.road = farmerResul["road"];
+                        farmer_info.provinceNameTH = farmerResul["provinceName"];
+                        farmer_info.districtNameTH = farmerResul["amphurName"];
+                        farmer_info.subDistrictNameTH = farmerResul["tambolName"];
+                        farmer_info.PostCode = farmerResul["postCode"];
+                        farmer_info.latitude = farmerResul["latitude"];
+                        farmer_info.longitude = farmerResul["longitude"];
+
+                        farmerCitizenList.Add(farmer_info);
+
+                        return Request.CreateResponse(HttpStatusCode.OK, farmerCitizenList);
+                    }
+                    else
+                    {
+                        UserError err3 = new UserError();
+                        err3.status = "ไม่พบเลขบัตรประชาชน กรุณาลงทะเบียน";
+                        err3.code = "-99"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+
+                        // Return resual
+                        return Request.CreateResponse(HttpStatusCode.NotFound, err3);
+                    }
+                   
+                }
+      
+               
+
+                //if()
+                //UserError err = new UserError();
+                //err.status = "ไม่พบเลขบัตรประชาชนในระบบ กรุณาลงทะเบียน";
+                //err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
 
                 // Return resual
-                return Request.CreateResponse(HttpStatusCode.NotFound, err);
+               // return Request.CreateResponse(HttpStatusCode.NotFound, err);
             }
             catch (Exception ex)
             {

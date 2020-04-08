@@ -197,7 +197,7 @@ namespace WebApi.Jwt.Controllers
                         ObjStockSeedInfoInfo.AnimalSeedOid = objSupplierProduct.AnimalSeedOid;
                         ObjStockSeedInfoInfo.AnimalSeedLevelOid = objSupplierProduct.AnimalSeedLevelOid;
                         ObjStockSeedInfoInfo.StockDetail = "ส่งเมล็ดพันธุ์ Lot Number: " + objSupplierProduct.LotNumber;
-                        ObjStockSeedInfoInfo.TotalForward = objSupplierProduct.Weight;
+                        ObjStockSeedInfoInfo.TotalForward = (double)objSupplierProduct.Weight;
                         ObjStockSeedInfoInfo.TotalChange = 0 - Convert.ToDouble(objsend_Detail.Weight);
                         ObjStockSeedInfoInfo.StockType = 0;
                         ObjStockSeedInfoInfo.SeedTypeOid = objSupplierProduct.SeedTypeOid;

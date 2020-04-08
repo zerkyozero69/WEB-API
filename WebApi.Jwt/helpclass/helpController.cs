@@ -1,42 +1,24 @@
-﻿using System.Web.Http;
-using DevExpress.ExpressApp.Xpo;
-using DevExpress.Persistent.BaseImpl.PermissionPolicy;
-using DevExpress.ExpressApp.Utils;
-using DevExpress.Persistent.Base.Security;
-using DevExpress.ExpressApp.Security;
+﻿using DevExpress.Data.Filtering;
 using DevExpress.ExpressApp;
-using WebApi.Jwt.Models;
-using DevExpress.Data.Filtering;
-using System.Data.SqlClient;
-using System.Configuration;
-using DevExpress.Persistent.Base.General;
+using DevExpress.ExpressApp.Xpo;
 using DevExpress.Persistent.Base;
+using nutrition.Module;
+using nutrition.Module.EmployeeAsUserExample.Module.BusinessObjects;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
 using System.Net;
 using System.Net.Http;
-using System.Xml;
 using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using System.Text.RegularExpressions;
-using System.Diagnostics;
-using System;
-using DevExpress.ExpressApp.Model;
-using System.Security.Cryptography;
-using DevExpress.Persistent.Validation;
-using Microsoft.ApplicationBlocks.Data;
-using System.Data;
-using DevExpress.ExpressApp.Security.Strategy;
-using nutrition.Module.EmployeeAsUserExample.Module.BusinessObjects;
-using System.Collections.Generic;
+using System.Web.Http;
 using WebApi.Jwt.Controllers;
-using nutrition.Module;
+using WebApi.Jwt.Models;
 
 namespace WebApi.Jwt.helpclass
 {
     public class helpController : ApiController
     {
-        string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
-
+        private string scc = ConfigurationManager.ConnectionStrings["scc"].ConnectionString.ToString();
 
         /// <summary>
         /// ฟังชั่นเช็ค user password ให้ถูกต้องตามรหัส xaf ที่สมัครไว้
@@ -120,13 +102,13 @@ namespace WebApi.Jwt.helpclass
 
                             if (DLD == null)
                             {
-                                objUser_info.DLD = "ไม่มีเขต";
+                                objUser_info.DLDName = "ไม่มีเขต";
                             }
                             else if (DLD != null)
                             {
-                                objUser_info.DLD = DLD.OrganizeNameTH;
+                                objUser_info.DLDName = DLD.OrganizeNameTH;
                             }
-                            objUser_info.DLDZone = User.Organization.ProvinceOid.DLDZone.ToString() ;
+                            objUser_info.DLDZone = User.Organization.ProvinceOid.DLDZone.ToString();
                             objUser_info.Latitude = User.Organization.Latitude;
                             objUser_info.Longitude = User.Organization.Longitude;
                             TokenController token = new TokenController();
@@ -137,7 +119,6 @@ namespace WebApi.Jwt.helpclass
                             string AcName = "";
                             foreach (RoleInfo row2 in User.UserRoles)
                             {
-
                                 switch (row2.Name)
                                 {
                                     case "Approver":
@@ -150,6 +131,7 @@ namespace WebApi.Jwt.helpclass
                                             AcName = AcName + "," + "Approve";
                                         }
                                         break;
+
                                     case "Operator":
                                         if (AcName == "")
                                         {
@@ -160,6 +142,7 @@ namespace WebApi.Jwt.helpclass
                                             AcName = AcName + "," + "Edit";
                                         }
                                         break;
+
                                     case "Administrator":
                                         if (AcName == "")
                                         {
@@ -183,15 +166,13 @@ namespace WebApi.Jwt.helpclass
                                         }
                                         else
                                         {
-                                            if(AcName.Contains("ReadOnly")==false)
+                                            if (AcName.Contains("ReadOnly") == false)
                                             {
                                                 AcName = AcName + "," + "ReadOnly";
                                             }
-                                            
                                         }
                                         break;
                                 }
-
                             }
 
                             objUser_info.ActionName = AcName;
@@ -206,8 +187,6 @@ namespace WebApi.Jwt.helpclass
                             //{
                             //    objUser_info.ActionName = AcName;
                             //}
-
-                  
                         }
                         else if (User.ComparePassword(Password) == false)
                         {
@@ -217,11 +196,10 @@ namespace WebApi.Jwt.helpclass
                             objUser_info.Tel = User.Organization.Tel;
                             objUser_info.Status = 0;
                             objUser_info.Message = "เข้าสู่ระบบไม่สำเร็จ";
-
                         }
                     }
-                    
-                            directProvider.Dispose();
+
+                    directProvider.Dispose();
                 }
                 //IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
             }
@@ -233,7 +211,6 @@ namespace WebApi.Jwt.helpclass
 
             return objUser_info;
         }
-
 
         public string checknull(object val)
         {
@@ -249,7 +226,7 @@ namespace WebApi.Jwt.helpclass
             {
                 ret = "-";
             }
-            return ret; 
+            return ret;
         }
 
         public WebApi.Jwt.Models.user.get_role_byuser get_Roles(string Username)
@@ -271,29 +248,28 @@ namespace WebApi.Jwt.helpclass
                 {
                     roles.User_Name = User.UserName;
                     roles.Display_name = User.DisplayName;
-                  //  roles.Role_name = User.UserRoles;
+                    //  roles.Role_name = User.UserRoles;
 
                     //{
-                       List<user.Roles_info> get_Role_Byusers = new List<user.Roles_info>();
+                    List<user.Roles_info> get_Role_Byusers = new List<user.Roles_info>();
 
                     foreach (RoleInfo row in User.UserRoles)
                     {
                         user.Roles_info Userget = new user.Roles_info();
                         Userget.Role_display = row.DisplayName.ToString();
                         Userget.Role_Name = row.Name;
-                        get_Role_Byusers .Add(Userget);
+                        get_Role_Byusers.Add(Userget);
                     }
                     roles.objRoles_info = get_Role_Byusers;
 
-                        roles.Status = 1;
+                    roles.Status = 1;
                     roles.Message = "แสดงรายชื่อ User";
                 }
-                else{
+                else
+                {
                     roles.Status = 0;
                     roles.Message = "ไม่แสดงรายชื่อ User";
                 }
-
-
             }
             catch (Exception ex)
             {
@@ -302,18 +278,18 @@ namespace WebApi.Jwt.helpclass
             }
             return roles;
         }
+
         [AllowAnonymous]
         [HttpGet]
         [Route("FarmerProduction_XAF")]
-        public HttpResponseMessage  FarmerProduction_XAF()
+        public HttpResponseMessage FarmerProduction_XAF()
         {
-           
             try
             {
-                   XpoTypesInfoHelper.GetTypesInfo();
-                   XafTypesInfo.Instance.RegisterEntity(typeof(FarmerProduction));
-            
-                  XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
+                XpoTypesInfoHelper.GetTypesInfo();
+                XafTypesInfo.Instance.RegisterEntity(typeof(FarmerProduction));
+
+                XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
                 IList<FarmerProduction> collection = ObjectSpace.GetObjects<FarmerProduction>(CriteriaOperator.Parse(" GCRecord is null and IsActive = 1", null));
                 if (collection != null)
@@ -328,7 +304,8 @@ namespace WebApi.Jwt.helpclass
                     }
                     return Request.CreateResponse(HttpStatusCode.OK, list);
                 }
-               else {
+                else
+                {
                     UserError err = new UserError();
                     err.code = ""; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
                     err.message = "No data";
@@ -346,35 +323,21 @@ namespace WebApi.Jwt.helpclass
             }
         }
 
-
         public static string GetClientIp(HttpRequestMessage request)
+        {
+            string ip = string.Empty;
+            if (request.Properties.ContainsKey("MS_HttpContext"))
             {
-                string ip = string.Empty;
-                if (request.Properties.ContainsKey("MS_HttpContext"))
-                {
-                    HttpContextBase context = ((HttpContextBase)request.Properties["MS_HttpContext"]);
-                    if (context.Request.ServerVariables["HTTP_VIA"] != null)
-                        ip = context.Request.ServerVariables["HTTP_X_FORWARDED_FOR"].ToString();
-                    else
-                        ip = context.Request.ServerVariables["REMOTE_ADDR"].ToString();
-                }
-                return ip;
+                HttpContextBase context = ((HttpContextBase)request.Properties["MS_HttpContext"]);
+                if (context.Request.ServerVariables["HTTP_VIA"] != null)
+                    ip = context.Request.ServerVariables["HTTP_X_FORWARDED_FOR"].ToString();
+                else
+                    ip = context.Request.ServerVariables["REMOTE_ADDR"].ToString();
             }
-
-
-
-
+            return ip;
         }
     }
-
-
-
-
-
-
-
-
-
+}
 
 ///เก็บไว้
 ///
@@ -420,8 +383,7 @@ namespace WebApi.Jwt.helpclass
 //    }
 //}
 
-
-//    public class CustomAuthentication : 
+//    public class CustomAuthentication :
 //    {
 //        private CustomLogonParameters customLogonParameters;
 //        public CustomAuthentication()
@@ -440,7 +402,6 @@ namespace WebApi.Jwt.helpclass
 //        }
 //        public override object Authenticate(IObjectSpace objectSpace)
 //        {
-
 //            Employee employee = objectSpace.FindObject<Employee>(
 //                new BinaryOperator("UserName", customLogonParameters.UserName));
 
@@ -478,32 +439,9 @@ namespace WebApi.Jwt.helpclass
 //    }
 //}
 
-
-
-
-
-
-
-
-
-
 //       string Userinfo = "";
 
-
 //       UserInfo = ObjectSpace.FindObject<UserInfo>(new BinaryOperator("StoredPassword", Password));
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //public class RestorePasswordParameters : LogonActionParametersBase
 //{
@@ -541,8 +479,3 @@ namespace WebApi.Jwt.helpclass
 //        }
 //    }
 //}
-
-
-
-
-
