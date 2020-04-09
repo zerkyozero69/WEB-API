@@ -504,7 +504,7 @@ namespace WebApi.Jwt.Controllers
                             ObjHistory.CreateBy = Username;
                             ObjHistory.CreateDate = DateTime.Now;
                             ObjectSpace.CommitChanges();
-                            ObjMaster.SendStatus = EnumSendOrderSeedStatus.Eject; //4
+                          //  ObjMaster.SendStatus = EnumSendOrderSeedStatus.Eject; //4
                             ObjMaster.ReceiveStatus = EnumReceiveOrderSeedStatus.Eject;//4
                             ObjMaster.CancelMsg = CancelMsg;
                             ObjectSpace.CommitChanges();
@@ -632,7 +632,8 @@ namespace WebApi.Jwt.Controllers
                             ObjHistory.CreateDate = DateTime.Now;
                             ObjectSpace.CommitChanges();
                             ObjMaster.SendStatus = EnumSendOrderSeedStatus.Approve; //2
-                            ObjMaster.ReceiveStatus = EnumReceiveOrderSeedStatus.InProgess;//1
+                                  // ObjMaster.ReceiveStatus = EnumReceiveOrderSeedStatus.InProgess;//1
+                            ObjMaster.ReceiveStatus = EnumReceiveOrderSeedStatus.NoAction;//5
                             ObjMaster.Remark = CancelMsg;
                             ObjectSpace.CommitChanges();
                         }

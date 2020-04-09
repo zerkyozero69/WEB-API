@@ -308,7 +308,7 @@ namespace WebApi.Jwt.Controllers.ท่อนพันธุ์_กล้าพ�
                                 {
                                     if (ObjMaster.ChkOneService == true)
                                     {
-                                        objDetailService = ObjectSpace.FindObject<RegisterCusServiceDetail>(CriteriaOperator.Parse("[RegisterCusServiceOid]=? and [ServiceTypeOid.ServiceTypeName] like '%จำหน่าย%' and [SubServiceTypeOid.ServiceTypeName]='กล้าพันธุ์' and [ReceiveDate]=?", ObjMaster.RegisCusServiceOid, ObjMaster.UseDate));
+                                        objDetailService = ObjectSpace.FindObject<RegisterCusServiceDetail>(CriteriaOperator.Parse("[RegisterCusServiceOid]=? and [ServiceTypeOid.ServiceTypeName] like '%จำหน่าย%' and [SubServiceTypeOid.ServiceTypeName]='ท่อนพันธุ์' and [ReceiveDate]=?", ObjMaster.RegisCusServiceOid, ObjMaster.UseDate));
                                         if (objDetailService == null)
                                         {
                                             var objDetailService_new = ObjectSpace.CreateObject<RegisterCusServiceDetail>();
@@ -317,7 +317,7 @@ namespace WebApi.Jwt.Controllers.ท่อนพันธุ์_กล้าพ�
                                             var objServiceType = ObjectSpace.FindObject<ServiceType>(CriteriaOperator.Parse("[ServiceTypeName] like '%จำหน่าย%'"));
                                             objDetailService_new.ServiceTypeOid = objServiceType;
 
-                                            var objSubServiceType = ObjectSpace.FindObject<ServiceType>(CriteriaOperator.Parse("[MasterServiceType]=? and [ServiceTypeName]='กล้าพันธุ์'", objServiceType.Oid));
+                                            var objSubServiceType = ObjectSpace.FindObject<ServiceType>(CriteriaOperator.Parse("[MasterServiceType]=? and [ServiceTypeName]='ท่อนพันธุ์'", objServiceType.Oid));
                                             objDetailService_new.SubServiceTypeOid = objSubServiceType;
 
                                             objDetailService_new.ReceiveDate = ObjMaster.UseDate;
@@ -326,14 +326,14 @@ namespace WebApi.Jwt.Controllers.ท่อนพันธุ์_กล้าพ�
                                     }
                                     else if (ObjMaster.ChkGroupService == true)
                                     {
-                                        objDetailService = ObjectSpace.FindObject<OrgeServiceDetail>(CriteriaOperator.Parse("[OrgeServiceOid]=? and [ServiceTypeOid.ServiceTypeName] like '%จำหน่าย%' and [SubServiceTypeOid.ServiceTypeName]='กล้าพันธุ์' and [ReceiveDate]=?", ObjMaster.OrgeServiceOid, ObjMaster.UseDate));
+                                        objDetailService = ObjectSpace.FindObject<OrgeServiceDetail>(CriteriaOperator.Parse("[OrgeServiceOid]=? and [ServiceTypeOid.ServiceTypeName] like '%จำหน่าย%' and [SubServiceTypeOid.ServiceTypeName]='ท่อนพันธุ์' and [ReceiveDate]=?", ObjMaster.OrgeServiceOid, ObjMaster.UseDate));
                                         if (objDetailService == null) //'ถ้ายังไม่มีข้อมูลการขอรับบบริการให้ Insert ลงในส่วนของรายละเอียดการขอรับบริการด้วย
                                         {
                                             var objDetailService_new = ObjectSpace.CreateObject<OrgeServiceDetail>();
                                             objDetailService_new.OrgeServiceOid = ObjMaster.OrgeServiceOid;
                                             var objServiceType = ObjectSpace.FindObject<ServiceType>(CriteriaOperator.Parse("[ServiceTypeName] like '%จำหน่าย%'"));
                                             objDetailService_new.ServiceTypeOid = objServiceType;
-                                            var objSubServiceType = ObjectSpace.FindObject<ServiceType>(CriteriaOperator.Parse("[MasterServiceType]=? and [ServiceTypeName]='กล้าพันธุ์'", objServiceType.Oid));
+                                            var objSubServiceType = ObjectSpace.FindObject<ServiceType>(CriteriaOperator.Parse("[MasterServiceType]=? and [ServiceTypeName]='ท่อนพันธุ์'", objServiceType.Oid));
                                             objDetailService_new.SubServiceTypeOid = objSubServiceType;
 
                                             objDetailService_new.ReceiveDate = ObjMaster.UseDate;
@@ -344,7 +344,7 @@ namespace WebApi.Jwt.Controllers.ท่อนพันธุ์_กล้าพ�
                                 else if (ObjMaster.ActivityOid.ActivityName.Contains("แจกจ่าย") == true)
                                     if (ObjMaster.ChkOneService == true) //'รายเดี่ยว
                                     {
-                                        objDetailService = ObjectSpace.FindObject<RegisterCusServiceDetail>(CriteriaOperator.Parse("[RegisterCusServiceOid]=? and [ServiceTypeOid.ServiceTypeName] like '%แจกจ่าย%' and [SubServiceTypeOid.ServiceTypeName]='กล้าพันธุ์' and [ReceiveDate]=?", ObjMaster.RegisCusServiceOid, ObjMaster.UseDate));
+                                        objDetailService = ObjectSpace.FindObject<RegisterCusServiceDetail>(CriteriaOperator.Parse("[RegisterCusServiceOid]=? and [ServiceTypeOid.ServiceTypeName] like '%แจกจ่าย%' and [SubServiceTypeOid.ServiceTypeName]='ท่อนพันธุ์' and [ReceiveDate]=?", ObjMaster.RegisCusServiceOid, ObjMaster.UseDate));
                                         if (objDetailService == null)// 'ถ้ายังไม่มีข้อมูลการขอรับบบริการให้ Insert ลงในส่วนของรายละเอียดการขอรับบริการด้วย
                                         {
                                             var objDetailService_new = ObjectSpace.CreateObject<RegisterCusServiceDetail>();
@@ -359,14 +359,14 @@ namespace WebApi.Jwt.Controllers.ท่อนพันธุ์_กล้าพ�
                                         }
                                         else if (ObjMaster.ChkGroupService == true)
                                         {
-                                            objDetailService = ObjectSpace.FindObject<OrgeServiceDetail>(CriteriaOperator.Parse("[OrgeServiceOid]=? and [ServiceTypeOid.ServiceTypeName] like '%จำหน่าย%' and [SubServiceTypeOid.ServiceTypeName]='กล้าพันธุ์' and [ReceiveDate]=?", ObjMaster.OrgeServiceOid, ObjMaster.UseDate));
+                                            objDetailService = ObjectSpace.FindObject<OrgeServiceDetail>(CriteriaOperator.Parse("[OrgeServiceOid]=? and [ServiceTypeOid.ServiceTypeName] like '%จำหน่าย%' and [SubServiceTypeOid.ServiceTypeName]='ท่อนพันธุ์' and [ReceiveDate]=?", ObjMaster.OrgeServiceOid, ObjMaster.UseDate));
                                             if (objDetailService == null) //'ถ้ายังไม่มีข้อมูลการขอรับบบริการให้ Insert ลงในส่วนของรายละเอียดการขอรับบริการด้วย
                                             {
                                                 var objDetailService_new = ObjectSpace.CreateObject<OrgeServiceDetail>();
                                                 objDetailService_new.OrgeServiceOid = ObjMaster.OrgeServiceOid;
                                                 var objServiceType = ObjectSpace.FindObject<ServiceType>(CriteriaOperator.Parse("[ServiceTypeName] like '%จำหน่าย%'"));
                                                 objDetailService_new.ServiceTypeOid = objServiceType;
-                                                var objSubServiceType = ObjectSpace.FindObject<ServiceType>(CriteriaOperator.Parse("[MasterServiceType]=? and [ServiceTypeName]='กล้าพันธุ์'", objServiceType.Oid));
+                                                var objSubServiceType = ObjectSpace.FindObject<ServiceType>(CriteriaOperator.Parse("[MasterServiceType]=? and [ServiceTypeName]='ท่อนพันธุ์'", objServiceType.Oid));
                                                 objDetailService_new.SubServiceTypeOid = objSubServiceType;
 
                                                 objDetailService_new.ReceiveDate = ObjMaster.UseDate;

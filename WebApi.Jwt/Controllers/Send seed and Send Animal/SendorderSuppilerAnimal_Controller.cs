@@ -610,7 +610,8 @@ namespace WebApi.Jwt.Controllers.MasterData
                                 ObjectSpace.CommitChanges();
                             }
                             ObjMaster.SendStatus = EnumSendOrderAnimalStatus.Approve; //2
-                            ObjMaster.ReceiveStatus = EnumReceiveOrderAnimalStatus.InProgess;//0
+                                                                                      //    ObjMaster.ReceiveStatus = EnumReceiveOrderAnimalStatus.InProgess;//0
+                            ObjMaster.ReceiveStatus = EnumReceiveOrderAnimalStatus.NoAction;
                             ObjectSpace.CommitChanges();
                             result = true;
                         }
