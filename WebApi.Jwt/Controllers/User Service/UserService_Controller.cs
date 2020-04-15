@@ -454,7 +454,11 @@ namespace WebApi.Jwt.Controllers
                 {
                     CitizenID = HttpContext.Current.Request.Form["CitizenID"].ToString();
                 }
-
+                RegisterFarmerController best = new RegisterFarmerController();
+                if (best.CheckCitizenID(CitizenID) == false)
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, "หมายเลขบัตรประชาชนไม่ถูกต้อง กรุณาตรวจสอบ");
+                }
                 if (CitizenID != "")
                 {
                     XpoTypesInfoHelper.GetXpoTypeInfoSource();

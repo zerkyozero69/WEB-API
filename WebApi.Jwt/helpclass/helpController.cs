@@ -146,11 +146,11 @@ namespace WebApi.Jwt.helpclass
                                     case "Administrator":
                                         if (AcName == "")
                                         {
-                                            AcName = "Edit";
+                                            AcName = "EditAdmin";
                                         }
-                                        else if (AcName.Contains("Edit") != true)
+                                        else if (AcName.Contains("EditAdmin") != true)
                                         {
-                                            AcName = AcName + "," + "Edit";
+                                            AcName = AcName + "," + "EditAdmin";
                                         }
                                         //else
                                         //{
@@ -158,6 +158,18 @@ namespace WebApi.Jwt.helpclass
 
                                         //}
                                         break;
+
+                                    case "EditAdmin":
+                                        if (AcName == "")
+                                        {
+                                            AcName = "EditAdmin";
+                                        }
+                                        else if (AcName.Contains("EditAdmin") != true)
+                                        {
+                                            AcName = AcName + "," + "EditAdmin";
+                                        }
+                                        break;
+
 
                                     default:
                                         if (AcName == "")

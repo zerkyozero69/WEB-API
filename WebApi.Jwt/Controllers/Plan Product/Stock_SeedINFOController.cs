@@ -294,5 +294,207 @@ namespace WebApi.Jwt.Controllers.แผนการผลิต_จำนวน�
         //    }
 
         //}
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("SupplierProductAmount/Count/Admin")]   ///SupplierProductAmount/Count
+        public HttpResponseMessage Stockseedanimal_Admin()
+        {
+            try
+            {
+                string OrganizeOid = null; // Oid จังหวัด
+
+
+                DataSet ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "sp_StockforAdmin");
+
+                List<Stock_info> titile_Groups = new List<Stock_info>();
+                Stock_info stock_Info = new Stock_info();
+                List<SeedAnimal_info> detail = new List<SeedAnimal_info>();
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    int number = 0;
+                    string Temp_Group_Name = "";
+                    foreach (DataRow dr in ds.Tables[0].Rows)
+                    {
+                        if (Temp_Group_Name == dr["SeedLevelCode"].ToString())
+                        {
+                            number = number;
+                            SeedAnimal_info item = new SeedAnimal_info();
+                            item.Title = dr["SeedName"].ToString();
+                            item.Weight = Convert.ToDouble(dr["TotalWeight"]);
+                            item.Unit = dr["WeightUnit"].ToString();
+
+                            //status.Add(item);
+                            stock_Info.Data.Add(item);
+                        }
+                        else
+                        {
+                            SeedAnimal_info item = new SeedAnimal_info();
+                            item.Title = dr["SeedName"].ToString();
+
+                            item.Weight = Convert.ToDouble(dr["TotalWeight"]);
+                            item.Unit = dr["WeightUnit"].ToString();
+
+                            number = number + 1;
+
+                            Temp_Group_Name = dr["SeedLevelCode"].ToString();
+                            stock_Info = new Stock_info();
+
+                            stock_Info.Id = number;
+
+                            stock_Info.Title = dr["SeedLevelCode"].ToString();
+                            stock_Info.Total = Convert.ToDouble(dr["SumWeight"].ToString());
+
+                            switch (dr["SeedLevelCode"].ToString())
+                            {
+                                case "BS":
+                                    stock_Info.Color = "#F1948A";
+                                    break;
+
+                                case "CS":
+                                    stock_Info.Color = "#FF7F27";
+                                    break;
+
+                                case "FS":
+                                    stock_Info.Color = "#00E142";
+                                    break;
+
+                                case "RS":
+                                    stock_Info.Color = "#99D9EA";
+                                    break;
+
+                                default:
+                                    stock_Info.Color = "#ABB2B9";
+                                    break;
+                            }
+
+                            //status.Add(item);
+                            //Group_.Status_List = status;
+                            stock_Info.Data.Add(item);
+                            titile_Groups.Add(stock_Info);
+                        }
+                    }
+                    UserError err = new UserError();
+                    err.code = ""; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                    err.message = "OK";
+                    return Request.CreateResponse(HttpStatusCode.OK, titile_Groups);
+                }
+                else
+                {
+                    UserError err2 = new UserError();
+                    err2.code = "0"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                    err2.message = "NoData";
+                    return Request.CreateResponse(HttpStatusCode.NotFound, err2);
+                }
+            }
+            catch (Exception ex)
+            {
+                UserError err = new UserError();
+                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                err.message = ex.Message;
+                return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+            }
+            finally
+            {
+                //SqlConnection.ClearAllPools();
+            }
+        }
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("SupplierAnimalAmount/Count/Admin")]   ///SupplierProductAmount/Count
+        public HttpResponseMessage StockAnimalAdmin()
+        {
+            try
+            {
+              
+                DataSet ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "sp_StockanimalforAdmin" );
+
+                List<StockAnimals> titile_Groups = new List<StockAnimals>();
+                StockAnimals stock_Info = new StockAnimals();
+                List<SeedAnimalStock_info> detail = new List<SeedAnimalStock_info>();
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    int number = 0;
+                    string Temp_Group_Name = "";
+                    foreach (DataRow dr in ds.Tables[0].Rows)
+                    {
+                        if (Temp_Group_Name == dr["AnimalSupplieName"].ToString())
+                        {
+                            SeedAnimalStock_info item = new SeedAnimalStock_info();
+                            item.Title = dr["SeedName"].ToString();
+                            item.Weight = Convert.ToDouble(dr["TotalWeight"]);
+                            item.Unit = dr["WeightUnit"].ToString();
+
+                            //status.Add(item);
+                            stock_Info.Data.Add(item);
+                        }
+                        else
+                        {
+                            SeedAnimalStock_info item = new SeedAnimalStock_info();
+                            item.Title = dr["SeedName"].ToString();
+
+                            item.Weight = Convert.ToDouble(dr["TotalWeight"]);
+                            item.Unit = dr["WeightUnit"].ToString();
+
+                            number = number + 1;
+
+                            Temp_Group_Name = dr["AnimalSupplieName"].ToString();
+                            stock_Info = new StockAnimals();
+
+                            stock_Info.Id = number;
+
+                            stock_Info.Title = dr["AnimalSupplieName"].ToString();
+                            stock_Info.Total = Convert.ToDouble(dr["SumWeight"].ToString());
+
+                            switch (dr["AnimalSupplieName"].ToString())
+                            {
+                                case "สด":
+                                    stock_Info.Color = "#F1948A";
+                                    break;
+
+                                case "หมัก":
+                                    stock_Info.Color = "#FF7F27";
+                                    break;
+
+                                case "แห้ง":
+                                    stock_Info.Color = "#00E142";
+                                    break;
+
+                                default:
+                                    stock_Info.Color = "#ABB2B9";
+                                    break;
+                            }
+
+                            //status.Add(item);
+                            //Group_.Status_List = status;
+                            stock_Info.Data.Add(item);
+                            titile_Groups.Add(stock_Info);
+                        }
+                    }
+                    UserError err = new UserError();
+                    err.code = ""; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                    err.message = "OK";
+                    return Request.CreateResponse(HttpStatusCode.OK, titile_Groups);
+                }
+
+                UserError err2 = new UserError();
+                err2.code = "0"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                err2.message = "กรุณาระบุศูนย์";
+                return Request.CreateResponse(HttpStatusCode.NotFound, err2);
+            }
+            catch (Exception ex)
+            {
+                UserError err = new UserError();
+                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
+                err.message = ex.Message;
+                return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+            }
+            finally
+            {
+                SqlConnection.ClearPool(scc);
+            }
+        }
+
+
     }
 }

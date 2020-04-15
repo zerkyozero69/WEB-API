@@ -1880,8 +1880,7 @@ namespace WebApi.Jwt.Controllers
                     {
                         foreach (SupplierUseProduct row in collection)
                         {
-                            double WeightAll = 0;
-                            double Amout = 0;
+                            
                             SupplierProductUser item = new SupplierProductUser();
 
                             item.TypeMoblie = _type;

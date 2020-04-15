@@ -89,6 +89,8 @@ namespace WebApi.Jwt.Models
             public string FirstNameTH { get; set; }
             public string LastNameTH { get; set; }
         }
+       
     }
 
+   
 }

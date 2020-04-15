@@ -47,6 +47,11 @@ namespace WebApi.Jwt.Controllers.MasterData
                     }
 
                     Regi_subscriber.CitizenID = jObject.SelectToken("citizenId").Value<string>();
+                    RegisterFarmerController best = new RegisterFarmerController();
+                    if (best.CheckCitizenID(jObject.SelectToken("CitizenID").ToString()) == false)
+                    {
+                        return Request.CreateResponse(HttpStatusCode.BadRequest, "หมายเลขบัตรประชาชนไม่ถูกต้อง กรุณาตรวจสอบ");
+                    }
                     Regi_subscriber.TitleOid = jObject.SelectToken("titleOid").Value<string>();
                     Regi_subscriber.FirstNameTH = jObject.SelectToken("firstNameTh").Value<string>();
                     Regi_subscriber.LastNameTH = jObject.SelectToken("lastNameTh").Value<string>();
@@ -156,6 +161,11 @@ namespace WebApi.Jwt.Controllers.MasterData
 
                     Update_subscriber.RegisterDate = jObject.SelectToken("RegisterDate").Value<string>();
                     Update_subscriber.CitizenID = jObject.SelectToken("CitizenID").Value<string>();
+                    RegisterFarmerController best = new RegisterFarmerController();
+                    if (best.CheckCitizenID(jObject.SelectToken("CitizenID").ToString()) == false)
+                    {
+                        return Request.CreateResponse(HttpStatusCode.BadRequest, "หมายเลขบัตรประชาชนไม่ถูกต้อง กรุณาตรวจสอบ");
+                    }
                     Update_subscriber.TitleOid = jObject.SelectToken("TitleOid").Value<string>();
                     Update_subscriber.FirstNameTH = jObject.SelectToken("FirstNameTH").Value<string>();
                     Update_subscriber.LastNameTH = jObject.SelectToken("LastNameTH").Value<string>();
@@ -242,6 +252,11 @@ namespace WebApi.Jwt.Controllers.MasterData
                 if (HttpContext.Current.Request.Form["CitizenID"].ToString() != null)
                 {
                     CitizenID = HttpContext.Current.Request.Form["CitizenID"].ToString();
+                }
+                RegisterFarmerController best = new RegisterFarmerController();
+                if (best.CheckCitizenID(CitizenID) == false)
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, "หมายเลขบัตรประชาชนไม่ถูกต้อง กรุณาตรวจสอบ");
                 }
                 DataSet ds = new DataSet();
                 ds = SqlHelper.ExecuteDataset(scc, CommandType.StoredProcedure, "spt_MobileGetCusService", new SqlParameter("@CitizenID", CitizenID));

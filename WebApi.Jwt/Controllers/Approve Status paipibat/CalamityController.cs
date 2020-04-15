@@ -569,6 +569,11 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                     }
 
                     productUser.CitizenID = jObject.SelectToken("CitizenID").Value<string>();
+                    RegisterFarmerController best = new RegisterFarmerController();
+                    if (best.CheckCitizenID(jObject.SelectToken("CitizenID").ToString()) == false)
+                    {
+                        return Request.CreateResponse(HttpStatusCode.BadRequest, "หมายเลขบัตรประชาชนไม่ถูกต้อง กรุณาตรวจสอบ");
+                    }
                     productUser.YearName = jObject.SelectToken("FinanceYear").Value<string>(); ///ใช้สำหรับเจนเลข ออโต้
 
                     if (jObject.SelectToken("SubActivityLevelOid") != null)
@@ -707,11 +712,11 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                                     RegisterCusService objRegisCusService = ObjectSpace.FindObject<RegisterCusService>(CriteriaOperator.Parse("[Oid]=?", objSupplierUseAnimalProduct.RegisCusServiceOid));
                                     if (objRegisCusService != null)
                                     {
-                                        TempDescription = "ช่วยเหลือภัยพิบัติ-" + objSupplierUseAnimalProduct.SubActivityLevelOid.ActivityName + " : " + objRegisCusService.DisPlayName;
+                                        TempDescription = "ช่วยเหลือภัยพิบัติ (Mobile Application)-" + objSupplierUseAnimalProduct.SubActivityLevelOid.ActivityName + " : " + objRegisCusService.DisPlayName;
                                     }
                                     else
                                     {
-                                        TempDescription = "ช่วยเหลือภัยพิบัติ-" + objSupplierUseAnimalProduct.SubActivityLevelOid.ActivityName + " : ";
+                                        TempDescription = "ช่วยเหลือภัยพิบัติ (Mobile Application)-" + objSupplierUseAnimalProduct.SubActivityLevelOid.ActivityName + " : ";
                                     }
 
                                 }
@@ -720,10 +725,10 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                                     OrgeService objOrgeService = ObjectSpace.FindObject<OrgeService>(CriteriaOperator.Parse("[Oid]=?", objSupplierUseAnimalProduct.OrgeServiceOid));
                                     if (objOrgeService != null)
                                     {
-                                        TempDescription = "ช่วยเหลือภัยพิบัติ-" + objSupplierUseAnimalProduct.SubActivityLevelOid.ActivityName + " : " + objOrgeService.OrgeServiceName;
+                                        TempDescription = "ช่วยเหลือภัยพิบัติ (Mobile Application)-" + objSupplierUseAnimalProduct.SubActivityLevelOid.ActivityName + " : " + objOrgeService.OrgeServiceName;
                                     }
                                     else
-                                        TempDescription = "ช่วยเหลือภัยพิบัติ-" + objSupplierUseAnimalProduct.SubActivityLevelOid.ActivityName + " : ";
+                                        TempDescription = "ช่วยเหลือภัยพิบัติ (Mobile Application)-" + objSupplierUseAnimalProduct.SubActivityLevelOid.ActivityName + " : ";
 
                                 }
                             }
@@ -834,7 +839,7 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                                     // .AnimalSeedOid = ObjAnimalSeedOid
                                     objInsStockAnimalUseInfo.BudgetSourceOid = row.BudgetSourceOid;
                                     objInsStockAnimalUseInfo.Weight = row.Weight;
-                                    objInsStockAnimalUseInfo.Remark = "อนุมัติใช้เสบียงสัตว์";
+                                    objInsStockAnimalUseInfo.Remark = "อนุมัติใช้เสบียงสัตว์ (Mobile Application)";
                                     objInsStockAnimalUseInfo.ActivityOid = row.SupplierUseAnimalProductOid.ActivityOid;
                                     objInsStockAnimalUseInfo.SubActivityOid = row.SupplierUseAnimalProductOid.SubActivityOid;
                                     objInsStockAnimalUseInfo.FinanceYearOid = row.SupplierUseAnimalProductOid.FinanceYearOid;
@@ -856,7 +861,7 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                                     objStockAnimalInfo.AnimalSupplieTypeOid = row.AnimalSupplieTypeOid;
                                     // .AnimalSeedOid = row.AnimalSeedOid
                                     objStockAnimalInfo.Weight = 0 - row.Weight;
-                                    objStockAnimalInfo.Remark = "ยอดใช้เสบียงสัตว์";
+                                    objStockAnimalInfo.Remark = "ยอดใช้เสบียงสัตว์ (Mobile Application)";
                                     objStockAnimalInfo.SeedTypeOid = row.SeedTypeOid;
                                     objStockAnimalInfo.Description = TempDescription;
                                     objStockAnimalInfo.IsApprove = false;
@@ -913,7 +918,7 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                             // ประวัติ
                             ObjHistory.RefOid = objSupplierUseAnimalProduct.Oid.ToString();
                             ObjHistory.FormName = "เสบียงสัตว์";
-                            ObjHistory.Message = "ส่งให้ ผอ.อนุมัติ (ขอเบิกเสบียงสัตว์) ลำดับที่ : " + objSupplierUseAnimalProduct.UseNo;
+                            ObjHistory.Message = "ส่งให้ ผอ.อนุมัติ (ขอเบิกเสบียงสัตว์ (Mobile Application)) ลำดับที่ : " + objSupplierUseAnimalProduct.UseNo;
                             ObjHistory.CreateBy = objUserInfo.UserName;
                             ObjHistory.CreateDate = DateTime.Now;
                             ObjectSpace.CommitChanges();
@@ -988,28 +993,7 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
         }
       
 
-        public HttpResponseMessage AddSupplierUseAnimalProductDetail_ByUseNo()
-        {
-            try
-            {
-
-
-                return Request.CreateResponse(HttpStatusCode.OK);
-            }
-            catch (Exception ex)
-            {
-                UserError err = new UserError();
-                err.code = "6"; // error จากสาเหตุอื่นๆ จะมีรายละเอียดจาก system แจ้งกลับ
-                err.message = ex.Message;
-                return Request.CreateResponse(HttpStatusCode.BadRequest, err);
-            }
-        }
-
-
-
-
-
-
+  
 
         /// <summary>
         /// อนุมัติ-ไม่อนุมัติการช่วยเหลือภัยพิบัติ เสบียงสัตว์ ฟั่งชั่นของปุ่มในหน้าช่วยเหลือภัยพิบัติ
@@ -1087,7 +1071,7 @@ namespace WebApi.Jwt.Controllers.อนุมัติภัยพิบัต�
                                     RegisterCusService objRegisCusService = ObjectSpace.FindObject<RegisterCusService>(CriteriaOperator.Parse("[Oid]=?", objSupplierUseAnimalProduct.RegisCusServiceOid));
                                     if (objRegisCusService != null)
                                     {
-                                        TempDescription = "ช่วยเหลือภัยพิบัติ-" + objSupplierUseAnimalProduct.SubActivityLevelOid.ActivityName + " : " + objRegisCusService.DisPlayName;
+                                        TempDescription = "ช่วยเหลือภัยพิบัติไ-" + objSupplierUseAnimalProduct.SubActivityLevelOid.ActivityName + " : " + objRegisCusService.DisPlayName;
                                     }
                                     else
                                     {

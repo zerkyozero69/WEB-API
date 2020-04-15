@@ -278,7 +278,7 @@ namespace WebApi.Jwt.Controllers.MasterData
                 XPObjectSpaceProvider directProvider = new XPObjectSpaceProvider(scc, null);
                 IObjectSpace ObjectSpace = directProvider.CreateObjectSpace();
                 double balanceQTY = 0.0;
-                double amount = 0.0;
+                double amount = 0.0; 
                 double objstocklimit = 0.0;
 
                 AnimalSupplie objAnimalSupplie = ObjectSpace.FindObject<AnimalSupplie>(CriteriaOperator.Parse("[oid] =? ", animalsupplieroid));
